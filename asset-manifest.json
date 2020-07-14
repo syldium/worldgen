@@ -1,0 +1,25 @@
+{
+  "files": {
+    "main.css": "/worldgen/static/css/main.9d31a24e.chunk.css",
+    "main.js": "/worldgen/static/js/main.393c8740.chunk.js",
+    "main.js.map": "/worldgen/static/js/main.393c8740.chunk.js.map",
+    "runtime-main.js": "/worldgen/static/js/runtime-main.f1f42b5a.js",
+    "runtime-main.js.map": "/worldgen/static/js/runtime-main.f1f42b5a.js.map",
+    "static/css/2.f18e911f.chunk.css": "/worldgen/static/css/2.f18e911f.chunk.css",
+    "static/js/2.ff9501e4.chunk.js": "/worldgen/static/js/2.ff9501e4.chunk.js",
+    "static/js/2.ff9501e4.chunk.js.map": "/worldgen/static/js/2.ff9501e4.chunk.js.map",
+    "index.html": "/worldgen/index.html",
+    "precache-manifest.3b14d0c1f3fd389d05d2eb754e6e626a.js": "/worldgen/precache-manifest.3b14d0c1f3fd389d05d2eb754e6e626a.js",
+    "service-worker.js": "/worldgen/service-worker.js",
+    "static/css/2.f18e911f.chunk.css.map": "/worldgen/static/css/2.f18e911f.chunk.css.map",
+    "static/css/main.9d31a24e.chunk.css.map": "/worldgen/static/css/main.9d31a24e.chunk.css.map",
+    "static/js/2.ff9501e4.chunk.js.LICENSE.txt": "/worldgen/static/js/2.ff9501e4.chunk.js.LICENSE.txt"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.f1f42b5a.js",
+    "static/css/2.f18e911f.chunk.css",
+    "static/js/2.ff9501e4.chunk.js",
+    "static/css/main.9d31a24e.chunk.css",
+    "static/js/main.393c8740.chunk.js"
+  ]
+}
