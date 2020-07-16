@@ -2,7 +2,7 @@ import React, { useState, useCallback, useContext, useMemo } from "react";
 import Select from "react-select";
 import { DataContext } from "../../context/DataContext";
 import { Button } from '../../ui/Button';
-import { getStateValue } from "../../utils/blocks";
+import { getStateValue } from "../../utils/data";
 import { useEffect } from "react";
 import { CRUD, useCrud } from "../../hooks/form";
 
@@ -17,7 +17,7 @@ export const BlockStateProvider = React.memo(function({block = { type: 'minecraf
     }, []);
 
     const handleTypeChange = useCallback(function(option) {
-        setProvider(provider => ({ ...provider, type: option.value }));
+        setProvider({ type: option.value });
     }, []);
 
     const handleSimpleStateChange = useCallback(function(state) {
@@ -34,7 +34,7 @@ export const BlockStateProvider = React.memo(function({block = { type: 'minecraf
         <label>Type</label>
         <Select options={options} value={options.find(o => o.value === provider.type)} onChange={handleTypeChange} />
         {(provider.type === 'minecraft:simple_state_provider' || provider.type === 'minecraft:rotated_block_provider') && <BlockState block={provider.state} onChange={handleSimpleStateChange} />}
-        {provider.type === 'minecraft:weighted_state_provider' && <WeightedStateProvider entries={provider.entries} onChange={handleWeighestStateChange} />}
+        {provider.type === 'minecraft:weighted_state_provider' && <WeightedStateProvider entries={(provider.entries || []).map(entry => entry.data)} onChange={handleWeighestStateChange} />}
     </div>
 });
 
@@ -77,14 +77,12 @@ const WeightedStateProvider = React.memo(function({entries = [], onChange}) {
         dispatch({ type: CRUD.ADD, payload: { Name: 'minecraft:stone', Properties: {} } });
     }, [dispatch]);
     const handleChange = useCallback(function(state, previous) {
-        console.log(state)
         dispatch({ type: CRUD.UPDATE, target: previous, payload: state });
     }, [dispatch]);
     const handleDeleteClick = useCallback(function(e, index) {
         e.preventDefault();
         dispatch({ type: CRUD.REMOVE, payload: blocks[index] });
     }, [blocks, dispatch]);
-    console.log((blocks.map(data => ({ data }))));
 
     useEffect(() => onChange(blocks.map(data => ({ data }))), [blocks, onChange]);
 

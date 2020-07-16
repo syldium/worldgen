@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import { FixedBiomeSource } from './BiomeSource';
+import { BiomeSource } from './BiomeSource';
 import { FIXED_GENERATOR } from './DimensionDefaults';
 import { hashCode } from './../../utils/hash';
 import Select from 'react-select';
@@ -41,7 +41,7 @@ export function DimensionGenerator({generator = FIXED_GENERATOR, onChange}) {
         <div className="form-group">
             <SeedField value={data.seed} onChange={handleSeedChange} />
             <Settings settings={data.settings} onChange={handleSettingsChange} />
-            <FixedBiomeSource source={data.biome_source} onChange={handleBiomeSourceChange} />
+            <BiomeSource biome_source={data.biome_source} onChange={handleBiomeSourceChange} />
         </div>
     </fieldset>;
 }
@@ -52,7 +52,7 @@ export const SeedField = React.memo(function({onChange, value = '286956243'}) {
     const handleChange = function(e) {
         const value = e.target.value;
         setText(value);
-        onChange(isNaN(value) ? hashCode(value) :  value);
+        onChange(isNaN(value) ? hashCode(value) : value);
     };
 
     return <div className="form-group">
