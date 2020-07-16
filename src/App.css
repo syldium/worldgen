@@ -27,16 +27,16 @@ input {
     box-shadow: inset 0 0 0 1px hsl(0, 0%, 80%) !important;
     cursor: text;
 }
-input[type=color] {
+input[type="color"] {
     width: 4.5rem;
     height: 2.5rem;
     padding: 0;
     cursor: pointer;
 }
-input[type=number] {
+input[type="number"] {
     width: 100px;
 }
-button[type=submit] {
+button[type="submit"] {
     padding: 1.25rem 3rem;
 }
 
@@ -70,7 +70,7 @@ input:focus {
     justify-content: space-between;
     align-items: flex-end;
     padding: 1.25rem;
-    padding-bottom: .75rem;
+    padding-bottom: 0.75rem;
     box-shadow: inset 0 -2px 0 0 #c8c8c8;
     font-size: 1.5rem;
     font-weight: 500;
@@ -84,4 +84,8 @@ hr {
 }
 input[id|="react-select"] {
     box-shadow: none !important;
+}
+.inbl,
+.u-inbl {
+    vertical-align: middle;
 }
