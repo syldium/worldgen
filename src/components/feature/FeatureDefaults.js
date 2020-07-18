@@ -182,6 +182,20 @@ export const VANILLA_FEATURES = [
     "mushroom_field_vegetation"
 ];
 
+export const DECORATORS_OPTIONS = [
+    { value: 'chance', label: 'Chance' },
+    { value: 'count', label: 'Count' },
+    { value: 'count_extra', label: 'Count extra' },
+    { value: 'count_multilayer', label: 'Count multi layer' },
+    { value: 'decorated', label: 'Decorated' },
+    { value: 'fire', label: 'Fire' },
+    { value: 'range', label: 'Range' },
+    { value: 'range_very_biased', label: 'Range very biased' }
+].map(o => {
+    o.value = 'minecraft:' + o.value;
+    return o;
+});
+
 export const TREE_FEATURE_CONFIG = {
     heightmap: "OCEAN_FLOOR",
     minimum_size: {
@@ -223,3 +237,124 @@ export const TREE_FEATURE_CONFIG = {
         type: "minecraft:straight_trunk_placer"
     }
 };
+
+export const RANDOM_PATCH_FEATURE_CONFIG = {
+    can_replace: false,
+    project: false,
+    need_water: false,
+    xspread: 7,
+    yspread: 3,
+    zspread: 7,
+    whitelist: [
+        {
+            Properties: {
+                snowy: "false"
+            },
+            Name: "minecraft:grass_block"
+        }
+    ],
+    blacklist: [],
+    tries: 64,
+    state_provider: {
+        state: {
+            Name: "minecraft:pumpkin"
+        },
+        type: "minecraft:simple_state_provider"
+    },
+    block_placer: {
+        type: "minecraft:simple_block_placer"
+    }
+}
+
+export const DECORATED_RANDOM_PATCH_CONFIG = {
+    config: {
+        feature: {
+            config: {
+                feature: {
+                    config: RANDOM_PATCH_FEATURE_CONFIG,
+                    name: "minecraft:random_patch"
+                },
+                decorator: {
+                    config: {
+                        outer: {
+                            config: {},
+                            name: "minecraft:square"
+                        },
+                        inner: {
+                            config: {},
+                            name: "minecraft:heightmap_spread_double"
+                        }
+                    },
+                    name: "minecraft:decorated"
+                }
+            },
+            name: "minecraft:decorated"
+        },
+        decorator: {
+            config: {
+                chance: 32
+            },
+            name: "minecraft:chance"
+        }
+    },
+    name: "minecraft:decorated"
+};
+
+export const DECORATED_TREE_CONFIG = {
+    config: {
+        feature: {
+            config: {
+                feature: {
+                    config: TREE_FEATURE_CONFIG,
+                    name: "minecraft:tree"
+                },
+                decorator: {
+                    config: {
+                        outer: {
+                            config: {},
+                            name: "minecraft:square"
+                        },
+                        inner: {
+                            config: {},
+                            name: "minecraft:heightmap"
+                        }
+                    },
+                    name: "minecraft:decorated"
+                }
+            },
+            name: "minecraft:decorated"
+        },
+        decorator: {
+            config: {
+                count: 10,
+                extra_chance: 0.1,
+                extra_count: 1
+            },
+            name: "minecraft:count_extra"
+        }
+    },
+    name: "minecraft:decorated"
+};
+
+export const DECORATOR_EXTRA_COUNT_DEFAULTS = {
+    count: 10,
+    extra_chance: 0.1,
+    extra_count: 1
+}
+
+export const DECORATOR_DECORATED_DEFAULTS = {
+    outer: {
+        config: {},
+        name: "minecraft:square"
+    },
+    inner: {
+        config: {},
+        name: "minecraft:heightmap"
+    }
+}
+
+export const DECORATOR_RANGE_DEFAULTS = {
+    bottom_offset: 8,
+    top_offset: 16,
+    maximum: 256
+}

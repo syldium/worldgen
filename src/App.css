@@ -88,4 +88,5 @@ input[id|="react-select"] {
 .inbl,
 .u-inbl {
     vertical-align: middle;
+    min-width: 100px;
 }
