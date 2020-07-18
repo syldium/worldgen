@@ -33,6 +33,6 @@ export const BlockPredicate = React.memo(function({target, onChange}) {
         <label>Predicate type</label>
         <Select options={options} value={options.find(o => o.value === predicate.predicate_type)} onChange={handleTypeChange} />
         {(predicate.predicate_type === 'minecraft:block_match') && <Select options={blocks} value={blocks.find(b => b.value === predicate.block)} onChange={handleBlockChange} />}
-        {(predicate.predicate_type === 'minecraft:tag_match') && <Select options={TAGS_OPTIONS} value={TAGS_OPTIONS.find(t => t.value.trim() === predicate.tag.trim())} onChange={handleTagChange} />}
+        {(predicate.predicate_type === 'minecraft:tag_match') && <Select options={TAGS_OPTIONS} value={TAGS_OPTIONS.find(t => t.value === predicate.tag)} onChange={handleTagChange} />}
     </div>;
 });
