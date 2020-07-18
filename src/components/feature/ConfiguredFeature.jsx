@@ -5,8 +5,9 @@ import { TreeFeatureConfig } from './TreeFeature';
 import { Button } from '../../ui/Button';
 import { DecoratorsList } from './Decorator';
 import { buildDecorated, findDecorators } from '../../utils/data';
-import { DECORATED_TREE_CONFIG, DECORATED_RANDOM_PATCH_CONFIG } from './FeatureDefaults';
+import { DECORATED_TREE_CONFIG, DECORATED_RANDOM_PATCH_CONFIG, DECORATED_ORE_FEATURE_CONFIG } from './FeatureDefaults';
 import { RandomPatchFeature } from './RandomPatchFeature';
+import { OreFeatureConfig } from './OreFeature';
 
 export function RawConfiguredFeature({data = DECORATED_TREE_CONFIG, onSave}) {
     const [state, setState] = useState(data);
@@ -31,6 +32,7 @@ export function RawConfiguredFeature({data = DECORATED_TREE_CONFIG, onSave}) {
 
     const options = useMemo(function() {
         return [
+            { value: 'ore', label: 'Ore', default: DECORATED_ORE_FEATURE_CONFIG },
             { value: 'random_patch', label: 'Random patch', default: DECORATED_RANDOM_PATCH_CONFIG },
             { value: 'tree', label: 'Tree', default: DECORATED_TREE_CONFIG }
         ].map(o => {
@@ -70,6 +72,7 @@ function ConfiguredFeature({feature, deco, onSave}) {
     }, [configuration, decorators, onSave]);
 
     return <>
+        {feature.name === 'minecraft:ore' && <OreFeatureConfig configuration={configuration.config} onChange={handleConfigurationChange} />}
         {feature.name === 'minecraft:random_patch' && <RandomPatchFeature configuration={configuration.config} onChange={handleConfigurationChange} />}
         {feature.name === 'minecraft:tree' && <TreeFeatureConfig configuration={configuration.config} onChange={handleConfigurationChange} />}
         <DecoratorsList data={decorators} onChange={handleDecoratorsChange} />

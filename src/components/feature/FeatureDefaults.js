@@ -182,6 +182,94 @@ export const VANILLA_FEATURES = [
     "mushroom_field_vegetation"
 ];
 
+export const TAGS_OPTIONS = [
+    'acacia_logs',
+    'anvil',
+    'bamboo_plantable_on',
+    'banners',
+    'base_stone_nether‌',
+    'base_stone_overworld‌',
+    'beacon_base_blocks',
+    'beds',
+    'beehives',
+    'bee_growables',
+    'birch_logs',
+    'buttons',
+    'campfires',
+    'carpets',
+    'climbable',
+    'corals',
+    'coral_blocks',
+    'coral_plants',
+    'crimson_stems',
+    'crops',
+    'dark_oak_logs',
+    'doors',
+    'dragon_immune',
+    'enderman_holdable',
+    'fence_gates',
+    'fences',
+    'fire',
+    'flowers',
+    'flower_pots',
+    'gold_ores',
+    'guarded_by_piglins',
+    'hoglin_repellents',
+    'ice',
+    'impermeable',
+    'infiniburn_end',
+    'infiniburn_nether',
+    'infiniburn_overworld',
+    'jungle_logs',
+    'leaves',
+    'logs',
+    'logs_that_burn',
+    'mushroom_grow_block‌',
+    'non_flammable_wood',
+    'oak_logs',
+    'piglin_repellents',
+    'planks',
+    'portals',
+    'pressure_plates',
+    'prevent_mob_spawning_inside',
+    'rails',
+    'sand',
+    'saplings',
+    'shulker_boxes',
+    'signs',
+    'slabs',
+    'small_flowers',
+    'soul_fire_base_blocks',
+    'soul_speed_blocks',
+    'spruce_logs',
+    'stairs',
+    'standing_signs',
+    'stone_bricks',
+    'stone_pressure_plates',
+    'strider_warm_blocks',
+    'tall_flowers',
+    'trapdoors',
+    'underwater_bonemeals',
+    'unstable_bottom_center',
+    'valid_spawn',
+    'walls',
+    'wall_corals',
+    'wall_post_override',
+    'wall_signs',
+    'warped_stems',
+    'wart_blocks',
+    'wither_immune',
+    'wither_summon_base_blocks',
+    'wooden_buttons',
+    'wooden_doors',
+    'wooden_fences',
+    'wooden_pressure_plates',
+    'wooden_slabs',
+    'wooden_stairs',
+    'wooden_trapdoors',
+    'wool',
+].map(tag => ({ value: 'minecraft:' + tag, label: tag }));
+
 export const DECORATORS_OPTIONS = [
     { value: 'chance', label: 'Chance' },
     { value: 'count', label: 'Count' },
@@ -190,11 +278,61 @@ export const DECORATORS_OPTIONS = [
     { value: 'decorated', label: 'Decorated' },
     { value: 'fire', label: 'Fire' },
     { value: 'range', label: 'Range' },
-    { value: 'range_very_biased', label: 'Range very biased' }
+    { value: 'range_very_biased', label: 'Range very biased' },
+    { value: 'square', label: 'Square' }
 ].map(o => {
     o.value = 'minecraft:' + o.value;
     return o;
 });
+
+export const ORE_FEATURE_CONFIG = {
+    target: {
+        tag: "minecraft:base_stone_overworld",
+        predicate_type: "minecraft:tag_match"
+    },
+    state: {
+        Name: "minecraft:gold_ore"
+    },
+    size: 30
+};
+
+export const DECORATED_ORE_FEATURE_CONFIG = {
+    config: {
+        feature: {
+            config: {
+                feature: {
+                    config: {
+                        feature: {
+                            config: ORE_FEATURE_CONFIG,
+                            name: "minecraft:ore"
+                        },
+                        decorator: {
+                            config: {
+                                bottom_offset: 0,
+                                top_offset: 0,
+                                maximum: 32
+                            },
+                            name: "minecraft:range"
+                        }
+                    },
+                    name: "minecraft:decorated"
+                },
+                decorator: {
+                    config: {},
+                    name: "minecraft:square"
+                }
+            },
+            name: "minecraft:decorated"
+        },
+        decorator: {
+            config: {
+                count: 2
+            },
+            name: "minecraft:count"
+        }
+    },
+    name: "minecraft:decorated"
+};
 
 export const TREE_FEATURE_CONFIG = {
     heightmap: "OCEAN_FLOOR",
@@ -354,7 +492,7 @@ export const DECORATOR_DECORATED_DEFAULTS = {
 }
 
 export const DECORATOR_RANGE_DEFAULTS = {
-    bottom_offset: 8,
-    top_offset: 16,
-    maximum: 256
+    bottom_offset: 4,
+    top_offset: 0,
+    maximum: 64
 }
