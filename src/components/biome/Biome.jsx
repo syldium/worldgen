@@ -7,6 +7,7 @@ import { STARTS } from './BiomeDefaults';
 import GenFeatures from './Features';
 import { hexColorToInteger, integerColorToHex } from '../../utils/color';
 import { BiomeEffects } from './BiomeEffects';
+import { useKeyedListOptions } from '../../hooks/context';
 
 export function Biome({data = {}, onSave}) {
 
@@ -148,36 +149,7 @@ function BiomePrecipitation({value = 'rain'}) {
 }
 
 function SurfaceBuilder({value = 'minecraft:grass'}) {
-
-    const options = [
-        { value: 'badlands', label: 'Badlands' },
-        { value: 'basalt_deltas', label: 'Basalt Deltas' },
-        { value: 'crimson_forest', label: 'Crimson forest' },
-        { value: 'deset', label: 'Desert' },
-        { value: 'end', label: 'End' },
-        { value: 'eroded_badlands', label: 'Eroded Badlands' },
-        { value: 'frozen_ocean', label: 'Frozen ocean' },
-        { value: 'full_sand', label: 'Full sand' },
-        { value: 'giant_tree_taiga', label: 'Giant tree taiga' },
-        { value: 'grass', label: 'Grass' },
-        { value: 'gravelly_mountain', label: 'Gravelly mountain' },
-        { value: 'ice_spikes', label: 'Ice spikes' },
-        { value: 'mountain', label: 'Mountain' },
-        { value: 'mycelium', label: 'Mycelium' },
-        { value: 'nether', label: 'Nether' },
-        { value: 'nope', label: 'Nope' },
-        { value: 'ocean_sand', label: 'Ocean sand' },
-        { value: 'shattered_savanna', label: 'Shattered savanna' },
-        { value: 'soul_sand_valley', label: 'Soul sand valley' },
-        { value: 'stone', label: 'Stone' },
-        { value: 'swamp', label: 'Swamp' },
-        { value: 'warped_forest', label: 'Warped forest' },
-        { value: 'wooded_badlands', label: 'Wooded badlands' },
-    ].map(option => {
-        option.value = 'minecraft:' + option.value;
-        return option;
-    });
-
+    const options = useKeyedListOptions('surfaces');
     return <div className="form-group">
         <label htmlFor="surface_builder">Surface builder</label>
         <Select options={options} defaultValue={options.find(o => o.value === value)} name="surface_builder" />

@@ -21,7 +21,7 @@ export function useData() {
 }
 
 /**
- * @param {('biomes'|'blocks'|'features')} category Data category
+ * @param {('biomes'|'blocks'|'features'|'surfaces')} category Data category
  * @returns {{ value: string, label: string }[]} Options list for react-select
  */
 export function useKeyedListOptions(category) {
@@ -29,15 +29,20 @@ export function useKeyedListOptions(category) {
     const options = context.custom[category]
         .map(keyed => ({ value: context.namespace + ':' + keyed.key, label: '(Custom) ' + keyed.key }));
 
-    let hasDisplayName = null;
+    let struct = null;
     context.vanilla[category].forEach(keyed => {
-        if (hasDisplayName === null) {
-            hasDisplayName = keyed.hasOwnProperty('displayName');
+        if (struct === null) {
+            struct = keyed.hasOwnProperty('displayName') ? 1 : (keyed.hasOwnProperty('label') ? 2 : 3);
         }
-        if (hasDisplayName) {
-            options.push({ value: 'minecraft:' + keyed.name, label: keyed.displayName });
-        } else {
-            options.push({ value: 'minecraft:' + keyed, label: keyed });
+        switch(struct) {
+            case 1: // displayName
+                options.push({ value: 'minecraft:' + keyed.name, label: keyed.displayName });
+                return;
+            case 2: // already option
+                options.push(keyed);
+                return;
+            default:
+                options.push({ value: 'minecraft:' + keyed, label: keyed });
         }
     });
     return options;

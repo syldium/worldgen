@@ -38,7 +38,7 @@ export const BlockStateProvider = React.memo(function({block = { type: 'minecraf
     </div>
 });
 
-export const BlockState = React.memo(function({block = {}, children, onChange}) {
+export const BlockState = React.memo(function({block = {}, children, name, onChange}) {
     const context = useContext(DataContext);
     const [data, setData] = useState(block);
 
@@ -48,7 +48,11 @@ export const BlockState = React.memo(function({block = {}, children, onChange}) 
         (context.vanilla.blocks.find(b => 'minecraft:' + b.name === Name) || { states: [] }).states.forEach(state => {
             Properties[state.name] = getStateValue(state);
         })
-        setData({ Name, Properties });
+        if (Object.keys(Properties).length > 0) {
+            setData({ Name, Properties });
+        } else {
+            setData({ Name });
+        }
     }, [context.vanilla.blocks]);
     const handlePropertiesChange = useCallback(function(Properties) {
         setData(data => ({ ...data, Properties }))
@@ -64,13 +68,13 @@ export const BlockState = React.memo(function({block = {}, children, onChange}) 
     }, [options, data.Name]);
 
     return <div className="form-group">
-        <Select options={options} value={selected} onChange={handleTypeChange} />
+        <Select options={options} value={selected} name={name} onChange={handleTypeChange} />
         <BlockStateProperties block={data.Name} Properties={block.Properties} onChange={handlePropertiesChange}>{children}</BlockStateProperties>
     </div>;
 });
 
-const WeightedStateProvider = React.memo(function({entries = [], onChange}) {
-    const [blocks, dispatch] = useCrud(entries);
+export const BlocksList = React.memo(function({list, onChange}) {
+    const [blocks, dispatch] = useCrud(list);
 
     const handleAddClick = useCallback(function(e) {
         e.preventDefault();
@@ -84,7 +88,7 @@ const WeightedStateProvider = React.memo(function({entries = [], onChange}) {
         dispatch({ type: CRUD.REMOVE, payload: blocks[index] });
     }, [blocks, dispatch]);
 
-    useEffect(() => onChange(blocks.map(data => ({ data }))), [blocks, onChange]);
+    useEffect(() => onChange(blocks), [blocks, onChange]);
 
     const values = [];
     blocks.forEach((entry, i) => {
@@ -93,6 +97,15 @@ const WeightedStateProvider = React.memo(function({entries = [], onChange}) {
     });
 
     return <div className="form-group">{values}<Button onClick={handleAddClick}>Add</Button></div>;
+});
+
+const WeightedStateProvider = React.memo(function({entries = [], onChange}) {
+
+    const handleChange = useCallback(function(blocks) {
+        onChange(blocks.map(data => ({ data })));
+    }, [onChange]);
+
+    return <BlocksList list={entries} onChange={handleChange} />;
 });
 
 function BlockStateProperties({block, children, onChange, Properties = {}}) {

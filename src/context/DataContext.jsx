@@ -2,21 +2,25 @@ import React, { useState, useEffect } from 'react';
 import { jsonFetch } from '../utils/fetch';
 import { VANILLA_FEATURES } from '../components/feature/FeatureDefaults';
 import { useData } from '../hooks/context';
+import { VANILLA_SURFACE_BUILDERS } from '../components/surface/SurfaceBuilderDefaults';
 
 export const DataContext = React.createContext({
     vanilla: {
         biomes: [],
         blocks: [],
         entities: [],
-        features: []
+        features: [],
+        surfaces: []
     },
     custom: {
         biomes: [],
         dimensions: [],
         features: [],
+        surfaces: [],
         updateBiomes: (biome) => {},
         updateDimensions: (dimension) => {},
-        updateFeatures: (feature) => {}
+        updateFeatures: (feature) => {},
+        updateSurfacesBuilders: (surface_builder) => {}
     },
     namespace: ''
 });
@@ -29,6 +33,7 @@ export function DataContextProvider({children, namespace}) {
     const [customBiomes, updateBiomes] = useData();
     const [dimensions, updateDimensions] = useData();
     const [features, updateFeatures] = useData();
+    const [surfaces, updateSurfacesBuilders] = useData();
 
     useEffect(() => {
         (async function () {
@@ -42,8 +47,8 @@ export function DataContextProvider({children, namespace}) {
     }, []);
 
     return <DataContext.Provider value={{
-        vanilla: { biomes, blocks, entities, features: VANILLA_FEATURES },
-        custom: { biomes: customBiomes, dimensions, features, updateBiomes, updateDimensions, updateFeatures },
+        vanilla: { biomes, blocks, entities, features: VANILLA_FEATURES, surfaces: VANILLA_SURFACE_BUILDERS },
+        custom: { biomes: customBiomes, dimensions, features, surfaces, updateBiomes, updateDimensions, updateFeatures, updateSurfacesBuilders },
         namespace
     }}>{children}</DataContext.Provider>
 }
