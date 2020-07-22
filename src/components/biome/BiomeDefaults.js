@@ -5,9 +5,12 @@ export const EFFECTS = {
         block_search_extent: 8,
         offset: 2.0
     },
+    sky_color: 7907327
     fog_color: 12638463,
     water_color: 4159204,
-    water_fog_color: 329011
+    water_fog_color: 329011,
+    foliage_color: 10387789,
+    grass_color: 9470285
 }
 
 export const FEATURES = [

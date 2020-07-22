@@ -70,7 +70,6 @@ export function Biome({data = {}, onSave}) {
         <fieldset>
             <legend>Colors</legend>
             <div className="form-row">
-                <div className="form-inline"><label htmlFor="sky_color">Sky color</label> : <input type="color" name="sky_color" required defaultValue={integerColorToHex(data.sky_color || 7907327)} /></div>
                 <BiomeEffects effects={state.effects} onChange={handleEffectsChange} />
             </div>
         </fieldset>
