@@ -5,7 +5,6 @@ import { Button } from '../../ui/Button';
 import { BiomeSpawners } from './BiomeSpawners';
 import { STARTS } from './BiomeDefaults';
 import GenFeatures from './Features';
-import { hexColorToInteger, integerColorToHex } from '../../utils/color';
 import { BiomeEffects } from './BiomeEffects';
 import { useKeyedListOptions } from '../../hooks/context';
 
@@ -52,7 +51,6 @@ export function Biome({data = {}, onSave}) {
               "minecraft:canyon"
             ]
         }; // @todo
-        data.sky_color = hexColorToInteger(formData.sky_color);
         Object.keys(formData).forEach(function(key) {
             if (!isNaN(formData[key])) {
                 data[key] = parseFloat(formData[key]);
