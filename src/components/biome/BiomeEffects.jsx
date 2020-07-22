@@ -21,7 +21,7 @@ export function BiomeEffects({effects = EFFECTS, onChange}) {
 
     return <>
         <div className="form-inline">
-            <label htmlFor="sky_color">Sky color</label> : <input type="color" name="sky_color" required value={integerColorToHex(data.sky_color)} />
+            <label htmlFor="sky_color">Sky color</label> : <input type="color" name="sky_color" required value={integerColorToHex(colors.sky_color)} />
         </div>
         <div className="form-inline">
             <label htmlFor="fog_color">Fog color</label> : <input type="color" id="fog_color" value={integerColorToHex(colors.fog_color)} onChange={handleColorChange} />
