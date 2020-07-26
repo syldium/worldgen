@@ -1,26 +1,10 @@
-import React, { useContext, useReducer, useEffect, useMemo, useState, useCallback } from 'react';
+import React, { useContext, useEffect, useMemo, useState, useCallback } from 'react';
 import Select from 'react-select';
+import { CRUD, useCrud } from "../../hooks/form";
 import { useToggle } from '../../hooks/ui';
 import { Button } from '../../ui/Button';
 import { DataContext } from '../../context/DataContext';
 import { SPAWNERS_AMBIENT, SPAWNERS_CREATURE, SPAWNERS_MONSTER } from './BiomeDefaults';
-
-const ADD_SPAWNER = 'ADD_SPAWNER';
-const UPDATE_SPAWNER = 'UPDATE_SPAWNER';
-const REMOVE_SPAWNER = 'REMOVE_SPAWNER';
-
-function spawnersReducer(state, action) {
-    switch (action.type) {
-        case ADD_SPAWNER:
-            return [...state, action.payload];
-        case UPDATE_SPAWNER:
-          return state.map(spawner => spawner === action.target ? action.payload : spawner);
-        case REMOVE_SPAWNER:
-          return state.filter(spawner => spawner !== action.payload);
-        default:
-          return state;
-    }
-}
 
 export function BiomeSpawners({onChange, data = { ambient: SPAWNERS_AMBIENT, creature: SPAWNERS_CREATURE, misc: [], monster: SPAWNERS_MONSTER, water_ambient: [], water_creature: [] }}) {
 
@@ -52,11 +36,11 @@ function SpawnGroup({children, entities, data = [], group, onChange}) {
     const [visibility, toggle] = useToggle();
     const text = visibility ? 'Less...' : 'More...';
 
-    const [spawners, dispatch] = useReducer(spawnersReducer, data);
+    const [spawners, dispatch] = useCrud(data);
 
     const handleAdd = useCallback(function(e) {
         e.preventDefault();
-        dispatch({ type: ADD_SPAWNER, payload: {
+        dispatch({ type: CRUD.ADD, payload: {
             type: 'minecraft:cow',
             weight: 1,
             minCount: 1,
@@ -65,15 +49,15 @@ function SpawnGroup({children, entities, data = [], group, onChange}) {
         if (!visibility) {
             toggle();
         }
-    }, [toggle, visibility]);
+    }, [dispatch, toggle, visibility]);
 
     const handleChange = useCallback(function(original, spawner) {
-        dispatch({ type: UPDATE_SPAWNER, target: original, payload: spawner });
-    }, []);
+        dispatch({ type: CRUD.UPDATE, target: original, payload: spawner });
+    }, [dispatch]);
 
     const handleRemove = useCallback(function(spawner) {
-        dispatch({ type: REMOVE_SPAWNER, payload: spawner });
-    }, []);
+        dispatch({ type: CRUD.REMOVE, payload: spawner });
+    }, [dispatch]);
 
     useEffect(function() {
         onChange(group, spawners);

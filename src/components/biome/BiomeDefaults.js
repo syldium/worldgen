@@ -8,9 +8,7 @@ export const EFFECTS = {
     sky_color: 7907327,
     fog_color: 12638463,
     water_color: 4159204,
-    water_fog_color: 329011,
-    foliage_color: 10387789,
-    grass_color: 9470285
+    water_fog_color: 329011
 }
 
 export const FEATURES = [

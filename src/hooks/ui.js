@@ -6,8 +6,12 @@ import { useState } from "react";
  */
 export function useToggle(initial = false) {
     const [status, setState] = useState(initial);
-    const toggle = function (e = false) {
-        if (e !== false) {
+    const toggle = function (e = null) {
+        if (typeof e === 'boolean') {
+            setState(e);
+            return;
+        }
+        if (e !== null) {
             e.preventDefault();
         }
         setState(current => !current);
