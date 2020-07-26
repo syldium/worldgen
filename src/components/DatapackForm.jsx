@@ -18,7 +18,10 @@ export function DatapackForm({onCreate}) {
         </div>
         <Button type="submit">Create</Button>
         <div className="mtl">
-            <div className="alert--warning">This generator as well as the in-game functionality is unstable. Use this tool with caution.</div>
+            <div className="alert--warning">
+                This generator as well as the in-game functionality is unstable. Use this tool with caution.<br />
+                Currently built for snapshot 20w30a.
+            </div>
         </div>
     </form>
 }

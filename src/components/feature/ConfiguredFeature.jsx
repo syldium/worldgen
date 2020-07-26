@@ -12,17 +12,18 @@ import { OreFeatureConfig } from './OreFeature';
 export function RawConfiguredFeature({data = DECORATED_TREE_CONFIG, onSave}) {
     const [state, setState] = useState(data);
 
-    const [decorators, feature, name] = useMemo(function() {
+    const [decorators, feature, type] = useMemo(function() {
         const a = findDecorators(state);
-        return [...a, a[1].name];
+        return [...a, a[1].type];
     }, [state]);
 
     const handleSelectChange = useCallback(function(option) {
         setState({...option.default});
     }, []);
     const handleSave = useCallback(function(feature, decorators) {
-        const data = buildDecorated(feature, decorators);
-        data.key = document.getElementById('key').value;
+        const name = document.getElementById('name').value;
+        const data = buildDecorated(feature, decorators, name);
+        data.key = name;
         if (data.key === '') {
             alert('You must specify a key!')
             return;
@@ -44,14 +45,14 @@ export function RawConfiguredFeature({data = DECORATED_TREE_CONFIG, onSave}) {
     return <div>
         <h3>Edit configured feature</h3>
         <div className="form-group">
-            <label htmlFor="key">Identifier</label> : <input type="text" name="key" id="key" required pattern="[a-z0-9._-]+" placeholder="Ex. : prismarine-tree" defaultValue={(data || {}).key} />
+            <label htmlFor="name">Name</label> : <input type="text" name="name" id="name" required pattern="[a-z0-9._-]+" placeholder="Ex. : prismarine-tree" defaultValue={(data || {}).key} />
         </div>
         <div className="form-group">
-            <label htmlFor="name">Type</label>
-            <Select options={options} value={options.find(o => o.value === name)} onChange={handleSelectChange} />
+            <label htmlFor="type">Type</label>
+            <Select options={options} value={options.find(o => o.value === type)} onChange={handleSelectChange} />
         </div>
         <hr />
-        <ConfiguredFeature key={name} feature={feature} deco={decorators} onSave={handleSave} />
+        <ConfiguredFeature key={type} feature={feature} deco={decorators} onSave={handleSave} />
     </div>
 }
 
@@ -72,9 +73,9 @@ function ConfiguredFeature({feature, deco, onSave}) {
     }, [configuration, decorators, onSave]);
 
     return <>
-        {feature.name === 'minecraft:ore' && <OreFeatureConfig configuration={configuration.config} onChange={handleConfigurationChange} />}
-        {feature.name === 'minecraft:random_patch' && <RandomPatchFeature configuration={configuration.config} onChange={handleConfigurationChange} />}
-        {feature.name === 'minecraft:tree' && <TreeFeatureConfig configuration={configuration.config} onChange={handleConfigurationChange} />}
+        {feature.type === 'minecraft:ore' && <OreFeatureConfig configuration={configuration.config} onChange={handleConfigurationChange} />}
+        {feature.type === 'minecraft:random_patch' && <RandomPatchFeature configuration={configuration.config} onChange={handleConfigurationChange} />}
+        {feature.type === 'minecraft:tree' && <TreeFeatureConfig configuration={configuration.config} onChange={handleConfigurationChange} />}
         <DecoratorsList data={decorators} onChange={handleDecoratorsChange} />
         <div className="form-group mlm mbm">
             <Button type="submit" onClick={handleSaveClick}>Save</Button>

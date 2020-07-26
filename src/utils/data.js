@@ -28,7 +28,7 @@ export function hasDuplicatedObjects(objects) {
 
 /**
  * @param {object} feature Unserialized feature
- * @returns {{name: string, config: object}[]} Decorators list
+ * @returns {{type: string, config: object}[]} Decorators list
  */
 export function findDecorators(feature) {
     const decorators = [];
@@ -55,23 +55,27 @@ export function findDecorators(feature) {
 
 /**
  * @param {object} feature 
- * @param {{name: string, config: object}[]} decorators 
+ * @param {{type: string, config: object}[]} decorators 
+ * @param {string} name
  * @returns {object} Decorated feature
  */
-export function buildDecorated(feature, decorators) {
+export function buildDecorated(feature, decorators, name) {
     if (decorators.length < 1) {
         return feature;
     }
 
-    const decorated = { name: 'minecraft:decorated' };
+    const decorated = { type: 'minecraft:decorated' };
     let current = decorated;
     decorators.forEach((decorator, i) => {
-        let f = i === (decorators.length - 1) ? feature : { name: 'minecraft:decorated' };
+        const f = i === (decorators.length - 1) ? feature : { type: 'minecraft:decorated' };
         current.config = {
             feature: f,
             decorator
         };
         current = f;
+        if (i < 1) {
+            f.name = name;
+        }
     });
     return decorated;
 }

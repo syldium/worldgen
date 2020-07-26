@@ -187,8 +187,8 @@ export const TAGS_OPTIONS = [
     'anvil',
     'bamboo_plantable_on',
     'banners',
-    'base_stone_nether‌',
-    'base_stone_overworld‌',
+    'base_stone_nether',
+    'base_stone_overworld',
     'beacon_base_blocks',
     'beds',
     'beehives',
@@ -267,7 +267,7 @@ export const TAGS_OPTIONS = [
     'wooden_slabs',
     'wooden_stairs',
     'wooden_trapdoors',
-    'wool',
+    'wool'
 ].map(tag => ({ value: 'minecraft:' + tag, label: tag }));
 
 export const DECORATORS_OPTIONS = [
@@ -304,7 +304,7 @@ export const DECORATED_ORE_FEATURE_CONFIG = {
                     config: {
                         feature: {
                             config: ORE_FEATURE_CONFIG,
-                            name: "minecraft:ore"
+                            type: "minecraft:ore"
                         },
                         decorator: {
                             config: {
@@ -312,26 +312,26 @@ export const DECORATED_ORE_FEATURE_CONFIG = {
                                 top_offset: 0,
                                 maximum: 32
                             },
-                            name: "minecraft:range"
+                            type: "minecraft:range"
                         }
                     },
-                    name: "minecraft:decorated"
+                    type: "minecraft:decorated"
                 },
                 decorator: {
                     config: {},
-                    name: "minecraft:square"
+                    type: "minecraft:square"
                 }
             },
-            name: "minecraft:decorated"
+            type: "minecraft:decorated"
         },
         decorator: {
             config: {
                 count: 2
             },
-            name: "minecraft:count"
+            type: "minecraft:count"
         }
     },
-    name: "minecraft:decorated"
+    type: "minecraft:decorated"
 };
 
 export const TREE_FEATURE_CONFIG = {
@@ -410,32 +410,32 @@ export const DECORATED_RANDOM_PATCH_CONFIG = {
             config: {
                 feature: {
                     config: RANDOM_PATCH_FEATURE_CONFIG,
-                    name: "minecraft:random_patch"
+                    type: "minecraft:random_patch"
                 },
                 decorator: {
                     config: {
                         outer: {
                             config: {},
-                            name: "minecraft:square"
+                            type: "minecraft:square"
                         },
                         inner: {
                             config: {},
-                            name: "minecraft:heightmap_spread_double"
+                            type: "minecraft:heightmap_spread_double"
                         }
                     },
-                    name: "minecraft:decorated"
+                    type: "minecraft:decorated"
                 }
             },
-            name: "minecraft:decorated"
+            type: "minecraft:decorated"
         },
         decorator: {
             config: {
                 chance: 32
             },
-            name: "minecraft:chance"
+            type: "minecraft:chance"
         }
     },
-    name: "minecraft:decorated"
+    type: "minecraft:decorated"
 };
 
 export const DECORATED_TREE_CONFIG = {
@@ -444,23 +444,23 @@ export const DECORATED_TREE_CONFIG = {
             config: {
                 feature: {
                     config: TREE_FEATURE_CONFIG,
-                    name: "minecraft:tree"
+                    type: "minecraft:tree"
                 },
                 decorator: {
                     config: {
                         outer: {
                             config: {},
-                            name: "minecraft:square"
+                            type: "minecraft:square"
                         },
                         inner: {
                             config: {},
-                            name: "minecraft:heightmap"
+                            type: "minecraft:heightmap"
                         }
                     },
-                    name: "minecraft:decorated"
+                    type: "minecraft:decorated"
                 }
             },
-            name: "minecraft:decorated"
+            type: "minecraft:decorated"
         },
         decorator: {
             config: {
@@ -468,10 +468,10 @@ export const DECORATED_TREE_CONFIG = {
                 extra_chance: 0.1,
                 extra_count: 1
             },
-            name: "minecraft:count_extra"
+            type: "minecraft:count_extra"
         }
     },
-    name: "minecraft:decorated"
+    type: "minecraft:decorated"
 };
 
 export const DECORATOR_EXTRA_COUNT_DEFAULTS = {
@@ -483,11 +483,11 @@ export const DECORATOR_EXTRA_COUNT_DEFAULTS = {
 export const DECORATOR_DECORATED_DEFAULTS = {
     outer: {
         config: {},
-        name: "minecraft:square"
+        type: "minecraft:square"
     },
     inner: {
         config: {},
-        name: "minecraft:heightmap"
+        type: "minecraft:heightmap"
     }
 }
 

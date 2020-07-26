@@ -9,7 +9,7 @@ export const DecoratorsList = React.memo(function({data, onChange}) {
 
     const handleAddClick = useCallback(function(e) {
         e.preventDefault();
-        dispatch({ type: CRUD.ADD, payload: { name: 'minecraft:count', config: { count: 25 } } });
+        dispatch({ type: CRUD.ADD, payload: { type: 'minecraft:count', config: { count: 25 } } });
     }, [dispatch]);
     const handleChange = useCallback(function(state, previous) {
         dispatch({ type: CRUD.UPDATE, target: previous, payload: state });
@@ -22,7 +22,7 @@ export const DecoratorsList = React.memo(function({data, onChange}) {
 
     const values = [];
     decorators.forEach((decorator, i) => {
-        const key = decorator.name + '-' + i;
+        const key = decorator.type + '-' + i;
         values.push(<Decorator data={decorator} key={key} onChange={handleChange}><Button cat="danger" onClick={(e) => handleDeleteClick(e, i)}>Delete</Button></Decorator>);
     });
     return <fieldset>
@@ -32,31 +32,31 @@ export const DecoratorsList = React.memo(function({data, onChange}) {
     </fieldset>
 });
 
-const Decorator = React.memo(function({children, data = { name: 'minecraft:count' }, onChange}) {
+const Decorator = React.memo(function({children, data = { type: 'minecraft:count' }, onChange}) {
     const [decorator, setDecorator] = useState(data);
 
     const handleSelectChange = useCallback(function(option) {
-        setDecorator({ name: option.value });
+        setDecorator({ type: option.value });
     }, []);
     const handleConfigChange = useCallback(function(config) {
-        setDecorator(decorator => ({ name: decorator.name, config }));
+        setDecorator(decorator => ({ type: decorator.type, config }));
     }, []);
     useEffect(() => onChange(decorator, data), [data, decorator, onChange]);
 
     const selected = useMemo(function() {
-        return DECORATORS_OPTIONS.find(o => o.value === decorator.name);
-    }, [decorator.name]);
+        return DECORATORS_OPTIONS.find(o => o.value === decorator.type);
+    }, [decorator.type]);
     return <div>
         <div className="form-group">
-            <label id="decorator-name">Type</label>
-            <Select options={DECORATORS_OPTIONS} value={selected} onChange={handleSelectChange} id="decorator" />
+            <label>Type</label>
+            <Select options={DECORATORS_OPTIONS} value={selected} onChange={handleSelectChange} />
         </div>
         <div className="form-group form-row">
-            {decorator.name === 'minecraft:chance' && <ChanceDecorator config={decorator.config} onChange={handleConfigChange} />}
-            {(decorator.name === 'minecraft:count' || decorator.name === 'minecraft:fire' || decorator.name === 'minecraft:count_multilayer') && <CountDecorator config={decorator.config} onChange={handleConfigChange} />}
-            {decorator.name === 'minecraft:count_extra' && <ExtraCountDecorator config={decorator.config} onChange={handleConfigChange} />}
-            {(decorator.name === 'minecraft:decorated' || decorator.name === 'minecraft:square') && <DecoratedDecorator config={decorator.config} onChange={handleConfigChange} />}
-            {(decorator.name === 'minecraft:range' || decorator.name === 'minecraft:range_very_biased') && <RangeDecorator config={decorator.config} onChange={handleConfigChange} />}
+            {decorator.type === 'minecraft:chance' && <ChanceDecorator config={decorator.config} onChange={handleConfigChange} />}
+            {(decorator.type === 'minecraft:count' || decorator.type === 'minecraft:fire' || decorator.type === 'minecraft:count_multilayer') && <CountDecorator config={decorator.config} onChange={handleConfigChange} />}
+            {decorator.type === 'minecraft:count_extra' && <ExtraCountDecorator config={decorator.config} onChange={handleConfigChange} />}
+            {(decorator.type === 'minecraft:decorated' || decorator.type === 'minecraft:square') && <DecoratedDecorator config={decorator.config} onChange={handleConfigChange} />}
+            {(decorator.type === 'minecraft:range' || decorator.type === 'minecraft:range_very_biased') && <RangeDecorator config={decorator.config} onChange={handleConfigChange} />}
             {children}
         </div>
     </div>;
