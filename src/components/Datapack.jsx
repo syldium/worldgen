@@ -75,7 +75,7 @@ export function Datapack() {
             <MenuItem onClick={handleAddDimensionClick} active={menu.page === 'dimension'}>Dimension</MenuItem>
         </nav></div>
         {menu.page === 'biome' && <Biome onSave={onBiomeSave} data={custom.biomes[menu.index]} />}
-        {menu.page === 'surface' && <SurfaceBuilder onSave={onSurfaceBuilderSave} />}
+        {menu.page === 'surface' && <SurfaceBuilder onSave={onSurfaceBuilderSave} data={custom.surfaces[menu.index]} />}
         {menu.page === 'feature' && <RawConfiguredFeature onSave={onFeatureSave} data={custom.features[menu.index]} />}
         {menu.page === 'dimension' && <Dimension onSave={onDimensionSave} data={custom.dimensions[menu.index]} />}
         {menu.page === 'stats' && <Stats custom={custom} namespace={namespace} editBiome={editBiome} editDimension={editDimension} editFeature={editFeature} editSurface={editSurface} />}
@@ -106,6 +106,13 @@ function Stats({custom, namespace, editBiome, editDimension, editFeature, editSu
         buildZip(namespace, custom);
     }
 
+    const mayGenerate = Object.values(custom).some(content => {
+        if (Array.isArray(content)) {
+            return content.length;
+        }
+        return false;
+    });
+
     return <div className="mtm">
         <h5><strong>{custom.biomes.length}</strong> custom biomes</h5>
         <ul>{custom.biomes.map((biome, i) => <li key={i}><a href="#edit-biome" onClick={(e) => handleBiomeClick(e, i)}>{biome.key}</a></li>)}</ul>
@@ -119,8 +126,6 @@ function Stats({custom, namespace, editBiome, editDimension, editFeature, editSu
         <h5><strong>{custom.surfaces.length}</strong> configured surface builder</h5>
         <ul>{custom.surfaces.map((surface, i) => <li key={i}><a href="#edit-surface" onClick={(e) => handleSurfaceClick(e, i)}>{surface.key}</a></li>)}</ul>
 
-        {custom.dimensions.length > 0 &&
-            <p><Button onClick={handleGenerateClick}>Generate</Button></p>
-        }
+        {mayGenerate && <p><Button onClick={handleGenerateClick}>Generate</Button></p>}
     </div>
 }

@@ -9,8 +9,9 @@ export const DecoratorsList = React.memo(function({data, onChange}) {
 
     const handleAddClick = useCallback(function(e) {
         e.preventDefault();
-        dispatch({ type: CRUD.ADD, payload: { type: 'minecraft:count', config: { count: 25 } } });
-    }, [dispatch]);
+        const type = (DECORATORS_OPTIONS.filter(o => !decorators.some(d => d.type === o.value))[0] || { value: 'minecraft:count' }).value;
+        dispatch({ type: CRUD.ADD, payload: { type }, unshift: true });
+    }, [decorators, dispatch]);
     const handleChange = useCallback(function(state, previous) {
         dispatch({ type: CRUD.UPDATE, target: previous, payload: state });
     }, [dispatch]);

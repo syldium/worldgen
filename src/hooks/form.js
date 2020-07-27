@@ -3,6 +3,9 @@ import { useReducer } from "react";
 function crudReducer(state, action) {
     switch (action.type) {
         case ADD:
+            if (action.unshift) {
+                return [action.payload, ...state];
+            }
             return [...state, action.payload];
         case UPDATE:
           return state.map(element => element === action.target ? action.payload : element);

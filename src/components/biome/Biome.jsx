@@ -111,6 +111,7 @@ function BiomeCategory({category = 'plains'}) {
         { value: 'beach', label: 'Beach' },
         { value: 'desert', label: 'Desert' },
         { value: 'extreme_hills', label: 'Extreme hills' },
+        { value: 'forest', label: 'Forest' },
         { value: 'icy', label: 'Icy' },
         { value: 'jungle', label: 'Jungle' },
         { value: 'mesa', label: 'Mesa' },

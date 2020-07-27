@@ -2,8 +2,9 @@ import React, { useCallback, useState } from 'react';
 import { DimensionType } from './DimensionType';
 import { DimensionGenerator } from './DimensionGenerator';
 import { Button } from '../../ui/Button';
+import { DIMENSION } from './DimensionDefaults';
 
-export function Dimension({data = {}, onSave}) {
+export function Dimension({data = DIMENSION, onSave}) {
 
     const [state, setState] = useState(data);
 
@@ -28,10 +29,10 @@ export function Dimension({data = {}, onSave}) {
         <div className="form-group">
             <label htmlFor="key">Identifier</label> : <input type="text" name="key" id="key" required pattern="[a-z0-9._-]+" placeholder="Ex. : blue-dim" defaultValue={data.key} />
         </div>
-        <DimensionType type={data.type} />
+        <DimensionType type={state.type} />
         <fieldset>
             <legend>Generator configuration</legend>
-            <DimensionGenerator data={data.generator} onChange={handleGeneratorChange} />
+            <DimensionGenerator generator={state.generator} onChange={handleGeneratorChange} />
         </fieldset>
         <div className="form-group mlm mbm">
             <Button type="submit">Save</Button>

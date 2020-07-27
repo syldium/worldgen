@@ -1,11 +1,10 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { BiomeSource } from './BiomeSource';
-import { FIXED_GENERATOR } from './DimensionDefaults';
 import { hashCode } from './../../utils/hash';
 import Select from 'react-select';
 
-export function DimensionGenerator({generator = FIXED_GENERATOR, onChange}) {
-
+export function DimensionGenerator({generator, onChange}) {
+    
     const [data, setData] = useState(generator);
 
     const handleSeedChange = useCallback(function(seed) {
@@ -46,13 +45,13 @@ export function DimensionGenerator({generator = FIXED_GENERATOR, onChange}) {
     </fieldset>;
 }
 
-export const SeedField = React.memo(function({onChange, value = '286956243'}) {
+export const SeedField = React.memo(function({onChange, value = 286956243}) {
     const [text, setText] = useState(value);
 
     const handleChange = function(e) {
         const value = e.target.value;
         setText(value);
-        onChange(isNaN(value) ? hashCode(value) : value);
+        onChange(isNaN(value) ? hashCode(value) : parseInt(value));
     };
 
     return <div className="form-group">
