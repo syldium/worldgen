@@ -6,10 +6,10 @@ import { DataContextProvider } from './context/DataContext';
 import { DatapackForm } from './components/DatapackForm';
 
 function App() {
-    const [namespace, setNamespace] = useState(null);
+    const [data, setData] = useState(null);
 
     return <>
-        {namespace !== null ? <DataContextProvider namespace={namespace}><Datapack /></DataContextProvider> : <DatapackForm onCreate={setNamespace} />}
+        {data !== null ? <DataContextProvider namespace={data[0]} initial={data[1]}><Datapack /></DataContextProvider> : <DatapackForm onCreate={setData} />}
     </>
 }
 

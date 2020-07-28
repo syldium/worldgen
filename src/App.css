@@ -36,7 +36,10 @@ input[type="color"] {
 input[type="number"] {
     width: 100px;
 }
-button[type="submit"] {
+input[type="file"] {
+    display: none;
+}
+:not(.flex-container) > button[type="submit"] {
     padding: 1.25rem 3rem;
 }
 
@@ -89,4 +92,7 @@ input[id|="react-select"] {
 .u-inbl {
     vertical-align: middle;
     min-width: 100px;
+}
+.alert--danger {
+    white-space: pre-line;
 }

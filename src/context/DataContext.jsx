@@ -25,15 +25,15 @@ export const DataContext = React.createContext({
     namespace: ''
 });
 
-export function DataContextProvider({children, namespace}) {
+export function DataContextProvider({children, namespace, initial = {}}) {
     const [biomes, setBiomes] = useState([]);
     const [blocks, setBlocks] = useState([]);
     const [entities, setEntities] = useState([]);
 
-    const [customBiomes, updateBiomes] = useData();
-    const [dimensions, updateDimensions] = useData();
-    const [features, updateFeatures] = useData();
-    const [surfaces, updateSurfacesBuilders] = useData();
+    const [customBiomes, updateBiomes] = useData(initial.biomes);
+    const [dimensions, updateDimensions] = useData(initial.dimensions);
+    const [features, updateFeatures] = useData(initial.features);
+    const [surfaces, updateSurfacesBuilders] = useData(initial.surfaces);
 
     useEffect(() => {
         (async function () {

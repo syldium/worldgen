@@ -20,7 +20,7 @@ export function SurfaceBuilder({data = SURFACE_BUILDER, onSave}) {
         e.preventDefault();
         const data = { config };
         data.key = new FormData(e.target).get('key');
-        data.name = 'minecraft:default';
+        data.type = 'minecraft:default';
         onSave(data);
     }, [config, onSave]);
 

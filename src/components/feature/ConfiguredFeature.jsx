@@ -23,7 +23,6 @@ export function RawConfiguredFeature({data = DECORATED_TREE_CONFIG, onSave}) {
     const handleSave = useCallback(function(feature, decorators) {
         const name = document.getElementById('name').value;
         const data = buildDecorated(feature, decorators, name);
-        data.key = name;
         if (data.key === '') {
             alert('You must specify a key!')
             return;

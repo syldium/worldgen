@@ -1,11 +1,11 @@
 export function objectsEqual(a, b) {
-    return Object.keys(a).length === Object.keys(b).length 
+    return Object.keys(a).length === Object.keys(b).length
         && Object.keys(a).every(p => a[p] === b[p]);
 }
 
 export function getStateValue(state, properties = {}) {
     const actual = properties[state.name];
-    switch(state.type) {
+    switch (state.type) {
         case 'bool':
             return actual === 'true' ? 'true' : 'false';
         case 'int':
@@ -32,7 +32,7 @@ export function hasDuplicatedObjects(objects) {
  */
 export function findDecorators(feature) {
     const decorators = [];
-    
+
     let f = null;
     (function find(obj) {
         for (const key of Object.keys(obj)) {
@@ -45,7 +45,7 @@ export function findDecorators(feature) {
                 find(obj[key]);
             }
         }
-    } (feature));
+    }(feature));
 
     if (f === null) {
         f = {};
@@ -64,7 +64,7 @@ export function buildDecorated(feature, decorators, name) {
         return feature;
     }
 
-    const decorated = { type: 'minecraft:decorated' };
+    const decorated = { type: 'minecraft:decorated', key: name };
     let current = decorated;
     decorators.forEach((decorator, i) => {
         const f = i === (decorators.length - 1) ? feature : { type: 'minecraft:decorated' };
@@ -78,4 +78,60 @@ export function buildDecorated(feature, decorators, name) {
         }
     });
     return decorated;
+}
+
+/**
+ * Rename object keys.
+ * 
+ * @param {object} obj 
+ * @param {object} map 
+ * @returns {object}
+ */
+function refitKeys(obj, map) {
+    const build = {};
+    for (const key in obj) {
+        const destKey = map[key] || key;
+
+        let value = obj[key];
+        if (typeof value === 'object') {
+            value = refitKeys(value, map);
+        }
+        build[destKey] = value;
+    }
+    return build;
+}
+
+/**
+ * @param {string} group 
+ * @param {object} data 
+ * @returns {object}
+ */
+export function dataUpper(group, data) {
+    switch (group) {
+        case 'biomes':
+            // 20w30a: sky_color into effects
+            if (data.hasOwnProperty('sky_color')) {
+                data.effects.sky_color = data.sky_color;
+            }
+            return data;
+        case 'features':
+            // 20w30a: name -> type
+            const [decorators, feature] = findDecorators(data);
+            if (!feature.hasOwnProperty('type')) {
+                feature.type = feature.name;
+                delete feature.name;
+                return buildDecorated(
+                    feature,
+                    decorators.map(decorator => refitKeys(decorator, { name: 'type' })),
+                    data.key
+                );
+            }
+            return data;
+        default:
+            // 20w30a: name -> type
+            if (data.hasOwnProperty('name') && !data.hasOwnProperty('type')) {
+                data.type = data.name;
+            }
+            return data;
+    }
 }

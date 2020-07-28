@@ -2,10 +2,11 @@ import { useState, useContext } from "react";
 import { DataContext } from "../context/DataContext";
 
 /**
+ * @param {object[]} initial
  * @returns {[object[], function(object): void]} 
  */
-export function useData() {
-    const [data, setData] = useState([]);
+export function useData(initial = []) {
+    const [data, setData] = useState(initial);
     const updateData = function(object) {
         setData(stored => {
             const i = stored.findIndex(({key}) => key === object.key);
