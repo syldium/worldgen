@@ -1,7 +1,8 @@
 import React, { useCallback, useState } from 'react';
 import { BlockState } from '../state/BlockState';
 import { Button } from '../../ui/Button';
-import { SURFACE_BUILDER } from './SurfaceBuilderDefaults';
+import { SURFACE_TYPES_OPTIONS, SURFACE_BUILDER } from './SurfaceBuilderDefaults';
+import Select from 'react-select';
 
 export function SurfaceBuilder({data = SURFACE_BUILDER, onSave}) {
     const [config, setConfig] = useState(data.config);
@@ -18,16 +19,22 @@ export function SurfaceBuilder({data = SURFACE_BUILDER, onSave}) {
 
     const handleSubmit = useCallback(function(e) {
         e.preventDefault();
-        const data = { config };
-        data.key = new FormData(e.target).get('key');
-        data.type = 'minecraft:default';
-        onSave(data);
+        const formData = new FormData(e.target);
+        onSave({
+            config,
+            type: formData.get('type'),
+            key: formData.get('key')
+        });
     }, [config, onSave]);
 
     return <form onSubmit={handleSubmit}>
         <h3>Edit surface builder</h3>
         <div className="form-group">
             <label htmlFor="key">Identifier</label> : <input type="text" name="key" id="key" required pattern="[a-z0-9._-]+" placeholder="Ex. : blackstone" defaultValue={data.key} />
+        </div>
+        <div className="form-group">
+            <label htmlFor="type">Type</label> : <Select options={SURFACE_TYPES_OPTIONS} defaultValue={SURFACE_TYPES_OPTIONS.find(o => o.value === data.type)} name="type" />
+            <p><small className="text-muted">The builder type defines the shape of the surface. For example, the <em>swamp</em> type will create puddles while the <em>badlands</em> types will create small rocky peaks; the <em>nether</em> types will add a mix of nether blocks and expose more of the underneath material.</small></p>
         </div>
         <div className="form-group">
             <label htmlFor="top_material">Top material</label> : <BlockState block={config.top_material} name="top_material" onChange={handleTopMaterialChange} />
