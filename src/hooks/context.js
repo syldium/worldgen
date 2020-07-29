@@ -1,4 +1,4 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useMemo } from "react";
 import { DataContext } from "../context/DataContext";
 
 /**
@@ -27,24 +27,26 @@ export function useData(initial = []) {
  */
 export function useKeyedListOptions(category) {
     const context = useContext(DataContext);
-    const options = context.custom[category]
-        .map(keyed => ({ value: context.namespace + ':' + keyed.key, label: '(Custom) ' + keyed.key }));
+    return useMemo(function() {
+        const options = context.custom[category]
+            .map(keyed => ({ value: context.namespace + ':' + keyed.key, label: '(Custom) ' + keyed.key }));
 
-    let struct = null;
-    context.vanilla[category].forEach(keyed => {
-        if (struct === null) {
-            struct = keyed.hasOwnProperty('displayName') ? 1 : (keyed.hasOwnProperty('label') ? 2 : 3);
-        }
-        switch(struct) {
-            case 1: // displayName
-                options.push({ value: 'minecraft:' + keyed.name, label: keyed.displayName });
-                return;
-            case 2: // already option
-                options.push(keyed);
-                return;
-            default:
-                options.push({ value: 'minecraft:' + keyed, label: keyed });
-        }
-    });
-    return options;
+        let struct = null;
+        context.vanilla[category].forEach(keyed => {
+            if (struct === null) {
+                struct = keyed.hasOwnProperty('displayName') ? 1 : (keyed.hasOwnProperty('label') ? 2 : 3);
+            }
+            switch(struct) {
+                case 1: // displayName
+                    options.push({ value: 'minecraft:' + keyed.name, label: keyed.displayName });
+                    return;
+                case 2: // already option
+                    options.push(keyed);
+                    return;
+                default:
+                    options.push({ value: 'minecraft:' + keyed, label: keyed });
+            }
+        });
+        return options;
+    }, [category, context.custom, context.namespace, context.vanilla]);
 }

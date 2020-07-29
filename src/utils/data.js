@@ -1,6 +1,21 @@
+import { MULTI_NOISE_BIOME_SOURCE } from './../components/dimension/DimensionDefaults';
+
+/**
+ * @param {object} a 
+ * @param {object} b 
+ * @returns {boolean}
+ */
 export function objectsEqual(a, b) {
     return Object.keys(a).length === Object.keys(b).length
         && Object.keys(a).every(p => a[p] === b[p]);
+}
+
+/**
+ * @param {string} str 
+ * @returns {string}
+ */
+export function capitalize(str) {
+    return str[0].toUpperCase() + str.substr(1);
 }
 
 export function getStateValue(state, properties = {}) {
@@ -125,6 +140,13 @@ export function dataUpper(group, data) {
                     decorators.map(decorator => refitKeys(decorator, { name: 'type' })),
                     data.key
                 );
+            }
+            return data;
+        case 'dimensions':
+            // 20w30a: multi_noise: firstOctave and amplitudes parameters
+            const source = data.generator.biome_source;
+            if (source.type === 'minecraft:multi_noise' && !source.hasOwnProperty('altitude_noise')) {
+                data.generator.biome_source = { ...MULTI_NOISE_BIOME_SOURCE, ...source };
             }
             return data;
         default:
