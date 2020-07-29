@@ -2,8 +2,12 @@ import JSZip from "jszip";
 import { saveAs } from "file-saver";
 import { dataUpper } from "./data";
 
-const DIMENSIONS_PATH = /^data\/minecraft\/(dimension)\/([a-z0-9._-]+)\/([a-z0-9._-]+).json$/;
-const WORLDGEN_PATH = /^data\/minecraft\/worldgen\/(biome|configured_feature|configured_surface_builder)\/([a-z0-9._-]+)\/([a-z0-9._-]+).json$/;
+const DIMENSIONS_PATH = /^data\/([a-z0-9._-]+)\/(dimension)\/([a-z0-9._-]+).json$/;
+const WORLDGEN_PATH = /^data\/([a-z0-9._-]+)\/worldgen\/(biome|configured_feature|configured_surface_builder)\/([a-z0-9._-]+).json$/;
+
+const LEGACY_PATH_DETECTION = /^data\/minecraft\/(dimension|worldgen)\/?\w*\/([a-z0-9._-]+)\/([a-z0-9._-]+).json$/;
+const LEGACY_DIMENSIONS_PATH = /^data\/minecraft\/(dimension)\/([a-z0-9._-]+)\/([a-z0-9._-]+).json$/;
+const LEGACY_WORLDGEN_PATH = /^data\/minecraft\/worldgen\/(biome|configured_feature|configured_surface_builder)\/([a-z0-9._-]+)\/([a-z0-9._-]+).json$/;
 
 /**
  * Build zip in blob.
@@ -14,10 +18,10 @@ const WORLDGEN_PATH = /^data\/minecraft\/worldgen\/(biome|configured_feature|con
 export function buildZip(namespace, custom) {
     const zip = new JSZip();
     zip.file('pack.mcmeta', JSON.stringify({ pack: { pack_format: 5, description: 'Custom dimension' } }, null, 4));
-    writeFile(zip, `data/minecraft/dimension/${namespace}`, custom.dimensions);
-    writeFile(zip, `data/minecraft/worldgen/biome/${namespace}`, custom.biomes);
-    writeFile(zip, `data/minecraft/worldgen/configured_feature/${namespace}`, custom.features);
-    writeFile(zip, `data/minecraft/worldgen/configured_surface_builder/${namespace}`, custom.surfaces);
+    writeFile(zip, `data/${namespace}/dimension`, custom.dimensions);
+    writeFile(zip, `data/${namespace}/worldgen/biome`, custom.biomes);
+    writeFile(zip, `data/${namespace}/worldgen/configured_feature`, custom.features);
+    writeFile(zip, `data/${namespace}/worldgen/configured_surface_builder`, custom.surfaces);
     zip.generateAsync({ type: 'blob' })
         .then(function(content) {
             saveAs(content, 'generated_datapack.zip');
@@ -66,8 +70,12 @@ function extractDatapack(zip) {
                 mcmeta = true;
                 return;
             }
-            const regex = path.includes('data/minecraft/dimension/') ? DIMENSIONS_PATH : WORLDGEN_PATH;
-            promises.push(parseFile(regex, entry.name, zip.file(entry.name).async('text')));
+            const legacy = entry.name.match(LEGACY_PATH_DETECTION);
+            let regex = DIMENSIONS_PATH.exec(entry.name) ? DIMENSIONS_PATH : WORLDGEN_PATH;
+            if (legacy) {
+                regex = path.includes('data/minecraft/dimension/') ? LEGACY_DIMENSIONS_PATH : LEGACY_WORLDGEN_PATH;
+            }
+            promises.push(parseFile(legacy, regex, entry.name, zip.file(entry.name).async('text')));
         });
 
         if (!mcmeta) {
@@ -102,12 +110,13 @@ function getFolderType(folder) {
 /**
  * Parse json file when it will be ready.
  * 
+ * @param {boolean} legacy
  * @param {RegExp} pathRegex 
  * @param {string} filename 
  * @param {Promise<string>} contentPromise 
  * @returns {Promise<{namespace: string, data: object, type: string}>}
  */
-async function parseFile(pathRegex, filename, contentPromise) {
+async function parseFile(legacy, pathRegex, filename, contentPromise) {
     const d = pathRegex.exec(filename);
     if (d === null) {
         return new Promise((success) => success(null)); // Skip file
@@ -119,9 +128,9 @@ async function parseFile(pathRegex, filename, contentPromise) {
             obj.key = d[3];
             const data = dataUpper(getFolderType(d[1]), obj);
             resolve({
-                namespace: d[2],
+                namespace: d[legacy ? 2 : 1],
                 data,
-                type: getFolderType(d[1])
+                type: getFolderType(d[legacy ? 1 : 2])
             });
         }).catch(e => {
             if (e.name !== 'SyntaxError') {

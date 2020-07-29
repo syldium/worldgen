@@ -39,7 +39,7 @@ export function DatapackForm({onCreate}) {
         <div className="mtl">
             <div className="alert--warning">
                 This generator as well as the in-game functionality is unstable. Use this tool with caution.<br />
-                Currently built for snapshot 20w30a.
+                Currently built for pre-release 1. Datapacks created in snapshots will be converted to work in this pre-release.
             </div>
         </div>
     </form>

@@ -32,11 +32,10 @@ export default function GenFeatures({ onChange, features = FEATURES }) {
 
 function GenFeaturesLevel({ onChange, priority, value }) {
     const options = useKeyedListOptions('features');
-    const features = value;
 
     const handleChange = useCallback(function(selectedOptions) {
         onChange(priority, selectedOptions === null ? [] : selectedOptions.map(option => option.value));
     }, [onChange, priority]);
 
-    return <Select isMulti options={options} onChange={handleChange} defaultValue={options.filter(o => features.includes(o.value))} />;
+    return <Select isMulti options={options} onChange={handleChange} defaultValue={options.filter(o => value.includes(o.value))} />;
 }
