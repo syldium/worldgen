@@ -2,6 +2,7 @@ import React, { useState, useCallback, useEffect } from 'react';
 import { BiomeSource } from './BiomeSource';
 import { hashCode } from './../../utils/hash';
 import Select from 'react-select';
+import { useKeyedListOptions } from '../../hooks/context';
 
 export function DimensionGenerator({generator, onChange}) {
     
@@ -64,14 +65,7 @@ const Settings = React.memo(function({onChange, settings = 'minecraft:overworld'
         onChange(option.value);
     }, [onChange]);
 
-    const options = [
-        { value: 'minecraft:overworld', label: 'Overworld' },
-        { value: 'minecraft:nether', label: 'Nether' },
-        { value: 'minecraft:end', label: 'End' },
-        { value: 'minecraft:amplified', label: 'Amplified' },
-        { value: 'minecraft:caves', label: 'Caves' },
-        { value: 'minecraft:floating_islands', label: 'Floating islands' }
-    ];
+    const options = useKeyedListOptions('noises');
 
     return <div className="form-group">
         <label htmlFor="settings">Settings</label><Select options={options} defaultValue={options.find(o => o.value === settings)} onChange={handleChange} />

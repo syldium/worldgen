@@ -12,6 +12,13 @@ export const DIMENSION = {
     type: "minecraft:overworld"
 }
 
+export const VANILLA_DIMENSION_TYPES = [
+    { value: 'minecraft:overworld', label: 'Overworld' },
+    { value: 'minecraft:overworld_cave', label: 'Overworld caves' },
+    { value: 'minecraft:the_nether', label: 'The Nether' },
+    { value: 'minecraft:the_end', label: 'The End' },
+]
+
 export const MULTI_NOISE_BIOME_SOURCE = {
     type: 'minecraft:multi_noise',
     seed: 286956243,

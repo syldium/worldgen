@@ -7,6 +7,7 @@ import { DataContext } from './../context/DataContext';
 import { RawConfiguredFeature } from './feature/ConfiguredFeature';
 import { buildZip } from '../utils/zip';
 import { SurfaceBuilder } from './surface/SurfaceBuilder';
+import { NoiseSettings } from './noise/NoiseSettings';
 
 export function Datapack() {
     const context = useContext(DataContext);
@@ -30,6 +31,10 @@ export function Datapack() {
         e.preventDefault();
         setMenu({page: 'feature'});
     }, []);
+    const handleAddNoiseClick = useCallback(function(e) {
+        e.preventDefault();
+        setMenu({page: 'noise'});
+    }, []);
     const handleAddSurfaceBuilderClick = useCallback(function(e) {
         e.preventDefault();
         setMenu({page: 'surface'});
@@ -47,6 +52,10 @@ export function Datapack() {
         custom.updateFeatures(feature);
         setMenu({page: 'stats'});
     }, [custom]);
+    const onNoiseSave = useCallback(function(noise) {
+        custom.updateNoises(noise);
+        setMenu({page: 'stats'});
+    }, [custom]);
     const onSurfaceBuilderSave = useCallback(function(surface_builder) {
         custom.updateSurfacesBuilders(surface_builder);
         setMenu({page: 'stats'});
@@ -61,6 +70,9 @@ export function Datapack() {
     const editFeature = useCallback(function(index) {
         setMenu({page: 'feature', index});
     }, []);
+    const editNoise = useCallback(function(index) {
+        setMenu({page: 'noise', index});
+    }, []);
     const editSurface = useCallback(function(index) {
         setMenu({page: 'surface', index});
     }, []);
@@ -73,16 +85,18 @@ export function Datapack() {
             <MenuItem onClick={handleAddSurfaceBuilderClick} active={menu.page === 'surface'}>Surfaces builder</MenuItem>
             <MenuItem onClick={handleAddFeatureClick} active={menu.page === 'feature'}>Feature</MenuItem>
             <MenuItem onClick={handleAddDimensionClick} active={menu.page === 'dimension'}>Dimension</MenuItem>
+            <MenuItem onClick={handleAddNoiseClick} active={menu.page === 'noise'}>Noise</MenuItem>
         </nav></div>
         {menu.page === 'biome' && <Biome onSave={onBiomeSave} data={custom.biomes[menu.index]} />}
         {menu.page === 'surface' && <SurfaceBuilder onSave={onSurfaceBuilderSave} data={custom.surfaces[menu.index]} />}
         {menu.page === 'feature' && <RawConfiguredFeature onSave={onFeatureSave} data={custom.features[menu.index]} />}
+        {menu.page === 'noise' && <NoiseSettings onSave={onNoiseSave} data={custom.noises[menu.index]} />}
         {menu.page === 'dimension' && <Dimension onSave={onDimensionSave} data={custom.dimensions[menu.index]} />}
-        {menu.page === 'stats' && <Stats custom={custom} namespace={namespace} editBiome={editBiome} editDimension={editDimension} editFeature={editFeature} editSurface={editSurface} />}
+        {menu.page === 'stats' && <Stats custom={custom} namespace={namespace} editBiome={editBiome} editDimension={editDimension} editFeature={editFeature} editNoise={editNoise} editSurface={editSurface} />}
     </div>
 }
 
-function Stats({custom, namespace, editBiome, editDimension, editFeature, editSurface}) {
+function Stats({custom, namespace, editBiome, editDimension, editFeature, editNoise, editSurface}) {
 
     const handleBiomeClick = function(e, index) {
         e.preventDefault();
@@ -95,6 +109,10 @@ function Stats({custom, namespace, editBiome, editDimension, editFeature, editSu
     const handleFeatureClick = function(e, index) {
         e.preventDefault();
         editFeature(index);
+    }
+    const handleNoiseClick = function(e, index) {
+        e.preventDefault();
+        editNoise(index);
     }
     const handleSurfaceClick = function(e, index) {
         e.preventDefault();
@@ -114,18 +132,20 @@ function Stats({custom, namespace, editBiome, editDimension, editFeature, editSu
     });
 
     return <div className="mtm">
-        <h5><strong>{custom.biomes.length}</strong> custom biomes</h5>
-        <ul>{custom.biomes.map((biome, i) => <li key={i}><a href="#edit-biome" onClick={(e) => handleBiomeClick(e, i)}>{biome.key}</a></li>)}</ul>
-        
-        <h5><strong>{custom.dimensions.length}</strong> custom dimensions</h5>
-        <ul>{custom.dimensions.map((dim, i) => <li key={i}><a href="#edit-dimension" onClick={(e) => handleDimensionClick(e, i)}>{dim.key}</a></li>)}</ul>
-        
-        <h5><strong>{custom.features.length}</strong> configured features</h5>
-        <ul>{custom.features.map((feature, i) => <li key={i}><a href="#edit-feature" onClick={(e) => handleFeatureClick(e, i)}>{feature.key}</a></li>)}</ul>
-
-        <h5><strong>{custom.surfaces.length}</strong> configured surface builder</h5>
-        <ul>{custom.surfaces.map((surface, i) => <li key={i}><a href="#edit-surface" onClick={(e) => handleSurfaceClick(e, i)}>{surface.key}</a></li>)}</ul>
-
+        <StatsTitle data={custom.biomes} onClick={handleBiomeClick}>custom biome</StatsTitle>
+        <StatsTitle data={custom.dimensions} onClick={handleDimensionClick}>custom dimension</StatsTitle>
+        <StatsTitle data={custom.features} onClick={handleFeatureClick}>configured feature</StatsTitle>
+        <StatsTitle data={custom.surfaces} onClick={handleSurfaceClick}>configured surface builder</StatsTitle>
+        <StatsTitle data={custom.noises} onClick={handleNoiseClick}>custom noise</StatsTitle>
         {mayGenerate && <p><Button onClick={handleGenerateClick}>Generate</Button></p>}
     </div>
+}
+
+function StatsTitle({ children, data, onClick }) {
+    return <>
+        <h5><strong>{data.length}</strong> {children}{data.length > 1 && 's'}</h5>
+        <ul>
+            {data.map((d, i) => <li key={i}><a href="#edit" onClick={(e) => onClick(e, i)}>{d.key}</a></li>)}
+        </ul>
+    </>
 }

@@ -57,7 +57,11 @@ export const BlockState = React.memo(function({block = {}, children, name, onCha
     const handlePropertiesChange = useCallback(function(Properties) {
         setData(data => ({ ...data, Properties }))
     }, []);
-    useEffect(() => onChange(data, block), [onChange, data, block]);
+    useEffect(() => {
+        if (data !== block) {
+            onChange(data, block);
+        }
+    }, [onChange, data, block]);
 
     const options = useMemo(function() {
         return context.vanilla.blocks.map(block => ({ value: 'minecraft:' + block.name, label: block.displayName }));

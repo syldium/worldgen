@@ -39,6 +39,17 @@ export function useNumber(initial = 0) {
     return [n, setNumber];
 }
 
+export function useValueChange(changeCallback, obj) {
+    return useCallback(function(e) {
+        if (e.target.type === 'checkbox') {
+            changeCallback({ ...obj, [e.target.dataset.name || e.target.id || e.target.name]: e.target.checked });
+            return;
+        }
+        const value = isNaN(e.target.value) ? e.target.value : parseFloat(e.target.value);
+        changeCallback({ ...obj, [e.target.dataset.name || e.target.id || e.target.name]: value });
+    }, [changeCallback, obj]);
+}
+
 /**
  * Fast way to provide a list of options for react-select
  * and store selection as string (list).

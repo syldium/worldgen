@@ -1,13 +1,9 @@
 import React from 'react';
 import Select from 'react-select';
+import { useKeyedListOptions } from '../../hooks/context';
 
 export function DimensionType({type = 'minecraft:overworld'}) {
-    const options = [
-        { value: 'minecraft:overworld', label: 'Overworld' },
-        { value: 'minecraft:overworld_cave', label: 'Overworld caves' },
-        { value: 'minecraft:the_nether', label: 'The Nether' },
-        { value: 'minecraft:the_end', label: 'The End' },
-    ];
+    const options = useKeyedListOptions('dimension_types');
 
     return <div className="form-group">
         <label htmlFor="dimension-type">Dimension type</label>

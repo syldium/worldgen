@@ -2,12 +2,12 @@ import JSZip from "jszip";
 import { saveAs } from "file-saver";
 import { dataUpper } from "./data";
 
-const DIMENSIONS_PATH = /^data\/([a-z0-9._-]+)\/(dimension)\/([a-z0-9._-]+).json$/;
-const WORLDGEN_PATH = /^data\/([a-z0-9._-]+)\/worldgen\/(biome|configured_feature|configured_surface_builder)\/([a-z0-9._-]+).json$/;
+const DIMENSIONS_PATH = /^data\/([a-z0-9._-]+)\/(dimension|dimension_type)\/([a-z0-9._-]+).json$/;
+const WORLDGEN_PATH = /^data\/([a-z0-9._-]+)\/worldgen\/(biome|configured_feature|configured_surface_builder|noise_settings)\/([a-z0-9._-]+).json$/;
 
-const LEGACY_PATH_DETECTION = /^data\/minecraft\/(dimension|worldgen)\/?\w*\/([a-z0-9._-]+)\/([a-z0-9._-]+).json$/;
-const LEGACY_DIMENSIONS_PATH = /^data\/minecraft\/(dimension)\/([a-z0-9._-]+)\/([a-z0-9._-]+).json$/;
-const LEGACY_WORLDGEN_PATH = /^data\/minecraft\/worldgen\/(biome|configured_feature|configured_surface_builder)\/([a-z0-9._-]+)\/([a-z0-9._-]+).json$/;
+const LEGACY_PATH_DETECTION = /^data\/minecraft\/(dimension|dimension_type|worldgen)\/?\w*\/([a-z0-9._-]+)\/([a-z0-9._-]+).json$/;
+const LEGACY_DIMENSIONS_PATH = /^data\/minecraft\/(dimension|dimension_type)\/([a-z0-9._-]+)\/([a-z0-9._-]+).json$/;
+const LEGACY_WORLDGEN_PATH = /^data\/minecraft\/worldgen\/(biome|configured_feature|configured_surface_builder|noise_settings)\/([a-z0-9._-]+)\/([a-z0-9._-]+).json$/;
 
 /**
  * Build zip in blob.
@@ -19,9 +19,11 @@ export function buildZip(namespace, custom) {
     const zip = new JSZip();
     zip.file('pack.mcmeta', JSON.stringify({ pack: { pack_format: 5, description: 'Custom dimension' } }, null, 4));
     writeFile(zip, `data/${namespace}/dimension`, custom.dimensions);
+    writeFile(zip, `data/${namespace}/dimension_type`, custom.dimension_types);
     writeFile(zip, `data/${namespace}/worldgen/biome`, custom.biomes);
     writeFile(zip, `data/${namespace}/worldgen/configured_feature`, custom.features);
     writeFile(zip, `data/${namespace}/worldgen/configured_surface_builder`, custom.surfaces);
+    writeFile(zip, `data/${namespace}/worldgen/noise_settings`, custom.noises);
     zip.generateAsync({ type: 'blob' })
         .then(function(content) {
             saveAs(content, 'generated_datapack.zip');
@@ -56,7 +58,9 @@ function extractDatapack(zip) {
     const data = {
         biomes: [],
         dimensions: [],
+        dimension_types: [],
         features: [],
+        noises: [],
         surfaces: []
     };
 
@@ -71,9 +75,9 @@ function extractDatapack(zip) {
                 return;
             }
             const legacy = entry.name.match(LEGACY_PATH_DETECTION);
-            let regex = DIMENSIONS_PATH.exec(entry.name) ? DIMENSIONS_PATH : WORLDGEN_PATH;
+            let regex = entry.name.match(DIMENSIONS_PATH) ? DIMENSIONS_PATH : WORLDGEN_PATH;
             if (legacy) {
-                regex = path.includes('data/minecraft/dimension/') ? LEGACY_DIMENSIONS_PATH : LEGACY_WORLDGEN_PATH;
+                regex = entry.name.match(LEGACY_DIMENSIONS_PATH) ? LEGACY_DIMENSIONS_PATH : LEGACY_WORLDGEN_PATH;
             }
             promises.push(parseFile(legacy, regex, entry.name, zip.file(entry.name).async('text')));
         });
@@ -102,6 +106,8 @@ function getFolderType(folder) {
             return 'features';
         case 'configured_surface_builder':
             return 'surfaces';
+        case 'noise_settings':
+            return 'noises';
         default:
             return folder + 's';
     }

@@ -22,7 +22,7 @@ export function useData(initial = []) {
 }
 
 /**
- * @param {('biomes'|'blocks'|'features'|'surfaces')} category Data category
+ * @param {('biomes'|'dimension_types'|'features'|'noises'|'surfaces')} category Data category
  * @returns {{ value: string, label: string }[]} Options list for react-select
  */
 export function useKeyedListOptions(category) {
