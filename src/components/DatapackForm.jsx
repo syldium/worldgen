@@ -14,7 +14,9 @@ export function DatapackForm({onCreate}) {
     };
 
     const handleFile = function(e) {
-        const file = e.target.files[0];
+        e.preventDefault();
+        e.stopPropagation();
+        const file = (e.dataTransfer || e.target).files[0];
         readZip(file)
             .then(onCreate)
             .catch(error => {
@@ -22,8 +24,12 @@ export function DatapackForm({onCreate}) {
                 setError(error.message);
             });
     };
+    const handleDrag = function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+    };
 
-    return <form onSubmit={handleCreate}>
+    return <form onSubmit={handleCreate} onDragStart={handleDrag} onDragEnter={handleDrag} onDragOver={handleDrag} onDrop={handleFile}>
         <h2>Create a new dimension datapack</h2>
         <div className="form-group">
             <label htmlFor="namespace">Namespace</label> : <input type="text" name="namespace" id="namespace" required pattern="[a-z0-9._-]+" className="form-control" aria-describedby="namespaceHelp" />
