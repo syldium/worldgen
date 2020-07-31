@@ -1,5 +1,6 @@
-import { useReducer, useState, useCallback, useEffect } from "react";
+import { useReducer, useState, useCallback, useEffect, useContext, useMemo } from "react";
 import { useKeyedListOptions } from "./context";
+import { DataContext } from "../context/DataContext";
 
 function crudReducer(state, action) {
     switch (action.type) {
@@ -19,6 +20,37 @@ function crudReducer(state, action) {
 
 export function useCrud(data = []) {
     return useReducer(crudReducer, data);
+}
+
+/**
+ * @param {object[]} [data] 
+ * @param {object|function (object[]): object} [initial] 
+ * @returns {[object[], function (SyntheticEvent): void, function (object, object): void, function (SyntheticEvent, number): void]}
+ */
+export function useCrudPreset(data = [], initial = {}) {
+    const [entities, dispatch] = useCrud(data);
+
+    const add = useCallback(function(e) {
+        e.preventDefault();
+        const n = typeof initial === 'function' ? initial(entities) : { ...initial };
+        dispatch({ type: CRUD.ADD, payload: n });
+    }, [dispatch, entities, initial]);
+    const update = useCallback(function(state, previous) {
+        dispatch({ type: CRUD.UPDATE, target: previous, payload: state });
+    }, [dispatch]);
+    const remove = useCallback(function(e, index) {
+        e.preventDefault();
+        dispatch({ type: CRUD.REMOVE, payload: entities[index] });
+    }, [dispatch, entities]);
+
+    return [entities, add, update, remove];
+}
+
+export function useBlocksOptions(mapped = true) {
+    const blocks = useContext(DataContext).vanilla.blocks;
+    return useMemo(function() {
+        return mapped ? blocks.map(block => ({ value: 'minecraft:' + block.name, label: block.displayName })): blocks;
+    }, [blocks, mapped]);
 }
 
 /**

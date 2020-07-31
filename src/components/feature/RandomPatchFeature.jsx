@@ -1,7 +1,8 @@
 import React, { useCallback, useState } from 'react';
-import { BlocksList, BlockStateProvider } from '../state/BlockState';
+import { BlocksList } from '../state/BlockState';
 import { RANDOM_PATCH_FEATURE_CONFIG } from './FeatureDefaults';
 import { useJsonEffect } from '../../hooks/form';
+import { BlockStateProvider } from '../state/BlockStateProvider';
 
 export function RandomPatchFeature({configuration = RANDOM_PATCH_FEATURE_CONFIG, onChange}) {
 

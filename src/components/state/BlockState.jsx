@@ -1,159 +1,125 @@
-import React, { useState, useCallback, useContext, useMemo } from "react";
+import React, { useCallback, useContext, useMemo } from "react";
 import Select from "react-select";
 import { DataContext } from "../../context/DataContext";
 import { Button } from '../../ui/Button';
 import { getStateValue } from "../../utils/data";
 import { useEffect } from "react";
-import { CRUD, useCrud, useJsonEffect } from "../../hooks/form";
+import { useCrudPreset, useBlocksOptions } from "../../hooks/form";
+import { ConfInput } from "../../ui/Input";
 
-export const BlockStateProvider = React.memo(function({block = { type: 'minecraft:simple_state_provider' }, onChange}) {
-    const [provider, setProvider] = useState(block);
-
-    const options = useMemo(function() {
-        return [
-            { value: 'minecraft:simple_state_provider', label: 'Simple state provider' },
-            { value: 'minecraft:weighted_state_provider', label: 'Weighted state provider' }
-        ];
-    }, []);
-
-    const handleTypeChange = useCallback(function(option) {
-        setProvider({ type: option.value });
-    }, []);
-
-    const handleSimpleStateChange = useCallback(function(state) {
-        setProvider(provider => ({ ...provider, state }));
-    }, []);
-
-    const handleWeighestStateChange = useCallback(function(entries) {
-        setProvider(provider => ({ ...provider, entries }));
-    }, []);
-
-    useJsonEffect(provider, block, onChange);
-
-    return <div>
-        <label>Provider type</label>
-        <Select options={options} value={options.find(o => o.value === provider.type)} onChange={handleTypeChange} />
-        {(provider.type === 'minecraft:simple_state_provider' || provider.type === 'minecraft:rotated_block_provider') && <BlockState block={provider.state} onChange={handleSimpleStateChange} />}
-        {provider.type === 'minecraft:weighted_state_provider' && <WeightedStateProvider entries={(provider.entries || []).map(entry => entry.data)} onChange={handleWeighestStateChange} />}
-    </div>
-});
-
-export const BlockState = React.memo(function({block = {}, children, name, onChange}) {
+export const BlockState = React.memo(function ({ block = {}, children, name, onChange, options }) {
     const context = useContext(DataContext);
-    const [data, setData] = useState(block);
 
-    const handleTypeChange = useCallback(function(option) {
+    const handleTypeChange = useCallback(function (option) {
         const Name = option.value;
         const Properties = {};
         (context.vanilla.blocks.find(b => 'minecraft:' + b.name === Name) || { states: [] }).states.forEach(state => {
             Properties[state.name] = getStateValue(state);
         })
         if (Object.keys(Properties).length > 0) {
-            setData({ Name, Properties });
+            onChange({ Name, Properties });
         } else {
-            setData({ Name });
+            onChange({ Name });
         }
-    }, [context.vanilla.blocks]);
-    const handlePropertiesChange = useCallback(function(Properties) {
-        setData(data => ({ ...data, Properties }))
-    }, []);
-    useEffect(() => {
-        if (data !== block) {
-            onChange(data, block);
+    }, [context.vanilla.blocks, onChange]);
+    const handlePropertiesChange = useCallback(function (Properties) {
+        onChange({ ...block, Properties });
+    }, [block, onChange]);
+
+    const blocks = useMemo(function () {
+        if (typeof options === 'undefined') {
+            return context.vanilla.blocks.map(block => ({ value: 'minecraft:' + block.name, label: block.displayName }));
         }
-    }, [onChange, data, block]);
+        return options;
+    }, [context.vanilla.blocks, options]);
 
-    const options = useMemo(function() {
-        return context.vanilla.blocks.map(block => ({ value: 'minecraft:' + block.name, label: block.displayName }));
-    }, [context.vanilla.blocks]);
-
-    const selected = useMemo(function() {
-        return options.find(o => o.value === data.Name);
-    }, [options, data.Name]);
+    const selected = useMemo(function () {
+        return blocks.find(o => o.value === block.Name);
+    }, [blocks, block.Name]);
 
     return <div className="form-group">
-        <div className="flex-container">
-            <div style={{ flexGrow: 1 }}><Select options={options} value={selected} name={name} onChange={handleTypeChange} /></div>
+        <div className="flex-container" style={{ alignItems: 'center' }}>
+            <div style={{ flexGrow: 1 }}><Select options={blocks} value={selected} name={name} onChange={handleTypeChange} /></div>
             {children}
         </div>
-        <BlockStateProperties block={data.Name} Properties={block.Properties} onChange={handlePropertiesChange} />
+        <BlockStateProperties block={block.Name} properties={block.Properties} onChange={handlePropertiesChange} />
     </div>;
 });
 
-export const BlocksList = React.memo(function({list, onChange}) {
-    const [blocks, dispatch] = useCrud(list);
+export const BlocksList = React.memo(function ({ list, onChange }) {
+    const options = useBlocksOptions();
 
-    const handleAddClick = useCallback(function(e) {
-        e.preventDefault();
-        dispatch({ type: CRUD.ADD, payload: { Name: 'minecraft:stone', Properties: {} } });
-    }, [dispatch]);
-    const handleChange = useCallback(function(state, previous) {
-        dispatch({ type: CRUD.UPDATE, target: previous, payload: state });
-    }, [dispatch]);
-    const handleDeleteClick = useCallback(function(e, index) {
-        e.preventDefault();
-        dispatch({ type: CRUD.REMOVE, payload: blocks[index] });
-    }, [blocks, dispatch]);
-
-    useJsonEffect(blocks, list, onChange);
-
-    const values = [];
-    blocks.forEach((entry, i) => {
-        const key = i;
-        values.push(<BlockState block={entry} key={key} onChange={handleChange}><Button cat="danger mlm" onClick={(e) => handleDeleteClick(e, i)}>Remove</Button></BlockState>);
+    const [blocks, handleAdd, handleChange, handleRemove] = useCrudPreset(list, function (blocks) {
+        // Get the first non taken block name
+        return { Name: (options.find(o => !blocks.some(b => b.Name === o.value)) || { value: 'minecraft:stone' }).value };
     });
 
-    return <div className="form-group">{values}<Button onClick={handleAddClick}>Add block</Button></div>;
-});
+    const handleStateChange = useCallback(function (state, i) {
+        handleChange(state, blocks[i]);
+    }, [blocks, handleChange]);
 
-const WeightedStateProvider = React.memo(function({entries = [], onChange}) {
-
-    const handleChange = useCallback(function(blocks) {
-        onChange(blocks.map(data => ({ data })));
-    }, [onChange]);
-
-    return <BlocksList list={entries} onChange={handleChange} />;
-});
-
-function BlockStateProperties({block, children, onChange, Properties = {}}) {
-    const states = (useContext(DataContext).vanilla.blocks.find(b => 'minecraft:' + b.name === block) || { states: [] }).states;
-    const [properties, setProperties] = useState(Properties);
-
-    const handlePropertyChange = useCallback(function(option) {
-        setProperties(properties => ({ ...properties, [option.name]: option.value }));
-    }, []);
-    const handleCheckboxChange = useCallback(function(e) {
-        const value = e.target.checked.toString();
-        setProperties(properties => ({ ...properties, [e.target.id]: value }));
-    }, []);
-    const handleNumberChange = useCallback(function(e) {
-        const value = e.target.value;
-        setProperties(properties => ({ ...properties, [e.target.id]: value }));
-    }, []);
     useEffect(() => {
-        if (properties !== Properties) {
-            onChange(properties);
+        if (blocks !== list) {
+            onChange(blocks);
         }
-    }, [onChange, properties, Properties]);
+    }, [blocks, list, onChange]);
+
+    return <div className="form-group">
+        {blocks.map((block, i) => {
+            const filteredOptions = options.filter(o => o.value === block.Name || !blocks.some(d => d.Name === o.value));
+            return <BlockState block={block} options={filteredOptions} key={block.Name} onChange={state => handleStateChange(state, i)}>
+                <Button cat="danger mlm" onClick={(e) => handleRemove(e, i)}>Remove</Button>
+            </BlockState>
+        })}
+        <Button onClick={handleAdd}>Add block</Button>
+    </div>;
+});
+
+function BlockStateProperties({ block, children, onChange, properties = {} }) {
+    const states = (useContext(DataContext).vanilla.blocks.find(b => 'minecraft:' + b.name === block) || { states: [] }).states;
+
+    const handlePropertyChange = useCallback(function (option) {
+        onChange({ ...properties, [option.name]: option.value });
+    }, [onChange, properties]);
+    const handleCheckboxChange = useCallback(function (e) {
+        const value = e.target.checked.toString();
+        onChange({ ...properties, [e.target.dataset.name]: value });
+    }, [onChange, properties]);
+    const handleNumberChange = useCallback(function (e) {
+        const value = e.target.value;
+        if (value !== '' && !isNaN(value)) {
+            onChange({ ...properties, [e.target.dataset.name]: value });
+        }
+    }, [onChange, properties]);
 
     const selects = [];
     states.forEach(possible => {
-        switch(possible.type) {
+        switch (possible.type) {
             case 'bool':
-                selects.push(<div key={possible.name}>
-                    <label>{possible.name}</label> : <input type="checkbox" id={possible.name} className="checkbox" checked={Properties[possible.name] === 'true'} onChange={handleCheckboxChange} />
-                </div>);
+                selects.push(
+                    <ConfInput key={possible.name} id={possible.name}
+                        checked={properties[possible.name] === 'true'}
+                        onChange={handleCheckboxChange}>
+                            {possible.name}
+                    </ConfInput>
+                );
                 break;
             case 'int':
-                selects.push(<div key={possible.name}>
-                    <label>{possible.name}</label> : <input type="number" id={possible.name} value={Properties[possible.name] || 0} onChange={handleNumberChange} min="0" max={possible.num_values - 1} />
-                </div>);
+                selects.push(
+                    <ConfInput key={possible.name} id={possible.name}
+                        value={properties[possible.name] || 0} onChange={handleNumberChange}
+                        min="0" max={possible.num_values - 1}>
+                            {possible.name}
+                    </ConfInput>
+                );
                 break;
             default:
                 const options = possible.values.map(value => ({ value, name: possible.name, label: value }));
-                const defaultValue = options.find(o => o.value === Properties[possible.name]) || options[0];
+                const defaultValue = options.find(o => o.value === properties[possible.name]) || options[0];
                 selects.push(<div key={possible.name}>
-                    <label>{possible.name}</label> : <div className="inbl"><Select options={options} value={defaultValue} onChange={handlePropertyChange} /></div>
+                    <label>{possible.name}</label> : <div className="inbl">
+                        <Select options={options} value={defaultValue} onChange={handlePropertyChange} />
+                    </div>
                 </div>);
         }
     });
