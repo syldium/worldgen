@@ -5,6 +5,7 @@ import { useValueChange } from '../../hooks/form';
 import { ConfInput } from '../../ui/Input';
 import { OVERWORLD_NOISE } from './NoiseDefaults';
 import { Structures } from './Structures';
+import { NamespacedKey } from '../NamespacedKey';
 
 export const NoiseSettings = React.memo(function ({ data = OVERWORLD_NOISE, onSave }) {
 
@@ -13,12 +14,13 @@ export const NoiseSettings = React.memo(function ({ data = OVERWORLD_NOISE, onSa
     const handleSubmit = useCallback(function (e) {
         e.preventDefault();
         const formData = Object.fromEntries(new FormData(e.target));
-        const data = { ...formData, ...state };
+        const data = { ...state, ...formData };
         Object.keys(formData).forEach(function (key) {
             if (!isNaN(formData[key])) {
                 data[key] = parseFloat(formData[key]);
             }
         });
+        data.disable_mob_generation = formData.hasOwnProperty('disable_mob_generation');
         onSave(data);
     }, [onSave, state]);
 
@@ -34,9 +36,7 @@ export const NoiseSettings = React.memo(function ({ data = OVERWORLD_NOISE, onSa
 
     return <form onSubmit={handleSubmit}>
         <h3>Edit noise</h3>
-        <div className="form-group">
-            <label htmlFor="key">Identifier</label> : <input type="text" name="key" id="key" required pattern="[a-z0-9._-]+" placeholder="Example: epic" defaultValue={data.key} />
-        </div>
+        <NamespacedKey example="epic" type="noises" value={data.key} expectBreakage={typeof data.key !== 'undefined'} />
 
         <Structures data={data.structures} onChange={handleStructuresChange} />
 
@@ -55,7 +55,7 @@ export const NoiseSettings = React.memo(function ({ data = OVERWORLD_NOISE, onSa
             <div className="form-group form-row">
                 <ConfInput name="bedrock_roof_position" defaultValue={data.bedrock_roof_position}>Bedrock roof position</ConfInput>
                 <ConfInput name="bedrock_floor_position" defaultValue={data.bedrock_floor_position}>Bedrock floor position</ConfInput>
-                <ConfInput name="sea_level" defaultValue={data.sea_level}>Sea level</ConfInput>
+                <ConfInput name="sea_level" defaultValue={data.sea_level} min="0" max="256">Sea level</ConfInput>
                 <ConfInput name="disable_mob_generation" defaultChecked={data.disable_mob_generation}>Disable mob generation</ConfInput>
             </div>
         </fieldset>

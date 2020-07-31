@@ -10,6 +10,7 @@ export const DataContext = React.createContext({
     vanilla: {
         biomes: [],
         blocks: [],
+        dimensions: [],
         dimension_types: [],
         entities: [],
         features: [],
@@ -57,7 +58,16 @@ export function DataContextProvider({children, namespace, initial = {}}) {
     }, []);
 
     return <DataContext.Provider value={{
-        vanilla: { biomes, blocks, dimension_types: VANILLA_DIMENSION_TYPES, entities, features: VANILLA_FEATURES, noises: VANILLA_NOISES, surfaces: VANILLA_SURFACE_BUILDERS },
+        vanilla: {
+            biomes,
+            blocks,
+            dimensions: VANILLA_DIMENSION_TYPES.filter(o => !o.value.includes('cave')),
+            dimension_types: VANILLA_DIMENSION_TYPES,
+            entities,
+            features: VANILLA_FEATURES,
+            noises: VANILLA_NOISES,
+            surfaces: VANILLA_SURFACE_BUILDERS
+        },
         custom: { biomes: customBiomes, dimensions, dimension_types, features, noises, surfaces,
             updateBiomes, updateDimensions, updateDimensionTypes, updateFeatures, updateNoises, updateSurfacesBuilders },
         namespace

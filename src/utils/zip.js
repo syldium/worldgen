@@ -12,12 +12,12 @@ const LEGACY_WORLDGEN_PATH = /^data\/minecraft\/worldgen\/(biome|configured_feat
 /**
  * Build zip in blob.
  * 
- * @param {string} namespace 
- * @param {{ biomes: object[], dimensions: object[], features: object[], surfaces: object[] }} custom 
+ * @param {{ biomes: object[], dimensions: object[], dimension_types: object[], features: object[], noises: object[], surfaces: object[] }} custom 
  */
-export function buildZip(namespace, custom) {
+export function buildZip(custom) {
     const zip = new JSZip();
     zip.file('pack.mcmeta', JSON.stringify({ pack: { pack_format: 5, description: 'Custom dimension' } }, null, 4));
+    const namespace = '%namespace%';
     writeFile(zip, `data/${namespace}/dimension`, custom.dimensions);
     writeFile(zip, `data/${namespace}/dimension_type`, custom.dimension_types);
     writeFile(zip, `data/${namespace}/worldgen/biome`, custom.biomes);
@@ -93,6 +93,7 @@ function extractDatapack(zip) {
                 }
 
                 namespace = value.namespace;
+                value.data.index = data[value.type].length;
                 data[value.type].push(value.data);
             });
             resolve([namespace, data]);
@@ -131,10 +132,11 @@ async function parseFile(legacy, pathRegex, filename, contentPromise) {
     return new Promise((resolve, reject) => {
         contentPromise.then(content => {
             const obj = JSON.parse(content);
-            obj.key = d[3];
+            const namespace = d[legacy ? 2 : 1];
+            obj.key = namespace + ':' + d[3];
             const data = dataUpper(getFolderType(d[1]), obj);
             resolve({
-                namespace: d[legacy ? 2 : 1],
+                namespace,
                 data,
                 type: getFolderType(d[legacy ? 1 : 2])
             });
@@ -151,10 +153,14 @@ function writeFile(zip, path, elements) {
     if (elements.length < 1) {
         return;
     }
-    const folder = zip.folder(path);
+
     for (const el of elements) {
         const w = {...el};
         delete w.key;
-        folder.file(el.key + '.json', JSON.stringify(w, null, 2));
+        delete w.index;
+
+        const [namespace, filename] = el.key.split(':');
+        zip.folder(path.replace('%namespace%', namespace))
+            .file(filename + '.json', JSON.stringify(w, null, 2));
     }
 }

@@ -32,8 +32,8 @@ export function DatapackForm({onCreate}) {
     return <form onSubmit={handleCreate} onDragStart={handleDrag} onDragEnter={handleDrag} onDragOver={handleDrag} onDrop={handleFile}>
         <h2>Create a new dimension datapack</h2>
         <div className="form-group">
-            <label htmlFor="namespace">Namespace</label> : <input type="text" name="namespace" id="namespace" required pattern="[a-z0-9._-]+" className="form-control" aria-describedby="namespaceHelp" />
-            <p><small id="namespaceHelp" className="form-text text-muted">This differentiates the datapack from the vanilla functions. Namespaces and identifiers may only contain letters, numbers and <code>._-</code> characters.</small></p>
+            <label htmlFor="namespace">Default namespace</label> : <input type="text" name="namespace" id="namespace" required pattern="[a-z0-9._-]+" className="form-control" aria-describedby="namespaceHelp" />
+            <p><small id="namespaceHelp" className="form-text text-muted">This differentiates the datapack from the vanilla functions. Namespaces and identifiers may only contain letters, numbers and <code>._-</code> characters. This namespace is not final, you can edit the vanilla dimensions in the following menus.</small></p>
         </div>
         <div className="flex-container">
             <Button type="submit">Create</Button>

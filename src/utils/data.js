@@ -18,6 +18,15 @@ export function capitalize(str) {
     return str[0].toUpperCase() + str.substr(1);
 }
 
+/**
+ * @param {string} key 
+ * @param {string} [defaultNamespace]
+ * @returns {string}
+ */
+export function displayNamespacedKey(key, defaultNamespace) {
+    return key.startsWith(defaultNamespace + ':') ? key.split(':')[1] : key;
+}
+
 export function getStateValue(state, properties = {}) {
     const actual = properties[state.name];
     switch (state.type) {

@@ -8,27 +8,35 @@ import { buildDecorated, findDecorators } from '../../utils/data';
 import { DECORATED_TREE_CONFIG, DECORATED_RANDOM_PATCH_CONFIG, DECORATED_ORE_FEATURE_CONFIG } from './FeatureDefaults';
 import { RandomPatchFeature } from './RandomPatchFeature';
 import { OreFeatureConfig } from './OreFeature';
+import { NamespacedKey } from '../NamespacedKey';
 
 export function RawConfiguredFeature({data = DECORATED_TREE_CONFIG, onSave}) {
-    const [state, setState] = useState(data);
 
-    const [decorators, feature, type] = useMemo(function() {
-        const a = findDecorators(state);
-        return [...a, a[1].type];
-    }, [state]);
+    const [decorators_, feature_] = useMemo(() => findDecorators(data), [data]);
+
+    const [feature, setFeature] = useState(feature_);
+    const [decorators, setDecorators] = useState(decorators_);
 
     const handleSelectChange = useCallback(function(option) {
-        setState({...option.default});
+        const [decorators, feature] = findDecorators({ ...option.default });
+        setFeature(feature);
+        setDecorators(decorators);
     }, []);
-    const handleSave = useCallback(function(feature, decorators) {
-        const name = document.getElementById('name').value;
-        const data = buildDecorated(feature, decorators, name);
-        if (data.key === '') {
-            alert('You must specify a key!')
-            return;
-        }
-        onSave(data);
-    }, [onSave]);
+
+    const handleFeatureChange = useCallback(function (config) {
+        setFeature(feature => ({ ...feature, config }));
+    }, []);
+
+    const handleDecoratorsChange = useCallback(function (decorators) {
+        setDecorators(decorators);
+    }, []);
+
+    const handleSubmit = useCallback(function(e) {
+        e.preventDefault();
+        const decorated = buildDecorated(feature, decorators, new FormData(e.target).get('key'));
+        decorated.index = data.index;
+        onSave(decorated);
+    }, [data.index, decorators, feature, onSave]);
 
     const options = useMemo(function() {
         return [
@@ -41,43 +49,20 @@ export function RawConfiguredFeature({data = DECORATED_TREE_CONFIG, onSave}) {
         });
     }, []);
 
-    return <div>
+    return <form onSubmit={handleSubmit}>
         <h3>Edit configured feature</h3>
-        <div className="form-group">
-            <label htmlFor="name">Name</label> : <input type="text" name="name" id="name" required pattern="[a-z0-9._-]+" placeholder="Ex. : prismarine-tree" defaultValue={(data || {}).key} />
-        </div>
+        <NamespacedKey example="concrete_tree" type="features" value={data.key} expectBreakage={typeof data.key !== 'undefined'} />
         <div className="form-group">
             <label htmlFor="type">Type</label>
-            <Select options={options} value={options.find(o => o.value === type)} onChange={handleSelectChange} />
+            <Select options={options} value={options.find(o => o.value === feature.type)} onChange={handleSelectChange} />
         </div>
         <hr />
-        <ConfiguredFeature key={type} feature={feature} deco={decorators} onSave={handleSave} />
-    </div>
-}
-
-function ConfiguredFeature({feature, deco, onSave}) {
-    const [configuration, configure] = useState(feature);
-    const [decorators, setDecorators] = useState(deco);
-
-    const handleConfigurationChange = useCallback(function(config) {
-        configure(configuration => ({ ...configuration, config }));
-    }, []);
-    const handleDecoratorsChange = useCallback(function(decorators) {
-        setDecorators(decorators);
-    }, []);
-
-    const handleSaveClick = useCallback(function(e) {
-        e.preventDefault();
-        onSave(configuration, decorators)
-    }, [configuration, decorators, onSave]);
-
-    return <>
-        {feature.type === 'minecraft:ore' && <OreFeatureConfig configuration={configuration.config} onChange={handleConfigurationChange} />}
-        {feature.type === 'minecraft:random_patch' && <RandomPatchFeature configuration={configuration.config} onChange={handleConfigurationChange} />}
-        {feature.type === 'minecraft:tree' && <TreeFeatureConfig configuration={configuration.config} onChange={handleConfigurationChange} />}
-        <DecoratorsList data={decorators} onChange={handleDecoratorsChange} />
+        {feature.type === 'minecraft:ore' && <OreFeatureConfig configuration={feature.config} onChange={handleFeatureChange} />}
+        {feature.type === 'minecraft:random_patch' && <RandomPatchFeature configuration={feature.config} onChange={handleFeatureChange} />}
+        {feature.type === 'minecraft:tree' && <TreeFeatureConfig configuration={feature.config} onChange={handleFeatureChange} />}
+        <DecoratorsList data={decorators} key={feature.type} onChange={handleDecoratorsChange} />
         <div className="form-group mlm mbm">
-            <Button type="submit" onClick={handleSaveClick}>Save</Button>
+            <Button type="submit">Save</Button>
         </div>
-    </>;
+    </form>
 }

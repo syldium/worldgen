@@ -1,5 +1,6 @@
 import { useState, useContext, useMemo } from "react";
 import { DataContext } from "../context/DataContext";
+import { displayNamespacedKey } from "../utils/data";
 
 /**
  * @param {object[]} initial
@@ -9,11 +10,19 @@ export function useData(initial = []) {
     const [data, setData] = useState(initial);
     const updateData = function(object) {
         setData(stored => {
-            const i = stored.findIndex(({key}) => key === object.key);
-            if (i < 0) {
+            const existing = stored.findIndex(({key}) => object.key === key);
+            if (existing > -1 && existing !== object.index) {
+                object.index = stored.length;
+                object.key = object.key + '2';
+                stored.push(object);
+                return stored;
+            }
+
+            if (typeof object.index === 'undefined') {
+                object.index = stored.length;
                 stored.push(object);
             } else {
-                stored[i] = object;
+                stored[object.index] = object;
             }
             return stored;
         });
@@ -22,14 +31,23 @@ export function useData(initial = []) {
 }
 
 /**
- * @param {('biomes'|'dimension_types'|'features'|'noises'|'surfaces')} category Data category
+ * @param {('biomes'|'dimensions'|'dimension_types'|'features'|'noises'|'surfaces')} category Data category
+ * @param {boolean} [includeCustom]
+ * @param {boolean} [empty]
  * @returns {{ value: string, label: string }[]} Options list for react-select
  */
-export function useKeyedListOptions(category) {
+export function useKeyedListOptions(category, includeCustom = true, empty = false) {
     const context = useContext(DataContext);
     return useMemo(function() {
-        const options = context.custom[category]
-            .map(keyed => ({ value: context.namespace + ':' + keyed.key, label: '(Custom) ' + keyed.key }));
+        if (empty) {
+            return [];
+        }
+
+        const options = includeCustom ? context.custom[category]
+            .map(keyed => {
+                const name = displayNamespacedKey(keyed.key, context.namespace);
+                return { value: keyed.key, label: '(Custom) ' + name };
+            }) : [];
 
         let struct = null;
         context.vanilla[category].forEach(keyed => {
@@ -48,5 +66,5 @@ export function useKeyedListOptions(category) {
             }
         });
         return options;
-    }, [category, context.custom, context.namespace, context.vanilla]);
+    }, [category, context.custom, context.namespace, context.vanilla, empty, includeCustom]);
 }

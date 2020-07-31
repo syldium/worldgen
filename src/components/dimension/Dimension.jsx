@@ -3,6 +3,7 @@ import { DimensionType } from './DimensionType';
 import { DimensionGenerator } from './DimensionGenerator';
 import { Button } from '../../ui/Button';
 import { DIMENSION } from './DimensionDefaults';
+import { NamespacedKey } from '../NamespacedKey';
 
 export function Dimension({data = DIMENSION, onSave}) {
 
@@ -26,9 +27,7 @@ export function Dimension({data = DIMENSION, onSave}) {
 
     return <form onSubmit={handleSubmit}>
         <h3>Edit dimension</h3>
-        <div className="form-group">
-            <label htmlFor="key">Identifier</label> : <input type="text" name="key" id="key" required pattern="[a-z0-9._-]+" placeholder="Ex. : blue-dim" defaultValue={data.key} />
-        </div>
+        <NamespacedKey example="blue_dimension" type="dimensions" value={data.key} mayReplaceVanilla={true} />
         <DimensionType type={state.type} />
         <fieldset>
             <legend>Generator configuration</legend>

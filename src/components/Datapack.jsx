@@ -8,6 +8,7 @@ import { RawConfiguredFeature } from './feature/ConfiguredFeature';
 import { buildZip } from '../utils/zip';
 import { SurfaceBuilder } from './surface/SurfaceBuilder';
 import { NoiseSettings } from './noise/NoiseSettings';
+import { displayNamespacedKey } from '../utils/data';
 
 export function Datapack() {
     const context = useContext(DataContext);
@@ -121,7 +122,7 @@ function Stats({custom, namespace, editBiome, editDimension, editFeature, editNo
 
     const handleGenerateClick = function(e) {
         e.preventDefault();
-        buildZip(namespace, custom);
+        buildZip(custom);
     }
 
     const mayGenerate = Object.values(custom).some(content => {
@@ -132,20 +133,23 @@ function Stats({custom, namespace, editBiome, editDimension, editFeature, editNo
     });
 
     return <div className="mtm">
-        <StatsTitle data={custom.biomes} onClick={handleBiomeClick}>custom biome</StatsTitle>
-        <StatsTitle data={custom.dimensions} onClick={handleDimensionClick}>custom dimension</StatsTitle>
-        <StatsTitle data={custom.features} onClick={handleFeatureClick}>configured feature</StatsTitle>
-        <StatsTitle data={custom.surfaces} onClick={handleSurfaceClick}>configured surface builder</StatsTitle>
-        <StatsTitle data={custom.noises} onClick={handleNoiseClick}>custom noise</StatsTitle>
+        <StatsTitle data={custom.biomes} namespace={namespace} onClick={handleBiomeClick}>custom biome</StatsTitle>
+        <StatsTitle data={custom.dimensions} namespace={namespace} onClick={handleDimensionClick}>custom dimension</StatsTitle>
+        <StatsTitle data={custom.features} namespace={namespace} onClick={handleFeatureClick}>configured feature</StatsTitle>
+        <StatsTitle data={custom.surfaces} namespace={namespace} onClick={handleSurfaceClick}>configured surface builder</StatsTitle>
+        <StatsTitle data={custom.noises} namespace={namespace} onClick={handleNoiseClick}>custom noise</StatsTitle>
         {mayGenerate && <p><Button onClick={handleGenerateClick}>Generate</Button></p>}
     </div>
 }
 
-function StatsTitle({ children, data, onClick }) {
+function StatsTitle({ children, data, namespace, onClick }) {
     return <>
         <h5><strong>{data.length}</strong> {children}{data.length > 1 && 's'}</h5>
         <ul>
-            {data.map((d, i) => <li key={i}><a href="#edit" onClick={(e) => onClick(e, i)}>{d.key}</a></li>)}
+            {data.map((d, i) => {
+                const name = displayNamespacedKey(d.key, namespace);
+                return <li key={i}><a href="#edit" onClick={(e) => onClick(e, i)}>{name}</a></li>
+            })}
         </ul>
     </>
 }

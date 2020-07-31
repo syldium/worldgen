@@ -2,6 +2,7 @@ import React, { useCallback, useState } from 'react';
 import BiomeStarts from './BiomeStarts';
 import Select from 'react-select';
 import { Button } from '../../ui/Button';
+import { NamespacedKey } from '../NamespacedKey';
 import { BiomeSpawners } from './BiomeSpawners';
 import { STARTS } from './BiomeDefaults';
 import GenFeatures from './Features';
@@ -43,7 +44,7 @@ export function Biome({data = {}, onSave}) {
     const handleSubmit = useCallback(function(e) {
         e.preventDefault();
         const formData = Object.fromEntries(new FormData(e.target));
-        const data = { ...formData, ...state };
+        const data = { ...state, ...formData };
         data.spawn_costs = {};
         data.carvers =  {
             air: [
@@ -61,9 +62,7 @@ export function Biome({data = {}, onSave}) {
 
     return <form onSubmit={handleSubmit}>
         <h3>Edit biome</h3>
-        <div className="form-group">
-            <label htmlFor="key">Identifier</label> : <input type="text" name="key" id="key" required pattern="[a-z0-9._-]+" placeholder="Ex. : my-biome" defaultValue={data.key} />
-        </div>
+        <NamespacedKey example="arctic" type="biomes" value={data.key} expectBreakage={typeof data.key !== 'undefined'} />
 
         <fieldset>
             <legend>Colors</legend>
