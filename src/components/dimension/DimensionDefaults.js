@@ -19,6 +19,13 @@ export const VANILLA_DIMENSION_TYPES = [
     { value: 'minecraft:the_end', label: 'The End' },
 ]
 
+export const NOISES_NAMES = [
+    'temperature_noise',
+    'humidity_noise',
+    'altitude_noise',
+    'weirdness_noise'
+];
+
 export const MULTI_NOISE_BIOME_SOURCE = {
     type: 'minecraft:multi_noise',
     seed: 286956243,

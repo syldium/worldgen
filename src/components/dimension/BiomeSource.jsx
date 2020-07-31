@@ -9,7 +9,7 @@ import { DataContext } from '../../context/DataContext';
 import { Button } from '../../ui/Button';
 import { capitalize, hasDuplicatedObjects } from '../../utils/data';
 import { NumberList } from '../../ui/NumberList';
-import { MULTI_NOISE_BIOME_SOURCE } from './DimensionDefaults';
+import { MULTI_NOISE_BIOME_SOURCE, NOISES_NAMES } from './DimensionDefaults';
 
 export function BiomeSource({biome_source = { type: 'minecraft:fixed' }, onChange}) {
     const [source, setSource] = useState(biome_source);
@@ -114,6 +114,12 @@ const MultiNoiseBiomeSource = React.memo(function({source = MULTI_NOISE_BIOME_SO
     const custom = useContext(DataContext).custom.biomes;
     const namespace = useContext(DataContext).namespace;
     useEffect(function() {
+        for (const noise of NOISES_NAMES) {
+            if (typeof source[noise] === 'undefined') {
+                onChange({ ...MULTI_NOISE_BIOME_SOURCE, ...source, biomes });
+                return;
+            }
+        }
         if (biomes !== source.biomes) {
             onChange({ ...source, biomes });
         }
@@ -131,7 +137,7 @@ const MultiNoiseBiomeSource = React.memo(function({source = MULTI_NOISE_BIOME_SO
             <Button onClick={toggleAdvanced} cat="secondary">Advanced</Button>
         </div>
         {advanced && <div className="grid-2-small-1 has-gutter mbm">
-            {['temperature_noise', 'humidity_noise', 'altitude_noise', 'weirdness_noise']
+            {NOISES_NAMES
                 .map(noise => <PerlinNoiseParameters
                     key={noise}
                     noise={source[noise] || MULTI_NOISE_BIOME_SOURCE[noise]}
