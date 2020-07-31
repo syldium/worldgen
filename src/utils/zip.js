@@ -133,13 +133,10 @@ async function parseFile(legacy, pathRegex, filename, contentPromise) {
         contentPromise.then(content => {
             const obj = JSON.parse(content);
             const namespace = d[legacy ? 2 : 1];
+            const type = getFolderType(d[legacy ? 1 : 2]);
             obj.key = namespace + ':' + d[3];
-            const data = dataUpper(getFolderType(d[1]), obj);
-            resolve({
-                namespace,
-                data,
-                type: getFolderType(d[legacy ? 1 : 2])
-            });
+            const data = dataUpper(type, obj);
+            resolve({ namespace, data, type });
         }).catch(e => {
             if (e.name !== 'SyntaxError') {
                 console.error(e);

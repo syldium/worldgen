@@ -1,4 +1,4 @@
-import { MULTI_NOISE_BIOME_SOURCE } from './../components/dimension/DimensionDefaults';
+import { MULTI_NOISE_BIOME_SOURCE, NOISES_NAMES } from './../components/dimension/DimensionDefaults';
 
 /**
  * @param {object} a 
@@ -154,7 +154,7 @@ export function dataUpper(group, data) {
         case 'dimensions':
             // 20w30a: multi_noise: firstOctave and amplitudes parameters
             const source = data.generator.biome_source;
-            if (source.type === 'minecraft:multi_noise' && !source.hasOwnProperty('altitude_noise')) {
+            if (source.type === 'minecraft:multi_noise' && NOISES_NAMES.some(n => !source.hasOwnProperty(n))) {
                 data.generator.biome_source = { ...MULTI_NOISE_BIOME_SOURCE, ...source };
             }
             return data;
