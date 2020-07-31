@@ -1,5 +1,5 @@
-import React, { useCallback, useState, useMemo, useEffect } from 'react';
-import { useCrud, CRUD } from '../../hooks/form';
+import React, { useCallback, useState, useMemo } from 'react';
+import { useCrud, CRUD, useJsonEffect } from '../../hooks/form';
 import { Button } from '../../ui/Button';
 import Select from 'react-select';
 import { DECORATORS_OPTIONS, DECORATOR_EXTRA_COUNT_DEFAULTS, DECORATOR_DECORATED_DEFAULTS, DECORATOR_RANGE_DEFAULTS } from './FeatureDefaults';
@@ -19,7 +19,7 @@ export const DecoratorsList = React.memo(function({data, onChange}) {
         e.preventDefault();
         dispatch({ type: CRUD.REMOVE, payload: decorators[index] });
     }, [decorators, dispatch]);
-    useEffect(() => onChange(decorators), [decorators, onChange]);
+    useJsonEffect(decorators, data, onChange);
 
     const values = [];
     decorators.forEach((decorator, i) => {
@@ -42,7 +42,7 @@ const Decorator = React.memo(function({children, data = { type: 'minecraft:count
     const handleConfigChange = useCallback(function(config) {
         setDecorator(decorator => ({ type: decorator.type, config }));
     }, []);
-    useEffect(() => onChange(decorator, data), [data, decorator, onChange]);
+    useJsonEffect(decorator, data, onChange);
 
     const selected = useMemo(function() {
         return DECORATORS_OPTIONS.find(o => o.value === decorator.type);
@@ -64,27 +64,19 @@ const Decorator = React.memo(function({children, data = { type: 'minecraft:count
 });
 
 const ChanceDecorator = React.memo(function({config = {}, onChange}) {
-    const [chance, setChance] = useState(config.count || 32);
-
     const handleChanceChange = useCallback(function(e) {
-        setChance(parseInt(e.target.value));
-    }, []);
+        onChange({ chance: parseInt(e.target.value) });
+    }, [onChange]);
 
-    useEffect(() => onChange({ chance }), [chance, onChange]);
-
-    return <div><label>Chance</label> : <input type="number" value={chance} onChange={handleChanceChange} /></div>;
+    return <div><label>Chance</label> : <input type="number" value={config.chance || 32} onChange={handleChanceChange} /></div>;
 });
 
 const CountDecorator = React.memo(function({config = {}, onChange}) {
-    const [count, setCount] = useState(config.count || 25);
-
     const handleCountChange = useCallback(function(e) {
-        setCount(parseInt(e.target.value));
-    }, []);
+        onChange({ count: parseInt(e.target.value) });
+    }, [onChange]);
 
-    useEffect(() => onChange({ count }), [count, onChange]);
-
-    return <div><label>Count</label> : <input type="number" value={count} onChange={handleCountChange} /></div>;
+    return <div><label>Count</label> : <input type="number" value={config.count || 25} onChange={handleCountChange} /></div>;
 });
 
 const ExtraCountDecorator = React.memo(function({config = DECORATOR_EXTRA_COUNT_DEFAULTS, onChange}) {
@@ -94,8 +86,7 @@ const ExtraCountDecorator = React.memo(function({config = DECORATOR_EXTRA_COUNT_
         const value = parseFloat(e.target.value);
         setConfig(configured => ({ ...configured, [e.target.id]: value }));
     }, []);
-
-    useEffect(() => onChange(configured), [configured, onChange]);
+    useJsonEffect(configured, config, onChange);
 
     return <>
         <div><label>Count</label> : <input type="number" id="count" value={configured.count} onChange={handleNumberChange} /></div>
@@ -106,7 +97,7 @@ const ExtraCountDecorator = React.memo(function({config = DECORATOR_EXTRA_COUNT_
 
 const DecoratedDecorator = React.memo(function({config = DECORATOR_DECORATED_DEFAULTS, onChange}) {
 
-    useEffect(() => onChange(config), [config, onChange]);
+    useJsonEffect(DECORATOR_DECORATED_DEFAULTS, config, onChange);
     return <div></div>;
 });
 
@@ -117,8 +108,7 @@ const RangeDecorator = React.memo(function({config = DECORATOR_RANGE_DEFAULTS, o
         const value = parseInt(e.target.value);
         setConfig(configured => ({ ...configured, [e.target.id]: value }));
     }, []);
-
-    useEffect(() => onChange(configured), [configured, onChange]);
+    useJsonEffect(configured, config, onChange);
 
     return <>
         <div><label>Bottom offset</label> : <input type="number" id="bottom_offset" value={configured.bottom_offset} onChange={handleNumberChange} /></div>

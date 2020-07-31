@@ -1,7 +1,8 @@
-import React, { useCallback, useMemo, useState, useEffect } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { BlockStateProvider } from '../state/BlockState';
 import Select from 'react-select';
 import { TREE_FEATURE_CONFIG } from './FeatureDefaults';
+import { useJsonEffect } from '../../hooks/form';
 
 export function TreeFeatureConfig({configuration = TREE_FEATURE_CONFIG, onChange}) {
 
@@ -19,10 +20,7 @@ export function TreeFeatureConfig({configuration = TREE_FEATURE_CONFIG, onChange
     const handleTrunkPlacerChange = useCallback(function(trunk_placer) {
         setConfig(config => ({ ...config, trunk_placer }));
     }, []);
-
-    useEffect(function() {
-        onChange(config);
-    }, [config, onChange]);
+    useJsonEffect(config, configuration, onChange);
 
     return <div>
         <fieldset>

@@ -1,4 +1,4 @@
-import { useReducer, useState, useCallback } from "react";
+import { useReducer, useState, useCallback, useEffect } from "react";
 import { useKeyedListOptions } from "./context";
 
 function crudReducer(state, action) {
@@ -50,11 +50,19 @@ export function useValueChange(changeCallback, obj) {
     }, [changeCallback, obj]);
 }
 
+export function useJsonEffect(state, props, onChange) {
+    useEffect(() => {
+        if (JSON.stringify(state) !== JSON.stringify(props)) {
+            onChange(state);
+        }
+    }, [state, props, onChange]);
+}
+
 /**
  * Fast way to provide a list of options for react-select
  * and store selection as string (list).
  * 
- * @param {('biomes'|'blocks'|'features'|'surfaces')} category Data category
+ * @param {('biomes'|'dimensions'|'dimension_types'|'features'|'noises'|'surfaces')} category Data category
  * @param {string|string[]} initial Initial selection
  * @param {boolean} [multiple]
  * @returns {[{ value: string, label: string }[], string|string[], function({ value: string }): void]} Options list, currently selected list and his updater

@@ -1,7 +1,8 @@
-import React, { useCallback, useState, useEffect } from 'react';
+import React, { useCallback, useState } from 'react';
 import { ORE_FEATURE_CONFIG } from "./FeatureDefaults";
 import { BlockPredicate } from '../state/BlockPredicate';
 import { BlockState } from '../state/BlockState';
+import { useJsonEffect } from '../../hooks/form';
 
 export function OreFeatureConfig({configuration = ORE_FEATURE_CONFIG, onChange}) {
     const [config, setConfig] = useState(configuration);
@@ -17,10 +18,7 @@ export function OreFeatureConfig({configuration = ORE_FEATURE_CONFIG, onChange})
         const value = parseInt(e.target.value);
         setConfig(config => ({ ...config, [name]: value }));
     }, []);
-
-    useEffect(function() {
-        onChange(config);
-    }, [config, onChange]);
+    useJsonEffect(config, configuration, onChange);
 
     return <div>
         <fieldset>

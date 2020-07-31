@@ -1,6 +1,7 @@
-import React, { useCallback, useState, useEffect } from 'react';
+import React, { useCallback, useState } from 'react';
 import { BlocksList, BlockStateProvider } from '../state/BlockState';
 import { RANDOM_PATCH_FEATURE_CONFIG } from './FeatureDefaults';
+import { useJsonEffect } from '../../hooks/form';
 
 export function RandomPatchFeature({configuration = RANDOM_PATCH_FEATURE_CONFIG, onChange}) {
 
@@ -25,10 +26,7 @@ export function RandomPatchFeature({configuration = RANDOM_PATCH_FEATURE_CONFIG,
         const value = e.target.checked;
         setConfig(config => ({ ...config, [name]: value }));
     }, []);
-
-    useEffect(function() {
-        onChange(config);
-    }, [config, onChange]);
+    useJsonEffect(config, configuration, onChange);
 
     return <div>
         <fieldset>
