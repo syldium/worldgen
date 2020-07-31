@@ -3,6 +3,7 @@ import { useCrud, CRUD, useJsonEffect } from '../../hooks/form';
 import { Button } from '../../ui/Button';
 import Select from 'react-select';
 import { DECORATORS_OPTIONS, DECORATOR_EXTRA_COUNT_DEFAULTS, DECORATOR_DECORATED_DEFAULTS, DECORATOR_RANGE_DEFAULTS } from './FeatureDefaults';
+import { ConfInput } from '../../ui/Input';
 
 export const DecoratorsList = React.memo(function({data, onChange}) {
     const [decorators, dispatch] = useCrud(data);
@@ -65,33 +66,41 @@ const Decorator = React.memo(function({children, data = { type: 'minecraft:count
 
 const ChanceDecorator = React.memo(function({config = {}, onChange}) {
     const handleChanceChange = useCallback(function(e) {
-        onChange({ chance: parseInt(e.target.value) });
+        const value = e.target.value;
+        if (value !== '' && !isNaN(value)) {
+            onChange({ chance: parseInt(value) });
+        }
     }, [onChange]);
 
-    return <div><label>Chance</label> : <input type="number" value={config.chance || 32} onChange={handleChanceChange} /></div>;
+    return <ConfInput id="chance" value={config.chance || 32} onChange={handleChanceChange}>Chance</ConfInput>
 });
 
 const CountDecorator = React.memo(function({config = {}, onChange}) {
     const handleCountChange = useCallback(function(e) {
-        onChange({ count: parseInt(e.target.value) });
+        const value = e.target.value;
+        if (value !== '' && !isNaN(value)) {
+            onChange({ count: parseInt(value) });
+        }
     }, [onChange]);
 
-    return <div><label>Count</label> : <input type="number" value={config.count || 25} onChange={handleCountChange} /></div>;
+    return <ConfInput id="count" value={config.count || 25} onChange={handleCountChange}>Count</ConfInput>
 });
 
 const ExtraCountDecorator = React.memo(function({config = DECORATOR_EXTRA_COUNT_DEFAULTS, onChange}) {
     const [configured, setConfig] = useState(config);
 
     const handleNumberChange = useCallback(function(e) {
-        const value = parseFloat(e.target.value);
-        setConfig(configured => ({ ...configured, [e.target.id]: value }));
+        const value = e.target.value;
+        if (value !== '' && !isNaN(value)) {
+            setConfig(configured => ({ ...configured, [e.target.dataset.name]: parseFloat(value) }));
+        }
     }, []);
     useJsonEffect(configured, config, onChange);
 
     return <>
-        <div><label>Count</label> : <input type="number" id="count" value={configured.count} onChange={handleNumberChange} /></div>
-        <div><label>Extra chance</label> : <input type="number" id="extra_chance" value={configured.extra_chance} onChange={handleNumberChange} step="0.1" /></div>
-        <div><label>Extra count</label> : <input type="number" id="extra_count" value={configured.extra_count} onChange={handleNumberChange} /></div>
+        <ConfInput id="count" value={configured.count} onChange={handleNumberChange}>Count</ConfInput>
+        <ConfInput id="extra_chance" value={configured.extra_chance} onChange={handleNumberChange} step="0.05">Extra chance</ConfInput>
+        <ConfInput id="extra_count" value={configured.extra_count} onChange={handleNumberChange}>Extra count</ConfInput>
     </>
 });
 
@@ -105,14 +114,16 @@ const RangeDecorator = React.memo(function({config = DECORATOR_RANGE_DEFAULTS, o
     const [configured, setConfig] = useState(config);
 
     const handleNumberChange = useCallback(function(e) {
-        const value = parseInt(e.target.value);
-        setConfig(configured => ({ ...configured, [e.target.id]: value }));
+        const value = e.target.value;
+        if (value !== '' && !isNaN(value)) {
+            setConfig(configured => ({ ...configured, [e.target.dataset.name]: parseInt(value) }));
+        }
     }, []);
     useJsonEffect(configured, config, onChange);
 
     return <>
-        <div><label>Bottom offset</label> : <input type="number" id="bottom_offset" value={configured.bottom_offset} onChange={handleNumberChange} /></div>
-        <div><label>Top offset</label> : <input type="number" id="top_offset" value={configured.top_offset} onChange={handleNumberChange} /></div>
-        <div><label>Y maximum</label> : <input type="number" id="maximum" value={configured.maximum} onChange={handleNumberChange} /></div>
+        <ConfInput id="bottom_offset" value={configured.bottom_offset} onChange={handleNumberChange}>Bottom offset</ConfInput>
+        <ConfInput id="top_offset" value={configured.top_offset} onChange={handleNumberChange}>Top offset</ConfInput>
+        <ConfInput id="maximum" value={configured.maximum} onChange={handleNumberChange}>Y maximum</ConfInput>
     </>
 });

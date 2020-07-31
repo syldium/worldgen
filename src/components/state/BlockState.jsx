@@ -4,7 +4,7 @@ import { DataContext } from "../../context/DataContext";
 import { Button } from '../../ui/Button';
 import { getStateValue } from "../../utils/data";
 import { useEffect } from "react";
-import { CRUD, useCrud } from "../../hooks/form";
+import { CRUD, useCrud, useJsonEffect } from "../../hooks/form";
 
 export const BlockStateProvider = React.memo(function({block = { type: 'minecraft:simple_state_provider' }, onChange}) {
     const [provider, setProvider] = useState(block);
@@ -28,10 +28,10 @@ export const BlockStateProvider = React.memo(function({block = { type: 'minecraf
         setProvider(provider => ({ ...provider, entries }));
     }, []);
 
-    useEffect(() => onChange(provider), [onChange, provider]);
+    useJsonEffect(provider, block, onChange);
 
     return <div>
-        <label>Type</label>
+        <label>Provider type</label>
         <Select options={options} value={options.find(o => o.value === provider.type)} onChange={handleTypeChange} />
         {(provider.type === 'minecraft:simple_state_provider' || provider.type === 'minecraft:rotated_block_provider') && <BlockState block={provider.state} onChange={handleSimpleStateChange} />}
         {provider.type === 'minecraft:weighted_state_provider' && <WeightedStateProvider entries={(provider.entries || []).map(entry => entry.data)} onChange={handleWeighestStateChange} />}
@@ -72,8 +72,11 @@ export const BlockState = React.memo(function({block = {}, children, name, onCha
     }, [options, data.Name]);
 
     return <div className="form-group">
-        <Select options={options} value={selected} name={name} onChange={handleTypeChange} />
-        <BlockStateProperties block={data.Name} Properties={block.Properties} onChange={handlePropertiesChange}>{children}</BlockStateProperties>
+        <div className="flex-container">
+            <div style={{ flexGrow: 1 }}><Select options={options} value={selected} name={name} onChange={handleTypeChange} /></div>
+            {children}
+        </div>
+        <BlockStateProperties block={data.Name} Properties={block.Properties} onChange={handlePropertiesChange} />
     </div>;
 });
 
@@ -92,15 +95,15 @@ export const BlocksList = React.memo(function({list, onChange}) {
         dispatch({ type: CRUD.REMOVE, payload: blocks[index] });
     }, [blocks, dispatch]);
 
-    useEffect(() => onChange(blocks), [blocks, onChange]);
+    useJsonEffect(blocks, list, onChange);
 
     const values = [];
     blocks.forEach((entry, i) => {
         const key = i;
-        values.push(<BlockState block={entry} key={key} onChange={handleChange}><Button cat="danger" onClick={(e) => handleDeleteClick(e, i)}>Delete</Button></BlockState>);
+        values.push(<BlockState block={entry} key={key} onChange={handleChange}><Button cat="danger mlm" onClick={(e) => handleDeleteClick(e, i)}>Remove</Button></BlockState>);
     });
 
-    return <div className="form-group">{values}<Button onClick={handleAddClick}>Add</Button></div>;
+    return <div className="form-group">{values}<Button onClick={handleAddClick}>Add block</Button></div>;
 });
 
 const WeightedStateProvider = React.memo(function({entries = [], onChange}) {
@@ -127,7 +130,11 @@ function BlockStateProperties({block, children, onChange, Properties = {}}) {
         const value = e.target.value;
         setProperties(properties => ({ ...properties, [e.target.id]: value }));
     }, []);
-    useEffect(() => onChange(properties), [onChange, properties]);
+    useEffect(() => {
+        if (properties !== Properties) {
+            onChange(properties);
+        }
+    }, [onChange, properties, Properties]);
 
     const selects = [];
     states.forEach(possible => {

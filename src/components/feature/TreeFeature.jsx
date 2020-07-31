@@ -1,8 +1,10 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState, useEffect } from 'react';
 import { BlockStateProvider } from '../state/BlockState';
 import Select from 'react-select';
-import { TREE_FEATURE_CONFIG } from './FeatureDefaults';
-import { useJsonEffect } from '../../hooks/form';
+import { TREE_DECORATORS_OPTIONS, TREE_FEATURE_CONFIG } from './FeatureDefaults';
+import { useJsonEffect, useCrud, CRUD } from '../../hooks/form';
+import { ConfInput } from '../../ui/Input';
+import { Button } from '../../ui/Button';
 
 export function TreeFeatureConfig({configuration = TREE_FEATURE_CONFIG, onChange}) {
 
@@ -20,6 +22,9 @@ export function TreeFeatureConfig({configuration = TREE_FEATURE_CONFIG, onChange
     const handleTrunkPlacerChange = useCallback(function(trunk_placer) {
         setConfig(config => ({ ...config, trunk_placer }));
     }, []);
+    const handleDecoratorsChange = useCallback(function(decorators) {
+        setConfig(config => ({ ...config, decorators }));
+    }, []);
     useJsonEffect(config, configuration, onChange);
 
     return <div>
@@ -33,6 +38,7 @@ export function TreeFeatureConfig({configuration = TREE_FEATURE_CONFIG, onChange
         </fieldset>
         <FoliagePlacer placer={config.foliage_placer} onChange={handleFoliagePlacerChange} />
         <TrunkPlacer placer={config.trunk_placer} onChange={handleTrunkPlacerChange} />
+        <TreeDecorators data={configuration.decorators} onChange={handleDecoratorsChange}></TreeDecorators>
     </div>;
 }
 
@@ -55,13 +61,15 @@ const FoliagePlacer = React.memo(function({placer, onChange}) {
     }, []);
 
     const handleValueChange = useCallback(function(e) {
-        const name = e.target.id;
-        const value = parseInt(e.target.value);
-        setData(data => {
-            const n = { ...data, [name]: value };
-            onChange(n);
-            return n;
-        });
+        const name = e.target.dataset.name;
+        const value = e.target.value;
+        if (value !== '' && !isNaN(value)) {
+            setData(data => {
+                const n = { ...data, [name]: parseInt(value) };
+                onChange(n);
+                return n;
+            });
+        }
     }, [onChange]);
 
     const selected = useMemo(function() {
@@ -75,13 +83,13 @@ const FoliagePlacer = React.memo(function({placer, onChange}) {
             <Select options={options} name="foliage_placer_type" value={selected} onChange={handleTypeChange} />
         </div>
         <div className="form-group form-row">
-            <div><label htmlFor="radius">Radius</label> : <input type="number" id="radius" value={data.radius} onChange={handleValueChange} /></div>
-            <div><label htmlFor="offset">Offset</label> : <input type="number" id="offset" value={data.offset} onChange={handleValueChange} /></div>
+            <ConfInput id="radius" value={placer.radius} onChange={handleValueChange} min="0" max="8">Radius</ConfInput>
+            <ConfInput id="offset" value={placer.offset} onChange={handleValueChange} min="0" max="8">Offset</ConfInput>
             {(data.type === 'minecraft:blob_foliage_placer' ||
                 data.type === 'minecraft:bush_foliage_placer' ||
                 data.type === 'minecraft:fancy_foliage_placer' ||
                 data.type === 'minecraft:jungle_foliage_placer'
-            ) && <div><label htmlFor="height">Height</label> : <input type="number" id="height" value={data.height} onChange={handleValueChange} /></div>}
+            ) && <ConfInput id="height" value={placer.height} onChange={handleValueChange} min="0" max="16">Height</ConfInput>}
         </div>
     </fieldset>
 });
@@ -109,13 +117,15 @@ const TrunkPlacer = React.memo(function({placer, onChange}) {
     }, []);
 
     const handleValueChange = useCallback(function(e) {
-        const name = e.target.id;
-        const value = parseInt(e.target.value);
-        setData(data => {
-            const n = { ...data, [name]: value };
-            onChange(n);
-            return n;
-        });
+        const name = e.target.dataset.name;
+        const value = e.target.value;
+        if (value !== '' && !isNaN(value)) {
+            setData(data => {
+                const n = { ...data, [name]: parseInt(value) };
+                onChange(n);
+                return n;
+            });
+        }
     }, [onChange]);
 
     const selected = useMemo(function() {
@@ -129,9 +139,82 @@ const TrunkPlacer = React.memo(function({placer, onChange}) {
             <Select options={options} name="foliage_placer_type" defaultValue={selected} onChange={handleTypeChange} />
         </div>
         <div className="form-group form-row">
-            <div><label htmlFor="base_height">Base height</label> : <input type="number" id="base_height" min="0" max="32" value={placer.base_height} onChange={handleValueChange} /></div>
-            <div><label htmlFor="height_rand_a">First height rand</label> : <input type="number" id="height_rand_a" min="0" max="24" value={placer.height_rand_a} onChange={handleValueChange} /></div>
-            <div><label htmlFor="height_rand_b">Second height rand</label> : <input type="number" id="height_rand_b" min="0" max="24" value={placer.height_rand_b} onChange={handleValueChange} /></div>
+            <ConfInput id="base_height" value={placer.base_height} onChange={handleValueChange} min="0" max="32">Base height</ConfInput>
+            <ConfInput id="height_rand_a" value={placer.height_rand_a} onChange={handleValueChange} min="0" max="24">First height rand</ConfInput>
+            <ConfInput id="height_rand_b" value={placer.height_rand_b} onChange={handleValueChange} min="0" max="24">Second height rand</ConfInput>
         </div>
     </fieldset>
+});
+
+const TreeDecorators = React.memo(function({data, onChange}) {
+    const [decorators, dispatch] = useCrud(data);
+
+    const handleAddClick = useCallback(function(e) {
+        e.preventDefault();
+        const decorator = TREE_DECORATORS_OPTIONS.find(o => !decorators.some(d => d.type === o.value));
+        if (typeof decorator !== 'undefined') {
+            dispatch({ type: CRUD.ADD, payload: { type: decorator.value } });
+        }
+    }, [decorators, dispatch]);
+    const handleChange = useCallback(function(decorator, previous) {
+        dispatch({ type: CRUD.UPDATE, target: previous, payload: decorator });
+    }, [dispatch]);
+    const handleDeleteClick = useCallback(function(e, index) {
+        e.preventDefault();
+        dispatch({ type: CRUD.REMOVE, payload: decorators[index] });
+    }, [decorators, dispatch]);
+    useJsonEffect(decorators.map(decorator => {
+        delete decorator.index;
+        return decorator;
+    }), data, onChange);
+    
+    return <fieldset>
+        <legend>Tree decorators</legend>
+        {decorators.map((decorator, i) => {
+            const options = TREE_DECORATORS_OPTIONS.filter(o => o.value === decorator.type || !decorators.some(d => d.type === o.value));
+            return <TreeDecorator data={decorator }key={decorator.type} onChange={handleChange} options={options}>
+                <Button cat="danger mlm" onClick={(e) => handleDeleteClick(e, i)}>Remove</Button>
+            </TreeDecorator>
+        })}
+        {decorators.length < 5 && <div className="mtm"><Button onClick={handleAddClick}>Add decorator</Button></div>}
+    </fieldset>
+});
+
+const TreeDecorator = React.memo(function({children, data, options, onChange}) {
+    const [decorator, setDecorator] = useState(data);
+
+    const handleSelectChange = useCallback(function(option) {
+        setDecorator({ type: option.value, ...option.default });
+    }, []);
+    const handleAlterGroundChange = useCallback(function(provider) {
+        setDecorator(decorator => ({ type: decorator.type, provider }));
+    }, []);
+    const handleProbabilityChange = useCallback(function(e) {
+        const value = e.target.value;
+        if (value !== '' && !isNaN(value)) {
+            const probability = parseFloat(value);
+            setDecorator(decorator => ({ type: decorator.type, probability }));
+        }
+    }, []);
+    useEffect(() => {
+        if (decorator !== data) {
+            onChange(decorator, data);
+        }
+    }, [data, decorator, onChange]);
+
+    const CustomTag = ['minecraft:leave_vine', 'minecraft:trunk_vine'].indexOf(decorator.type) < 0 ? 'fieldset' : 'div';
+
+    const selected = useMemo(function() {
+        return options.find(o => o.value === decorator.type);
+    }, [decorator.type, options]);
+    return <CustomTag>
+        <legend style={{ fontWeight: 'normal', fontSize: 'inherit' }}>
+            <div style={{ width: '200px', display: 'inline-block' }}><Select options={options} value={selected} onChange={handleSelectChange} /></div>
+            {children}
+        </legend>
+        <div className="form-group">
+            {decorator.type === 'minecraft:alter_ground' && <BlockStateProvider block={decorator.provider} onChange={handleAlterGroundChange} />}
+            {(decorator.type === 'minecraft:beehive' || decorator.type === 'minecraft:cocoa') && <ConfInput id="probability" value={decorator.probability} onChange={handleProbabilityChange} min="0" max="1" step="0.05">Probability</ConfInput>}
+        </div>
+    </CustomTag>
 });

@@ -285,6 +285,17 @@ export const DECORATORS_OPTIONS = [
     return o;
 });
 
+export const TREE_DECORATORS_OPTIONS = [
+    { value: 'alter_ground', label: 'Alter ground' },
+    { value: 'beehive', label: 'Beehive', default: { probability: 0.02 } },
+    { value: 'cocoa', label: 'Cocoa beans', default: { probability: 0.2 } },
+    { value: 'leave_vine', label: 'Leave vine' },
+    { value: 'trunk_vine', label: 'Trunk vine' }
+].map(o => {
+    o.value = 'minecraft:' + o.value;
+    return o;
+});
+
 export const ORE_FEATURE_CONFIG = {
     target: {
         tag: "minecraft:base_stone_overworld",
@@ -378,7 +389,7 @@ export const TREE_FEATURE_CONFIG = {
 
 export const RANDOM_PATCH_FEATURE_CONFIG = {
     can_replace: false,
-    project: false,
+    project: true,
     need_water: false,
     xspread: 7,
     yspread: 3,
