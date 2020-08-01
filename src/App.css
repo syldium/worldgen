@@ -97,3 +97,21 @@ input[id|="react-select"] {
 .alert--danger {
     white-space: pre-line;
 }
+.btn {
+    font-weight: normal;
+    font-size: 1.6rem;
+}
+
+ol.sortable-container {
+    padding-left: 1rem;
+}
+.sortable-item {
+    pointer-events: auto !important;
+}
+.sortable-container > .sortable-item:hover {
+    cursor: grab;
+}
+body > .sortable-item:hover {
+    display: block;
+    cursor: grabbing;
+}

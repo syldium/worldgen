@@ -38,7 +38,7 @@ export const BlockState = React.memo(function ({ block = {}, children, name, onC
     }, [blocks, block.Name]);
 
     return <div className="form-group">
-        <div className="flex-container" style={{ alignItems: 'center' }}>
+        <div className="form-row">
             <div style={{ flexGrow: 1 }}><Select options={blocks} value={selected} name={name} onChange={handleTypeChange} /></div>
             {children}
         </div>

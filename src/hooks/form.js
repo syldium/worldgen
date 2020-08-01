@@ -1,6 +1,7 @@
 import { useReducer, useState, useCallback, useEffect, useContext, useMemo } from "react";
 import { useKeyedListOptions } from "./context";
 import { DataContext } from "../context/DataContext";
+import arrayMove from "array-move";
 
 function crudReducer(state, action) {
     switch (action.type) {
@@ -10,11 +11,17 @@ function crudReducer(state, action) {
             }
             return [...state, action.payload];
         case UPDATE:
-          return state.map(element => element === action.target ? action.payload : element);
+            if (typeof action.target === 'number' && typeof action.payload === 'number') {
+                return arrayMove(state, action.target, action.payload);
+            }
+            if (typeof action.target === 'undefined') {
+                throw new Error('Cannot update an element without its previous state.');
+            }
+            return state.map(element => element === action.target ? action.payload : element);
         case REMOVE:
-          return state.filter(element => element !== action.payload);
+            return state.filter(element => element !== action.payload);
         default:
-          return state;
+            return state;
     }
 }
 
@@ -25,17 +32,21 @@ export function useCrud(data = []) {
 /**
  * @param {object[]} [data] 
  * @param {object|function (object[]): object} [initial] 
- * @returns {[object[], function (SyntheticEvent): void, function (object, object): void, function (SyntheticEvent, number): void]}
+ * @returns {[object[], function (SyntheticEvent): void, function (number|object, number|object): void, function (SyntheticEvent, number): void}
  */
-export function useCrudPreset(data = [], initial = {}) {
+export function useCrudPreset(data = [], initial = {}, unshift = false) {
     const [entities, dispatch] = useCrud(data);
 
     const add = useCallback(function(e) {
         e.preventDefault();
         const n = typeof initial === 'function' ? initial(entities) : { ...initial };
-        dispatch({ type: CRUD.ADD, payload: n });
-    }, [dispatch, entities, initial]);
+        dispatch({ type: CRUD.ADD, payload: n, unshift });
+    }, [dispatch, entities, initial, unshift]);
     const update = useCallback(function(state, previous) {
+        if (state.hasOwnProperty('oldIndex') && state.hasOwnProperty('newIndex')) {
+            dispatch({ type: CRUD.UPDATE, target: state.oldIndex, payload: state.newIndex });
+            return;
+        }
         dispatch({ type: CRUD.UPDATE, target: previous, payload: state });
     }, [dispatch]);
     const remove = useCallback(function(e, index) {
@@ -85,7 +96,7 @@ export function useValueChange(changeCallback, obj) {
 export function useJsonEffect(state, props, onChange) {
     useEffect(() => {
         if (JSON.stringify(state) !== JSON.stringify(props)) {
-            onChange(state);
+            onChange(state, props);
         }
     }, [state, props, onChange]);
 }

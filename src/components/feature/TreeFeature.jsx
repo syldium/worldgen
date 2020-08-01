@@ -169,14 +169,13 @@ const TreeDecorators = React.memo(function({data, onChange}) {
     }), data, onChange);
     
     return <fieldset>
-        <legend>Tree decorators</legend>
+        <legend>Tree decorators {decorators.length < 5 && <Button onClick={handleAddClick}>Add decorator</Button>}</legend>
         {decorators.map((decorator, i) => {
             const options = TREE_DECORATORS_OPTIONS.filter(o => o.value === decorator.type || !decorators.some(d => d.type === o.value));
             return <TreeDecorator data={decorator }key={decorator.type} onChange={handleChange} options={options}>
                 <Button cat="danger mlm" onClick={(e) => handleDeleteClick(e, i)}>Remove</Button>
             </TreeDecorator>
         })}
-        {decorators.length < 5 && <div className="mtm"><Button onClick={handleAddClick}>Add decorator</Button></div>}
     </fieldset>
 });
 
