@@ -3,7 +3,7 @@ import { BlocksList } from '../state/BlockState';
 import { RANDOM_PATCH_FEATURE_CONFIG } from './FeatureDefaults';
 import { useJsonEffect } from '../../hooks/form';
 import { BlockStateProvider } from '../state/BlockStateProvider';
-import { NumberInput } from '../../ui/Input';
+import { NumberInput, ConfInput } from '../../ui/Input';
 
 export function RandomPatchFeature({configuration, onChange}) {
 
@@ -21,9 +21,7 @@ export function RandomPatchFeature({configuration, onChange}) {
         onChange({ ...config, ...value });
     }, [config, onChange]);
     const handleCheckboxChange = useCallback(function(e) {
-        const name = e.target.id;
-        const value = e.target.checked;
-        onChange({ ...config, [name]: value });
+        onChange({ ...config, [e.target.dataset.name]: e.target.checked });
     }, [config, onChange]);
 
     return <div>
@@ -42,15 +40,15 @@ export function RandomPatchFeature({configuration, onChange}) {
         <fieldset>
             <legend>Settings</legend>
             <div className="form-group form-row">
-                <NumberInput id="xspread" value={config.xspread} onChange={handleValueChange}>X spread</NumberInput>
-                <NumberInput id="yspread" value={config.yspread} onChange={handleValueChange}>Y spread</NumberInput>
-                <NumberInput id="zspread" value={config.zspread} onChange={handleValueChange}>Z spread</NumberInput>
-                <NumberInput id="tries" value={config.tries} onChange={handleValueChange}>Tries</NumberInput>
+                <NumberInput id="xspread" value={config.xspread} upChange={handleValueChange}>X spread</NumberInput>
+                <NumberInput id="yspread" value={config.yspread} upChange={handleValueChange}>Y spread</NumberInput>
+                <NumberInput id="zspread" value={config.zspread} upChange={handleValueChange}>Z spread</NumberInput>
+                <NumberInput id="tries" value={config.tries} upChange={handleValueChange}>Tries</NumberInput>
             </div>
             <div className="form-group form-row">
-                <div><label htmlFor="need_water">Need water</label> : <input type="checkbox" className="checkbox" id="need_water" checked={config.need_water} onChange={handleCheckboxChange} /></div>
-                <div><label htmlFor="project">Project</label> : <input type="checkbox" className="checkbox" id="project" checked={config.project} onChange={handleCheckboxChange} /></div>
-                <div><label htmlFor="can_replace">Can replace</label> : <input type="checkbox" className="checkbox" id="can_replace" checked={config.can_replace} onChange={handleCheckboxChange} /></div>
+                <ConfInput id="need_water" checked={config.need_water} onChange={handleCheckboxChange}>Need water</ConfInput>
+                <ConfInput id="project" checked={config.project} onChange={handleCheckboxChange}>Project</ConfInput>
+                <ConfInput id="can_replace" checked={config.can_replace} onChange={handleCheckboxChange}>Can replace</ConfInput>
             </div>
         </fieldset>
     </div>;
