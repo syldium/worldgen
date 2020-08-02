@@ -5,10 +5,11 @@ import { TreeFeatureConfig } from './TreeFeature';
 import { Button } from '../../ui/Button';
 import { DecoratorsList } from './Decorator';
 import { buildDecorated, findDecorators } from '../../utils/data';
-import { DECORATED_TREE_CONFIG, DECORATED_RANDOM_PATCH_CONFIG, DECORATED_ORE_FEATURE_CONFIG } from './FeatureDefaults';
+import { DECORATED_TREE_CONFIG, DECORATED_RANDOM_PATCH_CONFIG, DECORATED_ORE_FEATURE_CONFIG, DECORATED_HUGE_FUNGUS_CONFIG } from './FeatureDefaults';
 import { RandomPatchFeature } from './RandomPatchFeature';
 import { OreFeatureConfig } from './OreFeature';
 import { NamespacedKey } from '../NamespacedKey';
+import { HugeFungusFeature } from './HugeFungusFeature';
 
 export function RawConfiguredFeature({data = DECORATED_TREE_CONFIG, onSave}) {
 
@@ -40,6 +41,7 @@ export function RawConfiguredFeature({data = DECORATED_TREE_CONFIG, onSave}) {
 
     const options = useMemo(function() {
         return [
+            { value: 'huge_fungus', label: 'Huge fungus', default: DECORATED_HUGE_FUNGUS_CONFIG },
             { value: 'ore', label: 'Ore', default: DECORATED_ORE_FEATURE_CONFIG },
             { value: 'random_patch', label: 'Random patch', default: DECORATED_RANDOM_PATCH_CONFIG },
             { value: 'tree', label: 'Tree', default: DECORATED_TREE_CONFIG }
@@ -57,6 +59,7 @@ export function RawConfiguredFeature({data = DECORATED_TREE_CONFIG, onSave}) {
             <Select options={options} value={options.find(o => o.value === feature.type)} onChange={handleSelectChange} />
         </div>
         <hr />
+        {feature.type === 'minecraft:huge_fungus' && <HugeFungusFeature configuration={feature.config} onChange={handleFeatureChange} />}
         {feature.type === 'minecraft:ore' && <OreFeatureConfig configuration={feature.config} onChange={handleFeatureChange} />}
         {feature.type === 'minecraft:random_patch' && <RandomPatchFeature configuration={feature.config} onChange={handleFeatureChange} />}
         {feature.type === 'minecraft:tree' && <TreeFeatureConfig configuration={feature.config} onChange={handleFeatureChange} />}

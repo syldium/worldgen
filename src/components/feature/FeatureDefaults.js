@@ -296,6 +296,25 @@ export const TREE_DECORATORS_OPTIONS = [
     return o;
 });
 
+export const HUGE_FUNGUS_FEATURE_CONFIG = {
+    hat_state: {
+        Name: "minecraft:nether_wart_block"
+    },
+    decor_state: {
+        Name: "minecraft:shroomlight"
+    },
+    planted: false,
+    valid_base_block: {
+        Name: "minecraft:crimson_nylium"
+    },
+    stem_state: {
+        Properties: {
+            axis: "y"
+        },
+        Name: "minecraft:crimson_stem"
+    }
+};
+
 export const ORE_FEATURE_CONFIG = {
     target: {
         tag: "minecraft:base_stone_overworld",
@@ -413,6 +432,22 @@ export const RANDOM_PATCH_FEATURE_CONFIG = {
     block_placer: {
         type: "minecraft:simple_block_placer"
     }
+}
+
+export const DECORATED_HUGE_FUNGUS_CONFIG = {
+    config: {
+        feature: {
+            config: HUGE_FUNGUS_FEATURE_CONFIG,
+            type: "minecraft:huge_fungus"
+        },
+        decorator: {
+            config: {
+                count: 8
+            },
+            type: "minecraft:count_multilayer"
+        }
+    },
+    type: "minecraft:decorated"
 }
 
 export const DECORATED_RANDOM_PATCH_CONFIG = {

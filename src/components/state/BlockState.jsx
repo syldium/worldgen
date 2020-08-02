@@ -7,7 +7,7 @@ import { useEffect } from "react";
 import { useCrudPreset, useBlocksOptions } from "../../hooks/form";
 import { ConfInput, NumberInput } from "../../ui/Input";
 
-export const BlockState = React.memo(function ({ block = {}, children, name, onChange, options }) {
+export const BlockState = React.memo(function ({ block = {}, children, className = 'form-group', inputId, name, onChange, options }) {
     const context = useContext(DataContext);
 
     const handleTypeChange = useCallback(function (option) {
@@ -38,9 +38,9 @@ export const BlockState = React.memo(function ({ block = {}, children, name, onC
         return blocks.find(o => o.value === block.Name);
     }, [blocks, block.Name]);
 
-    return <div className="form-group">
+    return <div className={className}>
         <div className="form-row">
-            <div style={{ flexGrow: 1 }}><Select options={blocks} value={selected} name={name} onChange={handleTypeChange} /></div>
+            <div style={{ flexGrow: 1 }}><Select options={blocks} value={selected} name={name} onChange={handleTypeChange} inputId={inputId} /></div>
             {children}
         </div>
         <BlockStateProperties block={block.Name} properties={block.Properties} onChange={handlePropertiesChange} />

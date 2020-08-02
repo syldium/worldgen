@@ -14,7 +14,7 @@ export const ConfInput = React.memo(function ({
 
     const uId = name || Math.random().toString(36).substr(2, 5) + '-' + id;
 
-    if (type === 'checked' || typeof checked !== 'undefined' || typeof defaultChecked !== 'undefined') {
+    if (type === 'checkbox' || typeof checked !== 'undefined' || typeof defaultChecked !== 'undefined') {
         return <div className={className}>
             <label htmlFor={uId}>{children}</label> : <input type={type || 'checkbox'} data-name={name || id} name={name} id={uId} className="checkbox" {...{ ...attr, checked, defaultChecked, onChange, value, style }} />
         </div>
