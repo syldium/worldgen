@@ -81,6 +81,14 @@ const SpawnDefinition = React.memo(function({data, index, options, onChange, onD
     const handleValueChange = useCallback(function(value) {
         onChange({ ...data, ...value }, data);
     }, [data, onChange]);
+    const handleCountChange = function(count) {
+        const name = Object.keys(count)[0];
+        const value = count[name];
+        if ((name === 'minCount' && value <= data.maxCount)
+            || (name === 'maxCount' && value >= data.minCount)) {
+                onChange({ ...data, [name]: value }, data);
+        } 
+    };
     const handleDelete = useCallback(function(e) {
         onDelete(e, index);
     }, [index, onDelete]);
@@ -95,8 +103,8 @@ const SpawnDefinition = React.memo(function({data, index, options, onChange, onD
         </div>
         <div className="form-group form-row">
             <NumberInput id="weight" value={data.weight} upChange={handleValueChange}>Weight</NumberInput>
-            <NumberInput id="minCount" value={data.weight} upChange={handleValueChange}>Min count</NumberInput>
-            <NumberInput id="maxCount" value={data.weight} upChange={handleValueChange}>Max count</NumberInput>
+            <NumberInput id="minCount" value={data.minCount} upChange={handleCountChange}>Min count</NumberInput>
+            <NumberInput id="maxCount" value={data.maxCount} upChange={handleCountChange}>Max count</NumberInput>
             <div className="form-inline"><Button cat="danger" onClick={handleDelete}>Delete</Button></div>
         </div>
         <hr /> 
