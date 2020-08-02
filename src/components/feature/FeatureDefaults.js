@@ -278,6 +278,7 @@ export const DECORATORS_OPTIONS = [
     { value: 'decorated', label: 'Decorated' },
     { value: 'fire', label: 'Fire' },
     { value: 'range', label: 'Range' },
+    { value: 'range_biased', label: 'Range biased' },
     { value: 'range_very_biased', label: 'Range very biased' },
     { value: 'square', label: 'Square' }
 ].map(o => {
@@ -326,6 +327,24 @@ export const ORE_FEATURE_CONFIG = {
     size: 30
 };
 
+export const SPRING_FEATURE_CONFIG = {
+    rock_count: 4,
+    hole_count: 1,
+    valid_blocks: [
+        "minecraft:stone",
+        "minecraft:granite",
+        "minecraft:diorite",
+        "minecraft:andesite"
+    ],
+    state: {
+        Properties: {
+            falling: "true"
+        },
+        Name: "minecraft:water"
+    },
+    requires_block_below: true
+}
+
 export const DECORATED_ORE_FEATURE_CONFIG = {
     config: {
         feature: {
@@ -357,6 +376,44 @@ export const DECORATED_ORE_FEATURE_CONFIG = {
         decorator: {
             config: {
                 count: 2
+            },
+            type: "minecraft:count"
+        }
+    },
+    type: "minecraft:decorated"
+};
+
+export const DECORATED_SPRING_FEATURE_CONFIG = {
+    config: {
+        feature: {
+            config: {
+                feature: {
+                    config: {
+                        feature: {
+                            config: SPRING_FEATURE_CONFIG,
+                            type: "minecraft:spring_feature"
+                        },
+                        decorator: {
+                            config: {
+                                bottom_offset: 8,
+                                top_offset: 8,
+                                maximum: 256
+                            },
+                            type: "minecraft:range_biased"
+                        }
+                    },
+                    type: "minecraft:decorated"
+                },
+                decorator: {
+                    config: {},
+                    type: "minecraft:square"
+                }
+            },
+            type: "minecraft:decorated"
+        },
+        decorator: {
+            config: {
+                count: 50
             },
             type: "minecraft:count"
         }

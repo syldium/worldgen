@@ -5,11 +5,12 @@ import { TreeFeatureConfig } from './TreeFeature';
 import { Button } from '../../ui/Button';
 import { DecoratorsList } from './Decorator';
 import { buildDecorated, findDecorators } from '../../utils/data';
-import { DECORATED_TREE_CONFIG, DECORATED_RANDOM_PATCH_CONFIG, DECORATED_ORE_FEATURE_CONFIG, DECORATED_HUGE_FUNGUS_CONFIG } from './FeatureDefaults';
+import { DECORATED_TREE_CONFIG, DECORATED_RANDOM_PATCH_CONFIG, DECORATED_ORE_FEATURE_CONFIG, DECORATED_HUGE_FUNGUS_CONFIG, DECORATED_SPRING_FEATURE_CONFIG } from './FeatureDefaults';
 import { RandomPatchFeature } from './RandomPatchFeature';
 import { OreFeatureConfig } from './OreFeature';
 import { NamespacedKey } from '../NamespacedKey';
 import { HugeFungusFeature } from './HugeFungusFeature';
+import { SpringFeature } from './SpringFeature';
 
 export function RawConfiguredFeature({data = DECORATED_TREE_CONFIG, onSave}) {
 
@@ -43,6 +44,7 @@ export function RawConfiguredFeature({data = DECORATED_TREE_CONFIG, onSave}) {
         return [
             { value: 'huge_fungus', label: 'Huge fungus', default: DECORATED_HUGE_FUNGUS_CONFIG },
             { value: 'ore', label: 'Ore', default: DECORATED_ORE_FEATURE_CONFIG },
+            { value: 'spring_feature', label: 'Spring', default: DECORATED_SPRING_FEATURE_CONFIG },
             { value: 'random_patch', label: 'Random patch', default: DECORATED_RANDOM_PATCH_CONFIG },
             { value: 'tree', label: 'Tree', default: DECORATED_TREE_CONFIG }
         ].map(o => {
@@ -61,6 +63,7 @@ export function RawConfiguredFeature({data = DECORATED_TREE_CONFIG, onSave}) {
         <hr />
         {feature.type === 'minecraft:huge_fungus' && <HugeFungusFeature configuration={feature.config} onChange={handleFeatureChange} />}
         {feature.type === 'minecraft:ore' && <OreFeatureConfig configuration={feature.config} onChange={handleFeatureChange} />}
+        {feature.type === 'minecraft:spring_feature' && <SpringFeature configuration={feature.config} onChange={handleFeatureChange} />}
         {feature.type === 'minecraft:random_patch' && <RandomPatchFeature configuration={feature.config} onChange={handleFeatureChange} />}
         {feature.type === 'minecraft:tree' && <TreeFeatureConfig configuration={feature.config} onChange={handleFeatureChange} />}
         <DecoratorsList data={decorators} key={feature.type} onChange={handleDecoratorsChange} />

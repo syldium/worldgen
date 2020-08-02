@@ -1,5 +1,6 @@
 import React, { useCallback, useContext, useMemo } from "react";
 import Select from "react-select";
+import { BlockSelect } from "./BlockPredicate";
 import { DataContext } from "../../context/DataContext";
 import { Button } from '../../ui/Button';
 import { getStateValue } from "../../utils/data";
@@ -76,6 +77,32 @@ export const BlocksList = React.memo(function ({ list, onChange }) {
     </div>;
 });
 
+export const BlocksNamesList = React.memo(function ({ list, onChange }) {
+    const options = useBlocksOptions();
+
+    const [blocks, handleAdd, handleChange, handleRemove] = useCrudPreset(list, function (blocks) {
+        // Get the first non taken block name
+        return (options.find(o => !blocks.some(b => b === o.value)) || { value: 'minecraft:stone' }).value;
+    });
+
+    useEffect(() => {
+        if (blocks !== list) {
+            onChange(blocks);
+        }
+    }, [blocks, list, onChange]);
+
+    return <div className="form-group">
+        {blocks.map((block, i) => {
+            const filteredOptions = options.filter(o => o.value === block || !blocks.some(d => d === o.value));
+            return <div className="form-group form-row" key={block}>
+                <div style={{ flexGrow: 1 }}><BlockSelect block={block} options={filteredOptions} onChange={o => handleChange(o.value, block)} /></div>
+                <Button cat="danger mlm" onClick={(e) => handleRemove(e, i)}>Remove</Button>
+            </div>
+        })}
+        <Button cat="primary mts" onClick={handleAdd}>Add block</Button>
+    </div>;
+});
+
 function BlockStateProperties({ block, children, onChange, properties = {} }) {
     const states = (useContext(DataContext).vanilla.blocks.find(b => 'minecraft:' + b.name === block) || { states: [] }).states;
 
@@ -95,7 +122,7 @@ function BlockStateProperties({ block, children, onChange, properties = {} }) {
                     <ConfInput key={possible.name} id={possible.name}
                         checked={properties[possible.name] === 'true'}
                         onChange={handleCheckboxChange}>
-                            {possible.name}
+                        {possible.name}
                     </ConfInput>
                 );
                 break;
@@ -104,7 +131,7 @@ function BlockStateProperties({ block, children, onChange, properties = {} }) {
                     <NumberInput key={possible.name} id={possible.name}
                         value={properties[possible.name] || 0} upChange={onChange}
                         min="0" max={possible.num_values - 1}>
-                            {possible.name}
+                        {possible.name}
                     </NumberInput>
                 );
                 break;
