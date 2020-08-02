@@ -2,7 +2,7 @@ export const VANILLA_SURFACE_BUILDERS = [
     { value: 'badlands', label: 'Badlands' },
     { value: 'basalt_deltas', label: 'Basalt Deltas' },
     { value: 'crimson_forest', label: 'Crimson forest' },
-    { value: 'deset', label: 'Desert' },
+    { value: 'desert', label: 'Desert' },
     { value: 'end', label: 'End' },
     { value: 'eroded_badlands', label: 'Eroded Badlands' },
     { value: 'frozen_ocean', label: 'Frozen ocean' },
