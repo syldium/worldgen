@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useEffect } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import Select from 'react-select';
 import { STARTS } from './BiomeDefaults';
 import { useJsonEffect } from '../../hooks/form';
