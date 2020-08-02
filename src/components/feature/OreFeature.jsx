@@ -1,24 +1,21 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback } from 'react';
 import { ORE_FEATURE_CONFIG } from "./FeatureDefaults";
 import { BlockPredicate } from '../state/BlockPredicate';
 import { BlockState } from '../state/BlockState';
 import { useJsonEffect } from '../../hooks/form';
+import { NumberInput } from '../../ui/Input';
 
-export function OreFeatureConfig({configuration = ORE_FEATURE_CONFIG, onChange}) {
-    const [config, setConfig] = useState(configuration);
-
+export function OreFeatureConfig({configuration, onChange}) {
     const handlePredicateChange = useCallback(function(target) {
-        setConfig(config => ({ ...config, target }));
-    }, []);
+        onChange({ ...configuration, target });
+    }, [configuration, onChange]);
     const handleBlockChange = useCallback(function(state) {
-        setConfig(config => ({ ...config, state }));
-    }, []);
-    const handleValueChange = useCallback(function(e) {
-        const name = e.target.id;
-        const value = parseInt(e.target.value);
-        setConfig(config => ({ ...config, [name]: value }));
-    }, []);
-    useJsonEffect(config, configuration, onChange);
+        onChange({ ...configuration, state });
+    }, [configuration, onChange]);
+    const handleValueChange = useCallback(function(value) {
+        onChange({ ...configuration, ...value });
+    }, [configuration, onChange]);
+    const config = useJsonEffect(configuration || ORE_FEATURE_CONFIG, configuration, onChange);
 
     return <div>
         <fieldset>
@@ -31,9 +28,7 @@ export function OreFeatureConfig({configuration = ORE_FEATURE_CONFIG, onChange})
         </fieldset>
         <fieldset>
             <legend>Settings</legend>
-            <div className="form-group">
-                <label htmlFor="size">Size</label> : <input type="number" id="size" value={config.size} onChange={handleValueChange} />
-            </div>
+            <NumberInput id="size" value={config.size} upChange={handleValueChange}>Size</NumberInput>
         </fieldset>
     </div>;
 }

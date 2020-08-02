@@ -3,7 +3,7 @@ import { BlockStateProvider } from '../state/BlockStateProvider';
 import Select from 'react-select';
 import { TREE_DECORATORS_OPTIONS, TREE_FEATURE_CONFIG } from './FeatureDefaults';
 import { useJsonEffect, useCrud, CRUD } from '../../hooks/form';
-import { ConfInput } from '../../ui/Input';
+import { NumberInput } from '../../ui/Input';
 import { Button } from '../../ui/Button';
 
 export function TreeFeatureConfig({configuration = TREE_FEATURE_CONFIG, onChange}) {
@@ -17,10 +17,10 @@ export function TreeFeatureConfig({configuration = TREE_FEATURE_CONFIG, onChange
         setConfig(config => ({ ...config, leaves_provider }));
     }, []);
     const handleFoliagePlacerChange = useCallback(function(foliage_placer) {
-        setConfig(config => ({ ...config, foliage_placer }));
+        setConfig(config => ({ ...config, foliage_placer: { ...config.foliage_placer, ...foliage_placer } }));
     }, []);
     const handleTrunkPlacerChange = useCallback(function(trunk_placer) {
-        setConfig(config => ({ ...config, trunk_placer }));
+        setConfig(config => ({ ...config, trunk_placer: { ...config.trunk_placer, ...trunk_placer } }));
     }, []);
     const handleDecoratorsChange = useCallback(function(decorators) {
         setConfig(config => ({ ...config, decorators }));
@@ -43,8 +43,6 @@ export function TreeFeatureConfig({configuration = TREE_FEATURE_CONFIG, onChange
 }
 
 const FoliagePlacer = React.memo(function({placer, onChange}) {
-    const [data, setData] = useState(placer);
-
     const options = useMemo(function() {
         return [
             { value: 'blob_foliage_placer', label: 'Blob foliage placer' },
@@ -56,25 +54,12 @@ const FoliagePlacer = React.memo(function({placer, onChange}) {
     }, []);
 
     const handleTypeChange = useCallback(function(option) {
-        const type = option.value;
-        setData(data => ({ ...data, type }));
-    }, []);
-
-    const handleValueChange = useCallback(function(e) {
-        const name = e.target.dataset.name;
-        const value = e.target.value;
-        if (value !== '' && !isNaN(value)) {
-            setData(data => {
-                const n = { ...data, [name]: parseInt(value) };
-                onChange(n);
-                return n;
-            });
-        }
+        onChange({ type: option.value });
     }, [onChange]);
 
     const selected = useMemo(function() {
-        return options.find(o => o.value === data.type) || options[0];
-    }, [options, data.type]);
+        return options.find(o => o.value === placer.type) || options[0];
+    }, [options, placer.type]);
 
     return <fieldset>
         <legend>Foliage placer</legend>
@@ -83,20 +68,18 @@ const FoliagePlacer = React.memo(function({placer, onChange}) {
             <Select options={options} name="foliage_placer_type" value={selected} onChange={handleTypeChange} />
         </div>
         <div className="form-group form-row">
-            <ConfInput id="radius" value={placer.radius} onChange={handleValueChange} min="0" max="8">Radius</ConfInput>
-            <ConfInput id="offset" value={placer.offset} onChange={handleValueChange} min="0" max="8">Offset</ConfInput>
-            {(data.type === 'minecraft:blob_foliage_placer' ||
-                data.type === 'minecraft:bush_foliage_placer' ||
-                data.type === 'minecraft:fancy_foliage_placer' ||
-                data.type === 'minecraft:jungle_foliage_placer'
-            ) && <ConfInput id="height" value={placer.height} onChange={handleValueChange} min="0" max="16">Height</ConfInput>}
+            <NumberInput id="radius" value={placer.radius} upChange={onChange} max="8">Radius</NumberInput>
+            <NumberInput id="offset" value={placer.offset} upChange={onChange} max="8">Offset</NumberInput>
+            {(placer.type === 'minecraft:blob_foliage_placer' ||
+                placer.type === 'minecraft:bush_foliage_placer' ||
+                placer.type === 'minecraft:fancy_foliage_placer' ||
+                placer.type === 'minecraft:jungle_foliage_placer'
+            ) && <NumberInput id="height" value={placer.height} upChange={onChange} max="16" defaultValue="3">Height</NumberInput>}
         </div>
     </fieldset>
 });
 
 const TrunkPlacer = React.memo(function({placer, onChange}) {
-    const [data, setData] = useState(placer);
-
     const options = useMemo(function() {
         return [
             { value: 'straight_trunk_placer', label: 'Straight trunk placer' },
@@ -112,25 +95,12 @@ const TrunkPlacer = React.memo(function({placer, onChange}) {
     }, []);
 
     const handleTypeChange = useCallback(function(option) {
-        const type = option.value;
-        setData(data => ({ ...data, type }));
-    }, []);
-
-    const handleValueChange = useCallback(function(e) {
-        const name = e.target.dataset.name;
-        const value = e.target.value;
-        if (value !== '' && !isNaN(value)) {
-            setData(data => {
-                const n = { ...data, [name]: parseInt(value) };
-                onChange(n);
-                return n;
-            });
-        }
+        onChange({ type: option.value });
     }, [onChange]);
 
     const selected = useMemo(function() {
-        return options.find(o => o.value === data.type) || options[0];
-    }, [data.type, options]);
+        return options.find(o => o.value === placer.type) || options[0];
+    }, [placer.type, options]);
 
     return <fieldset>
         <legend>Trunk placer</legend>
@@ -139,9 +109,9 @@ const TrunkPlacer = React.memo(function({placer, onChange}) {
             <Select options={options} name="foliage_placer_type" defaultValue={selected} onChange={handleTypeChange} />
         </div>
         <div className="form-group form-row">
-            <ConfInput id="base_height" value={placer.base_height} onChange={handleValueChange} min="0" max="32">Base height</ConfInput>
-            <ConfInput id="height_rand_a" value={placer.height_rand_a} onChange={handleValueChange} min="0" max="24">First height rand</ConfInput>
-            <ConfInput id="height_rand_b" value={placer.height_rand_b} onChange={handleValueChange} min="0" max="24">Second height rand</ConfInput>
+            <NumberInput id="base_height" value={placer.base_height} upChange={onChange} max="32">Base height</NumberInput>
+            <NumberInput id="height_rand_a" value={placer.height_rand_a} upChange={onChange} max="24">First height rand</NumberInput>
+            <NumberInput id="height_rand_b" value={placer.height_rand_b} upChange={onChange} max="24">Second height rand</NumberInput>
         </div>
     </fieldset>
 });
@@ -188,12 +158,8 @@ const TreeDecorator = React.memo(function({children, data, options, onChange}) {
     const handleAlterGroundChange = useCallback(function(provider) {
         setDecorator(decorator => ({ type: decorator.type, provider }));
     }, []);
-    const handleProbabilityChange = useCallback(function(e) {
-        const value = e.target.value;
-        if (value !== '' && !isNaN(value)) {
-            const probability = parseFloat(value);
-            setDecorator(decorator => ({ type: decorator.type, probability }));
-        }
+    const handleProbabilityChange = useCallback(function(probability) {
+        setDecorator(decorator => ({ type: decorator.type, probability }));
     }, []);
     useEffect(() => {
         if (decorator !== data) {
@@ -213,7 +179,7 @@ const TreeDecorator = React.memo(function({children, data, options, onChange}) {
         </legend>
         <div className="form-group">
             {decorator.type === 'minecraft:alter_ground' && <BlockStateProvider block={decorator.provider} onChange={handleAlterGroundChange} />}
-            {(decorator.type === 'minecraft:beehive' || decorator.type === 'minecraft:cocoa') && <ConfInput id="probability" value={decorator.probability} onChange={handleProbabilityChange} min="0" max="1" step="0.05">Probability</ConfInput>}
+            {(decorator.type === 'minecraft:beehive' || decorator.type === 'minecraft:cocoa') && <NumberInput id="probability" value={decorator.probability} onChange={handleProbabilityChange} max="1" step="0.05" defaultValue="0.05">Probability</NumberInput>}
         </div>
     </CustomTag>
 });

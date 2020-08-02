@@ -61,8 +61,6 @@ input:focus {
     flex-wrap: wrap;
     justify-content: space-evenly;
     align-items: center;
-    margin-right: -5px;
-    margin-left: -5px;
 }
 .text-muted {
     display: inline-block;

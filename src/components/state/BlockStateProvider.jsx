@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useMemo } from "react";
 import Select from "react-select";
 import { Button } from '../../ui/Button';
-import { ConfInput } from '../../ui/Input';
+import { NumberInput } from '../../ui/Input';
 import { useEffect } from "react";
 import { useJsonEffect, useCrudPreset, useBlocksOptions } from "../../hooks/form";
 import { BlockState } from "./BlockState";
@@ -20,8 +20,13 @@ export const BlockStateProvider = React.memo(function({block = { type: 'minecraf
     }, []);
 
     const handleTypeChange = useCallback(function(option) {
-        setProvider({ type: option.value });
-    }, []);
+        const similarities = ['minecraft:simple_state_provider', 'minecraft:rotated_block_provider'];
+        if (similarities.includes(provider.type) && similarities.includes(option.value)) {
+            setProvider({ ...provider, type: option.value });
+        } else {
+            setProvider({ type: option.value });
+        }
+    }, [provider]);
 
     const handleSimpleStateChange = useCallback(function(state) {
         setProvider(provider => ({ ...provider, state }));
@@ -60,15 +65,11 @@ const WeightedStateProvider = React.memo(function({entries = [], onChange}) {
     const handleStateChange = useCallback(function(state, i) {
         handleChange({ ...blocks[i], data: state }, blocks[i]);
     }, [blocks, handleChange]);
-    const handleWeightChange = useCallback(function(e, i) {
-        const value = e.target.value;
-        if (value !== '' && !isNaN(value)) {
-            const v = parseInt(value);
-            if (v === 1) {
-                handleChange({ data: blocks[i].data }, blocks[i]);
-            } else {
-                handleChange({ weight: v, data: blocks[i].data }, blocks[i]);
-            }
+    const handleWeightChange = useCallback(function(weight, i) {
+        if (weight === 1) {
+            handleChange({ data: blocks[i].data }, blocks[i]);
+        } else {
+            handleChange({ weight, data: blocks[i].data }, blocks[i]);
         }
     }, [blocks, handleChange]);
 
@@ -82,7 +83,7 @@ const WeightedStateProvider = React.memo(function({entries = [], onChange}) {
         {blocks.map((block, i) => {
             const filteredOptions = options.filter(o => o.value === block.data.Name || !blocks.some(d => d.data.Name === o.value));
             return <BlockState block={block.data} options={filteredOptions} key={block.data.Name} onChange={state => handleStateChange(state, i)}>
-                <ConfInput id="weight" value={block.weight || 1} onChange={e => handleWeightChange(e, i)} className="mlm">Weight</ConfInput>
+                <NumberInput id="weight" value={block.weight || 1} min="1" onChange={weight => handleWeightChange(weight, i)} className="mlm">Weight</NumberInput>
                 <Button cat="danger mlm" onClick={(e) => handleRemove(e, i)}>Remove</Button>
             </BlockState>
         })}

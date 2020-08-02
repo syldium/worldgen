@@ -14,46 +14,46 @@ export const EFFECTS = {
 export const FEATURES = [
     [],
     [
-      "minecraft:lake_water",
-      "minecraft:lake_lava"
+        "minecraft:lake_water",
+        "minecraft:lake_lava"
     ],
     [],
     [
-      "minecraft:monster_room"
+        "minecraft:monster_room"
     ],
     [],
     [],
     [
-      "minecraft:ore_dirt",
-      "minecraft:ore_gravel",
-      "minecraft:ore_granite",
-      "minecraft:ore_diorite",
-      "minecraft:ore_andesite",
-      "minecraft:ore_coal",
-      "minecraft:ore_iron",
-      "minecraft:ore_gold",
-      "minecraft:ore_redstone",
-      "minecraft:ore_diamond",
-      "minecraft:ore_lapis",
-      "minecraft:disk_sand",
-      "minecraft:disk_clay",
-      "minecraft:disk_gravel"
+        "minecraft:ore_dirt",
+        "minecraft:ore_gravel",
+        "minecraft:ore_granite",
+        "minecraft:ore_diorite",
+        "minecraft:ore_andesite",
+        "minecraft:ore_coal",
+        "minecraft:ore_iron",
+        "minecraft:ore_gold",
+        "minecraft:ore_redstone",
+        "minecraft:ore_diamond",
+        "minecraft:ore_lapis",
+        "minecraft:disk_sand",
+        "minecraft:disk_clay",
+        "minecraft:disk_gravel"
     ],
     [],
     [
-      "minecraft:patch_tall_grass_2",
-      "minecraft:plain_vegetation",
-      "minecraft:flower_plain_decorated",
-      "minecraft:patch_grass_plain",
-      "minecraft:brown_mushroom_normal",
-      "minecraft:red_mushroom_normal",
-      "minecraft:patch_sugar_cane",
-      "minecraft:patch_pumpkin",
-      "minecraft:spring_water",
-      "minecraft:spring_lava"
+        "minecraft:patch_tall_grass_2",
+        "minecraft:plain_vegetation",
+        "minecraft:flower_plain_decorated",
+        "minecraft:patch_grass_plain",
+        "minecraft:brown_mushroom_normal",
+        "minecraft:red_mushroom_normal",
+        "minecraft:patch_sugar_cane",
+        "minecraft:patch_pumpkin",
+        "minecraft:spring_water",
+        "minecraft:spring_lava"
     ],
     [
-      "minecraft:freeze_top_layer"
+        "minecraft:freeze_top_layer"
     ]
 ]
 
@@ -65,7 +65,7 @@ export const STARTS = [
     "minecraft:ruined_portal"
 ]
 
-export const SPAWNERS_AMBIENT = [
+const SPAWNERS_AMBIENT = [
     {
         type: "minecraft:bat",
         weight: 10,
@@ -74,7 +74,7 @@ export const SPAWNERS_AMBIENT = [
     }
 ];
 
-export const SPAWNERS_CREATURE = [
+const SPAWNERS_CREATURE = [
     {
         type: "minecraft:sheep",
         weight: 12,
@@ -113,7 +113,7 @@ export const SPAWNERS_CREATURE = [
     }
 ];
 
-export const SPAWNERS_MONSTER = [
+const SPAWNERS_MONSTER = [
     {
         type: "minecraft:spider",
         weight: 100,
@@ -163,3 +163,94 @@ export const SPAWNERS_MONSTER = [
         maxCount: 1
     },
 ];
+
+export const SPAWNERS_DEFAULTS = {
+    ambient: SPAWNERS_AMBIENT,
+    creature: SPAWNERS_CREATURE,
+    misc: [],
+    monster: SPAWNERS_MONSTER,
+    water_ambient: [],
+    water_creature: []
+};
+
+export const PARTICLES = [
+    'ambient_entity_effect',
+    'angry_villager',
+    'ash',
+    'barrier',
+    'block',
+    'bubble',
+    'bubble_column_up',
+    'bubble_pop',
+    'campfire_cosy_smoke',
+    'campfire_signal_smoke',
+    'cloud',
+    'composter',
+    'crimson_spore',
+    'crit',
+    'current_down',
+    'damage_indicator',
+    'dolphin',
+    'dragon_breath',
+    'dripping_honey',
+    'dripping_lava',
+    'dripping_obsidian_tear',
+    'dripping_water',
+    'dust',
+    'effect',
+    'elder_guardian',
+    'enchant',
+    'enchanted_hit',
+    'end_rod',
+    'entity_effect',
+    'explosion',
+    'explosion_emitter',
+    'falling_dust',
+    'falling_honey',
+    'falling_lava',
+    'falling_nectar',
+    'falling_obsidian_tear',
+    'falling_water',
+    'firework',
+    'fishing',
+    'flame',
+    'flash',
+    'happy_villager',
+    'heart',
+    'instant_effect',
+    'item',
+    'item_slime',
+    'item_snowball',
+    'landing_honey',
+    'landing_lava',
+    'landing_obsidian_tear',
+    'large_smoke',
+    'lava',
+    'mycelium',
+    'nautilus',
+    'note',
+    'poof',
+    'portal',
+    'rain',
+    'reverse_portal',
+    'smoke',
+    'sneeze',
+    'soul',
+    'soul_fire_flame',
+    'spit',
+    'splash',
+    'squid_ink',
+    'sweep_attack',
+    'totem_of_undying',
+    'underwater',
+    'warped_spore',
+    'white_ash',
+    'witch'
+].map(particle => ({ value: 'minecraft:' + particle, label: particle }));
+
+export const PARTICLE_DEFAULTS = {
+    options: {
+        type: "minecraft:crimson_spore"
+    },
+    probability: 0.015
+}

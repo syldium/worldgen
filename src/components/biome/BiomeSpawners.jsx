@@ -1,26 +1,20 @@
-import React, { useContext, useEffect, useMemo, useState, useCallback } from 'react';
+import React, { useContext, useEffect, useMemo, useCallback } from 'react';
 import Select from 'react-select';
-import { CRUD, useCrud } from "../../hooks/form";
+import { useCrudPreset, useJsonEffect } from "../../hooks/form";
 import { useToggle } from '../../hooks/ui';
 import { Button } from '../../ui/Button';
 import { DataContext } from '../../context/DataContext';
-import { SPAWNERS_AMBIENT, SPAWNERS_CREATURE, SPAWNERS_MONSTER } from './BiomeDefaults';
+import { SPAWNERS_DEFAULTS } from './BiomeDefaults';
+import { NumberInput } from '../../ui/Input';
 
-export function BiomeSpawners({onChange, data = { ambient: SPAWNERS_AMBIENT, creature: SPAWNERS_CREATURE, misc: [], monster: SPAWNERS_MONSTER, water_ambient: [], water_creature: [] }}) {
+export function BiomeSpawners({onChange, data}) {
 
+    const spawners = useJsonEffect(data || SPAWNERS_DEFAULTS, data, onChange);
     const entities = useContext(DataContext).vanilla.entities;
-    const [spawners, setSpawners] = useState(data);
 
     const handleChange = useCallback(function(group, groupSpawners) {
-        setSpawners(function(spawners) {
-            const state = {
-                ...spawners,
-                [group]: groupSpawners
-            };
-            onChange(state);
-            return state;
-        });
-    }, [onChange]);
+        onChange({ ...spawners, [group]: groupSpawners });
+    }, [spawners, onChange]);
 
     return <div>
         <SpawnGroup group="ambient" data={spawners.ambient} onChange={handleChange} entities={entities}>Ambient</SpawnGroup>
@@ -36,48 +30,37 @@ function SpawnGroup({children, entities, data = [], group, onChange}) {
     const [visibility, toggle] = useToggle();
     const text = visibility ? 'Less...' : 'More...';
 
-    const [spawners, dispatch] = useCrud(data);
+    const [spawners, insert, handleChange, handleRemove] = useCrudPreset(data, function(spawners) {
+        // Get the first non taken entity
+        return { type: (entities.filter(o => !spawners.some(s => s.type === o.value))[0] || { value: 'minecraft:cow' }).value, minCount: 1, maxCount: 1, weight: 1 };
+    }, true);
 
     const handleAdd = useCallback(function(e) {
-        e.preventDefault();
-        dispatch({ type: CRUD.ADD, payload: {
-            type: 'minecraft:cow',
-            weight: 1,
-            minCount: 1,
-            maxCount: 1,
-        }});
+        insert(e);
         if (!visibility) {
             toggle();
         }
-    }, [dispatch, toggle, visibility]);
-
-    const handleChange = useCallback(function(original, spawner) {
-        dispatch({ type: CRUD.UPDATE, target: original, payload: spawner });
-    }, [dispatch]);
-
-    const handleRemove = useCallback(function(spawner) {
-        dispatch({ type: CRUD.REMOVE, payload: spawner });
-    }, [dispatch]);
+    }, [insert, toggle, visibility]);
 
     useEffect(function() {
-        onChange(group, spawners);
+        if (spawners !== group) {
+            onChange(group, spawners);
+        }
     }, [group, onChange, spawners]);
 
-    const values = [];
     if (visibility) {
-        spawners.forEach((def, i) => {
-            const key = `${i}-${def.type}-${def.weight}-${def.minCount}-${def.maxCount}`;
-            values.push(<SpawnDefinition data={def} key={key} onChange={handleChange} onDelete={handleRemove} entities={entities} />);
-        });
         return <div>
             <div className="toggle-label">
-                {children} 
+                {children}
                 <div className="btn-group">
-                    <Button onClick={handleAdd}>Add</Button>
+                    {entities.length > spawners.length && <Button onClick={handleAdd}>Add</Button>}
                     {spawners.length > 0 && <Button cat="secondary" onClick={toggle}>{text}</Button>} 
                 </div>
             </div>
-            {values}
+            {spawners.map((spawner, index) => {
+                const options = entities.filter(o => spawner.type === o.value || !spawners.some(s => s.type === o.value));
+                return <SpawnDefinition data={spawner} key={spawner.type} onChange={handleChange} onDelete={handleRemove} index={index} options={options} />;
+            })}
         </div>;
     }
     
@@ -90,59 +73,32 @@ function SpawnGroup({children, entities, data = [], group, onChange}) {
     </div>;
 }
 
-const SpawnDefinition = React.memo(function({entities, onChange, onDelete, data}) {
+const SpawnDefinition = React.memo(function({data, index, options, onChange, onDelete}) {
 
-    const [definition, setDefinition] = useState(data);
-
-    const handleChange = function(e) {
-        const field = typeof e.target === 'undefined' ? 'type' : e.target.id;
-        const value = typeof e.target === 'undefined' ? e.value : parseInt(e.target.value);
-        setDefinition(definition => ({
-            ...definition,
-            [field]: value
-        }));
-        onChange(data, {...data, [field]: value});
-    };
-
-    const handleCountChange = function(e) {
-        const value = parseInt(e.target.value);
-        if ((e.target.id === 'minCount' && value <= definition.maxCount)
-            || (e.target.id === 'maxCount' && value >= definition.minCount)) {
-            setDefinition(definition => ({
-                ...definition,
-                [e.target.id]: value
-            }));
-            onChange(data, {...data, [e.target.id]: value});
-        } 
-    };
-
-    const handleDelete = function(e) {
-        e.preventDefault();
-        onDelete(data);
-    };
+    const handleTypeChange = useCallback(function(option) {
+        onChange({ ...data, type: option.value }, data);
+    }, [data, onChange]);
+    const handleValueChange = useCallback(function(value) {
+        onChange({ ...data, ...value }, data);
+    }, [data, onChange]);
+    const handleDelete = useCallback(function(e) {
+        onDelete(e, index);
+    }, [index, onDelete]);
 
     const selectedOption = useMemo(function() {
-        return entities.find(o => o.value === definition.type);
-    }, [definition.type, entities]);
+        return options.find(o => o.value === data.type);
+    }, [data.type, options]);
 
     return <div>
         <div className="form-group">
-            <label>Mob type</label> : <Select options={entities} value={selectedOption} onChange={handleChange} />
+            <label>Mob type</label> : <Select options={options} value={selectedOption} onChange={handleTypeChange} />
         </div>
         <div className="form-group form-row">
-            <div className="form-inline">
-                <label htmlFor="weight">Weight</label> : <input type="number" id="weight" required value={definition.weight} onChange={handleChange} />
-            </div>
-            <div className="form-inline">
-                <label htmlFor="minCount">Min count</label> : <input type="number" id="minCount" min="0" required value={definition.minCount} onChange={handleCountChange} />
-            </div>
-            <div className="form-inline">
-                <label htmlFor="maxCount">Max count</label> : <input type="number" id="maxCount" min="0" required value={definition.maxCount} onChange={handleCountChange} />
-            </div>
+            <NumberInput id="weight" value={data.weight} upChange={handleValueChange}>Weight</NumberInput>
+            <NumberInput id="minCount" value={data.weight} upChange={handleValueChange}>Min count</NumberInput>
+            <NumberInput id="maxCount" value={data.weight} upChange={handleValueChange}>Max count</NumberInput>
             <div className="form-inline"><Button cat="danger" onClick={handleDelete}>Delete</Button></div>
         </div>
         <hr /> 
     </div>
-}, function(prev, next) {
-    return prev.entities.length === next.entities.length && prev.data === next.data;
 });

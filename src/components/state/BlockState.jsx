@@ -5,7 +5,7 @@ import { Button } from '../../ui/Button';
 import { getStateValue } from "../../utils/data";
 import { useEffect } from "react";
 import { useCrudPreset, useBlocksOptions } from "../../hooks/form";
-import { ConfInput } from "../../ui/Input";
+import { ConfInput, NumberInput } from "../../ui/Input";
 
 export const BlockState = React.memo(function ({ block = {}, children, name, onChange, options }) {
     const context = useContext(DataContext);
@@ -16,14 +16,15 @@ export const BlockState = React.memo(function ({ block = {}, children, name, onC
         (context.vanilla.blocks.find(b => 'minecraft:' + b.name === Name) || { states: [] }).states.forEach(state => {
             Properties[state.name] = getStateValue(state);
         })
+        delete block.Properties;
         if (Object.keys(Properties).length > 0) {
-            onChange({ Name, Properties });
+            onChange({ ...block, Name, Properties });
         } else {
-            onChange({ Name });
+            onChange({ ...block, Name });
         }
-    }, [context.vanilla.blocks, onChange]);
-    const handlePropertiesChange = useCallback(function (Properties) {
-        onChange({ ...block, Properties });
+    }, [block, context.vanilla.blocks, onChange]);
+    const handlePropertiesChange = useCallback(function (properties) {
+        onChange({ ...block, Properties: { ...block.Properties, ...properties } });
     }, [block, onChange]);
 
     const blocks = useMemo(function () {
@@ -85,12 +86,6 @@ function BlockStateProperties({ block, children, onChange, properties = {} }) {
         const value = e.target.checked.toString();
         onChange({ ...properties, [e.target.dataset.name]: value });
     }, [onChange, properties]);
-    const handleNumberChange = useCallback(function (e) {
-        const value = e.target.value;
-        if (value !== '' && !isNaN(value)) {
-            onChange({ ...properties, [e.target.dataset.name]: value });
-        }
-    }, [onChange, properties]);
 
     const selects = [];
     states.forEach(possible => {
@@ -106,11 +101,11 @@ function BlockStateProperties({ block, children, onChange, properties = {} }) {
                 break;
             case 'int':
                 selects.push(
-                    <ConfInput key={possible.name} id={possible.name}
-                        value={properties[possible.name] || 0} onChange={handleNumberChange}
+                    <NumberInput key={possible.name} id={possible.name}
+                        value={properties[possible.name] || 0} upChange={onChange}
                         min="0" max={possible.num_values - 1}>
                             {possible.name}
-                    </ConfInput>
+                    </NumberInput>
                 );
                 break;
             default:

@@ -1,11 +1,10 @@
 import React, { useCallback, useMemo, useEffect } from 'react';
 import Select from 'react-select';
 import { STARTS } from './BiomeDefaults';
+import { useJsonEffect } from '../../hooks/form';
 
-export default function BiomeStarts({onChange, starts = STARTS}) {
-    useEffect(function () {
-        onChange(starts);
-    }, [onChange, starts]);
+export default function BiomeStarts({onChange, starts}) {
+    starts = useJsonEffect(starts || STARTS, starts, onChange);
 
     const handleChange = useCallback(function(selectedOptions) {
         onChange(selectedOptions === null ? [] : selectedOptions.map(option => option.value));

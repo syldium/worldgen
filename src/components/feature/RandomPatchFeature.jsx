@@ -1,33 +1,30 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback } from 'react';
 import { BlocksList } from '../state/BlockState';
 import { RANDOM_PATCH_FEATURE_CONFIG } from './FeatureDefaults';
 import { useJsonEffect } from '../../hooks/form';
 import { BlockStateProvider } from '../state/BlockStateProvider';
+import { NumberInput } from '../../ui/Input';
 
-export function RandomPatchFeature({configuration = RANDOM_PATCH_FEATURE_CONFIG, onChange}) {
+export function RandomPatchFeature({configuration, onChange}) {
 
-    const [config, setConfig] = useState(configuration);
-
+    const config = useJsonEffect(configuration || RANDOM_PATCH_FEATURE_CONFIG, configuration, onChange);
     const handleStateProviderChange = useCallback(function(state_provider) {
-        setConfig(config => ({ ...config, state_provider }));
-    }, []);
+        onChange({ ...config, state_provider });
+    }, [config, onChange]);
     const handleWhitelistChange = useCallback(function(whitelist) {
-        setConfig(config => ({ ...config, whitelist }));
-    }, []);
+        onChange({ ...config, whitelist });
+    }, [config, onChange]);
     const handleBlacklistChange = useCallback(function(blacklist) {
-        setConfig(config => ({ ...config, blacklist }));
-    }, []);
-    const handleValueChange = useCallback(function(e) {
-        const name = e.target.id;
-        const value = parseInt(e.target.value);
-        setConfig(config => ({ ...config, [name]: value }));
-    }, []);
+        onChange({ ...config, blacklist });
+    }, [config, onChange]);
+    const handleValueChange = useCallback(function(value) {
+        onChange({ ...config, ...value });
+    }, [config, onChange]);
     const handleCheckboxChange = useCallback(function(e) {
         const name = e.target.id;
         const value = e.target.checked;
-        setConfig(config => ({ ...config, [name]: value }));
-    }, []);
-    useJsonEffect(config, configuration, onChange);
+        onChange({ ...config, [name]: value });
+    }, [config, onChange]);
 
     return <div>
         <fieldset>
@@ -45,10 +42,10 @@ export function RandomPatchFeature({configuration = RANDOM_PATCH_FEATURE_CONFIG,
         <fieldset>
             <legend>Settings</legend>
             <div className="form-group form-row">
-                <div><label htmlFor="xspread">X spread</label> : <input type="number" id="xspread" value={config.xspread} onChange={handleValueChange} /></div>
-                <div><label htmlFor="yspread">Y spread</label> : <input type="number" id="yspread" value={config.yspread} onChange={handleValueChange} /></div>
-                <div><label htmlFor="zspread">Z spread</label> : <input type="number" id="zspread" value={config.zspread} onChange={handleValueChange} /></div>
-                <div><label htmlFor="tries">Tries</label> : <input type="number" id="tries" value={config.tries} onChange={handleValueChange} /></div>
+                <NumberInput id="xspread" value={config.xspread} onChange={handleValueChange}>X spread</NumberInput>
+                <NumberInput id="yspread" value={config.yspread} onChange={handleValueChange}>Y spread</NumberInput>
+                <NumberInput id="zspread" value={config.zspread} onChange={handleValueChange}>Z spread</NumberInput>
+                <NumberInput id="tries" value={config.tries} onChange={handleValueChange}>Tries</NumberInput>
             </div>
             <div className="form-group form-row">
                 <div><label htmlFor="need_water">Need water</label> : <input type="checkbox" className="checkbox" id="need_water" checked={config.need_water} onChange={handleCheckboxChange} /></div>

@@ -4,14 +4,13 @@ import Select from 'react-select';
 import { Button } from '../../ui/Button';
 import { NamespacedKey } from '../NamespacedKey';
 import { BiomeSpawners } from './BiomeSpawners';
-import { STARTS } from './BiomeDefaults';
 import GenFeatures from './Features';
 import { BiomeEffects } from './BiomeEffects';
 import { useKeyedListOptions } from '../../hooks/context';
 
 export function Biome({data = {}, onSave}) {
 
-    const [state, setState] = useState(data || { starts: STARTS, spawners: []});
+    const [state, setState] = useState(data);
 
     const handleStartsChange = useCallback(function(starts) {
         setState(state => {
@@ -64,12 +63,7 @@ export function Biome({data = {}, onSave}) {
         <h3>Edit biome</h3>
         <NamespacedKey example="arctic" type="biomes" value={data.key} expectBreakage={typeof data.key !== 'undefined'} />
 
-        <fieldset>
-            <legend>Colors</legend>
-            <div className="form-row">
-                <BiomeEffects effects={state.effects} onChange={handleEffectsChange} />
-            </div>
-        </fieldset>
+        <BiomeEffects effects={state.effects} onChange={handleEffectsChange} />
 
         <fieldset>
             <BiomeCategory category={data.category} />

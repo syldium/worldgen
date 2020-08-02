@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { ConfInput } from '../../ui/Input';
+import { NumberInput } from '../../ui/Input';
 import { useToggle } from '../../hooks/ui';
 import { useCrud, CRUD } from '../../hooks/form';
 import Select from 'react-select';
@@ -31,11 +31,8 @@ const Stronghold = React.memo(function ({ data, onChange }) {
     const [enabled, toggle] = useToggle(typeof data === 'object');
     const [stronghold, setStronghold] = useState(data || { distance: 32, spread: 3, count: 128 });
 
-    const handleChange = useCallback(function(e) {
-        e.preventDefault();
-        const name = e.target.dataset.name;
-        const value = parseInt(e.target.value);
-        setStronghold(stronghold => ({ ...stronghold, [name]: value }));
+    const handleChange = useCallback(function(value) {
+        setStronghold(stronghold => ({ ...stronghold, ...value }));
     }, [setStronghold]);
 
     useEffect(function() {
@@ -49,9 +46,9 @@ const Stronghold = React.memo(function ({ data, onChange }) {
     return <div>
         <div className="toggle-label">Stronghold<Button cat="secondary" onClick={toggle}>{enabled ? 'Disable' : 'Enable'}</Button></div>
         {enabled && <div className="form-group form-row">
-            <ConfInput id="distance" defaultValue={stronghold.distance} onChange={handleChange} min="0" max="1023">Distance</ConfInput>
-            <ConfInput id="spread" defaultValue={stronghold.spread} onChange={handleChange} min="0" max="1023">Spread</ConfInput>
-            <ConfInput id="count" defaultValue={stronghold.count} onChange={handleChange} min="1" max="4095">Count</ConfInput>
+            <NumberInput id="distance" defaultValue={stronghold.distance} upChange={handleChange} max="1023">Distance</NumberInput>
+            <NumberInput id="spread" defaultValue={stronghold.spread} upChange={handleChange} max="1023">Spread</NumberInput>
+            <NumberInput id="count" defaultValue={stronghold.count} upChange={handleChange} min="1" max="4095">Count</NumberInput>
         </div>}
     </div>
 });
@@ -107,18 +104,19 @@ const StructuresList = React.memo(function({ data, onChange }) {
 
 const Structure = React.memo(function ({ data, onChange, onDelete }) {
 
-    const handleChange = useCallback(function(e) {
-        const field = typeof e.target === 'undefined' ? 'type' : e.target.dataset.name;
-        const value = typeof e.target === 'undefined' ? e.value : parseInt(e.target.value);
-        onChange(data, { ...data, [field]: value });
+    const handleTypeChange = useCallback(function(option) {
+        onChange(data, { ...data, type: option.value });
     }, [data,  onChange]);
-    const handleSpacingChange = useCallback(function(e) {
-        const name = e.target.dataset.name;
-        const value = parseInt(e.target.value);
+    const handleSpacingChange = useCallback(function(value) {
+        const name = Object.keys(value)[0];
+        value = value[name];
         if ((name === 'spacing' && value > data.separation)
-            || (e.target.dataset.name === 'separation' && value < data.spacing)) {
+            || (name === 'separation' && value < data.spacing)) {
             onChange(data, {...data, [name]: value});
         } 
+    }, [data,  onChange]);
+    const handleSaltChange = useCallback(function(salt) {
+        onChange(data, { ...data, salt });
     }, [data,  onChange]);
     const handleDelete = useCallback(function (e) {
         e.preventDefault();
@@ -127,12 +125,12 @@ const Structure = React.memo(function ({ data, onChange, onDelete }) {
 
     return <div>
         <div className="form-group">
-            <label>Type</label> : <Select options={STRUCTURES} value={STRUCTURES.find(s => s.value === data.type)} onChange={handleChange} />
+            <label>Type</label> : <Select options={STRUCTURES} value={STRUCTURES.find(s => s.value === data.type)} onChange={handleTypeChange} />
         </div>
         <div className="form-group form-row">
-            <ConfInput id="spacing" value={data.spacing} onChange={handleSpacingChange} min="0" max="4096">Spacing</ConfInput>
-            <ConfInput id="separation" value={data.separation} onChange={handleSpacingChange} min="0" max="4096">Spacing</ConfInput>
-            <ConfInput id="salt" value={data.salt} onChange={handleChange} min="0" max={0x7FFFFFFF} style={{ width: '150px' }}>Spacing</ConfInput>
+            <NumberInput id="spacing" value={data.spacing} upChange={handleSpacingChange} max="4096">Spacing</NumberInput>
+            <NumberInput id="separation" value={data.separation} upChange={handleSpacingChange} max="4096">Separation</NumberInput>
+            <NumberInput id="salt" value={data.salt} onChange={handleSaltChange} max={0x7FFFFFFF} style={{ width: '150px' }}>Salt</NumberInput>
             <div className="form-inline"><Button cat="danger" onClick={handleDelete}>Delete</Button></div>
         </div>
         <hr /> 

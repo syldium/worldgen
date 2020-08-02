@@ -95,10 +95,14 @@ export function useValueChange(changeCallback, obj) {
 
 export function useJsonEffect(state, props, onChange) {
     useEffect(() => {
+        if (state === props) {
+            return;
+        }
         if (JSON.stringify(state) !== JSON.stringify(props)) {
             onChange(state, props);
         }
     }, [state, props, onChange]);
+    return state;
 }
 
 /**
