@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo, useState, useEffect } from 'react';
 import { BlockStateProvider } from '../state/BlockStateProvider';
-import Select from 'react-select';
+import Select from '../../ui/Select';
 import { TREE_DECORATORS_OPTIONS, TREE_FEATURE_CONFIG } from './FeatureDefaults';
 import { useJsonEffect, useCrud, CRUD } from '../../hooks/form';
 import { NumberInput } from '../../ui/Input';

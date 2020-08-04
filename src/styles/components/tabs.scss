@@ -1,0 +1,65 @@
+.tabs {
+    overflow: hidden;
+    overflow-x: auto;
+    white-space: nowrap;
+    min-height: 100%;
+    width: 1344px;
+    max-width: calc(100% - 20px);
+    margin-left: auto;
+    margin-top: auto;
+    margin-right: auto;
+
+    ul {
+        align-items: center;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        list-style: none;
+        margin-bottom: 0;
+    }
+
+    a {
+        color: var(--primary-color);
+        display: flex;
+        justify-content: center;
+        padding: 0.5em 1em;
+        border-bottom: 2px solid #5e6d6f;
+        text-decoration: none;
+    }
+
+    a:hover {
+        text-decoration: none;
+        border-bottom-color: var(--text-color);
+    }
+    a:focus {
+        background-color: var(--bg-color-input-hover);
+    }
+    [aria-current="true"] {
+        border-bottom-color: #217dbb;
+    }
+}
+
+@include respond-to("large") {
+    :not(.first-screen) >.navbar > .github {
+        display: none;
+    }
+}
+@include respond-to("medium") {
+    .github {
+        display: none;
+    }
+    .tabs ul {
+        justify-content: center;
+    }
+    .tabs a {
+        padding: 0.5em 2.5em;
+    }
+}
+@include respond-to("small") {
+    .tabs ul {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        margin: 0;
+        padding: 0;
+    }
+}

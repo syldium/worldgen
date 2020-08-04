@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useContext, useEffect } from 'react';
-import Select from 'react-select';
+import Select from '../../ui/Select';
 import { SeedField } from './DimensionGenerator';
 import { useKeyedListOptions } from '../../hooks/context';
 import { useMemo } from 'react';
@@ -47,7 +47,7 @@ export function BiomeSource({biome_source = { type: 'minecraft:fixed' }, onChang
     return <fieldset>
         <legend>Biome source</legend>
         <div className="form-group">
-            <label htmlFor="biome-source-type">Type</label><Select id="biome-source-type" options={options} value={selected} onChange={handleTypeChange} />
+            <label htmlFor="biome-source-type">Type</label><Select inputId="biome-source-type" options={options} value={selected} onChange={handleTypeChange} />
         </div>
         <SeedField value={source.seed} onChange={handleSeedChange} />
         <hr />

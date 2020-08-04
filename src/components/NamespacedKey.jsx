@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useRef, useMemo, useContext, useEffect } from 'react';
 import { useToggle } from '../hooks/ui';
-import Select from 'react-select';
+import Select from '../ui/Select';
 import { useKeyedListOptions } from '../hooks/context';
 import { DataContext } from '../context/DataContext';
 import { Button } from '../ui/Button';
@@ -79,15 +79,15 @@ export function NamespacedKey({ example = 'daily_resource', type, value = '', on
     const dummyOnChange = useCallback(console.log, []);
 
     return <div className="form-group">
-        <label htmlFor="key">{replace ? 'Replace' : 'Key'}</label> :
-        {replace && <div className="inbl mls" id="key" style={style}>
-            <Select options={options} value={options.find(o => key === o.value)} onChange={handleReplaceTargetChange} />
+        <label htmlFor="key">{replace ? 'Replace' : 'Key'}</label> :&nbsp;
+        {replace && <div className="inbl" style={style}>
+            <Select options={options} value={options.find(o => key === o.value)} onChange={handleReplaceTargetChange} inputId="key" />
         </div>}
-        {!replace && <div className="inbl mls">
+        {!replace &&
             <input type="text" id="key" required pattern="^([\w.-]+:[\w.-]+)$|^[\w.-]+$" placeholder={`Example: ${example}`}
                 autoCapitalize="none" spellCheck="false" autoComplete="off" value={inputValue}
                 onChange={handleKeyChange} onKeyPress={handleKeyDown} />
-        </div>}
+        }
         <input type={replace ? 'text' : 'hidden'} name="key" value={hiddenInputValue} onChange={dummyOnChange} ref={hidden}
             required tabIndex="-1" style={{ opacity: 0, height: 0, position: 'absolute' }} />
         {mayReplaceVanilla && <Button cat="info mlm" onClick={handleToggle}>{replace ? 'Create a new one' : 'Replace vanilla'}</Button>}

@@ -4,6 +4,10 @@ import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 
+window.addEventListener('load', () => {
+    document.body.classList.remove('preload');
+});
+
 ReactDOM.render(
     <App />
 ,

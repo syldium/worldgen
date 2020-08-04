@@ -2,7 +2,7 @@ import React, { useCallback, useState, useMemo, useEffect } from 'react';
 import { SortableContainer, SortableElement } from 'react-sortable-hoc';
 import { useCrudPreset, useJsonEffect } from '../../hooks/form';
 import { Button } from '../../ui/Button';
-import Select from 'react-select';
+import Select from '../../ui/Select';
 import { DECORATORS_OPTIONS, DECORATOR_EXTRA_COUNT_DEFAULTS, DECORATOR_DECORATED_DEFAULTS, DECORATOR_RANGE_DEFAULTS } from './FeatureDefaults';
 import { NumberInput } from '../../ui/Input';
 

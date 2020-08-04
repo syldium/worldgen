@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useMemo } from "react";
-import Select from "react-select";
+import Select from "../../ui/Select";
 import { Button } from '../../ui/Button';
 import { NumberInput } from '../../ui/Input';
 import { useEffect } from "react";

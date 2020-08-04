@@ -2,7 +2,7 @@ import React, { useCallback, useState } from 'react';
 import { BlockState } from '../state/BlockState';
 import { Button } from '../../ui/Button';
 import { SURFACE_TYPES_OPTIONS, SURFACE_BUILDER } from './SurfaceBuilderDefaults';
-import Select from 'react-select';
+import Select from '../../ui/Select';
 import { NamespacedKey } from '../NamespacedKey';
 
 export function SurfaceBuilder({data = SURFACE_BUILDER, onSave}) {
@@ -32,21 +32,20 @@ export function SurfaceBuilder({data = SURFACE_BUILDER, onSave}) {
     return <form onSubmit={handleSubmit}>
         <h3>Edit surface builder</h3>
         <NamespacedKey example="blackstone" type="surfaces" value={data.key} expectBreakage={typeof data.key !== 'undefined'} />
+        
         <div className="form-group">
-            <label htmlFor="type">Type</label> : <Select options={SURFACE_TYPES_OPTIONS} defaultValue={SURFACE_TYPES_OPTIONS.find(o => o.value === data.type)} name="type" />
-            <p><small className="text-muted">The builder type defines the shape of the surface. For example, the <em>swamp</em> type will create puddles while the <em>badlands</em> types will create small rocky peaks; the <em>nether</em> types will add a mix of nether blocks and expose more of the underneath material.</small></p>
+            <label htmlFor="type">Type</label>
+            <Select options={SURFACE_TYPES_OPTIONS} defaultValue={SURFACE_TYPES_OPTIONS.find(o => o.value === data.type)} name="type" inputId="type" />
+            <p className="help2"><small className="text-muted">The builder type defines the shape of the surface. For example, the <em>swamp</em> type will create puddles while the <em>badlands</em> types will create small rocky peaks; the <em>nether</em> types will add a mix of nether blocks and expose more of the underneath material.</small></p>
         </div>
-        <div className="form-group">
-            <label htmlFor="top_material">Top material</label> : <BlockState block={config.top_material} name="top_material" onChange={handleTopMaterialChange} />
-        </div>
-        <div className="form-group">
-            <label htmlFor="under_material">Under material</label> : <BlockState block={config.under_material} name="under_material" onChange={handleUnderMaterialChange} />
-        </div>
-        <div className="form-group">
-            <label htmlFor="sea_lantern">Underwater material</label> : <BlockState block={config.underwater_material} name="underwater_material" onChange={handleUnderwaterMaterialChange} />
-        </div>
-        <div className="form-group mlm mbm">
-            <Button type="submit">Save</Button>
-        </div>
+        
+        <label htmlFor="top_material">Top material</label>
+        <BlockState block={config.top_material} className="" inputId="top_material" onChange={handleTopMaterialChange} />
+        <label htmlFor="under_material">Under material</label>
+        <BlockState block={config.under_material} className="" inputId="under_material" onChange={handleUnderMaterialChange} />
+        <label htmlFor="underwater_material">Underwater material</label>
+        <BlockState block={config.underwater_material} className="" inputId="underwater_material" onChange={handleUnderwaterMaterialChange} />
+
+        <Button type="submit">Save</Button>
     </form>;
 }

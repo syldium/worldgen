@@ -1,10 +1,9 @@
-import React, { useCallback, useContext, useMemo } from "react";
-import Select from "react-select";
+import React, { useCallback, useContext, useEffect, useMemo } from "react";
+import Select from "../../ui/Select";
 import { BlockSelect } from "./BlockPredicate";
 import { DataContext } from "../../context/DataContext";
 import { Button } from '../../ui/Button';
 import { getStateValue } from "../../utils/data";
-import { useEffect } from "react";
 import { useCrudPreset, useBlocksOptions } from "../../hooks/form";
 import { ConfInput, NumberInput } from "../../ui/Input";
 

@@ -1,6 +1,5 @@
-import React, { useCallback, useMemo } from 'react';
-import Select from 'react-select';
-import { useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
+import Select from '../../ui/Select';
 import { TreeFeatureConfig } from './TreeFeature';
 import { Button } from '../../ui/Button';
 import { DecoratorsList } from './Decorator';
@@ -58,7 +57,7 @@ export function RawConfiguredFeature({data = DECORATED_TREE_CONFIG, onSave}) {
         <NamespacedKey example="concrete_tree" type="features" value={data.key} expectBreakage={typeof data.key !== 'undefined'} />
         <div className="form-group">
             <label htmlFor="type">Type</label>
-            <Select options={options} value={options.find(o => o.value === feature.type)} onChange={handleSelectChange} />
+            <Select options={options} value={options.find(o => o.value === feature.type)} onChange={handleSelectChange} inputId="type" />
         </div>
         <hr />
         {feature.type === 'minecraft:huge_fungus' && <HugeFungusFeature configuration={feature.config} onChange={handleFeatureChange} />}
@@ -67,8 +66,6 @@ export function RawConfiguredFeature({data = DECORATED_TREE_CONFIG, onSave}) {
         {feature.type === 'minecraft:random_patch' && <RandomPatchFeature configuration={feature.config} onChange={handleFeatureChange} />}
         {feature.type === 'minecraft:tree' && <TreeFeatureConfig configuration={feature.config} onChange={handleFeatureChange} />}
         <DecoratorsList data={decorators} key={feature.type} onChange={handleDecoratorsChange} />
-        <div className="form-group mlm mbm">
-            <Button type="submit">Save</Button>
-        </div>
+        <Button type="submit">Save</Button>
     </form>
 }

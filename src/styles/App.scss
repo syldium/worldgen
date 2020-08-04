@@ -1,0 +1,43 @@
+@import "~knacss/sass/_config/_variables";
+@import "~knacss/sass/_config/_mixins";
+
+@import "config";
+
+@import "themes";
+@import "components/alerts";
+@import "components/buttons";
+@import "components/dialogs";
+@import "components/forms";
+@import "components/inputs";
+@import "components/navs";
+@import "components/sections";
+@import "components/tabs";
+@import "components/toggles";
+
+@import "~knacss/sass/_library/utilities";
+
+*,
+*::before,
+*::after { 
+  box-sizing: border-box;
+}
+.preload, .preload * {
+    transition: none !important;
+}
+h1, h2, h3, h4, h5, h6 {
+    margin-top: 0;
+    margin-bottom: .5rem;
+    flex-grow: 1;
+}
+a {
+    color: var(--primary-color);
+    text-decoration: none;
+
+    &:hover {
+        text-decoration: underline;
+    }
+}
+ul {
+    margin-top: 0;
+    margin-bottom: .5rem;
+}

@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { NumberInput } from '../../ui/Input';
 import { useToggle } from '../../hooks/ui';
 import { useCrud, CRUD } from '../../hooks/form';
-import Select from 'react-select';
+import Select from '../../ui/Select';
 import { STRUCTURES } from './NoiseDefaults';
 import { Button } from '../../ui/Button';
 

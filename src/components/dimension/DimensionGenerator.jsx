@@ -1,8 +1,9 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { BiomeSource } from './BiomeSource';
 import { hashCode } from './../../utils/hash';
-import Select from 'react-select';
+import Select from '../../ui/Select';
 import { useKeyedListOptions } from '../../hooks/context';
+import { ConfInput } from '../../ui/Input';
 
 export function DimensionGenerator({generator, onChange}) {
     
@@ -33,8 +34,10 @@ export function DimensionGenerator({generator, onChange}) {
     }, [data, onChange]);
 
     useEffect(function () {
-        onChange(data);
-    }, [data, onChange]);
+        if (data !== generator) {
+            onChange(data);
+        }
+    }, [data, generator, onChange]);
 
     return <fieldset>
         <legend>Noise dimension generator</legend>
@@ -56,7 +59,7 @@ export const SeedField = React.memo(function({onChange, value = 286956243}) {
     };
 
     return <div className="form-group">
-        <label>Seed</label> : <input type="text" value={text} onChange={handleChange} />
+        <ConfInput type="text" id="seed" value={text} onChange={handleChange}>Seed</ConfInput>
     </div>
 });
 
@@ -68,6 +71,6 @@ const Settings = React.memo(function({onChange, settings = 'minecraft:overworld'
     const options = useKeyedListOptions('noises');
 
     return <div className="form-group">
-        <label htmlFor="settings">Settings</label><Select options={options} defaultValue={options.find(o => o.value === settings)} onChange={handleChange} />
+        <label htmlFor="settings">Noise settings</label><Select options={options} value={options.find(o => o.value === settings)} onChange={handleChange} inputId="settings" />
     </div>;
 });

@@ -1,0 +1,70 @@
+fieldset {
+    border: 1px solid var(--fieldset-color);
+    margin-top: 1.5rem;
+    padding: 1.5rem;
+    padding-top: 0.5rem;
+}
+legend {
+    display: inline;
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+.form-control {
+    width: calc(100% - 40px);
+    max-width: 720px;
+    margin-left: auto;
+    margin-top: 2rem;
+    margin-right: auto;
+}
+.form-control input {
+    width: 100%;
+}
+.form-group {
+    margin-top: 1rem;
+}
+label + .form-group {
+    margin-top: 0;
+}
+.form-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+    align-items: center;
+}
+.toggle-label {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    padding: 1.25rem 1.25rem 0.75rem;
+    box-shadow: inset 0 -2px 0 0 var(--fieldset-color);
+    font-weight: 500;
+}
+
+.inbl,
+.u-inbl {
+    vertical-align: middle;
+    min-width: 100px;
+}
+
+.actions {
+    margin-top: 1.5rem;
+    text-align: right;
+}
+.help {
+    margin-top: -0.4rem;
+    margin-bottom: 0.5rem;
+}
+.help2 {
+    margin-top: -0.2rem;
+    margin-bottom: 0.8rem;
+}
+
+@include respond-to("small") {
+    fieldset {
+        padding: 0.5rem;
+    }
+    .form-group {
+        margin-top: 0.5rem;
+    }
+}

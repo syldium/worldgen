@@ -33,8 +33,6 @@ export function Dimension({data = DIMENSION, onSave}) {
             <legend>Generator configuration</legend>
             <DimensionGenerator generator={state.generator} onChange={handleGeneratorChange} />
         </fieldset>
-        <div className="form-group mlm mbm">
-            <Button type="submit">Save</Button>
-        </div>
+        <Button type="submit">Save</Button>
     </form>
 }

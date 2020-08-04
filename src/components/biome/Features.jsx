@@ -1,11 +1,11 @@
 import React, { useCallback, useState, useEffect } from 'react';
-import Select from 'react-select';
+import Select from '../../ui/Select';
 import { FEATURES } from './BiomeDefaults';
 import { useKeyedListOptions } from '../../hooks/context';
 
-export default function GenFeatures({ onChange, features = FEATURES }) {
+export const GenFeatures = React.memo(function({ onChange, features }) {
 
-    const [levels, setLevels] = useState(features);
+    const [levels, setLevels] = useState(features || FEATURES);
 
     const handleLevelChange = useCallback(function(priority, list) {
         setLevels(levels => {
@@ -16,8 +16,10 @@ export default function GenFeatures({ onChange, features = FEATURES }) {
     }, [levels, onChange]);
 
     useEffect(function() {
-        onChange(levels);
-    }, [levels, onChange]);
+        if (levels !== features) {
+            onChange(levels);
+        }
+    }, [features, levels, onChange]);
 
     const elements = [];
     levels.forEach((level, i) => {
@@ -28,9 +30,9 @@ export default function GenFeatures({ onChange, features = FEATURES }) {
         <p className="help"><small className="text-muted">Each generation feature is associated with a priority. The higher the priority, the later the feature will be applied.</small></p>
         <ol>{elements}</ol>
     </div>;
-}
+});
 
-function GenFeaturesLevel({ onChange, priority, value }) {
+export const GenFeaturesLevel = React.memo(function({ onChange, priority, value }) {
     const options = useKeyedListOptions('features');
 
     const handleChange = useCallback(function(selectedOptions) {
@@ -38,4 +40,4 @@ function GenFeaturesLevel({ onChange, priority, value }) {
     }, [onChange, priority]);
 
     return <Select isMulti options={options} onChange={handleChange} defaultValue={options.filter(o => value.includes(o.value))} />;
-}
+});

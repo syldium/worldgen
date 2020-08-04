@@ -1,43 +1,30 @@
 import React, { useCallback, useState } from 'react';
-import BiomeStarts from './BiomeStarts';
-import Select from 'react-select';
+import Select from '../../ui/Select';
 import { Button } from '../../ui/Button';
 import { NamespacedKey } from '../NamespacedKey';
-import { BiomeSpawners } from './BiomeSpawners';
-import GenFeatures from './Features';
 import { BiomeEffects } from './BiomeEffects';
+import { BiomeSpawners } from './BiomeSpawners';
+import { BiomeStarts } from './BiomeStarts';
+import { GenFeatures } from './Features';
 import { useKeyedListOptions } from '../../hooks/context';
+import { ConfInput } from '../../ui/Input';
+import { BIOME_DEFAULTS } from './BiomeDefaults';
 
-export function Biome({data = {}, onSave}) {
+export function Biome({data = BIOME_DEFAULTS, onSave}) {
 
     const [state, setState] = useState(data);
 
     const handleStartsChange = useCallback(function(starts) {
-        setState(state => {
-            state.starts = starts;
-            return state;
-        });
+        setState(state => ({ ...state, starts }));
     }, []);
-
     const handleEffectsChange = useCallback(function(effects) {
-        setState(state => {
-            state.effects = effects;
-            return state;
-        });
+        setState(state => ({ ...state, effects }));
     }, []);
-
     const handleFeaturesChange = useCallback(function(features) {
-        setState(state => {
-            state.features = features;
-            return state;
-        });
+        setState(state => ({ ...state, features }));
     }, []);
-
     const handleSpawnersChange = useCallback(function(spawners) {
-        setState(state => {
-            state.spawners = spawners;
-            return state;
-        });
+        setState(state => ({ ...state, spawners }));
     }, []);
 
     const handleSubmit = useCallback(function(e) {
@@ -45,12 +32,6 @@ export function Biome({data = {}, onSave}) {
         const formData = Object.fromEntries(new FormData(e.target));
         const data = { ...state, ...formData };
         data.spawn_costs = {};
-        data.carvers =  {
-            air: [
-              "minecraft:cave",
-              "minecraft:canyon"
-            ]
-        }; // @todo
         Object.keys(formData).forEach(function(key) {
             if (!isNaN(formData[key])) {
                 data[key] = parseFloat(formData[key]);
@@ -61,18 +42,18 @@ export function Biome({data = {}, onSave}) {
 
     return <form onSubmit={handleSubmit}>
         <h3>Edit biome</h3>
-        <NamespacedKey example="arctic" type="biomes" value={data.key} expectBreakage={typeof data.key !== 'undefined'} />
+        <NamespacedKey example="arctic" type="biomes" value={state.key} expectBreakage={typeof data.key !== 'undefined'} />
 
         <BiomeEffects effects={state.effects} onChange={handleEffectsChange} />
 
         <fieldset>
-            <BiomeCategory category={data.category} />
-            <BiomePrecipitation value={data.precipitation} />
+            <BiomeCategory category={state.category} />
+            <BiomePrecipitation value={state.precipitation} />
         </fieldset>
 
         <fieldset>
             <legend>Generation</legend>
-            <SurfaceBuilder value={data.surface_builder} />
+            <SurfaceBuilder value={state.surface_builder} />
             <BiomeStarts onChange={handleStartsChange} starts={state.starts} />
             <GenFeatures features={state.features} onChange={handleFeaturesChange} />
         </fieldset>
@@ -85,20 +66,18 @@ export function Biome({data = {}, onSave}) {
         <fieldset>
             <legend>Settings</legend>
             <div className="form-group form-row">
-                <div><label htmlFor="scale">Scale</label> : <input type="number" name="scale" step="0.05" required defaultValue={data.scale || 0.05} /></div>
-                <div><label htmlFor="downfall">Downfall</label> : <input type="number" name="downfall" step="0.1" required defaultValue={data.downfall || 0.4} /></div>
-                <div><label htmlFor="depth">Depth</label> : <input type="number" name="depth" step="0.01" required defaultValue={data.depth || 0.12} /></div>
-                <div><label htmlFor="temperature">Temperature</label> : <input type="number" name="temperature" step="0.1" required defaultValue={data.temperature || 0.8} /></div>
+                <ConfInput name="scale" defaultValue={data.scale || 0.05} step={0.05}>Scale</ConfInput>
+                <ConfInput name="downfall" defaultValue={data.downfall || 0.4} step={0.1}>Downfall</ConfInput>
+                <ConfInput name="depth" defaultValue={data.depth || 0.12} step={0.01}>Depth</ConfInput>
+                <ConfInput name="temperature" defaultValue={data.temperature || 0.8} step={0.1}>Temperature</ConfInput>
                 <p className="mts"><small className="text-muted">The <em>scale</em> parameter defines terrain amplitude, <em>downfall</em> controls grass and foliage color, <em>depth</em> is the difference from sea level, <em>temperature</em> controls some gameplay features like whether snow golems take damage. The default values are those of the plains biome.</small></p>
             </div>
         </fieldset>
-        <div className="form-group mlm mbm">
-            <Button type="submit">Save</Button>
-        </div>
+        <Button type="submit">Save</Button>
     </form>;
 }
 
-function BiomeCategory({category = 'plains'}) {
+const BiomeCategory = React.memo(function({category = 'plains'}) {
 
     const options = [
         { value: 'beach', label: 'Beach' },
@@ -123,9 +102,9 @@ function BiomeCategory({category = 'plains'}) {
         <label htmlFor="category">Category</label>
         <Select options={options} defaultValue={options.find(o => o.value === category)} name="category" />
     </div>;
-}
+});
 
-function BiomePrecipitation({value = 'rain'}) {
+const BiomePrecipitation = React.memo(function({value = 'rain'}) {
 
     const options = [
         { value: 'none', label: 'None' },
@@ -137,12 +116,12 @@ function BiomePrecipitation({value = 'rain'}) {
         <label htmlFor="precipitation">Precipitation</label>
         <Select options={options} defaultValue={options.find(o => o.value === value)} name="precipitation" />
     </div>;
-}
+});
 
-function SurfaceBuilder({value = 'minecraft:grass'}) {
+const SurfaceBuilder = React.memo(function({value = 'minecraft:grass'}) {
     const options = useKeyedListOptions('surfaces');
     return <div className="form-group">
         <label htmlFor="surface_builder">Surface builder</label>
         <Select options={options} defaultValue={options.find(o => o.value === value)} name="surface_builder" />
     </div>;
-}
+});

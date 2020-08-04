@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useMemo, useCallback } from 'react';
-import Select from 'react-select';
+import Select from '../../ui/Select';
 import { useCrudPreset, useJsonEffect } from "../../hooks/form";
 import { useToggle } from '../../hooks/ui';
 import { Button } from '../../ui/Button';
@@ -7,7 +7,7 @@ import { DataContext } from '../../context/DataContext';
 import { SPAWNERS_DEFAULTS } from './BiomeDefaults';
 import { NumberInput } from '../../ui/Input';
 
-export function BiomeSpawners({onChange, data}) {
+export const BiomeSpawners = React.memo(function({onChange, data}) {
 
     const spawners = useJsonEffect(data || SPAWNERS_DEFAULTS, data, onChange);
     const entities = useContext(DataContext).vanilla.entities;
@@ -24,9 +24,9 @@ export function BiomeSpawners({onChange, data}) {
         <SpawnGroup group="water_ambient" data={spawners.water_ambient} onChange={handleChange} entities={entities}>Water ambient</SpawnGroup>
         <SpawnGroup group="water_creature" data={spawners.water_creature} onChange={handleChange} entities={entities}>Water creature</SpawnGroup>
     </div>;
-}
+});
 
-function SpawnGroup({children, entities, data = [], group, onChange}) {
+const SpawnGroup = React.memo(function({children, entities, data = [], group, onChange}) {
     const [visibility, toggle] = useToggle();
     const text = visibility ? 'Less...' : 'More...';
 
@@ -43,10 +43,10 @@ function SpawnGroup({children, entities, data = [], group, onChange}) {
     }, [insert, toggle, visibility]);
 
     useEffect(function() {
-        if (spawners !== group) {
+        if (spawners !== data) {
             onChange(group, spawners);
         }
-    }, [group, onChange, spawners]);
+    }, [data, group, onChange, spawners]);
 
     if (visibility) {
         return <div>
@@ -71,7 +71,7 @@ function SpawnGroup({children, entities, data = [], group, onChange}) {
             {(spawners.length < 1) && <Button onClick={handleAdd}>Add</Button>}
         </div>
     </div>;
-}
+});
 
 const SpawnDefinition = React.memo(function({data, index, options, onChange, onDelete}) {
 

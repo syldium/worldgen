@@ -1,0 +1,20 @@
+$black: #212529;
+
+$variants-list: (
+    (primary, (
+        light: $color-primary,
+        dark: #09716a
+    ), $white, none),
+    (info, (
+        light: $color-info,
+        dark: #097c99
+    ), var(--primary-color), none),
+    (warning, (
+        light: $color-warning,
+        dark: #d57411
+    ), $black, none),
+    (danger, (
+        light: $color-danger,
+        dark: #c14f51
+    ), $white, none)
+);

@@ -9,18 +9,35 @@ export const ConfInput = React.memo(function ({
     onChange,
     value, defaultValue,
     min, max, step,
-    className, style
+    className, style = {}
 }) {
 
     const uId = name || Math.random().toString(36).substr(2, 5) + '-' + id;
+    
+    if (typeof type !== 'string') {
+        if (typeof checked !== 'undefined' || typeof defaultChecked !== 'undefined') {
+            type = 'checkbox';
+        } else if (typeof step === 'number' || typeof max === 'number' || !isNaN(typeof value === 'undefined' ? defaultValue : value)) {
+            type = 'number';
+        } else {
+            type = 'text';
+        }
+    }
 
-    if (type === 'checkbox' || typeof checked !== 'undefined' || typeof defaultChecked !== 'undefined') {
+    if (type === 'number') {
+        style.width = getNumberSize(parseFloat(defaultValue || value || 0), max, step);
+        className = (className || '') + ' number-wrapper';
+    }
+
+    if (type === 'checkbox') {
         return <div className={className}>
             <label htmlFor={uId}>{children}</label> : <input type={type || 'checkbox'} data-name={name || id} name={name} id={uId} className="checkbox" {...{ ...attr, checked, defaultChecked, onChange, value, style }} />
         </div>
     }
     return <div className={className}>
-        <label htmlFor={uId}>{children}</label> : <input type={type || (isNaN(typeof value === 'undefined' ? defaultValue : value) ? 'text' : 'number')} data-name={name || id} name={name} id={uId} {...{ ...attr, onChange, value, defaultValue, min, max, step, style }} />
+        <label htmlFor={uId}>{children}</label> : <input
+            type={type} data-name={name || id} name={name} id={uId}
+            {...{ ...attr, value, onChange, defaultValue, min, max, step, style }} />
     </div>
 });
 
@@ -64,8 +81,21 @@ export const NumberInput = React.memo(function ({
     }
     value = type === 'color' ? integerColorToHex(value) : (typeof value === 'number' ? value : defaultValue);
     return <ConfInput id={id} name={name} className={className}
-        step={step} min={min} max={max} type={type} style={style}
+        step={step} min={min} max={max} type={type || 'number'} style={style}
         value={value} onChange={handleChange} required={required}>
             {children}
     </ConfInput>
-})
+});
+
+function getNumberSize(n, max = 10, step = 1) {
+    const decimals = Math.max(countDecimals(step), countDecimals(n));
+    const length = n.toFixed(decimals).toString().length;
+    const ceil = max > 9 && n < 10;
+    const smooth = step === 1 ? 7 : 5;
+    return length + smooth + (ceil ? 1 : 0) + 'ch';
+}
+function countDecimals(n) { 
+    if ((n % 1) !== 0) 
+        return n.toString().split(".")[1].length;  
+    return 0;
+};

@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useMemo, useEffect, useContext } from "react";
-import Select from "react-select";
+import Select from "../../ui/Select";
 import { TAGS_OPTIONS } from "../feature/FeatureDefaults";
 import { BlockState } from "./BlockState";
 import { NumberInput } from "../../ui/Input";

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { EFFECTS, PARTICLES, PARTICLE_DEFAULTS } from './BiomeDefaults';
 import { useToggle } from '../../hooks/ui';
 import { NumberInput, ConfInput } from '../../ui/Input';
-import Select from 'react-select';
+import Select from '../../ui/Select';
 import { BlockState } from '../state/BlockState';
 import { useJsonEffect } from '../../hooks/form';
 
@@ -28,7 +28,9 @@ export function BiomeEffects({effects, onChange}) {
         if (!particle) {  
             delete next.particle;
         }
-        onChange(next);
+        if (JSON.stringify(next) !== JSON.stringify(effects)){
+            onChange(next);
+        }
     }, [blockColor, colors, effects, onChange, particle]);
 
     return <fieldset>

@@ -1,0 +1,58 @@
+html {
+    height: 100%;
+}
+body {
+    margin: 0;
+    font-family: $font-family-base;
+    line-height: 1.5;
+    overflow-y: scroll;
+    color: var(--primary-color);
+    transition: .3s;
+}
+.content {
+    width: calc(100% - 40px);
+    max-width: 1280px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 12px 24px 24px;
+    min-height: 100vh;
+
+    a {
+        text-decoration: underline;
+    }
+}
+h5 {
+    font-size: 1rem;
+    font-weight: 500;
+}
+hr {
+	display: block;
+	clear: both;
+	height: 1px;
+	margin: 1em 0 2em;
+	padding: 0;
+	border: 0;
+	color: var(--fieldset-color);
+	background-color: var(--fieldset-color);
+}
+ol.sortable-container {
+    padding-left: 1rem;
+}
+.sortable-item {
+    pointer-events: auto !important;
+}
+.sortable-container > .sortable-item:hover {
+    cursor: grab;
+}
+body > .sortable-item:hover {
+    display: block;
+    cursor: grabbing;
+}
+
+@include respond-to("small") {
+    .content {
+        width: calc(100% - 10px);
+        padding-left: 8px;
+        padding-right: 8px;
+    }
+}

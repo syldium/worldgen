@@ -173,6 +173,27 @@ export const SPAWNERS_DEFAULTS = {
     water_creature: []
 };
 
+export const BIOME_DEFAULTS = {
+    effects: EFFECTS,
+    carvers: {
+        air: [
+            "minecraft:cave",
+            "minecraft:canyon"
+        ]
+    },
+    starts: STARTS,
+    features: FEATURES,
+    spawners: SPAWNERS_DEFAULTS,
+    category: "plains",
+    precipitation: "rain",
+    surface_builder: "minecraft:grass",
+    scale: 0.05,
+    downfall: 0.4,
+    depth: 0.12,
+    temperature: 0.8,
+    spawn_costs: {}
+}
+
 export const PARTICLES = [
     'ambient_entity_effect',
     'angry_villager',

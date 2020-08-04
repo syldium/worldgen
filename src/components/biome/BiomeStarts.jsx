@@ -1,9 +1,9 @@
 import React, { useCallback, useMemo } from 'react';
-import Select from 'react-select';
+import Select from '../../ui/Select';
 import { STARTS } from './BiomeDefaults';
 import { useJsonEffect } from '../../hooks/form';
 
-export default function BiomeStarts({onChange, starts}) {
+export const BiomeStarts = React.memo(function({onChange, starts}) {
     starts = useJsonEffect(starts || STARTS, starts, onChange);
 
     const handleChange = useCallback(function(selectedOptions) {
@@ -50,4 +50,4 @@ export default function BiomeStarts({onChange, starts}) {
         <label htmlFor="starts">Structures</label>
         <Select isMulti id="starts" options={options} onChange={handleChange} defaultValue={options.filter(o => starts.includes(o.value))} />
     </div>;
-}
+});

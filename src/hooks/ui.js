@@ -21,6 +21,33 @@ export function useToggle(initial = false) {
 }
 
 /**
+ * 
+ * @param {string} [page] 
+ * @param {number} [index] 
+ * @returns {[string, number, function (SyntheticEvent, string, number): void]}
+ */
+export function useMenu(page = 'stats', index = -1) {
+    const [state, setState] = useState({ page, index });
+
+    const setPage = function (e, page = 'stats', index = -1) {
+        if (e !== null) {
+            e.preventDefault();
+        }
+        if (index < 0) {
+            setState({ page });
+        } else {
+            setState({ page, index });
+        }
+    }
+
+    return [
+        state.page,
+        state.index,
+        setPage
+    ];
+}
+
+/**
  * @param {function(HTMLCanvasElement, CanvasRenderingContext2D): void} callback
  * @returns {React.MutableRefObject}
  */

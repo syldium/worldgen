@@ -1,6 +1,14 @@
 import React from 'react';
+import { DarkModeToggle } from './DarkModeToggle';
 
 export function MenuItem({active, children, onClick}) {
-    const className = 'tabs-menu-link' + (active ? ' is-active' : '');
-    return <a href="#_" className={className} onClick={onClick}>{children}</a>
+    return <li><a href="#_" role="menuitem" aria-current={active} onClick={onClick}>{children}</a></li>
+}
+
+export function NavBar({ children }) {
+    return <div className="navbar">
+        {children}
+        <p className="github"><a href="https://github.com/syldium/worldgen" target="_blank" rel="noopener noreferrer">View on GitHub</a></p>
+        <DarkModeToggle />
+    </div>
 }

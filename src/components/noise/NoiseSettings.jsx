@@ -2,7 +2,7 @@ import React, { useCallback, useState } from 'react';
 import { BlockState } from '../state/BlockState';
 import { Button } from '../../ui/Button';
 import { useValueChange } from '../../hooks/form';
-import { ConfInput } from '../../ui/Input';
+import { ConfInput, NumberInput } from '../../ui/Input';
 import { OVERWORLD_NOISE } from './NoiseDefaults';
 import { Structures } from './Structures';
 import { NamespacedKey } from '../NamespacedKey';
@@ -31,7 +31,7 @@ export const NoiseSettings = React.memo(function ({ data = OVERWORLD_NOISE, onSa
         setState(state => ({ ...state, structures }));
     }, []);
     const handleNoiseChange = useCallback(function (noise) {
-        setState(state => ({ ...state, noise }));
+        setState(state => ({ ...state, noise: { ...state.noise, ...noise } }));
     }, []);
 
     return <form onSubmit={handleSubmit}>
@@ -55,16 +55,14 @@ export const NoiseSettings = React.memo(function ({ data = OVERWORLD_NOISE, onSa
             <div className="form-group form-row">
                 <ConfInput name="bedrock_roof_position" defaultValue={data.bedrock_roof_position}>Bedrock roof position</ConfInput>
                 <ConfInput name="bedrock_floor_position" defaultValue={data.bedrock_floor_position}>Bedrock floor position</ConfInput>
-                <ConfInput name="sea_level" defaultValue={data.sea_level} min="0" max="256">Sea level</ConfInput>
+                <ConfInput name="sea_level" defaultValue={data.sea_level} max={256}>Sea level</ConfInput>
                 <ConfInput name="disable_mob_generation" defaultChecked={data.disable_mob_generation}>Disable mob generation</ConfInput>
             </div>
         </fieldset>
 
-        <NoiseConfig data={data.noise} onChange={handleNoiseChange} />
+        <NoiseConfig data={state.noise} onChange={handleNoiseChange} />
 
-        <div className="form-group mlm mbm">
-            <Button type="submit">Save</Button>
-        </div>
+        <Button type="submit">Save</Button>
     </form>;
 });
 
@@ -72,29 +70,29 @@ const NoiseConfig = React.memo(function ({ data, onChange }) {
 
     const handleChange = useValueChange(onChange, data);
     const handleSamplingChange = useCallback(function (sampling) {
-        onChange({ ...data, sampling });
+        onChange({ ...data, sampling: { ...data.sampling, ...sampling } });
     }, [data, onChange]);
     const handleTopSlideChange = useCallback(function (top_slide) {
-        onChange({ ...data, top_slide });
+        onChange({ ...data, top_slide: { ...data.top_slide, ...top_slide } });
     }, [data, onChange]);
     const handleBottomSlideChange = useCallback(function (bottom_slide) {
-        onChange({ ...data, bottom_slide });
+        onChange({ ...data, bottom_slide: { ...data.bottom_slide, ...bottom_slide } });
     }, [data, onChange]);
 
     return <fieldset>
         <legend>Noise config (advanced)</legend>
         <div className="form-group form-row">
-            <ConfInput id="height" defaultValue={data.height} onChange={handleChange} min="0" max="256">Height</ConfInput>
-            <ConfInput id="size_horizontal" defaultValue={data.size_horizontal} onChange={handleChange} min="1" max="4">Size horizontal</ConfInput>
-            <ConfInput id="size_vertical" defaultValue={data.size_vertical} onChange={handleChange} min="1" max="4">Size vertical</ConfInput>
-            <ConfInput id="density_factor" defaultValue={data.density_factor} onChange={handleChange} step="0.01">Density factor</ConfInput>
-            <ConfInput id="density_offset" defaultValue={data.density_offset} onChange={handleChange} step="0.01">Density offset</ConfInput>
+            <NumberInput id="height" value={data.height} upChange={onChange} min="0" max="256">Height</NumberInput>
+            <NumberInput id="size_horizontal" value={data.size_horizontal} upChange={onChange} min="1" max="4">Size horizontal</NumberInput>
+            <NumberInput id="size_vertical" value={data.size_vertical} upChange={onChange} min="1" max="4">Size vertical</NumberInput>
+            <NumberInput id="density_factor" value={data.density_factor} upChange={onChange} step="0.01">Density factor</NumberInput>
+            <NumberInput id="density_offset" value={data.density_offset} upChange={onChange} min="-10000" step="0.01">Density offset</NumberInput>
         </div>
         <div className="form-group form-row">
-            <ConfInput id="simplex_surface_noise" defaultChecked={data.simplex_surface_noise} onChange={handleChange}>Simplex surface noise</ConfInput>
-            <ConfInput id="random_density_offset" defaultChecked={data.random_density_offset} onChange={handleChange}>Random density offset</ConfInput>
-            <ConfInput id="island_noise_override" defaultChecked={data.island_noise_override} onChange={handleChange}>Island noise override</ConfInput>
-            <ConfInput id="amplified" defaultChecked={data.amplified} onChange={handleChange}>Amplified</ConfInput>
+            <ConfInput id="simplex_surface_noise" checked={data.simplex_surface_noise} onChange={handleChange}>Simplex surface noise</ConfInput>
+            <ConfInput id="random_density_offset" checked={data.random_density_offset} onChange={handleChange}>Random density offset</ConfInput>
+            <ConfInput id="island_noise_override" checked={data.island_noise_override} onChange={handleChange}>Island noise override</ConfInput>
+            <ConfInput id="amplified" checked={data.amplified} onChange={handleChange}>Amplified</ConfInput>
         </div>
 
         <NoiseSamplingConfig data={data.sampling} onChange={handleSamplingChange}>Sampling</NoiseSamplingConfig>
@@ -105,29 +103,25 @@ const NoiseConfig = React.memo(function ({ data, onChange }) {
 
 const NoiseSamplingConfig = React.memo(function ({ children, data, onChange }) {
 
-    const handleChange = useValueChange(onChange, data);
-
     return <fieldset>
         <legend>{children}</legend>
         <div className="form-group form-row">
-            <ConfInput name="xz_scale" defaultValue={data.xz_scale} onChange={handleChange}>XY scale</ConfInput>
-            <ConfInput name="y_scale" defaultValue={data.y_scale} onChange={handleChange}>Y scale</ConfInput>
-            <ConfInput name="xz_factor" defaultValue={data.xz_factor} onChange={handleChange}>XZ factor</ConfInput>
-            <ConfInput name="y_factor" defaultValue={data.y_factor} onChange={handleChange}>Y factor</ConfInput>
+            <NumberInput name="xz_scale" value={data.xz_scale} upChange={onChange}>XY scale</NumberInput>
+            <NumberInput name="y_scale" value={data.y_scale} upChange={onChange}>Y scale</NumberInput>
+            <NumberInput name="xz_factor" value={data.xz_factor} upChange={onChange}>XZ factor</NumberInput>
+            <NumberInput name="y_factor" value={data.y_factor} upChange={onChange}>Y factor</NumberInput>
         </div>
     </fieldset>
 });
 
 const SlideConfig = React.memo(function ({ children, data, onChange }) {
 
-    const handleChange = useValueChange(onChange, data);
-
     return <fieldset>
         <legend>{children}</legend>
         <div className="form-group form-row">
-            <ConfInput id="target" defaultValue={data.target} onChange={handleChange}>Target</ConfInput>
-            <ConfInput id="size" defaultValue={data.size} onChange={handleChange}>Size</ConfInput>
-            <ConfInput id="offset" defaultValue={data.offset} onChange={handleChange}>Offset</ConfInput>
+            <NumberInput id="target" value={data.target} upChange={onChange} min={null}>Target</NumberInput>
+            <NumberInput id="size" value={data.size} upChange={onChange} max="256">Size</NumberInput>
+            <NumberInput id="offset" value={data.offset} upChange={onChange} min={null}>Offset</NumberInput>
         </div>
     </fieldset>
 });

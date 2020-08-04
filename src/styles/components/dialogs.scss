@@ -1,0 +1,10 @@
+dialog {
+    position: fixed;
+    top: 15%;
+    left: 0;
+    z-index: 10;
+    background-color: var(--bg-color-section);
+    color: var(--primary-color);
+    border: 0;
+    padding: 2rem;
+}

@@ -1,0 +1,84 @@
+.toggle-control {
+    position: relative;
+    padding: 0 4px;
+    display: flex;
+    align-items: center;
+}
+
+input[type="checkbox"].dmcheck {
+    width: 40px;
+    height: 10px;
+    background: #555;
+    position: relative;
+    border-radius: 5px;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    cursor: pointer;
+    outline: none;
+    padding: .3rem;
+
+    &:checked + label {
+        left: 30px;
+    }
+
+    &:focus-visible {
+        outline: solid 2px white;
+    }
+
+    & + label {
+        display: inline-block;
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        position: absolute;
+        left: 2px;
+        background: #fff;
+        background-color: #f6f6f6;
+    }
+}
+
+.dark-mode-toggle {
+    display: flex;
+    margin: 0 0.5rem;
+    & > button {
+        font-size: 1.2em;
+        background: none;
+        border: none;
+        color: #ffa700;
+        cursor: pointer;
+        transition: color 0.3s ease;
+        padding-left: 0.75rem;
+        padding-right: 0.75rem;
+
+        &:last-child {
+            color: #666;
+        }
+
+        &:focus {
+            outline: none;
+        }
+    }
+}
+
+.dark-mode {
+    .dark-mode-toggle > button {
+        color: #999;
+        &:last-child {
+            color: lightblue;
+        }
+    }
+}
+
+@include respond-to("large") {
+    :not(.first-screen) > .navbar > .dark-mode-toggle {
+        display: none;
+    }
+}
+@include respond-to("medium") {
+    .dark-mode-toggle > button {
+        display: none;
+    }
+}
