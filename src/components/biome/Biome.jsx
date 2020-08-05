@@ -45,7 +45,7 @@ export function Biome({data = BIOME_DEFAULTS, onSave}) {
     }, [onSave, state]);
 
     return <form onSubmit={handleSubmit}>
-        <NamespacedKey example="arctic" type="biomes" value={state.key} expectBreakage={typeof data.key !== 'undefined'}>biome</NamespacedKey>
+        <NamespacedKey example="arctic" type="biomes" value={state.key} mayReplaceVanilla={true} expectBreakage={typeof data.key !== 'undefined'}>biome</NamespacedKey>
 
         <BiomeEffects effects={state.effects} onChange={handleEffectsChange} />
 
