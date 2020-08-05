@@ -41,6 +41,7 @@ export function Biome({data = BIOME_DEFAULTS, onSave}) {
                 data[key] = parseFloat(formData[key]);
             }
         });
+        data.player_spawn_friendly = formData.hasOwnProperty('player_spawn_friendly');
         onSave(data);
     }, [onSave, state]);
 
@@ -75,6 +76,7 @@ export function Biome({data = BIOME_DEFAULTS, onSave}) {
                 <ConfInput name="downfall" defaultValue={data.downfall || 0.4} step={0.1}>Downfall</ConfInput>
                 <ConfInput name="depth" defaultValue={data.depth || 0.12} step={0.01}>Depth</ConfInput>
                 <ConfInput name="temperature" defaultValue={data.temperature || 0.8} step={0.1}>Temperature</ConfInput>
+                <ConfInput name="player_spawn_friendly" defaultChecked={data.player_spawn_friendly}>Player spawn friendly</ConfInput>
                 <p className="mts"><small className="text-muted">The <em>scale</em> parameter defines terrain amplitude, <em>downfall</em> controls grass and foliage color, <em>depth</em> is the difference from sea level, <em>temperature</em> controls some gameplay features like whether snow golems take damage. The default values are those of the plains biome.</small></p>
             </div>
         </fieldset>

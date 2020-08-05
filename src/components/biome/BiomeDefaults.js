@@ -191,6 +191,7 @@ export const BIOME_DEFAULTS = {
     downfall: 0.4,
     depth: 0.12,
     temperature: 0.8,
+    player_spawn_friendly: true,
     spawn_costs: {}
 }
 
