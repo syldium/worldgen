@@ -35,8 +35,7 @@ export const NoiseSettings = React.memo(function ({ data = OVERWORLD_NOISE, onSa
     }, []);
 
     return <form onSubmit={handleSubmit}>
-        <h3>Edit noise</h3>
-        <NamespacedKey example="epic" type="noises" value={data.key} expectBreakage={typeof data.key !== 'undefined'} />
+        <NamespacedKey example="epic" type="noises" value={data.key} expectBreakage={typeof data.key !== 'undefined'}>noise</NamespacedKey>
 
         <Structures data={data.structures} onChange={handleStructuresChange} />
 

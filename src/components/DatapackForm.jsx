@@ -30,6 +30,8 @@ export function DatapackForm({onCreate}) {
         e.stopPropagation();
     };
 
+    window.scrollTo(0, 0);
+
     return <div className="first-screen" onDragStart={handleDrag} onDragEnter={handleDrag} onDragOver={handleDrag} onDrop={handleFile}>
         <NavBar>
             <h2>Dimension datapack generator</h2>

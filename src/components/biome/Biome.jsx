@@ -9,11 +9,15 @@ import { GenFeatures } from './Features';
 import { useKeyedListOptions } from '../../hooks/context';
 import { ConfInput } from '../../ui/Input';
 import { BIOME_DEFAULTS } from './BiomeDefaults';
+import { ConfiguredCarver } from '../carver/ConfiguredCarver';
 
 export function Biome({data = BIOME_DEFAULTS, onSave}) {
 
     const [state, setState] = useState(data);
 
+    const handleCarversChange = useCallback(function(carvers) {
+        setState(state => ({ ...state, carvers }));
+    }, []);
     const handleStartsChange = useCallback(function(starts) {
         setState(state => ({ ...state, starts }));
     }, []);
@@ -41,8 +45,7 @@ export function Biome({data = BIOME_DEFAULTS, onSave}) {
     }, [onSave, state]);
 
     return <form onSubmit={handleSubmit}>
-        <h3>Edit biome</h3>
-        <NamespacedKey example="arctic" type="biomes" value={state.key} expectBreakage={typeof data.key !== 'undefined'} />
+        <NamespacedKey example="arctic" type="biomes" value={state.key} expectBreakage={typeof data.key !== 'undefined'}>biome</NamespacedKey>
 
         <BiomeEffects effects={state.effects} onChange={handleEffectsChange} />
 
@@ -57,6 +60,8 @@ export function Biome({data = BIOME_DEFAULTS, onSave}) {
             <BiomeStarts onChange={handleStartsChange} starts={state.starts} />
             <GenFeatures features={state.features} onChange={handleFeaturesChange} />
         </fieldset>
+
+        <ConfiguredCarver carvers={state.carvers} onChange={handleCarversChange} />
 
         <fieldset>
             <legend>Creatures</legend>

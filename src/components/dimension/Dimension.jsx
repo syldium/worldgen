@@ -26,8 +26,7 @@ export function Dimension({data = DIMENSION, onSave}) {
     }
 
     return <form onSubmit={handleSubmit}>
-        <h3>Edit dimension</h3>
-        <NamespacedKey example="blue_dimension" type="dimensions" value={data.key} mayReplaceVanilla={true} />
+        <NamespacedKey example="blue_dimension" type="dimensions" value={data.key} mayReplaceVanilla={true}>dimension</NamespacedKey>
         <DimensionType type={state.type} />
         <fieldset>
             <legend>Generator configuration</legend>

@@ -3,16 +3,16 @@ import { saveAs } from "file-saver";
 import { dataUpper } from "./data";
 
 const DIMENSIONS_PATH = /^data\/([a-z0-9._-]+)\/(dimension|dimension_type)\/([a-z0-9._-]+).json$/;
-const WORLDGEN_PATH = /^data\/([a-z0-9._-]+)\/worldgen\/(biome|configured_feature|configured_surface_builder|noise_settings)\/([a-z0-9._-]+).json$/;
+const WORLDGEN_PATH = /^data\/([a-z0-9._-]+)\/worldgen\/(biome|configured_carver|configured_feature|configured_surface_builder|noise_settings)\/([a-z0-9._-]+).json$/;
 
 const LEGACY_PATH_DETECTION = /^data\/minecraft\/(dimension|dimension_type|worldgen)\/?\w*\/([a-z0-9._-]+)\/([a-z0-9._-]+).json$/;
 const LEGACY_DIMENSIONS_PATH = /^data\/minecraft\/(dimension|dimension_type)\/([a-z0-9._-]+)\/([a-z0-9._-]+).json$/;
-const LEGACY_WORLDGEN_PATH = /^data\/minecraft\/worldgen\/(biome|configured_feature|configured_surface_builder|noise_settings)\/([a-z0-9._-]+)\/([a-z0-9._-]+).json$/;
+const LEGACY_WORLDGEN_PATH = /^data\/minecraft\/worldgen\/(biome|configured_carver|configured_feature|configured_surface_builder|noise_settings)\/([a-z0-9._-]+)\/([a-z0-9._-]+).json$/;
 
 /**
  * Build zip in blob.
  * 
- * @param {{ biomes: object[], dimensions: object[], dimension_types: object[], features: object[], noises: object[], surfaces: object[] }} custom 
+ * @param {{ biomes: object[], carvers: object[] dimensions: object[], dimension_types: object[], features: object[], noises: object[], surfaces: object[] }} custom 
  */
 export function buildZip(custom) {
     const zip = new JSZip();
@@ -21,6 +21,7 @@ export function buildZip(custom) {
     writeFile(zip, `data/${namespace}/dimension`, custom.dimensions);
     writeFile(zip, `data/${namespace}/dimension_type`, custom.dimension_types);
     writeFile(zip, `data/${namespace}/worldgen/biome`, custom.biomes);
+    writeFile(zip, `data/${namespace}/worldgen/configured_carver`, custom.carvers);
     writeFile(zip, `data/${namespace}/worldgen/configured_feature`, custom.features);
     writeFile(zip, `data/${namespace}/worldgen/configured_surface_builder`, custom.surfaces);
     writeFile(zip, `data/${namespace}/worldgen/noise_settings`, custom.noises);
@@ -57,6 +58,7 @@ function extractDatapack(zip) {
     let namespace = 'test';
     const data = {
         biomes: [],
+        carvers: [],
         dimensions: [],
         dimension_types: [],
         features: [],
@@ -103,6 +105,8 @@ function extractDatapack(zip) {
 
 function getFolderType(folder) {
     switch (folder) {
+        case 'configured_carver':
+            return 'carvers';
         case 'configured_feature':
             return 'features';
         case 'configured_surface_builder':

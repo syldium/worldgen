@@ -53,8 +53,7 @@ export function RawConfiguredFeature({data = DECORATED_TREE_CONFIG, onSave}) {
     }, []);
 
     return <form onSubmit={handleSubmit}>
-        <h3>Edit configured feature</h3>
-        <NamespacedKey example="concrete_tree" type="features" value={data.key} expectBreakage={typeof data.key !== 'undefined'} />
+        <NamespacedKey example="concrete_tree" type="features" value={data.key} expectBreakage={typeof data.key !== 'undefined'}>configured feature</NamespacedKey>
         <div className="form-group">
             <label htmlFor="type">Type</label>
             <Select options={options} value={options.find(o => o.value === feature.type)} onChange={handleSelectChange} inputId="type" />

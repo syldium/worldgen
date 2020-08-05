@@ -11,6 +11,7 @@ import { SurfaceBuilder } from './surface/SurfaceBuilder';
 import { NoiseSettings } from './noise/NoiseSettings';
 import { displayNamespacedKey } from '../utils/data';
 import { useMenu } from '../hooks/ui';
+import { ConfiguredCarverForm } from './carver/ConfiguredCarver';
 
 export function Datapack() {
     const context = useContext(DataContext);
@@ -22,8 +23,8 @@ export function Datapack() {
         const method = 'update' + (type === 'surface' ? 'SurfacesBuilder' : capitalize(type)) + 's'
         custom[method](data);
         setMenu(null);
-        window.scrollTo(0, 0);
     }
+    window.scrollTo(0, 0);
 
     return <div>
         <NavBar>
@@ -38,6 +39,7 @@ export function Datapack() {
         </NavBar>
         <div className="content">
             {page === 'biome' && <Biome onSave={biome => handleSave('biome', biome)} data={custom.biomes[index]} />}
+            {page === 'carver' && <ConfiguredCarverForm onSave={carver => handleSave('carver', carver)} data={custom.carvers[index]} />}
             {page === 'surface' && <SurfaceBuilder onSave={surface => handleSave('surface', surface)} data={custom.surfaces[index]} />}
             {page === 'feature' && <RawConfiguredFeature onSave={feature => handleSave('feature', feature)} data={custom.features[index]} />}
             {page === 'noise' && <NoiseSettings onSave={noise => handleSave('noise', noise)} data={custom.noises[index]} />}
@@ -67,11 +69,16 @@ function Stats({custom, namespace, setPage}) {
         <StatsTitle data={custom.features} namespace={namespace} onClick={(e, i) => setPage(e, 'feature', i)}>configured feature</StatsTitle>
         <StatsTitle data={custom.surfaces} namespace={namespace} onClick={(e, i) => setPage(e, 'surface', i)}>configured surface builder</StatsTitle>
         <StatsTitle data={custom.noises} namespace={namespace} onClick={(e, i) => setPage(e, 'noise', i)}>custom noise</StatsTitle>
+        <StatsTitle data={custom.carvers} namespace={namespace} onClick={(e, i) => setPage(e, 'carver', i)} invisible={true}>custom carver</StatsTitle>
         {mayGenerate && <p><Button type="submit" onClick={handleGenerateClick}>Generate</Button></p>}
     </div>
 }
 
-function StatsTitle({ children, data, namespace, onClick }) {
+function StatsTitle({ children, data, invisible = false, namespace, onClick }) {
+    if (invisible && data.length < 1) {
+        return <></>
+    }
+
     return <>
         <h5><strong>{data.length}</strong> {children}{data.length > 1 && 's'}</h5>
         <ul>

@@ -5,11 +5,13 @@ import { useData } from '../hooks/context';
 import { VANILLA_SURFACE_BUILDERS } from '../components/surface/SurfaceBuilderDefaults';
 import { VANILLA_NOISES } from '../components/noise/NoiseDefaults';
 import { VANILLA_DIMENSION_TYPES } from '../components/dimension/DimensionDefaults';
+import { VANILLA_CARVERS } from '../components/carver/CarverDefaults';
 
 export const DataContext = React.createContext({
     vanilla: {
         biomes: [],
         blocks: [],
+        carvers: [],
         dimensions: [],
         dimension_types: [],
         entities: [],
@@ -19,12 +21,14 @@ export const DataContext = React.createContext({
     },
     custom: {
         biomes: [],
+        carvers: [],
         dimensions: [],
         dimension_types: [],
         features: [],
         noises: [],
         surfaces: [],
         updateBiomes: (biome) => {},
+        updateCarvers: (carver) => {},
         updateDimensions: (dimension) => {},
         updateDimensionTypes: (dimension_type) => {},
         updateFeatures: (feature) => {},
@@ -40,6 +44,7 @@ export function DataContextProvider({children, namespace, initial = {}}) {
     const [entities, setEntities] = useState([]);
 
     const [customBiomes, updateBiomes] = useData(initial.biomes);
+    const [carvers, updateCarvers] = useData(initial.carvers);
     const [dimensions, updateDimensions] = useData(initial.dimensions);
     const [dimension_types, updateDimensionTypes] = useData(initial.dimension_types);
     const [features, updateFeatures] = useData(initial.features);
@@ -61,6 +66,7 @@ export function DataContextProvider({children, namespace, initial = {}}) {
         vanilla: {
             biomes,
             blocks,
+            carvers: VANILLA_CARVERS,
             dimensions: VANILLA_DIMENSION_TYPES.filter(o => !o.value.includes('cave')),
             dimension_types: VANILLA_DIMENSION_TYPES,
             entities,
@@ -68,8 +74,10 @@ export function DataContextProvider({children, namespace, initial = {}}) {
             noises: VANILLA_NOISES,
             surfaces: VANILLA_SURFACE_BUILDERS
         },
-        custom: { biomes: customBiomes, dimensions, dimension_types, features, noises, surfaces,
-            updateBiomes, updateDimensions, updateDimensionTypes, updateFeatures, updateNoises, updateSurfacesBuilders },
+        custom: {
+            biomes: customBiomes, carvers, dimensions, dimension_types, features, noises, surfaces,
+            updateBiomes, updateCarvers, updateDimensions, updateDimensionTypes, updateFeatures, updateNoises, updateSurfacesBuilders
+        },
         namespace
     }}>{children}</DataContext.Provider>
 }

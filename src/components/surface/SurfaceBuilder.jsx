@@ -30,8 +30,7 @@ export function SurfaceBuilder({data = SURFACE_BUILDER, onSave}) {
     }, [config, data.index, onSave]);
 
     return <form onSubmit={handleSubmit}>
-        <h3>Edit surface builder</h3>
-        <NamespacedKey example="blackstone" type="surfaces" value={data.key} expectBreakage={typeof data.key !== 'undefined'} />
+        <NamespacedKey example="blackstone" type="surfaces" value={data.key} expectBreakage={typeof data.key !== 'undefined'}>surface builder</NamespacedKey>
         
         <div className="form-group">
             <label htmlFor="type">Type</label>

@@ -1,4 +1,4 @@
-import { useState, useContext, useMemo } from "react";
+import { useState, useContext } from "react";
 import { DataContext } from "../context/DataContext";
 import { displayNamespacedKey } from "../utils/data";
 
@@ -31,40 +31,38 @@ export function useData(initial = []) {
 }
 
 /**
- * @param {('biomes'|'dimensions'|'dimension_types'|'features'|'noises'|'surfaces')} category Data category
+ * @param {('biomes'|'carvers|'dimensions'|'dimension_types'|'features'|'noises'|'surfaces')} category Data category
  * @param {boolean} [includeCustom]
  * @param {boolean} [empty]
  * @returns {{ value: string, label: string }[]} Options list for react-select
  */
 export function useKeyedListOptions(category, includeCustom = true, empty = false) {
     const context = useContext(DataContext);
-    return useMemo(function() {
-        if (empty) {
-            return [];
+    if (empty) {
+        return [];
+    }
+
+    const options = includeCustom ? context.custom[category]
+        .map(keyed => {
+            const name = displayNamespacedKey(keyed.key, context.namespace);
+            return { value: keyed.key, label: '(Custom) ' + name };
+        }) : [];
+
+    let struct = null;
+    context.vanilla[category].forEach(keyed => {
+        if (struct === null) {
+            struct = keyed.hasOwnProperty('displayName') ? 1 : (keyed.hasOwnProperty('label') ? 2 : 3);
         }
-
-        const options = includeCustom ? context.custom[category]
-            .map(keyed => {
-                const name = displayNamespacedKey(keyed.key, context.namespace);
-                return { value: keyed.key, label: '(Custom) ' + name };
-            }) : [];
-
-        let struct = null;
-        context.vanilla[category].forEach(keyed => {
-            if (struct === null) {
-                struct = keyed.hasOwnProperty('displayName') ? 1 : (keyed.hasOwnProperty('label') ? 2 : 3);
-            }
-            switch(struct) {
-                case 1: // displayName
-                    options.push({ value: 'minecraft:' + keyed.name, label: keyed.displayName });
-                    return;
-                case 2: // already option
-                    options.push(keyed);
-                    return;
-                default:
-                    options.push({ value: 'minecraft:' + keyed, label: keyed });
-            }
-        });
-        return options;
-    }, [category, context.custom, context.namespace, context.vanilla, empty, includeCustom]);
+        switch(struct) {
+            case 1: // displayName
+                options.push({ value: 'minecraft:' + keyed.name, label: keyed.displayName });
+                return;
+            case 2: // already option
+                options.push(keyed);
+                return;
+            default:
+                options.push({ value: 'minecraft:' + keyed, label: keyed });
+        }
+    });
+    return options;
 }
