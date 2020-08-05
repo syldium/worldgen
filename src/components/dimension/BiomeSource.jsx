@@ -10,6 +10,7 @@ import { Button } from '../../ui/Button';
 import { capitalize, hasDuplicatedObjects } from '../../utils/data';
 import { NumberList } from '../../ui/NumberList';
 import { MULTI_NOISE_BIOME_SOURCE, NOISES_NAMES } from './DimensionDefaults';
+import { NumberInput } from '../../ui/Input';
 
 export function BiomeSource({biome_source = { type: 'minecraft:fixed' }, onChange}) {
     const [source, setSource] = useState(biome_source);
@@ -68,7 +69,7 @@ const CheckerboardBiomeSource = React.memo(function({source, onChange}) {
             <label htmlFor="biomes">Biomes</label><Select options={options} isMulti isClearable={false} value={options.filter(o => biomes.includes(o.value))} onChange={setBiomes} id="biomes" />
         </div>
         <div className="form-group">
-            <label htmlFor="scale">Scale (squares of 2<sup>scale</sup> chunks) : </label><input type="number" id="scale" value={scale} onChange={setScale} min="0" />
+            <NumberInput id="scale" value={scale} onChange={setScale}>Scale (squares of 2<sup>scale</sup> chunks)</NumberInput>
         </div>
         {biomes.length < 1 && <p className="alert--warning">Warning: a dimension must contain at least one biome!</p>}
     </div>;
@@ -132,9 +133,11 @@ const MultiNoiseBiomeSource = React.memo(function({source = MULTI_NOISE_BIOME_SO
     });
     return <>
         <div className="flex-container" style={{ alignItems: 'baseline' }}>
-            <h5>Biomes list</h5>
-            <Button onClick={handleAddClick} cat="primary mlm">Add biome</Button>
-            <Button onClick={toggleAdvanced} cat="secondary">Advanced</Button>
+            <h4>
+                Biomes list
+                <Button onClick={handleAddClick} cat="primary mls">Add biome</Button>
+                <Button onClick={toggleAdvanced} cat="secondary">Advanced</Button>
+            </h4>
         </div>
         {advanced && <div className="grid-2-small-1 has-gutter mbm">
             {NOISES_NAMES
@@ -150,62 +153,51 @@ const MultiNoiseBiomeSource = React.memo(function({source = MULTI_NOISE_BIOME_SO
 
 const PerlinNoiseParameters = React.memo(function({children, noise = { firstOctave: -7, amplitudes: [1, 1] }, onChange}) {
 
-    const handleFirstOctaveChange = useCallback(function(e) {
-        onChange({ ...noise, firstOctave: parseInt(e.target.value) });
+    const handleFirstOctaveChange = useCallback(function(firstOctave) {
+        onChange({ ...noise, firstOctave });
     }, [noise, onChange]);
     const handleAmplitudesChange = useCallback(function(amplitudes) {
         onChange({ ...noise, amplitudes });
     }, [noise, onChange]);
 
-    return <fieldset>
+    return <fieldset style={{ margin: 0 }}>
         <legend>{children}</legend>
         <div className="form-group form-row">
-            <div><label>First octave</label> : <input type="number" name="firstOctave" defaultValue={noise.firstOctave} onChange={handleFirstOctaveChange} /></div>
-            <div className="form-row"><div><label>Amplitudes</label> : </div><NumberList numbers={noise.amplitudes} onChange={handleAmplitudesChange} /></div>
+            <NumberInput id="firstOctave" value={noise.firstOctave} onChange={handleFirstOctaveChange} min={-1000}>First octave</NumberInput>
+            <NumberList numbers={noise.amplitudes} onChange={handleAmplitudesChange}>Amplitudes</NumberList>
         </div>
     </fieldset>;
 });
 
 const BiomeSelection = React.memo(function({namespace, vanilla, custom, biomesOptions, entry, onChange, children}) {
-    const [selection, setSelection] = useState(entry);
-
     const handleBiomeChange = useCallback(function(option) {
         const biome = option.value;
         const data = (vanilla.find(b => 'minecraft:' + b.name === biome) || custom.find(b => namespace + ':' + b.key === biome) || { rainfall: 0, temperature: 0 });
-        setSelection(selection => {
-            const parameters = {
-                altitude: selection.parameters.altitude || 0,
-                weirdness: selection.parameters.weirdness || 0,
-                offset: selection.parameters.offset || 0,
-                temperature: data.temperature || 0.8,
-                humidity: data.rainfall || 0.4
-            };
-            return { biome, parameters };
-        });
-    }, [custom, namespace, vanilla]);
+        const parameters = {
+            altitude: entry.parameters.altitude || 0,
+            weirdness: entry.parameters.weirdness || 0,
+            offset: entry.parameters.offset || 0,
+            temperature: data.temperature || 0.8,
+            humidity: data.rainfall || 0.4
+        };
+        onChange({ biome, parameters }, entry);
+    }, [entry, custom, namespace, onChange, vanilla]);
 
-    const handleParameterChange = useCallback(function(e) {
-        const name = e.target.id;
-        const value = e.target.value;
-        setSelection(selection => {
-            const parameters = { ...selection.parameters, [name]: parseFloat(value) };
-            return { biome: selection.biome, parameters };
-        });
-    }, []);
-
-    useEffect(() => onChange(selection, entry), [entry, onChange, selection]);
+    const handleParameterChange = useCallback(function(value) {
+        onChange({ biome: entry.biome, parameters: { ...entry.parameters, ...value } }, entry);
+    }, [entry, onChange]);
 
     const selected = useMemo(function() {
-        return biomesOptions.find(o => o.value === selection.biome);
-    }, [biomesOptions, selection.biome]);
+        return biomesOptions.find(o => o.value === entry.biome);
+    }, [biomesOptions, entry.biome]);
     return <div className="form-group">
         <Select options={biomesOptions} value={selected} onChange={handleBiomeChange} />
         <div className="form-group form-row">
-            <div><label>Altitude</label> : <input type="number" id="altitude" value={selection.parameters.altitude} onChange={handleParameterChange} step="0.1" min="-2" max="2" /></div>
-            <div><label>Weirdness</label> : <input type="number" id="weirdness" value={selection.parameters.weirdness} onChange={handleParameterChange} step="0.1" min="-2" max="2" /></div>
-            <div><label>Offset</label> : <input type="number" id="offset" value={selection.parameters.offset} onChange={handleParameterChange} step="0.1" min="0" max="1"  /></div>
-            <div><label>Temperature</label> : <input type="number" id="temperature" value={selection.parameters.temperature} onChange={handleParameterChange} step="0.1" min="-2" max="2" /></div>
-            <div><label>Humidity</label> : <input type="number" id="humidity" value={selection.parameters.humidity} onChange={handleParameterChange} step="0.1" min="-2" max="2" /></div>
+            <NumberInput id="altitude" value={entry.parameters.altitude} upChange={handleParameterChange} step="0.1" min="-2" max="2">Altitude</NumberInput>
+            <NumberInput id="weirdness" value={entry.parameters.weirdness} upChange={handleParameterChange} step="0.1" min="-2" max="2">Weirdness</NumberInput>
+            <NumberInput id="offset" value={entry.parameters.offset} upChange={handleParameterChange} step="0.1" max="1">Offset</NumberInput>
+            <NumberInput id="temperature" value={entry.parameters.temperature} upChange={handleParameterChange} step="0.1" min="-2" max="2">Temperature</NumberInput>
+            <NumberInput id="humidity" value={entry.parameters.humidity} upChange={handleParameterChange} step="0.1" min="-2" max="2">Humidity</NumberInput>
             {children}
         </div>
     </div>

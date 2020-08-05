@@ -31,11 +31,12 @@ export const ConfInput = React.memo(function ({
 
     if (type === 'checkbox') {
         return <div className={className}>
-            <label htmlFor={uId}>{children}</label> : <input type={type || 'checkbox'} data-name={name || id} name={name} id={uId} className="checkbox" {...{ ...attr, checked, defaultChecked, onChange, value, style }} />
+            <label htmlFor={uId}>{children}</label>&nbsp;:&nbsp;<input type={type || 'checkbox'} data-name={name || id} name={name} id={uId} className="checkbox" {...{ ...attr, checked, defaultChecked, onChange, value, style }} />
         </div>
     }
     return <div className={className}>
-        <label htmlFor={uId}>{children}</label> : <input
+        {typeof children === 'undefined' || <><label htmlFor={uId}>{children}</label> : </>}
+        <input
             type={type} data-name={name || id} name={name} id={uId}
             {...{ ...attr, value, onChange, defaultValue, min, max, step, style }} />
     </div>
