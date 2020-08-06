@@ -58,7 +58,7 @@ export const OVERWORLD_DIMENSION_TYPE = {
     respawn_anchor_works: false,
     ultrawarm: false,
     natural: true,
-    shrunk: false,
+    coordinate_scale: 1,
     has_skylight: true,
     has_ceiling: false
 }
@@ -73,7 +73,7 @@ export const THE_NETHER_DIMENSION_TYPE = {
     respawn_anchor_works: true,
     ultrawarm: true,
     natural: false,
-    shrunk: true,
+    coordinate_scale: 8,
     fixed_time: 18000,
     has_skylight: false,
     has_ceiling: true
@@ -89,7 +89,7 @@ export const THE_END_DIMENSION_TYPE = {
     respawn_anchor_works: false,
     ultrawarm: false,
     natural: false,
-    shrunk: false,
+    coordinate_scale: 1,
     fixed_time: 6000,
     has_skylight: false,
     has_ceiling: false

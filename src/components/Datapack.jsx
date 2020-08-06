@@ -3,6 +3,7 @@ import { Biome } from './biome/Biome';
 import { Button } from './../ui/Button';
 import { MenuItem, NavBar } from './../ui/Menu';
 import { Dimension } from './dimension/Dimension';
+import { DimensionTypeForm } from './dimension/DimensionType';
 import { DataContext } from './../context/DataContext';
 import { RawConfiguredFeature } from './feature/ConfiguredFeature';
 import { capitalize } from '../utils/data';
@@ -44,6 +45,7 @@ export function Datapack() {
             {page === 'feature' && <RawConfiguredFeature onSave={feature => handleSave('feature', feature)} data={custom.features[index]} />}
             {page === 'noise' && <NoiseSettings onSave={noise => handleSave('noise', noise)} data={custom.noises[index]} />}
             {page === 'dimension' && <Dimension onSave={dimension => handleSave('dimension', dimension)} data={custom.dimensions[index]} />}
+            {page === 'dimension_type' && <DimensionTypeForm onSave={dimension => handleSave('dimension', dimension)} data={custom.dimension_types[index]} />}
             {page === 'stats' && <><h2>Datapack {namespace}</h2><Stats custom={custom} namespace={namespace} setPage={setMenu} /></>}
         </div>
     </div>
@@ -66,6 +68,7 @@ function Stats({custom, namespace, setPage}) {
     return <div className="mtm">
         <StatsTitle data={custom.biomes} namespace={namespace} onClick={(e, i) => setPage(e, 'biome', i)}>custom biome</StatsTitle>
         <StatsTitle data={custom.dimensions} namespace={namespace} onClick={(e, i) => setPage(e, 'dimension', i)}>custom dimension</StatsTitle>
+        <StatsTitle data={custom.dimension_types} namespace={namespace} onClick={(e, i) => setPage(e, 'dimension_type', i)} invisible={true}>custom dimension type</StatsTitle>
         <StatsTitle data={custom.features} namespace={namespace} onClick={(e, i) => setPage(e, 'feature', i)}>configured feature</StatsTitle>
         <StatsTitle data={custom.surfaces} namespace={namespace} onClick={(e, i) => setPage(e, 'surface', i)}>configured surface builder</StatsTitle>
         <StatsTitle data={custom.noises} namespace={namespace} onClick={(e, i) => setPage(e, 'noise', i)}>custom noise</StatsTitle>

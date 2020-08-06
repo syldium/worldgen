@@ -158,6 +158,13 @@ export function dataUpper(group, data) {
                 data.generator.biome_source = { ...MULTI_NOISE_BIOME_SOURCE, ...source };
             }
             return data;
+        case 'dimension_types':
+            // 1.16.2-pre-2 : shrunk -> coordinate_scale
+            if (data.hasOwnProperty('shrunk')) {
+                data.coordinate_scale = data.shrunk ? 8 : 1;
+                delete data.shrunk;
+            }
+            return data;
         default:
             // 20w30a: name -> type
             if (data.hasOwnProperty('name') && !data.hasOwnProperty('type')) {

@@ -55,7 +55,7 @@ export function readZip(file) {
  */
 function extractDatapack(zip) {
     let mcmeta = false;
-    let namespace = 'test';
+    let namespace = 'minecraft';
     const data = {
         biomes: [],
         carvers: [],
@@ -94,7 +94,9 @@ function extractDatapack(zip) {
                     return;
                 }
 
-                namespace = value.namespace;
+                if (value.namespace !== 'minecraft') {
+                    namespace = value.namespace;
+                }
                 value.data.index = data[value.type].length;
                 data[value.type].push(value.data);
             });
