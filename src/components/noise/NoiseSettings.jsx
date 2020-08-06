@@ -6,6 +6,7 @@ import { ConfInput, NumberInput } from '../../ui/Input';
 import { OVERWORLD_NOISE } from './NoiseDefaults';
 import { Structures } from './Structures';
 import { NamespacedKey } from '../NamespacedKey';
+import { INT_MIN_VALUE } from '../../utils/number';
 
 export const NoiseSettings = React.memo(function ({ data = OVERWORLD_NOISE, onSave }) {
 
@@ -118,9 +119,9 @@ const SlideConfig = React.memo(function ({ children, data, onChange }) {
     return <fieldset>
         <legend>{children}</legend>
         <div className="form-group form-row">
-            <NumberInput id="target" value={data.target} upChange={onChange} min={null}>Target</NumberInput>
-            <NumberInput id="size" value={data.size} upChange={onChange} max="256">Size</NumberInput>
-            <NumberInput id="offset" value={data.offset} upChange={onChange} min={null}>Offset</NumberInput>
+            <NumberInput id="target" value={data.target} upChange={onChange} min={INT_MIN_VALUE}>Target</NumberInput>
+            <NumberInput id="size" value={data.size} upChange={onChange} max={256}>Size</NumberInput>
+            <NumberInput id="offset" value={data.offset} upChange={onChange} min={INT_MIN_VALUE}>Offset</NumberInput>
         </div>
     </fieldset>
 });

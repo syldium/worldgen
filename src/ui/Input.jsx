@@ -1,5 +1,6 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { hexColorToInteger, integerColorToHex } from '../utils/color';
+import { INT_MAX_VALUE, maintainPrecision } from '../utils/number';
 
 export const ConfInput = React.memo(function ({
     attr, type,
@@ -9,11 +10,11 @@ export const ConfInput = React.memo(function ({
     onChange,
     value, defaultValue,
     min, max, step,
-    className, style = {}
+    className, style
 }) {
 
     const uId = name || Math.random().toString(36).substr(2, 5) + '-' + id;
-    
+
     if (typeof type !== 'string') {
         if (typeof checked !== 'undefined' || typeof defaultChecked !== 'undefined') {
             type = 'checkbox';
@@ -22,11 +23,6 @@ export const ConfInput = React.memo(function ({
         } else {
             type = 'text';
         }
-    }
-
-    if (type === 'number') {
-        style.width = getNumberSize(parseFloat(defaultValue || value || 0), max, step);
-        className = (className || '') + ' number-wrapper';
     }
 
     if (type === 'checkbox') {
@@ -43,60 +39,171 @@ export const ConfInput = React.memo(function ({
 });
 
 export const NumberInput = React.memo(function ({
-    className, style, children, defaultValue = 0,
+    className, style = {}, children, defaultValue = 0,
     id, name, onChange, upChange,
     required = true, value,
-    type, step, min = 0, max
+    type = 'number', step = 1, min = 0, max = INT_MAX_VALUE
 }) {
 
-    const handleChange = function(e) {
-        const value = e.target.value;
+    const uId = name || Math.random().toString(36).substr(2, 5) + '-' + id;
+    const n = typeof value === 'undefined' ? parseFloat(defaultValue) : value;
+    const [val, setValue] = useState(n);
+    const [prevVal, setPrevValue] = useState(n);
+    const [click, setClick] = useState(null);
 
-        if (type === 'color') {
-            if (typeof upChange === 'function') {
-                upChange({ [id || name]: hexColorToInteger(value) });
-            } else if (typeof onChange === 'function') {
-                onChange(hexColorToInteger(value));
+    value = parseFloat(value);
+    min = parseFloat(min);
+    step = parseFloat(step);
+    max = parseFloat(max);
+
+    if (n !== prevVal && n !== val && !isNaN(val) && val !== '') {
+        setValue(n);
+        setPrevValue(n);
+    }
+
+    const handleChange = useCallback(function (e) {
+        const value = e.target.value;
+        const n = parseFloat(value);
+        if (value === '') {
+            setValue(value);
+        } else if (value.length <= INT_MAX_VALUE.toString().length) {
+            if (value.endsWith('.00001')) {
+                // Fix browser step
+                setValue(val => maintainPrecision(val + (n > val ? step : -step)));
+            } else {
+                setValue(n);
             }
+        }
+    }, [step]);
+
+    const stepUpDown = useCallback(function (addition) {
+        setValue(val => {
+            if (!isNaN(val)) {
+                const n = maintainPrecision(val + (addition ? step : -step));
+                if (n >= min && n <= max) {
+                    return n;
+                }
+                return val;
+            }
+            return val;
+        });
+    }, [max, min, step]);
+
+    const handleMouseDown = useCallback(function (e) {
+        e.preventDefault();
+        const addition = e.target.classList.contains('btn-plus');
+        if (val === '') {
             return;
         }
+        stepUpDown(addition);
+        setClick(window.setInterval(() => stepUpDown(addition), 150));
+    }, [stepUpDown, val]);
 
-        const parse = typeof step === 'undefined' ? parseInt : parseFloat;
-        if (value !== '' && !isNaN(value)) {
+    const handleClick = useCallback(function (e) {
+        e.preventDefault();
+    }, []);
+
+    const handleMouseUp = useCallback(function (e) {
+        e.preventDefault();
+        window.clearInterval(click);
+        setClick(null);
+    }, [click]);
+
+    useEffect(function () {
+        let n = val;
+        if (typeof n === 'string') {
+            const value = val.replace(',', '.');
+            const parse = typeof step === 'undefined' ? parseInt : parseFloat;
+            n = parse(value);
+        }
+
+        if (!isNaN(n) && val !== value && n >= min && n < max && click === null) {
             if (typeof upChange === 'function') {
-                upChange({ [id || name]: parse(value) });
+                upChange({ [id || name]: n });
             } else if (typeof onChange === 'function') {
-                onChange(parse(value));
+                onChange(n);
             }
         }
-    };
+    }, [click, id, min, max, name, onChange, step, type, upChange, val, value]);
+
+    style.width = getNumberSize(val, max, step);
+    className = (className || '') + ' number-wrapper';
+
+    return <div className={className}>
+        {typeof children === 'undefined' || <div className="label"><label htmlFor={uId}>{children}</label> :&nbsp;</div>}
+            <div className="number-input-wrapper"><input
+                type={type} name={name} id={uId} style={style}
+                min={min} max={max}
+                value={val} data-name={name || id} required={required}
+                step={step === 1 ? 1 : 'any'} onChange={handleChange}
+            />
+            {type === 'number' &&
+                <div className="number-controls">
+                    <button className="btn-plus" onMouseDown={handleMouseDown} onClick={handleClick} onMouseOut={handleMouseUp} onMouseUp={handleMouseUp}></button>
+                    <button className="btn-minus" onMouseDown={handleMouseDown} onClick={handleClick} onMouseOut={handleMouseUp} onMouseUp={handleMouseUp}></button>
+                </div>
+            }</div>
+    </div>
+});
+
+export const ColorInput = React.memo(function({ children, defaultValue = 0, id, onChange, upChange, value }) {
+    const uId = Math.random().toString(36).substr(2, 5) + '-' + id;
+
+    const handleChange = useCallback(function(e) {
+        const value = e.target.value;
+
+        if (typeof upChange === 'function') {
+            upChange({ [id]: hexColorToInteger(value) });
+        } else if (typeof onChange === 'function') {
+            onChange(hexColorToInteger(value));
+        }
+    }, [id, onChange, upChange]);
+
     
-    if (required && typeof value !== 'number' && defaultValue !== 0) {
-        useEffect(() => {
+    useEffect(() => {
+        if (typeof value !== 'number' && defaultValue !== 0) {
             if (typeof upChange === 'function') {
-                upChange({ [id || name]: parseFloat(defaultValue) });
+                upChange({ [id]: parseFloat(defaultValue) });
             } else if (typeof onChange === 'function') {
                 onChange(parseFloat(defaultValue));
             }
-        }, [defaultValue, id, name, onChange, upChange]);
-    }
-    value = type === 'color' ? integerColorToHex(value) : (typeof value === 'number' ? value : defaultValue);
-    return <ConfInput id={id} name={name} className={className}
-        step={step} min={min} max={max} type={type || 'number'} style={style}
-        value={value} onChange={handleChange} required={required}>
-            {children}
-    </ConfInput>
+        }
+    }, [defaultValue, id, onChange, upChange, value]);
+
+    return <div>
+        {typeof children === 'undefined' || <><label htmlFor={uId}>{children}</label> : </>}
+        <input type="color" id={uId} data-name={id} onChange={handleChange} value={integerColorToHex(value || defaultValue)} />
+    </div>
 });
 
-function getNumberSize(n, max = 10, step = 1) {
-    const decimals = Math.max(countDecimals(step), countDecimals(n));
-    const length = n.toFixed(decimals).toString().length;
+function getNumberSize(numeric, max = 10, step = 1) {
+    if (numeric === '') {
+        return 12 + 'ch';
+    }
+    const decimals = countDecimals(step);
+
+    let n, str;
+    if (typeof numeric === 'number') {
+        n = numeric;
+        str = numeric.toString();
+    } else {
+        n = parseFloat(numeric);
+        str = numeric;
+    }
+
+    let length = str.length;
+    if (!isNaN(n)) {
+        length = Math.max(length, n.toFixed(decimals).toString().length);
+    }
     const ceil = max > 9 && n < 10;
-    const smooth = step === 1 ? 7 : 5;
+    const smooth = step === 1 ? 4 : 2;
     return length + smooth + (ceil ? 1 : 0) + 'ch';
 }
-function countDecimals(n) { 
-    if ((n % 1) !== 0) 
-        return n.toString().split(".")[1].length;  
+function countDecimals(n) {
+    if (typeof n !== 'number') {
+        return 0;
+    }
+    if ((n % 1) !== 0)
+        return n.toString().split(".")[1].length;
     return 0;
-};
+}

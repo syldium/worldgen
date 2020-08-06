@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { EFFECTS, PARTICLES, PARTICLE_DEFAULTS } from './BiomeDefaults';
 import { useToggle } from '../../hooks/ui';
-import { NumberInput, ConfInput } from '../../ui/Input';
+import { NumberInput, ConfInput, ColorInput } from '../../ui/Input';
 import Select from '../../ui/Select';
 import { BlockState } from '../state/BlockState';
 import { useJsonEffect } from '../../hooks/form';
@@ -36,13 +36,13 @@ export function BiomeEffects({effects, onChange}) {
     return <fieldset>
         <legend>Biome effects</legend>
         <div className="form-group form-row">
-            <NumberInput type="color" id="sky_color" value={colors.sky_color} upChange={handleColorChange}>Sky color</NumberInput>
-            <NumberInput type="color" id="fog_color" value={colors.fog_color} upChange={handleColorChange}>Fog color</NumberInput>
-            <NumberInput type="color" id="water_color" value={colors.water_color} upChange={handleColorChange}>Water color</NumberInput>
-            <NumberInput type="color" id="water_fog_color" value={colors.water_fog_color} upChange={handleColorChange}>Water fog color</NumberInput>
+            <ColorInput id="sky_color" value={colors.sky_color} upChange={handleColorChange}>Sky color</ColorInput>
+            <ColorInput id="fog_color" value={colors.fog_color} upChange={handleColorChange}>Fog color</ColorInput>
+            <ColorInput id="water_color" value={colors.water_color} upChange={handleColorChange}>Water color</ColorInput>
+            <ColorInput id="water_fog_color" value={colors.water_fog_color} upChange={handleColorChange}>Water fog color</ColorInput>
             {blockColor && <>
-                <NumberInput type="color" id="foliage_color" value={colors.foliage_color || 10387789} upChange={handleColorChange}>Foliage color</NumberInput>
-                <NumberInput type="color" id="grass_color" value={colors.grass_color  || 9470285} upChange={handleColorChange}>Grass color</NumberInput>
+                <ColorInput id="foliage_color" value={colors.foliage_color || 10387789} upChange={handleColorChange}>Foliage color</ColorInput>
+                <ColorInput id="grass_color" value={colors.grass_color || 9470285} upChange={handleColorChange}>Grass color</ColorInput>
             </>}
             <ConfInput id="block-toggle" checked={blockColor} onChange={toggleBlockColor}>Optionals</ConfInput>
             <ConfInput id="particle" checked={particle} onChange={toggleParticle}>Particle</ConfInput>
@@ -98,5 +98,5 @@ function DustColor({ r, g, b, onChange }) {
         value = ((r << 16) | (g << 8) | b);
     }
 
-    return <NumberInput type="color" value={value} defaultValue={0x38470} onChange={handleColorChange} className="mls">Color</NumberInput>
+    return <ColorInput value={value} defaultValue={0x38470} onChange={handleColorChange} className="mls">Color</ColorInput>
 }

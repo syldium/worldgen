@@ -7,7 +7,7 @@ import { BiomeSpawners } from './BiomeSpawners';
 import { BiomeStarts } from './BiomeStarts';
 import { GenFeatures } from './Features';
 import { useKeyedListOptions } from '../../hooks/context';
-import { ConfInput } from '../../ui/Input';
+import { ConfInput, NumberInput } from '../../ui/Input';
 import { BIOME_DEFAULTS } from './BiomeDefaults';
 import { ConfiguredCarver } from '../carver/ConfiguredCarver';
 
@@ -72,10 +72,10 @@ export function Biome({data = BIOME_DEFAULTS, onSave}) {
         <fieldset>
             <legend>Settings</legend>
             <div className="form-group form-row">
-                <ConfInput name="scale" defaultValue={data.scale || 0.05} step={0.05}>Scale</ConfInput>
-                <ConfInput name="downfall" defaultValue={data.downfall || 0.4} step={0.1}>Downfall</ConfInput>
-                <ConfInput name="depth" defaultValue={data.depth || 0.12} step={0.01}>Depth</ConfInput>
-                <ConfInput name="temperature" defaultValue={data.temperature || 0.8} step={0.1}>Temperature</ConfInput>
+                <NumberInput name="scale" defaultValue={data.scale || 0.05} step={0.05}>Scale</NumberInput>
+                <NumberInput name="downfall" defaultValue={data.downfall || 0.4} step={0.1}>Downfall</NumberInput>
+                <NumberInput name="depth" defaultValue={data.depth || 0.12} step={0.01}>Depth</NumberInput>
+                <NumberInput name="temperature" defaultValue={data.temperature || 0.8} step={0.1}>Temperature</NumberInput>
                 <ConfInput name="player_spawn_friendly" defaultChecked={data.player_spawn_friendly}>Player spawn friendly</ConfInput>
                 <p className="mts"><small className="text-muted">The <em>scale</em> parameter defines terrain amplitude, <em>downfall</em> controls grass and foliage color, <em>depth</em> is the difference from sea level, <em>temperature</em> controls some gameplay features like whether snow golems take damage. The default values are those of the plains biome.</small></p>
             </div>
