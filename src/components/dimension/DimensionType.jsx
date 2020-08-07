@@ -4,6 +4,7 @@ import { OVERWORLD_DIMENSION_TYPE, THE_NETHER_DIMENSION_TYPE, THE_END_DIMENSION_
 import { useKeyedListOptions } from '../../hooks/context';
 import { useToggle } from '../../hooks/ui';
 import { ConfInput, NumberInput } from '../../ui/Input';
+import { JsonViewer } from '../../ui/JsonViewer';
 import { Modal } from '../../ui/Modal';
 import Select from '../../ui/Select';
 import { Button } from '../../ui/Button';
@@ -72,7 +73,10 @@ export function DimensionTypeForm({ data = OVERWORLD_DIMENSION_TYPE, onSave }) {
     }, [config, onSave, updateDimensionTypes]);
 
     return <form onSubmit={handleSubmit}>
-        <NamespacedKey example="typed" type="dimension_type" value={data.key} expectBreakage={typeof data.key !== 'undefined'}>dimension type</NamespacedKey>
+        <NamespacedKey example="typed" type="dimension_type" value={data.key} expectBreakage={typeof data.key !== 'undefined'}>
+            dimension type
+            <JsonViewer data={config} />
+        </NamespacedKey>
         {typeof data.key === 'undefined' &&
             <fieldset>
                 <legend>Preset</legend>

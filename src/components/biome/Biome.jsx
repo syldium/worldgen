@@ -1,15 +1,16 @@
 import React, { useCallback, useState } from 'react';
-import Select from '../../ui/Select';
-import { Button } from '../../ui/Button';
 import { NamespacedKey } from '../NamespacedKey';
 import { BiomeEffects } from './BiomeEffects';
 import { BiomeSpawners } from './BiomeSpawners';
 import { BiomeStarts } from './BiomeStarts';
 import { GenFeatures } from './Features';
 import { useKeyedListOptions } from '../../hooks/context';
-import { ConfInput, NumberInput } from '../../ui/Input';
 import { BIOME_DEFAULTS } from './BiomeDefaults';
 import { ConfiguredCarver } from '../carver/ConfiguredCarver';
+import { Button } from '../../ui/Button';
+import { ConfInput, NumberInput } from '../../ui/Input';
+import { JsonViewer } from '../../ui/JsonViewer';
+import Select from '../../ui/Select';
 
 export function Biome({data = BIOME_DEFAULTS, onSave}) {
 
@@ -46,7 +47,10 @@ export function Biome({data = BIOME_DEFAULTS, onSave}) {
     }, [onSave, state]);
 
     return <form onSubmit={handleSubmit}>
-        <NamespacedKey example="arctic" type="biomes" value={state.key} mayReplaceVanilla={true} expectBreakage={typeof data.key !== 'undefined'}>biome</NamespacedKey>
+        <NamespacedKey example="arctic" type="biomes" value={state.key} mayReplaceVanilla={true} expectBreakage={typeof data.key !== 'undefined'}>
+            biome
+            <JsonViewer data={state} />
+        </NamespacedKey>
 
         <BiomeEffects effects={state.effects} onChange={handleEffectsChange} />
 

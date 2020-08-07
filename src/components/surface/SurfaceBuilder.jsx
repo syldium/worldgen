@@ -1,8 +1,9 @@
 import React, { useCallback, useState } from 'react';
 import { BlockState } from '../state/BlockState';
 import { Button } from '../../ui/Button';
-import { SURFACE_TYPES_OPTIONS, SURFACE_BUILDER } from './SurfaceBuilderDefaults';
+import { JsonViewer } from '../../ui/JsonViewer';
 import Select from '../../ui/Select';
+import { SURFACE_TYPES_OPTIONS, SURFACE_BUILDER } from './SurfaceBuilderDefaults';
 import { NamespacedKey } from '../NamespacedKey';
 
 export function SurfaceBuilder({data = SURFACE_BUILDER, onSave}) {
@@ -30,7 +31,10 @@ export function SurfaceBuilder({data = SURFACE_BUILDER, onSave}) {
     }, [config, data.index, onSave]);
 
     return <form onSubmit={handleSubmit}>
-        <NamespacedKey example="blackstone" type="surfaces" value={data.key} expectBreakage={typeof data.key !== 'undefined'}>surface builder</NamespacedKey>
+        <NamespacedKey example="blackstone" type="surfaces" value={data.key} expectBreakage={typeof data.key !== 'undefined'}>
+            surface builder
+            <JsonViewer data={config} />
+        </NamespacedKey>
         
         <div className="form-group">
             <label htmlFor="type">Type</label>

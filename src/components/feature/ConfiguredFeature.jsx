@@ -2,6 +2,7 @@ import React, { useCallback, useMemo, useState } from 'react';
 import Select from '../../ui/Select';
 import { TreeFeatureConfig } from './TreeFeature';
 import { Button } from '../../ui/Button';
+import { JsonViewer } from '../../ui/JsonViewer';
 import { DecoratorsList } from './Decorator';
 import { buildDecorated, findDecorators } from '../../utils/data';
 import { DECORATED_TREE_CONFIG, DECORATED_RANDOM_PATCH_CONFIG, DECORATED_ORE_FEATURE_CONFIG, DECORATED_HUGE_FUNGUS_CONFIG, DECORATED_SPRING_FEATURE_CONFIG } from './FeatureDefaults';
@@ -53,7 +54,10 @@ export function RawConfiguredFeature({data = DECORATED_TREE_CONFIG, onSave}) {
     }, []);
 
     return <form onSubmit={handleSubmit}>
-        <NamespacedKey example="concrete_tree" type="features" value={data.key} expectBreakage={typeof data.key !== 'undefined'}>configured feature</NamespacedKey>
+        <NamespacedKey example="concrete_tree" type="features" value={data.key} expectBreakage={typeof data.key !== 'undefined'}>
+            configured feature
+            <JsonViewer data={() => buildDecorated(feature, decorators, data.key || 'feature')} />
+        </NamespacedKey>
         <div className="form-group">
             <label htmlFor="type">Type</label>
             <Select options={options} value={options.find(o => o.value === feature.type)} onChange={handleSelectChange} inputId="type" />

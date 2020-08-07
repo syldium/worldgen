@@ -1,0 +1,32 @@
+.json-view-for-react {
+    display: block;
+    background-color: var(--shadow-color, inherit);
+    color: #88c6be;
+    white-space: nowrap;
+    width: 600px;
+    max-width: 100%;
+    padding: 0 1.5rem 1rem 0;
+
+    .str {
+        color: #79b6f2;
+    }
+    .num {
+        color: #ffffc8;
+    }
+    .bool {
+        color: #c5a5c5;
+    }
+    .null {
+        color: #c5a5c5;
+    }
+    .prop {
+        color: #fac863;
+    }
+
+    .ln {
+        display: inline-block;
+        padding-right: 1rem;
+        color: #b2b2b2;
+        text-align: right;
+    }
+}

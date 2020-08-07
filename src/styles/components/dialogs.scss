@@ -2,8 +2,8 @@
     position: fixed;
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
+    width: 100vw;
+    height: 100vh;
     display: flex;
     justify-content: center;
     flex-direction: column;
@@ -21,6 +21,42 @@ dialog {
     max-width: 100%;
     overflow: auto;
     animation: slideFromTop 0.3s both 0.1s;
+
+    h3 {
+        margin-top: 0.5rem;
+    }
+}
+
+.btn--close {
+    position: absolute;
+    right: 16px;
+    top: 8px;
+    width: 32px;
+    height: 32px;
+    opacity: 0.3;
+    background-color: inherit;
+    padding: 0;
+
+    &:hover {
+        opacity: 1;
+    }
+
+    &:before,
+    &:after {
+        position: absolute;
+        left: 15px;
+        content: " ";
+        height: 33px;
+        width: 2px;
+        background-color: var(--secondary-color);
+        margin-top: -16px;
+    }
+    &:before {
+        transform: rotate(45deg);
+    }
+    &:after {
+        transform: rotate(-45deg);
+    }
 }
 
 @keyframes fadeIn {

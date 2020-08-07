@@ -1,12 +1,13 @@
 import React, { useCallback, useContext, useState } from 'react';
 import { NamespacedKey } from "../NamespacedKey";
-import Select from '../../ui/Select';
 import { VANILLA_CARVERS } from './CarverDefaults';
-import { Button } from '../../ui/Button';
-import { NumberInput } from '../../ui/Input';
 import { useKeyedListOptions } from '../../hooks/context';
 import { DataContext } from '../../context/DataContext';
 import { useJsonEffect } from '../../hooks/form';
+import { Button } from '../../ui/Button';
+import { NumberInput } from '../../ui/Input';
+import { JsonViewer } from '../../ui/JsonViewer';
+import Select from '../../ui/Select';
 import { Modal } from '../../ui/Modal';
 import { useToggle } from '../../hooks/ui';
 import { useInlineResources } from '../../hooks/select';
@@ -82,7 +83,10 @@ export function ConfiguredCarverForm({ data = { type: 'minecraft:cave', config: 
     }, [carver, onSave, updateCarvers]);
 
     return <form onSubmit={handleSubmit}>
-        <NamespacedKey example="pit" type="carvers" value={data.key} expectBreakage={typeof data.key !== 'undefined'}>configured carver</NamespacedKey>
+        <NamespacedKey example="pit" type="carvers" value={data.key} expectBreakage={typeof data.key !== 'undefined'}>
+            configured carver
+            <JsonViewer data={carver} />
+        </NamespacedKey>
         <div className="form-group">
             <label htmlFor="type">Type</label>
             <Select options={VANILLA_CARVERS} value={VANILLA_CARVERS.find(o => o.value === carver.type)} onChange={handleSelectChange} inputId="type" />

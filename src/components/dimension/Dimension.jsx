@@ -4,6 +4,7 @@ import { DimensionGenerator } from './DimensionGenerator';
 import { Button } from '../../ui/Button';
 import { DIMENSION } from './DimensionDefaults';
 import { NamespacedKey } from '../NamespacedKey';
+import { JsonViewer } from '../../ui/JsonViewer';
 
 export function Dimension({data = DIMENSION, onSave}) {
 
@@ -25,7 +26,10 @@ export function Dimension({data = DIMENSION, onSave}) {
     }
 
     return <form onSubmit={handleSubmit}>
-        <NamespacedKey example="blue_dimension" type="dimensions" value={data.key} mayReplaceVanilla={true}>dimension</NamespacedKey>
+        <NamespacedKey example="blue_dimension" type="dimensions" value={data.key} mayReplaceVanilla={true}>
+            dimension
+            <JsonViewer data={state} />
+        </NamespacedKey>
         <DimensionType type={state.type} onChange={handleTypeChange} />
         <fieldset>
             <legend>Generator configuration</legend>

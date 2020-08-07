@@ -1,6 +1,7 @@
 import React, { useCallback, useState } from 'react';
 import { BlockState } from '../state/BlockState';
 import { Button } from '../../ui/Button';
+import { JsonViewer } from '../../ui/JsonViewer';
 import { useValueChange } from '../../hooks/form';
 import { ConfInput, NumberInput } from '../../ui/Input';
 import { OVERWORLD_NOISE } from './NoiseDefaults';
@@ -36,7 +37,10 @@ export const NoiseSettings = React.memo(function ({ data = OVERWORLD_NOISE, onSa
     }, []);
 
     return <form onSubmit={handleSubmit}>
-        <NamespacedKey example="epic" type="noises" value={data.key} expectBreakage={typeof data.key !== 'undefined'}>noise</NamespacedKey>
+        <NamespacedKey example="epic" type="noises" value={data.key} expectBreakage={typeof data.key !== 'undefined'}>
+            noise
+            <JsonViewer data={state} />
+        </NamespacedKey>
 
         <Structures data={data.structures} onChange={handleStructuresChange} />
 
