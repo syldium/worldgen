@@ -16,7 +16,22 @@ const LEGACY_WORLDGEN_PATH = /^data\/minecraft\/worldgen\/(biome|configured_carv
  */
 export function buildZip(custom) {
     const zip = new JSZip();
-    zip.file('pack.mcmeta', JSON.stringify({ pack: { pack_format: 5, description: 'Custom dimension' } }, null, 4));
+
+    let modified;
+    if (custom.dimensions.length > 0) {
+        modified = 'dimension';
+    } else if (custom.biomes.length > 0) {
+        modified = 'biome';
+    } else {
+        modified = (Object.entries(custom).find(([type, elements]) => typeof elements !== 'function' && elements.length > 0) || [''])[0];
+    }
+    
+    zip.file('pack.mcmeta', JSON.stringify({
+        pack: {
+            pack_format: 6,
+            description: 'Custom ' + modified
+        }
+    }, null, 4));
     const namespace = '%namespace%';
     writeFile(zip, `data/${namespace}/dimension`, custom.dimensions);
     writeFile(zip, `data/${namespace}/dimension_type`, custom.dimension_types);
