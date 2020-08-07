@@ -46,7 +46,7 @@ export const NumberInput = React.memo(function ({
 }) {
 
     const uId = name || Math.random().toString(36).substr(2, 5) + '-' + id;
-    const n = typeof value === 'undefined' ? parseFloat(defaultValue) : value;
+    const n = typeof value === 'undefined' ? parseFloat(defaultValue) : parseFloat(value);
     const [val, setValue] = useState(n);
     const [prevVal, setPrevValue] = useState(n);
     const [click, setClick] = useState(null);

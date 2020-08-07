@@ -14,7 +14,7 @@ export const BlockState = React.memo(function ({ block = {}, children, className
         const Name = option.value;
         const Properties = {};
         (context.vanilla.blocks.find(b => 'minecraft:' + b.name === Name) || { states: [] }).states.forEach(state => {
-            Properties[state.name] = getStateValue(state);
+            Properties[state.name] = getStateValue(state, block.Properties);
         })
         delete block.Properties;
         if (Object.keys(Properties).length > 0) {
@@ -112,6 +112,10 @@ function BlockStateProperties({ block, children, onChange, properties = {} }) {
         const value = e.target.checked.toString();
         onChange({ ...properties, [e.target.dataset.name]: value });
     }, [onChange, properties]);
+    const handleNumberChange = useCallback(function (value) {
+        const key = Object.keys(value)[0];
+        onChange({ ...properties, [key]: value[key].toString() });
+    }, [onChange, properties]);
 
     const selects = [];
     states.forEach(possible => {
@@ -128,7 +132,7 @@ function BlockStateProperties({ block, children, onChange, properties = {} }) {
             case 'int':
                 selects.push(
                     <NumberInput key={possible.name} id={possible.name}
-                        value={properties[possible.name] || 0} upChange={onChange}
+                        value={properties[possible.name] || 0} upChange={handleNumberChange}
                         min="0" max={possible.num_values - 1}>
                         {possible.name}
                     </NumberInput>
