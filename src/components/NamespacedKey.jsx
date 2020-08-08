@@ -5,7 +5,7 @@ import { useKeyedListOptions } from '../hooks/context';
 import { DataContext } from '../context/DataContext';
 import { Button } from '../ui/Button';
 
-export function NamespacedKey({ children, example = 'daily_resource', type, value = '', onChange, expectBreakage = false, mayReplaceVanilla = false }) {
+export function NamespacedKey({ children, example = 'daily_resource', type, value = '', onChange, expectBreakage = false, mayReplaceVanilla = false, onSelect }) {
     // To trigger form submit
     const hidden = useRef(null);
 
@@ -27,7 +27,12 @@ export function NamespacedKey({ children, example = 'daily_resource', type, valu
         }
     }, [defaultNamespace, setKey]);
 
-    const handleReplaceTargetChange = useCallback((selected) => setKey(selected.value), [setKey]);
+    const handleReplaceTargetChange = useCallback((selected) => {
+        setKey(selected.value);
+        if (typeof onSelect === 'function') {
+            onSelect(selected.value);
+        }
+    }, [onSelect, setKey]);
 
     // Fire onChange
     useEffect(function() {

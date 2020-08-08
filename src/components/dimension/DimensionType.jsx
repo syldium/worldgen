@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useContext } from 'react';
 import { DataContext } from '../../context/DataContext';
-import { OVERWORLD_DIMENSION_TYPE, THE_NETHER_DIMENSION_TYPE, THE_END_DIMENSION_TYPE } from './DimensionDefaults';
+import { OVERWORLD_DIMENSION_TYPE, THE_NETHER_DIMENSION_TYPE, THE_END_DIMENSION_TYPE, OVERWORLD_CAVES_DIMENSION_TYPE, DIMENSION_TYPE_INFINIBURN, DIMENSION_TYPE_EFFECTS } from './DimensionDefaults';
 import { useKeyedListOptions } from '../../hooks/context';
 import { useToggle } from '../../hooks/ui';
 import { ConfInput, NumberInput } from '../../ui/Input';
@@ -28,7 +28,7 @@ export function DimensionType({ type = 'minecraft:overworld', onChange }) {
         e.preventDefault();
         toggleModal(true);
     }, [toggleModal]);
-    const handleTypeCreated = useCallback(function(type) {
+    const handleTypeCreated = useCallback(function (type) {
         onChange(type.key);
         toggleModal(false);
     }, [onChange, toggleModal]);
@@ -45,17 +45,33 @@ export function DimensionType({ type = 'minecraft:overworld', onChange }) {
 export function DimensionTypeForm({ data = OVERWORLD_DIMENSION_TYPE, onSave }) {
     const [config, setConfig] = useState(data);
 
-    const handlePresetChange = useCallback(function (e, preset) {
-        e.preventDefault();
-        setConfig(preset);
+    const handleVanillaSelect = useCallback(function (value) {
+        setConfig({
+            ...{
+                'minecraft:overworld': OVERWORLD_DIMENSION_TYPE,
+                'minecraft:overworld_caves': OVERWORLD_CAVES_DIMENSION_TYPE,
+                'minecraft:the_nether': THE_NETHER_DIMENSION_TYPE,
+                'minecraft:the_end': THE_END_DIMENSION_TYPE
+            }[value]
+        });
     }, []);
-    const handleNumberChange = useCallback(function(value) {
+    const handleNumberChange = useCallback(function (value) {
         setConfig(config => ({ ...config, ...value }))
     }, []);
-    const handleCheckboxChange = useCallback(function(e) {
+    const handleSelectChange = useCallback(function (name, option) {
+        setConfig(config => ({ ...config, [name]: option.value }))
+    }, []);
+    const handleCheckboxChange = useCallback(function (e) {
         const name = e.target.dataset.name;
         const checked = e.target.checked;
         setConfig(config => ({ ...config, [name]: checked }))
+    }, []);
+    const handleFixedTimeToggle = useCallback(function (e) {
+        if (e.target.checked) {
+            setConfig(config => ({ ...config, fixed_time: 18000 }));
+        } else {
+            setConfig((({ fixed_time, ...config }) => config));
+        }
     }, []);
 
     const updateDimensionTypes = useContext(DataContext).custom.updateDimensionTypes;
@@ -73,24 +89,37 @@ export function DimensionTypeForm({ data = OVERWORLD_DIMENSION_TYPE, onSave }) {
     }, [config, onSave, updateDimensionTypes]);
 
     return <form onSubmit={handleSubmit}>
-        <NamespacedKey example="typed" type="dimension_type" value={data.key} expectBreakage={typeof data.key !== 'undefined'}>
+        <NamespacedKey example="typed" type="dimension_types" value={data.key} mayReplaceVanilla={true} onSelect={handleVanillaSelect} expectBreakage={typeof data.key !== 'undefined'}>
             dimension type
             <JsonViewer data={config} />
         </NamespacedKey>
-        {typeof data.key === 'undefined' &&
-            <fieldset>
-                <legend>Preset</legend>
-                <Button onClick={(e) => handlePresetChange(e, OVERWORLD_DIMENSION_TYPE)}>Overworld</Button>
-                <Button onClick={(e) => handlePresetChange(e, THE_NETHER_DIMENSION_TYPE)}>The Nether</Button>
-                <Button onClick={(e) => handlePresetChange(e, THE_END_DIMENSION_TYPE)}>The End</Button>
-            </fieldset>
-        }
         <fieldset>
             <legend>Light</legend>
             <div className="form-row">
                 <NumberInput id="ambient_light" value={config.ambient_light} upChange={handleNumberChange} step="0.1">Ambient light</NumberInput>
                 <ConfInput id="has_skylight" checked={config.has_skylight} onChange={handleCheckboxChange}>Has skylight</ConfInput>
             </div>
+        </fieldset>
+        <fieldset>
+            <legend>Apparence</legend>
+            <div className="form-row">
+                <InfiniburnIdentifier value={config.infiniburn} onChange={handleSelectChange} inputId="infiniburn" />
+                <div>
+                    <label htmlFor="effects">Sky effects : </label>
+                    <div className="inbl" style={{ width: '16ch' }}>
+                        <Select options={DIMENSION_TYPE_EFFECTS} value={DIMENSION_TYPE_EFFECTS.find(o => config.effects === o.value) || DIMENSION_TYPE_EFFECTS[0]} onChange={o => handleSelectChange('effects', o)} inputId="effects" />
+                    </div>
+                </div>
+            </div>
+            <div className="form-group form-row">
+                <NumberInput id="logical_height" value={config.logical_height} upChange={handleNumberChange} max={256} title="Logical height from vanilla dimensions cannot be replaced due to MC-197338.">Logical height</NumberInput>
+                <div className="form-row">
+                    {typeof config.fixed_time !== 'number' && <label htmlFor="fixed_time-toggle">Fixed time : </label>}
+                    {typeof config.fixed_time === 'number' && <NumberInput id="fixed_time" value={config.fixed_time} upChange={handleNumberChange} step={1200}>Fixed time</NumberInput>}
+                    <input type="checkbox" onChange={handleFixedTimeToggle} className="checkbox" id="fixed_time-toggle" />
+                </div>
+            </div>
+            <p style={{ marginBottom: 0, textAlign: 'center' }}><small className="text-muted">These settings are only used for appearance and some game mechanics<br />such as chorus fruits tp. To modify the world generation, change the noise parameters.</small></p>
         </fieldset>
         <fieldset>
             <legend>Overworld related behavior</legend>
@@ -104,7 +133,7 @@ export function DimensionTypeForm({ data = OVERWORLD_DIMENSION_TYPE, onSave }) {
             <legend>Nether related behavior</legend>
             <div className="form-row">
                 <ConfInput id="has_ceiling" checked={config.has_ceiling} onChange={handleCheckboxChange}>Has ceiling</ConfInput>
-                <NumberInput id="coordinate_scale" value={config.coordinate_scale} upChange={handleNumberChange} min={10**-5} max={10**7} step={0.1}>Coordinate scale</NumberInput>
+                <NumberInput id="coordinate_scale" value={config.coordinate_scale} upChange={handleNumberChange} min={10 ** -5} max={10 ** 7} step={0.1}>Coordinate scale</NumberInput>
             </div>
             <div className="form-group form-row">
                 <ConfInput id="respawn_anchor_works" checked={config.respawn_anchor_works} onChange={handleCheckboxChange}>Respawn anchor works</ConfInput>
@@ -114,4 +143,13 @@ export function DimensionTypeForm({ data = OVERWORLD_DIMENSION_TYPE, onSave }) {
         </fieldset>
         <Button type="submit">Save</Button>
     </form>;
+}
+
+function InfiniburnIdentifier({ inputId, onChange, value }) {
+    return <div>
+        <label htmlFor={inputId}>Infiniburn : </label>
+        <div className="inbl" style={{ width: '16ch' }}>
+            <Select options={DIMENSION_TYPE_INFINIBURN} value={DIMENSION_TYPE_INFINIBURN.find(o => value === o.value) || DIMENSION_TYPE_INFINIBURN[0]} onChange={o => onChange('infiniburn', o)} inputId={inputId} />
+        </div>
+    </div>
 }

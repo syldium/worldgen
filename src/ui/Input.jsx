@@ -41,7 +41,7 @@ export const ConfInput = React.memo(function ({
 export const NumberInput = React.memo(function ({
     className, style = {}, children, defaultValue = 0,
     id, name, onChange, upChange,
-    required = true, value,
+    required = true, title, value,
     type = 'number', step = 1, min = 0, max = INT_MAX_VALUE
 }) {
 
@@ -129,7 +129,7 @@ export const NumberInput = React.memo(function ({
     style.width = getNumberSize(val, max, step);
     className = (className || '') + ' number-wrapper';
 
-    return <div className={className}>
+    return <div className={className} title={title}>
         {typeof children === 'undefined' || <div className="label"><label htmlFor={uId}>{children}</label> :&nbsp;</div>}
             <div className="number-input-wrapper"><input
                 type={type} name={name} id={uId} style={style}
@@ -139,8 +139,8 @@ export const NumberInput = React.memo(function ({
             />
             {type === 'number' &&
                 <div className="number-controls">
-                    <button className="btn-plus" onMouseDown={handleMouseDown} onClick={handleClick} onMouseOut={handleMouseUp} onMouseUp={handleMouseUp}></button>
-                    <button className="btn-minus" onMouseDown={handleMouseDown} onClick={handleClick} onMouseOut={handleMouseUp} onMouseUp={handleMouseUp}></button>
+                    <button className="btn-plus" tabIndex="-1" onMouseDown={handleMouseDown} onClick={handleClick} onMouseOut={handleMouseUp} onMouseUp={handleMouseUp}></button>
+                    <button className="btn-minus" tabIndex="-1" onMouseDown={handleMouseDown} onClick={handleClick} onMouseOut={handleMouseUp} onMouseUp={handleMouseUp}></button>
                 </div>
             }</div>
     </div>
