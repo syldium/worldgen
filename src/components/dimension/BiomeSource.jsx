@@ -1,45 +1,40 @@
-import React, { useState, useCallback, useContext, useEffect } from 'react';
+import React, { useCallback, useContext, useEffect } from 'react';
 import Select from '../../ui/Select';
 import { SeedField } from './DimensionGenerator';
 import { useKeyedListOptions } from '../../hooks/context';
 import { useMemo } from 'react';
-import { useCrud, CRUD, useNumber, useKeyedOptionsState } from '../../hooks/form';
+import { useCrud, CRUD } from '../../hooks/form';
 import { useToggle } from '../../hooks/ui';
 import { DataContext } from '../../context/DataContext';
 import { Button } from '../../ui/Button';
 import { capitalize, hasDuplicatedObjects } from '../../utils/data';
 import { NumberList } from '../../ui/NumberList';
 import { MULTI_NOISE_BIOME_SOURCE, NOISES_NAMES } from './DimensionDefaults';
-import { NumberInput } from '../../ui/Input';
+import { NumberInput, ConfInput } from '../../ui/Input';
 
-export function BiomeSource({biome_source = { type: 'minecraft:fixed' }, onChange}) {
-    const [source, setSource] = useState(biome_source);
+export const BiomeSource = React.memo(function({source = { type: 'minecraft:fixed' }, onChange}) {
 
     const options = useMemo(function() {
         return [
             { value: 'minecraft:checkerboard', label: 'Checkerboard' },
             { value: 'minecraft:fixed', label: 'Fixed' },
             { value: 'minecraft:multi_noise', label: 'Multi noise' },
+            { value: 'minecraft:vanilla_layered', label: 'Vanilla layered' }
         ];
     }, []);
 
+    const handleChange = useCallback(function(settings) {
+        onChange(({ ...source, ...settings }));
+    }, [onChange, source]);
     const handleSeedChange = useCallback(function(seed) {
-        setSource(source => ({ ...source, seed }));
-    }, []);
+        onChange(({ ...source, seed }));
+    }, [onChange, source]);
     const handleTypeChange = useCallback(function(option) {
-        setSource(source => ({ type: option.value, seed: source.seed }));
-    }, []);
-    const handleCheckerboardSourceChange = useCallback(function(settings) {
-        setSource(source => ({ ...source, ...settings }));
-    }, []);
+        onChange(({ seed: source.seed, type: option.value }));
+    }, [onChange, source.seed]);
     const handleFixedSourceChange = useCallback(function(biome) {
-        setSource(source => ({ ...source, biome }));
-    }, []);
-    const handleMultiSourceChange = useCallback(function(s) {
-        setSource(source => ({ ...source, ...s }));
-    }, []);
-
-    useEffect(() => onChange(source), [onChange, source]);
+        onChange(({ ...source, biome }));
+    }, [onChange, source]);
 
     const selected = useMemo(function() {
         return options.find(o => o.value === source.type);
@@ -52,35 +47,48 @@ export function BiomeSource({biome_source = { type: 'minecraft:fixed' }, onChang
         </div>
         <SeedField value={source.seed} onChange={handleSeedChange} />
         <hr />
-        {source.type === 'minecraft:checkerboard' && <CheckerboardBiomeSource source={source} onChange={handleCheckerboardSourceChange} />}
-        {source.type === 'minecraft:fixed' && <FixedBiomeSource source={source.biome} onChange={handleFixedSourceChange} />}
-        {source.type === 'minecraft:multi_noise' && <MultiNoiseBiomeSource source={source} onChange={handleMultiSourceChange} />}
+        {source.type === 'minecraft:checkerboard' && <CheckerboardBiomeSource source={source} onChange={handleChange} />}
+        {source.type === 'minecraft:fixed' && <FixedBiomeSource biome={source.biome} onChange={handleFixedSourceChange} />}
+        {source.type === 'minecraft:multi_noise' && <MultiNoiseBiomeSource source={source} onChange={handleChange} />}
+        {source.type === 'minecraft:vanilla_layered' && <VanillaLayeredBiomeSource source={source} onChange={handleChange} />}
     </fieldset>
-}
+});
 
 const CheckerboardBiomeSource = React.memo(function({source, onChange}) {
-    const [options, biomes, setBiomes] = useKeyedOptionsState('biomes', source.biomes, true);
-    const [scale, setScale] = useNumber(source.scale);
+    const options = useKeyedListOptions('biomes');
+    const handleBiomesChange = useCallback(function(selection) {
+        onChange({ ...source, biomes: selection === null ? [] : selection.map(o => o.value) });
+    }, [onChange, source]);
+    const handleScaleChange = useCallback(function(scale) {
+        onChange({ ...source, scale });
+    }, [onChange, source]);
 
-    useEffect(() => onChange({ biomes, scale }), [biomes, onChange, scale]);
+    const biomes = source.biomes || (options.length > 0 ? [options[0].value] : []);
+    useEffect(() => {
+        if (!Array.isArray(source.biomes)) {
+            onChange({ biomes, scale: source.scale || 2 });
+        }
+    }, [biomes, source.biomes, source.scale, onChange]);
 
     return <div className="form-group">
         <div className="form-group">
-            <label htmlFor="biomes">Biomes</label><Select options={options} isMulti isClearable={false} value={options.filter(o => biomes.includes(o.value))} onChange={setBiomes} id="biomes" />
+            <label htmlFor="biomes">Biomes</label><Select options={options} isMulti isClearable={false} value={options.filter(o => biomes.includes(o.value))} onChange={handleBiomesChange} id="biomes" />
         </div>
         <div className="form-group">
-            <NumberInput id="scale" value={scale} onChange={setScale}>Scale (squares of 2<sup>scale</sup> chunks)</NumberInput>
+            <NumberInput id="scale" value={source.scale} onChange={handleScaleChange} max={62} required={false} defaultValue={2}>Scale (squares of 2<sup>scale</sup> chunks)</NumberInput>
         </div>
         {biomes.length < 1 && <p className="alert--warning">Warning: a dimension must contain at least one biome!</p>}
     </div>;
 });
 
-const FixedBiomeSource = React.memo(function({source = 'minecraft:plains', onChange}) {
-    const [options, biome, setBiome] = useKeyedOptionsState('biomes', source);
-    useEffect(() => onChange(biome), [biome, onChange]);
+const FixedBiomeSource = React.memo(function({biome = 'minecraft:plains', onChange}) {
+    const options = useKeyedListOptions('biomes');
+    const handleBiomesChange = useCallback(function(option) {
+        onChange(option.value);
+    }, [onChange]);
 
     return <div className="form-group">
-        <label htmlFor="fixed-biome">Biome</label><Select options={options} value={options.find(o => o.value === biome)} onChange={setBiome} />
+        <label htmlFor="fixed-biome">Biome</label><Select options={options} value={options.find(o => o.value === biome)} onChange={handleBiomesChange} />
     </div>;
 });
 
@@ -149,6 +157,20 @@ const MultiNoiseBiomeSource = React.memo(function({source = MULTI_NOISE_BIOME_SO
         {values}
         {hasDuplicatedObjects(biomes.map(biome => biome.parameters)) && <p className="alert--warning">Warning: every biome must have a unique combination of parameters!</p>}
     </>;
+});
+
+const VanillaLayeredBiomeSource = React.memo(function({source, onChange}) {
+    const handleLegacyBiomeToggle = useCallback(function(e) {
+        onChange({ ...source, legacy_biome_init_layer: e.target.checked });
+    }, [onChange, source]);
+    const handleLargeBiomesToggle = useCallback(function(e) {
+        onChange({ ...source, large_biomes: e.target.checked });
+    }, [onChange, source]);
+
+    return <div className="form-row">
+        <ConfInput checked={source.legacy_biome_init_layer || false} onChange={handleLegacyBiomeToggle}>Legacy biome init layer</ConfInput>
+        <ConfInput checked={source.large_biomes || false} onChange={handleLargeBiomesToggle}>Large biomes</ConfInput>
+    </div>;
 });
 
 const PerlinNoiseParameters = React.memo(function({children, noise = { firstOctave: -7, amplitudes: [1, 1] }, onChange}) {

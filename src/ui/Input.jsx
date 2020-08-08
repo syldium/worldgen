@@ -117,6 +117,10 @@ export const NumberInput = React.memo(function ({
             n = parse(value);
         }
 
+        if (isNaN(value) && n === defaultValue && !required) {
+            return;
+        }
+
         if (!isNaN(n) && val !== value && n >= min && n < max && click === null) {
             if (typeof upChange === 'function') {
                 upChange({ [id || name]: n });
@@ -124,7 +128,7 @@ export const NumberInput = React.memo(function ({
                 onChange(n);
             }
         }
-    }, [click, id, min, max, name, onChange, step, type, upChange, val, value]);
+    }, [click, defaultValue, id, min, max, name, onChange, required, step, type, upChange, val, value]);
 
     style.width = getNumberSize(val, max, step);
     className = (className || '') + ' number-wrapper';
@@ -135,7 +139,7 @@ export const NumberInput = React.memo(function ({
                 type={type} name={name} id={uId} style={style}
                 min={min} max={max}
                 value={val} data-name={name || id} required={required}
-                step={step === 1 ? 1 : 'any'} onChange={handleChange}
+                step={step < 1 ? 'any' : 1} onChange={handleChange}
             />
             {type === 'number' &&
                 <div className="number-controls">

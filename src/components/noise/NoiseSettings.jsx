@@ -57,9 +57,9 @@ export const NoiseSettings = React.memo(function ({ data = OVERWORLD_NOISE, onSa
         <fieldset>
             <legend>Main</legend>
             <div className="form-group form-row">
-                <ConfInput name="bedrock_roof_position" defaultValue={data.bedrock_roof_position}>Bedrock roof position</ConfInput>
-                <ConfInput name="bedrock_floor_position" defaultValue={data.bedrock_floor_position}>Bedrock floor position</ConfInput>
-                <ConfInput name="sea_level" defaultValue={data.sea_level} max={256}>Sea level</ConfInput>
+                <NumberInput name="bedrock_roof_position" defaultValue={data.bedrock_roof_position} min={-20} max={276}>Bedrock roof position</NumberInput>
+                <NumberInput name="bedrock_floor_position" defaultValue={data.bedrock_floor_position} min={-20} max={276}>Bedrock floor position</NumberInput>
+                <NumberInput name="sea_level" defaultValue={data.sea_level} max={256}>Sea level</NumberInput>
                 <ConfInput name="disable_mob_generation" defaultChecked={data.disable_mob_generation}>Disable mob generation</ConfInput>
             </div>
         </fieldset>

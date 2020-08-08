@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback } from 'react';
 import { BiomeSource } from './BiomeSource';
 import { hashCode } from './../../utils/hash';
 import Select from '../../ui/Select';
@@ -6,45 +6,25 @@ import { useKeyedListOptions } from '../../hooks/context';
 import { ConfInput } from '../../ui/Input';
 
 export function DimensionGenerator({generator, onChange}) {
-    
-    const [data, setData] = useState(generator);
 
     const handleSeedChange = useCallback(function(seed) {
-        setData(data => {
-            data.seed = seed;
-            return data;
-        });
-        onChange(data);
-    }, [data, onChange]);
+        onChange({ ...generator, seed });
+    }, [generator, onChange]);
 
     const handleSettingsChange = useCallback(function(settings) {
-        setData(data => {
-            data.settings = settings;
-            return data;
-        });
-        onChange(data);
-    }, [data, onChange]);
+        onChange({ ...generator, settings });
+    }, [generator, onChange]);
 
     const handleBiomeSourceChange = useCallback(function(biome_source) {
-        setData(data => {
-            data.biome_source = biome_source;
-            return data;
-        });
-        onChange(data);
-    }, [data, onChange]);
-
-    useEffect(function () {
-        if (data !== generator) {
-            onChange(data);
-        }
-    }, [data, generator, onChange]);
+        onChange({ ...generator, biome_source });
+    }, [generator, onChange]);
 
     return <fieldset>
         <legend>Noise dimension generator</legend>
         <div className="form-group">
-            <SeedField value={data.seed} onChange={handleSeedChange} />
-            <Settings settings={data.settings} onChange={handleSettingsChange} />
-            <BiomeSource biome_source={data.biome_source} onChange={handleBiomeSourceChange} />
+            <SeedField value={generator.seed} onChange={handleSeedChange} />
+            <Settings settings={generator.settings} onChange={handleSettingsChange} />
+            <BiomeSource source={generator.biome_source} onChange={handleBiomeSourceChange} />
         </div>
     </fieldset>;
 }
