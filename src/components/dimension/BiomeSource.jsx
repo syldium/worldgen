@@ -81,14 +81,14 @@ const CheckerboardBiomeSource = React.memo(function({source, onChange}) {
     </div>;
 });
 
-const FixedBiomeSource = React.memo(function({biome = 'minecraft:plains', onChange}) {
+export const FixedBiomeSource = React.memo(function({biome = 'minecraft:plains', inline = false, onChange}) {
     const options = useKeyedListOptions('biomes');
     const handleBiomesChange = useCallback(function(option) {
         onChange(option.value);
     }, [onChange]);
 
-    return <div className="form-group">
-        <label htmlFor="fixed-biome">Biome</label><Select options={options} value={options.find(o => o.value === biome)} onChange={handleBiomesChange} />
+    return <div className={inline ? 'form-row flex-grow' : 'form-group'}>
+        <label htmlFor="fixed-biome">Biome{inline && ' :'}&nbsp;</label><div className={inline ? 'flex-grow' : undefined}><Select options={options} value={options.find(o => o.value === biome)} onChange={handleBiomesChange} /></div>
     </div>;
 });
 

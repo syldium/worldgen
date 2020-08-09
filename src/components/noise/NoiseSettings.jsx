@@ -2,12 +2,33 @@ import React, { useCallback, useState } from 'react';
 import { BlockState } from '../state/BlockState';
 import { Button } from '../../ui/Button';
 import { JsonViewer } from '../../ui/JsonViewer';
-import { useValueChange } from '../../hooks/form';
 import { ConfInput, NumberInput } from '../../ui/Input';
+import Select from '../../ui/Select';
+import { useValueChange } from '../../hooks/form';
 import { OVERWORLD_NOISE } from './NoiseDefaults';
 import { Structures } from './Structures';
 import { NamespacedKey } from '../NamespacedKey';
 import { INT_MIN_VALUE } from '../../utils/number';
+import { useKeyedListOptions } from '../../hooks/context';
+
+export const NoiseGenerator = React.memo(function({onChange, settings = 'minecraft:overworld'}) {
+    const options = useKeyedListOptions('noises').map(option => {
+        option.resource = option.value;
+        return option;
+    });
+
+    const handleChange = useCallback(function(option) {
+        onChange(option.resource);
+    }, [onChange]);
+
+    if (typeof settings === 'object') {
+        options.push({ value: 'inline', label: 'inline', resource: settings });
+    }
+
+    return <div className="form-group">
+        <label htmlFor="settings">Noise settings</label><Select options={options} value={options.find(o => o.resource === settings)} onChange={handleChange} inputId="settings" />
+    </div>;
+});
 
 export const NoiseSettings = React.memo(function ({ data = OVERWORLD_NOISE, onSave }) {
 

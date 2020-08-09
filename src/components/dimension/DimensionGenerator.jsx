@@ -1,56 +1,68 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { BiomeSource } from './BiomeSource';
 import { hashCode } from './../../utils/hash';
 import Select from '../../ui/Select';
-import { useKeyedListOptions } from '../../hooks/context';
 import { ConfInput } from '../../ui/Input';
+import { CHUNK_GENERATOR_TYPES, DIMENSION } from './DimensionDefaults';
+import { FlatChunkSettings } from './FlatChunkSettings';
+import { NoiseGenerator } from '../noise/NoiseSettings';
 
 export function DimensionGenerator({generator, onChange}) {
+
+    const [previousGenerator, setPreviousGenerator] = useState({ type: null });
+
+    const handleChunkGeneratorChange = useCallback(function(option) {
+        if (option.value === previousGenerator.type) {
+            onChange(previousGenerator);
+        } else if (option.value === 'minecraft:noise') {
+            onChange(DIMENSION.generator);
+        } else {
+            onChange({ type: option.value });
+        }
+        setPreviousGenerator(generator);
+    }, [generator, previousGenerator, onChange]);
 
     const handleSeedChange = useCallback(function(seed) {
         onChange({ ...generator, seed });
     }, [generator, onChange]);
-
     const handleSettingsChange = useCallback(function(settings) {
         onChange({ ...generator, settings });
     }, [generator, onChange]);
-
     const handleBiomeSourceChange = useCallback(function(biome_source) {
         onChange({ ...generator, biome_source });
     }, [generator, onChange]);
 
     return <fieldset>
-        <legend>Noise dimension generator</legend>
+        <legend style={{ fontWeight: 'normal', width: '28ch', fontSize: '1.05rem' }}><Select options={CHUNK_GENERATOR_TYPES} value={CHUNK_GENERATOR_TYPES.find(o => generator.type === o.value)} onChange={handleChunkGeneratorChange} /></legend>
         <div className="form-group">
-            <SeedField value={generator.seed} onChange={handleSeedChange} />
-            <Settings settings={generator.settings} onChange={handleSettingsChange} />
-            <BiomeSource source={generator.biome_source} onChange={handleBiomeSourceChange} />
+            {generator.type === 'minecraft:noise' && <>
+                <SeedField value={generator.seed} onChange={handleSeedChange} />
+                <NoiseGenerator settings={generator.settings} onChange={handleSettingsChange} />
+                <BiomeSource source={generator.biome_source} onChange={handleBiomeSourceChange} />
+            </>}
+            {generator.type === 'minecraft:flat' &&
+                <FlatChunkSettings settings={generator.settings} onChange={handleSettingsChange} />
+            }
         </div>
     </fieldset>;
 }
 
-export const SeedField = React.memo(function({onChange, value = 286956243}) {
-    const [text, setText] = useState(value);
+export const SeedField = React.memo(function({onChange, value}) {
+    const [text, setText] = useState(value || 286956243);
 
-    const handleChange = function(e) {
+    const handleChange = useCallback(function(e) {
         const value = e.target.value;
         setText(value);
         onChange(isNaN(value) ? hashCode(value) : parseInt(value));
-    };
+    }, [onChange]);
+
+    useEffect(() => {
+        if (typeof value !== 'number') {
+            onChange(286956243);
+        }
+    }, [onChange, value]);
 
     return <div className="form-group">
         <ConfInput type="text" id="seed" value={text} onChange={handleChange}>Seed</ConfInput>
     </div>
-});
-
-const Settings = React.memo(function({onChange, settings = 'minecraft:overworld'}) {
-    const handleChange = useCallback(function(option) {
-        onChange(option.value);
-    }, [onChange]);
-
-    const options = useKeyedListOptions('noises');
-
-    return <div className="form-group">
-        <label htmlFor="settings">Noise settings</label><Select options={options} value={options.find(o => o.value === settings)} onChange={handleChange} inputId="settings" />
-    </div>;
 });

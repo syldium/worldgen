@@ -36,7 +36,7 @@ export const BlockPredicate = React.memo(function({target, onChange}) {
     }, []);
     useEffect(() => {
         if (predicate !== target) {
-            onChange(predicate);
+            onChange(predicate, target);
         }
     }, [onChange, predicate, target]);
 

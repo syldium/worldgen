@@ -91,7 +91,7 @@ export function NamespacedKey({ children, example = 'daily_resource', type, valu
                 <Select options={options} value={options.find(o => key === o.value)} onChange={handleReplaceTargetChange} inputId="key" />
             </div>}
             {!replace &&
-                <input type="text" id="key" required pattern="^([\w.-]+:[\w/.-]+)[^/:]$|^[\w/.-]+[^/:]$" placeholder={`Example: ${example}`}
+                <input type="text" id="key" required pattern="^([\w.-]+:[\w/.-]+)$|^[\w/.-]+$" placeholder={`Example: ${example}`}
                     autoCapitalize="none" spellCheck="false" autoComplete="off" value={inputValue}
                     onChange={handleKeyChange} onKeyPress={handleKeyDown} />
             }

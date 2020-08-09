@@ -47,6 +47,10 @@ label + .form-group {
     min-width: 100px;
 }
 
+.flex-grow {
+    flex-grow: 1;
+}
+
 .actions {
     margin-top: 1.5rem;
     text-align: right;

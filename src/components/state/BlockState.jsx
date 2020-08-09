@@ -18,13 +18,13 @@ export const BlockState = React.memo(function ({ block = {}, children, className
         })
         delete block.Properties;
         if (Object.keys(Properties).length > 0) {
-            onChange({ ...block, Name, Properties });
+            onChange({ ...block, Name, Properties }, block);
         } else {
-            onChange({ ...block, Name });
+            onChange({ ...block, Name }, block);
         }
     }, [block, context.vanilla.blocks, onChange]);
     const handlePropertiesChange = useCallback(function (properties) {
-        onChange({ ...block, Properties: { ...block.Properties, ...properties } });
+        onChange({ ...block, Properties: { ...block.Properties, ...properties } }, block);
     }, [block, onChange]);
 
     const blocks = useMemo(function () {

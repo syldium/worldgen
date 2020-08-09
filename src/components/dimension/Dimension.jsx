@@ -31,10 +31,7 @@ export function Dimension({data = DIMENSION, onSave}) {
             <JsonViewer data={state} />
         </NamespacedKey>
         <DimensionType type={state.type} onChange={handleTypeChange} />
-        <fieldset>
-            <legend>Generator configuration</legend>
-            <DimensionGenerator generator={state.generator} onChange={handleGeneratorChange} />
-        </fieldset>
+        <DimensionGenerator generator={state.generator} onChange={handleGeneratorChange} />
         <Button type="submit">Save</Button>
     </form>
 }

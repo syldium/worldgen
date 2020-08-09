@@ -36,7 +36,7 @@ const Stronghold = React.memo(function ({ data, onChange }) {
     }, [setStronghold]);
 
     useEffect(function() {
-        if (data !== stronghold
+        if ((data !== stronghold && enabled)
             || (enabled && typeof data === 'undefined')
             || (!enabled && typeof data === 'object')) {
                 onChange(enabled ? stronghold : false);
@@ -85,14 +85,16 @@ const StructuresList = React.memo(function({ data, onChange }) {
                 salt: structure.salt
             };
         }
-        onChange(obj);
-    }, [onChange, structures]);
+        if (JSON.stringify(obj) !== JSON.stringify(data)) {
+            onChange(obj);
+        }
+    }, [data, onChange, structures]);
 
     return <div>
         <div className="toggle-label">
             Structures
             <div className="btn-group">
-                <Button onClick={handleAdd}>Add</Button>
+                <Button onClick={handleAdd}>Add structure</Button>
                 {structures.length > 0 && <Button cat="secondary" onClick={toggle}>{visibility ? 'Less...' : 'More...'}</Button>}
             </div>
         </div>

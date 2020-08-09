@@ -10,7 +10,13 @@ export const DIMENSION = {
         settings: "minecraft:overworld"
     },
     type: "minecraft:overworld"
-}
+};
+
+export const CHUNK_GENERATOR_TYPES = [
+    { value: 'minecraft:flat', label: 'Flat chunk generator' },
+    { value: 'minecraft:debug', label: 'Debug chunk generator' },
+    { value: 'minecraft:noise', label: 'Noise chunk generator' }
+];
 
 export const VANILLA_DIMENSION_TYPES = [
     { value: 'minecraft:overworld', label: 'Overworld' },
