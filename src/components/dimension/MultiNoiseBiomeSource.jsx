@@ -2,6 +2,7 @@ import React, { useCallback, useRef, useState, useEffect } from 'react';
 import { useToggle } from '../../hooks/ui';
 import { Button } from '../../ui/Button';
 import { MultiNoiseDimension } from '../../viewers/biome_multi_noise/MultiNoiseDimension';
+import { integerColorToHex } from '../../utils/color';
 
 export const MultiNoiseRepresentation = React.memo(function ({ source }) {
 
@@ -48,5 +49,22 @@ export const MultiNoiseRepresentation = React.memo(function ({ source }) {
                 {(source.biomes || []).length > 0 && !auto && <Button onClick={handleClick}>Render</Button>}
             </div>
         </div>
+        <ul className="form-group form-row" style={{ justifyContent: 'start' }}>
+            {Object.entries(MultiNoiseDimension.getBiomesColors(source.biomes)).map(([biome, color]) => {
+                const b = (color >> 16) & 0xFF;
+                const g = (color >> 8) & 0xFF;
+                const r = color & 0xFF;
+                return <li key={biome} style={{ display: 'inline', marginLeft: '8px', marginRight: '4px' }}>
+                    <div style={{
+                        backgroundColor: integerColorToHex(((r << 16) | (g << 8) | b)),
+                        width: '32px', height: '16px',
+                        display: 'inline-block',
+                        marginRight: '0.5rem',
+                        verticalAlign: 'middle'
+                    }}></div>
+                    {biome}
+                </li>
+            })}
+        </ul>
     </fieldset>
 });

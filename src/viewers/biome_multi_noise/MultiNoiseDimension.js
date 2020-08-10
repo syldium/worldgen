@@ -128,7 +128,7 @@ export class MultiNoiseDimension {
      * @param {Biome[]} biomes 
      * @returns {object}
      */
-    static getBiomesColors(biomes) {
+    static getBiomesColors(biomes = []) {
         const biomesColors = {};
         for (const biome of biomes) {
             biomesColors[biome.biome] = hashCode(biome.biome);
