@@ -38,6 +38,13 @@ export function DatapackForm({onCreate}) {
         </NavBar>
         <form className="content" onSubmit={handleCreate}>
             <div className="form-control">
+                <div className="mbm">
+                    <h3>What's this?</h3>
+                    <p className="mbm" style={{ fontSize: '0.95rem' }}>
+                        This online generator under development allows you to create world generation datapacks for Minecraft 1.16.2. You'll be able to create your own biomes or edit existing ones, custom trees, change the amplitude of the terrain, mix generated blocks and more in the following menus. To continue, choose your datapack identifier.
+                    </p>
+                    <hr />
+                </div>
                 <label htmlFor="namespace">Default namespace</label><br />
                 <input type="text" name="namespace" id="namespace" required pattern="[a-z0-9._-]+" autoCapitalize="none" spellCheck="false" autoComplete="off" aria-describedby="namespaceHelp" />
                 <p className="help2"><small id="namespaceHelp" className="form-text text-muted">This differentiates the datapack from the vanilla functions. Namespaces and identifiers may only contain letters, numbers and <code>._-</code> characters. This namespace is not final, you can edit the vanilla dimensions in the following menus.</small></p>
@@ -48,7 +55,7 @@ export function DatapackForm({onCreate}) {
                 <div className="mtm">
                     {error !== null && <div className="alert--danger">{error}</div>}
                     <p className="alert--warning">
-                        This generator is currently built for 1.16.2-rc1. As it is a beta, you might expect a few bugs.
+                        This generator is currently built for 1.16.2-rc2. As it is a beta, you might expect a few bugs.
                     </p>
                 </div>
             </div>
