@@ -11,6 +11,7 @@ import { capitalize, hasDuplicatedObjects } from '../../utils/data';
 import { NumberList } from '../../ui/NumberList';
 import { MULTI_NOISE_BIOME_SOURCE, NOISES_NAMES } from './DimensionDefaults';
 import { NumberInput, ConfInput } from '../../ui/Input';
+import { MultiNoiseRepresentation } from './MultiNoiseBiomeSource';
 
 export const BiomeSource = React.memo(function({source = { type: 'minecraft:fixed' }, onChange}) {
 
@@ -156,6 +157,7 @@ const MultiNoiseBiomeSource = React.memo(function({source = MULTI_NOISE_BIOME_SO
         </div>}
         {values}
         {hasDuplicatedObjects(biomes.map(biome => biome.parameters)) && <p className="alert--warning">Warning: every biome must have a unique combination of parameters!</p>}
+        <MultiNoiseRepresentation source={source} />
     </>;
 });
 

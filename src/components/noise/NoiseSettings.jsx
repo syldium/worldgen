@@ -8,7 +8,7 @@ import { useValueChange } from '../../hooks/form';
 import { OVERWORLD_NOISE } from './NoiseDefaults';
 import { Structures } from './Structures';
 import { NamespacedKey } from '../NamespacedKey';
-import { INT_MIN_VALUE } from '../../utils/number';
+import { INT_MIN_VALUE } from '../../utils/math';
 import { useKeyedListOptions } from '../../hooks/context';
 
 export const NoiseGenerator = React.memo(function({onChange, settings = 'minecraft:overworld'}) {
