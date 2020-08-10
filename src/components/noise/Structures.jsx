@@ -130,8 +130,8 @@ const Structure = React.memo(function ({ data, onChange, onDelete }) {
             <label>Type</label> : <Select options={STRUCTURES} value={STRUCTURES.find(s => s.value === data.type)} onChange={handleTypeChange} />
         </div>
         <div className="form-group form-row">
-            <NumberInput id="spacing" value={data.spacing} upChange={handleSpacingChange} max="4096">Spacing</NumberInput>
-            <NumberInput id="separation" value={data.separation} upChange={handleSpacingChange} max="4096">Separation</NumberInput>
+            <NumberInput id="spacing" value={data.spacing} min={data.separation + 1} upChange={handleSpacingChange} max="4096">Spacing</NumberInput>
+            <NumberInput id="separation" value={data.separation} upChange={handleSpacingChange} max={Math.min(data.spacing - 1, 4096)}>Separation</NumberInput>
             <NumberInput id="salt" value={data.salt} onChange={handleSaltChange} max={0x7FFFFFFF} style={{ width: '150px' }}>Salt</NumberInput>
             <div className="form-inline"><Button cat="danger" onClick={handleDelete}>Delete</Button></div>
         </div>

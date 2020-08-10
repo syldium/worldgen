@@ -103,8 +103,8 @@ const SpawnDefinition = React.memo(function({data, index, options, onChange, onD
         </div>
         <div className="form-group form-row">
             <NumberInput id="weight" value={data.weight} upChange={handleValueChange}>Weight</NumberInput>
-            <NumberInput id="minCount" value={data.minCount} upChange={handleCountChange}>Min count</NumberInput>
-            <NumberInput id="maxCount" value={data.maxCount} upChange={handleCountChange}>Max count</NumberInput>
+            <NumberInput id="minCount" value={data.minCount} max={data.maxCount} upChange={handleCountChange}>Min count</NumberInput>
+            <NumberInput id="maxCount" value={data.maxCount} min={data.minCount} upChange={handleCountChange}>Max count</NumberInput>
             <div className="form-inline"><Button cat="danger" onClick={handleDelete}>Delete</Button></div>
         </div>
         <hr /> 
