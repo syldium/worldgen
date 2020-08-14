@@ -45,8 +45,14 @@ export function TreeFeatureConfig({configuration = TREE_FEATURE_CONFIG, onChange
 const FoliagePlacer = React.memo(function({placer, onChange}) {
     const options = useMemo(function() {
         return [
+            { value: 'acacia_foliage_placer', label: 'Acacia foliage placer' },
             { value: 'blob_foliage_placer', label: 'Blob foliage placer' },
-            { value: 'fancy_foliage_placer', label: 'Fancy foliage placer' }
+            { value: 'bush_foliage_placer', label: 'Bush foliage placer' },
+            { value: 'dark_oak_foliage_placer', label: 'Dark oak foliage placer' },
+            { value: 'fancy_foliage_placer', label: 'Fancy foliage placer' },
+            { value: 'jungle_foliage_placer', label: 'Jungle foliage placer' },
+            { value: 'mega_pine_foliage_placer', label: 'Mega pine foliage placer' },
+            { value: 'pine_foliage_placer', label: 'Pine foliage placer' }
         ].map(o => {
             o.value = 'minecraft:' + o.value;
             return o;
@@ -56,11 +62,18 @@ const FoliagePlacer = React.memo(function({placer, onChange}) {
     const handleTypeChange = useCallback(function(option) {
         onChange({ type: option.value });
     }, [onChange]);
+    const handleCrownHeightChange = useCallback(function(value) {
+        onChange({ ...placer, crown_height: { ...placer.crown_height, ...value } })
+    }, [onChange, placer]);
+    const handleHeightChange = useCallback(function(value) {
+        onChange({ ...placer, height: { ...placer.height, ...value } })
+    }, [onChange, placer]);
 
     const selected = useMemo(function() {
         return options.find(o => o.value === placer.type) || options[0];
     }, [options, placer.type]);
 
+    // @todo handle uniform int value
     return <fieldset>
         <legend>Foliage placer</legend>
         <div className="form-group">
@@ -74,7 +87,15 @@ const FoliagePlacer = React.memo(function({placer, onChange}) {
                 placer.type === 'minecraft:bush_foliage_placer' ||
                 placer.type === 'minecraft:fancy_foliage_placer' ||
                 placer.type === 'minecraft:jungle_foliage_placer'
-            ) && <NumberInput id="height" value={placer.height} upChange={onChange} max="16" defaultValue="3">Height</NumberInput>}
+            ) && <NumberInput id="height" value={placer.height} upChange={onChange} max="16" defaultValue={3}>Height</NumberInput>}
+            {placer.type === 'minecraft:mega_pine_foliage_placer' && <>
+                <NumberInput id="base" value={placer.crown_height.base} upChange={handleCrownHeightChange} max="16" defaultValue={13}>Crown height base</NumberInput>
+                <NumberInput id="spread" value={placer.crown_height.spread} upChange={handleCrownHeightChange} max="16" defaultValue={4}>Crown height spread</NumberInput>
+            </>}
+            {placer.type === 'minecraft:pine_foliage_placer' && <>
+                <NumberInput id="base" value={placer.height.base} upChange={handleHeightChange} max="16" defaultValue={3}>Height base</NumberInput>
+                <NumberInput id="spread" value={placer.height.spread} upChange={handleHeightChange} max="16" defaultValue={1}>Height spread</NumberInput>
+            </>}
         </div>
     </fieldset>
 });
