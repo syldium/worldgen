@@ -89,12 +89,12 @@ const FoliagePlacer = React.memo(function({placer, onChange}) {
                 placer.type === 'minecraft:jungle_foliage_placer'
             ) && <NumberInput id="height" value={placer.height} upChange={onChange} max="16" defaultValue={3}>Height</NumberInput>}
             {placer.type === 'minecraft:mega_pine_foliage_placer' && <>
-                <NumberInput id="base" value={placer.crown_height.base} upChange={handleCrownHeightChange} max="16" defaultValue={13}>Crown height base</NumberInput>
-                <NumberInput id="spread" value={placer.crown_height.spread} upChange={handleCrownHeightChange} max="16" defaultValue={4}>Crown height spread</NumberInput>
+                <NumberInput id="base" value={(placer.crown_height || {}).base} upChange={handleCrownHeightChange} max="16" defaultValue={13}>Crown height base</NumberInput>
+                <NumberInput id="spread" value={(placer.crown_height || {}).spread} upChange={handleCrownHeightChange} max="16" defaultValue={4}>Crown height spread</NumberInput>
             </>}
             {placer.type === 'minecraft:pine_foliage_placer' && <>
-                <NumberInput id="base" value={placer.height.base} upChange={handleHeightChange} max="16" defaultValue={3}>Height base</NumberInput>
-                <NumberInput id="spread" value={placer.height.spread} upChange={handleHeightChange} max="16" defaultValue={1}>Height spread</NumberInput>
+                <NumberInput id="base" value={(typeof placer.height === 'object' ? placer.height : {}).base} upChange={handleHeightChange} max="16" defaultValue={3}>Height base</NumberInput>
+                <NumberInput id="spread" value={(typeof placer.height === 'object' ? placer.height : {}).spread} upChange={handleHeightChange} max="16" defaultValue={1}>Height spread</NumberInput>
             </>}
         </div>
     </fieldset>
