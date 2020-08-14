@@ -5,14 +5,13 @@ import { dataUpper } from "./data";
 const DIMENSIONS_PATH = /^data\/([a-z0-9._-]+)\/(dimension|dimension_type)\/([a-z0-9._-]+).json$/;
 const WORLDGEN_PATH = /^data\/([a-z0-9._-]+)\/worldgen\/(biome|configured_carver|configured_feature|configured_surface_builder|noise_settings)\/([a-z0-9._-]+).json$/;
 
-const LEGACY_PATH_DETECTION = /^data\/minecraft\/(dimension|dimension_type|worldgen)\/?\w*\/([a-z0-9._-]+)\/([a-z0-9._-]+).json$/;
 const LEGACY_DIMENSIONS_PATH = /^data\/minecraft\/(dimension|dimension_type)\/([a-z0-9._-]+)\/([a-z0-9._-]+).json$/;
 const LEGACY_WORLDGEN_PATH = /^data\/minecraft\/worldgen\/(biome|configured_carver|configured_feature|configured_surface_builder|noise_settings)\/([a-z0-9._-]+)\/([a-z0-9._-]+).json$/;
 
 /**
  * Build zip in blob.
  * 
- * @param {{ biomes: object[], carvers: object[] dimensions: object[], dimension_types: object[], features: object[], noises: object[], surfaces: object[] }} custom 
+ * @param {{ biomes: object[], carvers: object[], dimensions: object[], dimension_types: object[], features: object[], noises: object[], surfaces: object[] }} custom 
  */
 export function buildZip(custom) {
     const zip = new JSZip();
@@ -91,12 +90,11 @@ function extractDatapack(zip) {
                 mcmeta = true;
                 return;
             }
-            const legacy = entry.name.match(LEGACY_PATH_DETECTION);
-            let regex = entry.name.match(DIMENSIONS_PATH) ? DIMENSIONS_PATH : WORLDGEN_PATH;
-            if (legacy) {
-                regex = entry.name.match(LEGACY_DIMENSIONS_PATH) ? LEGACY_DIMENSIONS_PATH : LEGACY_WORLDGEN_PATH;
-            }
-            promises.push(parseFile(legacy, regex, entry.name, zip.file(entry.name).async('text')));
+            const regex = [
+                DIMENSIONS_PATH, WORLDGEN_PATH,
+                LEGACY_DIMENSIONS_PATH, LEGACY_WORLDGEN_PATH
+            ].find(path => entry.name.match(path)) || WORLDGEN_PATH;
+            promises.push(parseFile([LEGACY_DIMENSIONS_PATH, LEGACY_WORLDGEN_PATH].includes(regex), regex, entry.name, zip.file(entry.name).async('text')));
         });
 
         if (!mcmeta) {
