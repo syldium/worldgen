@@ -51,8 +51,8 @@ export function buildZip(custom) {
  */
 export function readZip(file) {
     return new Promise((resolve, reject) => {
-        if (file.type !== 'application/zip') {
-            reject(new Error('File is not a .zip'));
+        if (!['application/zip', 'application/octet-stream', 'application/x-zip-compressed', 'multipart/x-zip'].includes(file.type)) {
+             reject(new Error(`File is not a .zip. Got: ${file.type}`));
         }
 
         JSZip.loadAsync(file).then((zip) => {
