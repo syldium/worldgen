@@ -1,4 +1,4 @@
-.json-view-for-react {
+.jsonview {
     display: block;
     background-color: var(--shadow-color, inherit);
     color: #88c6be;
@@ -7,26 +7,24 @@
     max-width: 100%;
     padding: 0 1.5rem 1rem 0;
 
-    .str {
+    &-str {
         color: #79b6f2;
     }
-    .num {
+    &-num {
         color: #ffffc8;
     }
-    .bool {
+    &-bool {
         color: #c5a5c5;
     }
-    .null {
+    &-null {
         color: #c5a5c5;
     }
-    .prop {
+    &-prop {
         color: #fac863;
     }
 
-    .ln {
-        display: inline-block;
+    &-line {
         padding-right: 1rem;
         color: #b2b2b2;
-        text-align: right;
     }
 }
