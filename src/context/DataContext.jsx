@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { jsonFetch } from '../utils/fetch';
-import { VANILLA_FEATURES } from '../components/feature/FeatureDefaults';
+import { VANILLA_FEATURES } from '../components/feature/VanillaFeatures';
 import { useData } from '../hooks/context';
 import { VANILLA_SURFACE_BUILDERS } from '../components/surface/SurfaceBuilderDefaults';
 import { VANILLA_NOISES } from '../components/noise/NoiseDefaults';
@@ -53,11 +53,11 @@ export function DataContextProvider({children, namespace, initial = {}}) {
 
     useEffect(() => {
         (async function () {
-            jsonFetch('https://unpkg.com/minecraft-data@2.63.0/minecraft-data/data/pc/1.16.1/biomes.json')
+            jsonFetch('https://unpkg.com/minecraft-data@2.65.0/minecraft-data/data/pc/1.16.1/biomes.json')
                 .then(biomes => setBiomes(biomes));
-            jsonFetch('https://unpkg.com/minecraft-data@2.63.0/minecraft-data/data/pc/1.16.1/blocks.json')
+            jsonFetch('https://unpkg.com/minecraft-data@2.65.0/minecraft-data/data/pc/1.16.1/blocks.json')
                 .then(blocks => setBlocks(blocks));
-            jsonFetch('https://unpkg.com/minecraft-data@2.63.0/minecraft-data/data/pc/1.16.1/entities.json')
+            jsonFetch('https://unpkg.com/minecraft-data@2.65.0/minecraft-data/data/pc/1.16.1/entities.json')
                 .then(entities => setEntities(entities.map(entity => ({ value: 'minecraft:' + entity.name, label: entity.displayName }))));
         })();
     }, []);

@@ -1,10 +1,11 @@
 import React, { useCallback, useState, useMemo, useEffect } from 'react';
 import { SortableContainer, SortableElement } from 'react-sortable-hoc';
-import { useCrudPreset, useJsonEffect } from '../../hooks/form';
-import { Button } from '../../ui/Button';
-import Select from '../../ui/Select';
-import { DECORATORS_OPTIONS, DECORATOR_EXTRA_COUNT_DEFAULTS, DECORATOR_DECORATED_DEFAULTS, DECORATOR_RANGE_DEFAULTS } from './FeatureDefaults';
-import { NumberInput } from '../../ui/Input';
+import { useCrudPreset, useJsonEffect } from '../../../hooks/form';
+import { Button } from '../../../ui/Button';
+import Select from '../../../ui/Select';
+import { DECORATORS_OPTIONS, DECORATOR_EXTRA_COUNT_DEFAULTS, DECORATOR_DECORATED_DEFAULTS, DECORATOR_RANGE_DEFAULTS, DECORATOR_CARVING_MASK_DEFAULTS, CARVERS_OPTIONS } from './DecoratorDefaults';
+import { NumberInput } from '../../../ui/Input';
+import { UniformInt } from '../../utils/UniformInt';
 
 export const DecoratorsList = React.memo(function({data, onChange}) {
     const [decorators, handleAdd, handleChange, handleRemove] = useCrudPreset(data, function(decorators) {
@@ -55,21 +56,37 @@ const Decorator = React.memo(SortableElement(function({children, data = { type: 
             {children}
         </div>
         <div className="form-group form-row">
-            {decorator.type === 'minecraft:chance' && <ChanceDecorator config={decorator.config} onChange={handleConfigChange} />}
+            {decorator.type === 'minecraft:carving_mask' && <CarvingMaskDecorator config={decorator.config} onChange={handleConfigChange} />}
+            {(decorator.type === 'minecraft:chance' || decorator.type === 'minecraft:lava_lake' || decorator.type === 'minecraft:water_lake') && <ChanceDecorator config={decorator.config} onChange={handleConfigChange} />}
             {(decorator.type === 'minecraft:count' || decorator.type === 'minecraft:fire' || decorator.type === 'minecraft:count_multilayer') && <CountDecorator config={decorator.config} onChange={handleConfigChange} />}
             {decorator.type === 'minecraft:count_extra' && <ExtraCountDecorator config={decorator.config} onChange={handleConfigChange} />}
+            {decorator.type === 'minecraft:count_noise' && <NoiseCountDecorator config={decorator.config} onChange={handleConfigChange} />}
+            {decorator.type === 'minecraft:count_noise_biased' && <NoiseBiasedCountDecorator config={decorator.config} onChange={handleConfigChange} />}
             {(decorator.type === 'minecraft:decorated' || decorator.type === 'minecraft:square') && <DecoratedDecorator config={decorator.config} onChange={handleConfigChange} />}
             {(decorator.type === 'minecraft:range' || decorator.type === 'minecraft:range_biased' || decorator.type === 'minecraft:range_very_biased') && <RangeDecorator config={decorator.config} onChange={handleConfigChange} />}
         </div>
     </li>;
 }));
 
+const CarvingMaskDecorator = React.memo(function({config, onChange}) {
+    config = useJsonEffect(config || DECORATOR_CARVING_MASK_DEFAULTS, config, onChange);
+
+    const handleStepChange = useCallback(function (option) {
+        onChange({ probability: config.probability, step: option.value });
+    }, [config.probability, onChange]);
+
+    return <>
+        <div className="inbl"><Select options={CARVERS_OPTIONS} value={CARVERS_OPTIONS.find(o => o.value === config.step)} onChange={handleStepChange} /></div>
+        <NumberInput id="probability" value={config.probability} upChange={onChange} step="0.05">Probability</NumberInput>
+    </>
+});
+
 const ChanceDecorator = React.memo(function({config = {}, onChange}) {
-    return <NumberInput id="chance" value={config.chance} defaultValue="32" upChange={onChange}>Chance</NumberInput>
+    return <NumberInput id="chance" value={config.chance} defaultValue={32} upChange={onChange}>Chance</NumberInput>
 });
 
 const CountDecorator = React.memo(function({config = {}, onChange}) {
-    return <NumberInput id="count" value={config.count} defaultValue="25" upChange={onChange}>Count</NumberInput>
+    return <UniformInt id="count" value={config.count} minBase={-10} maxBase={128} maxSpread={128} defaultValue={25} upChange={onChange}>Count</UniformInt>
 });
 
 const ExtraCountDecorator = React.memo(function({config, onChange}) {
@@ -79,6 +96,34 @@ const ExtraCountDecorator = React.memo(function({config, onChange}) {
         <NumberInput id="count" value={config.count} upChange={onChange}>Count</NumberInput>
         <NumberInput id="extra_chance" value={config.extra_chance} upChange={onChange} step="0.05">Extra chance</NumberInput>
         <NumberInput id="extra_count" value={config.extra_count} upChange={onChange}>Extra count</NumberInput>
+    </>
+});
+
+const NoiseCountDecorator = React.memo(function({config, onChange}) {
+    config = useJsonEffect(config || {
+        noise_level: -0.8,
+        below_noise: 15,
+        above_noise: 4
+    }, config, onChange);
+
+    return <>
+        <NumberInput id="noise_level" value={config.noise_level} upChange={onChange}>Noise level</NumberInput>
+        <NumberInput id="below_noise" value={config.below_noise} upChange={onChange}>Below noise</NumberInput>
+        <NumberInput id="above_noise" value={config.above_noise} upChange={onChange}>Above noise</NumberInput>
+    </>
+});
+
+const NoiseBiasedCountDecorator = React.memo(function({config, onChange}) {
+    config = useJsonEffect(config || {
+        noise_to_count_ratio: 160,
+        noise_factor: 80.0,
+        noise_offset: 0.3
+    }, config, onChange);
+
+    return <>
+        <NumberInput id="noise_to_count_ratio" value={config.noise_to_count_ratio} upChange={onChange}>Noise to count ratio</NumberInput>
+        <NumberInput id="noise_factor" value={config.noise_factor} upChange={onChange} step="0.05">Noise factor</NumberInput>
+        <NumberInput id="noise_offset" value={config.noise_offset} upChange={onChange} step="0.05">Noise factor</NumberInput>
     </>
 });
 

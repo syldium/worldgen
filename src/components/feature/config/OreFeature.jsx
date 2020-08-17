@@ -1,11 +1,11 @@
 import React, { useCallback } from 'react';
-import { ORE_FEATURE_CONFIG } from "./FeatureDefaults";
-import { BlockPredicate } from '../state/BlockPredicate';
-import { BlockState } from '../state/BlockState';
-import { useJsonEffect } from '../../hooks/form';
-import { NumberInput } from '../../ui/Input';
+import { BlockPredicate } from '../../state/BlockPredicate';
+import { BlockState } from '../../state/BlockState';
+import { NumberInput } from '../../../ui/Input';
+import { ORE_FEATURE_CONFIG } from "./FeatureConfigDefaults";
+import { useJsonEffect } from '../../../hooks/form';
 
-export function OreFeatureConfig({configuration, onChange}) {
+export function OreFeature({configuration, onChange}) {
     const handlePredicateChange = useCallback(function(target) {
         onChange({ ...configuration, target });
     }, [configuration, onChange]);

@@ -1,14 +1,15 @@
-import React, { useCallback, useMemo, useState, useEffect } from 'react';
-import { BlockStateProvider } from '../state/BlockStateProvider';
-import Select from '../../ui/Select';
-import { TREE_DECORATORS_OPTIONS, TREE_FEATURE_CONFIG } from './FeatureDefaults';
-import { useJsonEffect, useCrud, CRUD } from '../../hooks/form';
-import { NumberInput } from '../../ui/Input';
-import { Button } from '../../ui/Button';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { CRUD, useCrud, useJsonEffect } from '../../../hooks/form';
+import { TREE_DECORATORS_OPTIONS, TREE_FEATURE_CONFIG } from './FeatureConfigDefaults';
+import { BlockStateProvider } from '../../state/BlockStateProvider';
+import { Button } from '../../../ui/Button';
+import { NumberInput } from '../../../ui/Input';
+import Select from '../../../ui/Select';
+import { UniformInt } from '../../utils/UniformInt';
 
-export function TreeFeatureConfig({configuration = TREE_FEATURE_CONFIG, onChange}) {
+export function TreeFeature({configuration, onChange}) {
 
-    const [config, setConfig] = useState(configuration);
+    const [config, setConfig] = useState(configuration || TREE_FEATURE_CONFIG);
 
     const handleTrunkProviderChange = useCallback(function(trunk_provider) {
         setConfig(config => ({ ...config, trunk_provider }));
@@ -17,7 +18,7 @@ export function TreeFeatureConfig({configuration = TREE_FEATURE_CONFIG, onChange
         setConfig(config => ({ ...config, leaves_provider }));
     }, []);
     const handleFoliagePlacerChange = useCallback(function(foliage_placer) {
-        setConfig(config => ({ ...config, foliage_placer: { ...config.foliage_placer, ...foliage_placer } }));
+        setConfig(config => ({ ...config, foliage_placer }));
     }, []);
     const handleTrunkPlacerChange = useCallback(function(trunk_placer) {
         setConfig(config => ({ ...config, trunk_placer: { ...config.trunk_placer, ...trunk_placer } }));
@@ -52,7 +53,8 @@ const FoliagePlacer = React.memo(function({placer, onChange}) {
             { value: 'fancy_foliage_placer', label: 'Fancy foliage placer' },
             { value: 'jungle_foliage_placer', label: 'Jungle foliage placer' },
             { value: 'mega_pine_foliage_placer', label: 'Mega pine foliage placer' },
-            { value: 'pine_foliage_placer', label: 'Pine foliage placer' }
+            { value: 'pine_foliage_placer', label: 'Pine foliage placer' },
+            { value: 'spruce_foliage_placer', label: 'Spruce foliage placer' }
         ].map(o => {
             o.value = 'minecraft:' + o.value;
             return o;
@@ -60,20 +62,22 @@ const FoliagePlacer = React.memo(function({placer, onChange}) {
     }, []);
 
     const handleTypeChange = useCallback(function(option) {
-        onChange({ type: option.value });
-    }, [onChange]);
-    const handleCrownHeightChange = useCallback(function(value) {
-        onChange({ ...placer, crown_height: { ...placer.crown_height, ...value } })
+        const type = option.value;
+        if (type === 'minecraft:acacia_foliage_placer' || type === 'minecraft:mega_pine_foliage_placer') {
+            delete placer.height;
+        } else if (type !== 'minecraft:acacia_foliage_placer') {
+            delete placer.crown_height;
+        }
+        onChange({ ...placer, type });
     }, [onChange, placer]);
-    const handleHeightChange = useCallback(function(value) {
-        onChange({ ...placer, height: { ...placer.height, ...value } })
+    const handleChange = useCallback(function(value) {
+        onChange({ ...placer, ...value })
     }, [onChange, placer]);
 
     const selected = useMemo(function() {
         return options.find(o => o.value === placer.type) || options[0];
     }, [options, placer.type]);
 
-    // @todo handle uniform int value
     return <fieldset>
         <legend>Foliage placer</legend>
         <div className="form-group">
@@ -81,21 +85,17 @@ const FoliagePlacer = React.memo(function({placer, onChange}) {
             <Select options={options} name="foliage_placer_type" value={selected} onChange={handleTypeChange} />
         </div>
         <div className="form-group form-row">
-            <NumberInput id="radius" value={placer.radius} upChange={onChange} max="8">Radius</NumberInput>
-            <NumberInput id="offset" value={placer.offset} upChange={onChange} max="8">Offset</NumberInput>
+            <UniformInt id="radius" value={placer.radius} maxBase={8} maxSpread={8} upChange={handleChange}>Radius</UniformInt>
+            <UniformInt id="offset" value={placer.offset} maxBase={8} maxSpread={8} upChange={handleChange}>Offset</UniformInt>
             {(placer.type === 'minecraft:blob_foliage_placer' ||
                 placer.type === 'minecraft:bush_foliage_placer' ||
                 placer.type === 'minecraft:fancy_foliage_placer' ||
                 placer.type === 'minecraft:jungle_foliage_placer'
-            ) && <NumberInput id="height" value={placer.height} upChange={onChange} max="16" defaultValue={3}>Height</NumberInput>}
-            {placer.type === 'minecraft:mega_pine_foliage_placer' && <>
-                <NumberInput id="base" value={(placer.crown_height || {}).base} upChange={handleCrownHeightChange} max="16" defaultValue={13}>Crown height base</NumberInput>
-                <NumberInput id="spread" value={(placer.crown_height || {}).spread} upChange={handleCrownHeightChange} max="16" defaultValue={4}>Crown height spread</NumberInput>
-            </>}
-            {placer.type === 'minecraft:pine_foliage_placer' && <>
-                <NumberInput id="base" value={(typeof placer.height === 'object' ? placer.height : {}).base} upChange={handleHeightChange} max="16" defaultValue={3}>Height base</NumberInput>
-                <NumberInput id="spread" value={(typeof placer.height === 'object' ? placer.height : {}).spread} upChange={handleHeightChange} max="16" defaultValue={1}>Height spread</NumberInput>
-            </>}
+            ) && <NumberInput id="height" value={placer.height} upChange={handleChange} max={16} defaultValue={3}>Height</NumberInput>}
+            
+            {placer.type === 'minecraft:mega_pine_foliage_placer' && <UniformInt id="crown_height" value={placer.crown_height} maxBase={16} maxSpread={8} upChange={handleChange}>Crown height</UniformInt>}
+            {placer.type === 'minecraft:pine_foliage_placer' && <UniformInt id="height" value={placer.height} maxBase={16} maxSpread={8} upChange={handleChange}>Height</UniformInt>}
+            {placer.type === 'minecraft:spruce_foliage_placer' && <UniformInt id="trunk_height" value={placer.trunk_height} maxBase={16} maxSpread={8} upChange={handleChange}>Trunk height</UniformInt>}
         </div>
     </fieldset>
 });

@@ -82,7 +82,7 @@ const WeightedStateProvider = React.memo(function({entries = [], onChange}) {
     return <div className="form-group">
         {blocks.map((block, i) => {
             const filteredOptions = options.filter(o => o.value === block.data.Name || !blocks.some(d => d.data.Name === o.value));
-            return <BlockState block={block.data} options={filteredOptions} key={block.data.Name} onChange={state => handleStateChange(state, i)}>
+            return <BlockState block={block.data} options={filteredOptions} key={JSON.stringify(block)} onChange={state => handleStateChange(state, i)}>
                 <NumberInput id="weight" value={block.weight || 1} min="1" onChange={weight => handleWeightChange(weight, i)} className="mlm">Weight</NumberInput>
                 <Button cat="danger mlm" onClick={(e) => handleRemove(e, i)}>Remove</Button>
             </BlockState>

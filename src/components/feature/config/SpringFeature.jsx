@@ -1,9 +1,9 @@
-import React, { useCallback, useState, useMemo } from 'react';
-import { HUGE_FUNGUS_FEATURE_CONFIG } from './FeatureDefaults';
-import { useJsonEffect, useBlocksOptions } from '../../hooks/form';
-import {  ConfInput, NumberInput } from '../../ui/Input';
-import { BlocksNamesList } from '../state/BlockState';
-import { BlockSelect } from '../state/BlockPredicate';
+import React, { useCallback, useMemo, useState } from 'react';
+import { ConfInput, NumberInput } from '../../../ui/Input';
+import { useBlocksOptions, useJsonEffect } from '../../../hooks/form';
+import { BlockSelect } from '../../state/BlockPredicate';
+import { BlocksNamesList } from '../../state/BlockState';
+import { HUGE_FUNGUS_FEATURE_CONFIG } from './FeatureConfigDefaults';
 
 export function SpringFeature({ configuration = HUGE_FUNGUS_FEATURE_CONFIG, onChange }) {
 
@@ -41,9 +41,11 @@ export function SpringFeature({ configuration = HUGE_FUNGUS_FEATURE_CONFIG, onCh
         </fieldset>
         <fieldset>
             <legend>Configuration</legend>
-            <NumberInput id="rock_count" value={config.rock_count} upChange={handleValueChange}>Rock count</NumberInput>
-            <NumberInput id="hole_count" value={config.hole_count} upChange={handleValueChange}>Hole count</NumberInput>
-            <ConfInput id="requires_block_below" checked={config.requires_block_below} onChange={handlRequiresBlockBelowChange}>Requires block below</ConfInput>
+            <div className="form-row">
+                <NumberInput id="rock_count" value={config.rock_count} upChange={handleValueChange}>Rock count</NumberInput>
+                <NumberInput id="hole_count" value={config.hole_count} upChange={handleValueChange}>Hole count</NumberInput>
+                <ConfInput id="requires_block_below" checked={config.requires_block_below} onChange={handlRequiresBlockBelowChange}>Requires block below</ConfInput>
+            </div>
         </fieldset>
-    </div>;
+    </div>
 }

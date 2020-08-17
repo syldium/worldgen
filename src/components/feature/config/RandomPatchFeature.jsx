@@ -1,26 +1,26 @@
 import React, { useCallback } from 'react';
-import { BlocksList } from '../state/BlockState';
-import { RANDOM_PATCH_FEATURE_CONFIG } from './FeatureDefaults';
-import { useJsonEffect } from '../../hooks/form';
-import { BlockStateProvider } from '../state/BlockStateProvider';
-import { NumberInput, ConfInput } from '../../ui/Input';
+import { ConfInput, NumberInput } from '../../../ui/Input';
+import { BlockStateProvider } from '../../state/BlockStateProvider';
+import { BlocksList } from '../../state/BlockState';
+import { RANDOM_PATCH_FEATURE_CONFIG } from './FeatureConfigDefaults';
+import { useJsonEffect } from '../../../hooks/form';
 
-export function RandomPatchFeature({configuration, onChange}) {
+export function RandomPatchFeature({ configuration, onChange }) {
 
     const config = useJsonEffect(configuration || RANDOM_PATCH_FEATURE_CONFIG, configuration, onChange);
-    const handleStateProviderChange = useCallback(function(state_provider) {
+    const handleStateProviderChange = useCallback(function (state_provider) {
         onChange({ ...config, state_provider });
     }, [config, onChange]);
-    const handleWhitelistChange = useCallback(function(whitelist) {
+    const handleWhitelistChange = useCallback(function (whitelist) {
         onChange({ ...config, whitelist });
     }, [config, onChange]);
-    const handleBlacklistChange = useCallback(function(blacklist) {
+    const handleBlacklistChange = useCallback(function (blacklist) {
         onChange({ ...config, blacklist });
     }, [config, onChange]);
-    const handleValueChange = useCallback(function(value) {
+    const handleValueChange = useCallback(function (value) {
         onChange({ ...config, ...value });
     }, [config, onChange]);
-    const handleCheckboxChange = useCallback(function(e) {
+    const handleCheckboxChange = useCallback(function (e) {
         onChange({ ...config, [e.target.dataset.name]: e.target.checked });
     }, [config, onChange]);
 
