@@ -23,7 +23,7 @@ export function capitalize(str) {
  * @param {string} [defaultNamespace]
  * @returns {string}
  */
-export function displayNamespacedKey(key, defaultNamespace) {
+export function displayNamespacedKey(key = 'undefined', defaultNamespace) {
     return key.startsWith(defaultNamespace + ':') ? key.split(':')[1] : key;
 }
 
@@ -57,12 +57,12 @@ export function hasDuplicatedObjects(objects) {
 export function findDecorators(feature) {
     const decorators = [];
 
-    let f = null;
+    let f = feature;
     (function find(obj) {
         for (const key of Object.keys(obj)) {
             if (key === 'decorator') {
                 decorators.unshift(obj[key]);
-                if (f === null && !obj.feature.hasOwnProperty('decorator')) {
+                if ((obj.feature.type || obj.feature.name) !== 'minecraft:decorated') {
                     f = obj.feature;
                 }
             } else if (typeof obj[key] === 'object') {
@@ -85,6 +85,7 @@ export function findDecorators(feature) {
  */
 export function buildDecorated(feature, decorators, name) {
     if (decorators.length < 1) {
+        feature.key = name;
         return feature;
     }
 

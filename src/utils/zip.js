@@ -2,11 +2,11 @@ import JSZip from "jszip";
 import { saveAs } from "file-saver";
 import { dataUpper } from "./data";
 
-const DIMENSIONS_PATH = /^data\/([a-z0-9._-]+)\/(dimension|dimension_type)\/([a-z0-9._-]+).json$/;
-const WORLDGEN_PATH = /^data\/([a-z0-9._-]+)\/worldgen\/(biome|configured_carver|configured_feature|configured_surface_builder|noise_settings)\/([a-z0-9._-]+).json$/;
+const DIMENSIONS_PATH = /^data\/([a-z0-9_.-]+)\/(dimension|dimension_type)\/([a-z0-9/._-]+).json$/;
+const WORLDGEN_PATH = /^data\/([a-z0-9_.-]+)\/worldgen\/(biome|configured_carver|configured_feature|configured_surface_builder|noise_settings)\/([a-z0-9/._-]+).json$/;
 
-const LEGACY_DIMENSIONS_PATH = /^data\/minecraft\/(dimension|dimension_type)\/([a-z0-9._-]+)\/([a-z0-9._-]+).json$/;
-const LEGACY_WORLDGEN_PATH = /^data\/minecraft\/worldgen\/(biome|configured_carver|configured_feature|configured_surface_builder|noise_settings)\/([a-z0-9._-]+)\/([a-z0-9._-]+).json$/;
+const LEGACY_DIMENSIONS_PATH = /^data\/minecraft\/(dimension|dimension_type)\/([a-z0-9_.-]+)\/([a-z0-9/._-]+).json$/;
+const LEGACY_WORLDGEN_PATH = /^data\/minecraft\/worldgen\/(biome|configured_carver|configured_feature|configured_surface_builder|noise_settings)\/([a-z0-9_.-]+)\/([a-z0-9/._-]+).json$/;
 
 /**
  * Build zip in blob.
@@ -67,8 +67,7 @@ export function readZip(file) {
  * @param {JSZip} zip 
  * @returns {Promise<string, object>}
  */
-function extractDatapack(zip) {
-    let mcmeta = false;
+async function extractDatapack(zip) {
     let namespace = 'minecraft';
     const data = {
         biomes: [],
@@ -80,26 +79,29 @@ function extractDatapack(zip) {
         surfaces: []
     };
 
+    const pack = zip.file('pack.mcmeta');
+    if (pack === null) {
+        throw new Error('Invalid datapack: no pack.mcmeta');
+    }
+    let legacy = false;
+    try {
+        const mcmeta = JSON.parse(await pack.async('text'));
+        legacy = mcmeta.pack.pack_format < 6;
+    } catch (e) {
+        throw new Error(`Error reading pack.mcmeta file: ${e.message}`);
+    }
+    
+
     return new Promise((resolve, reject) => {
         const promises = [];
         zip.forEach(function(path, entry) {
             if (entry.dir) {
                 return;
             }
-            if (entry.name === 'pack.mcmeta') {
-                mcmeta = true;
-                return;
-            }
-            const regex = [
-                DIMENSIONS_PATH, WORLDGEN_PATH,
-                LEGACY_DIMENSIONS_PATH, LEGACY_WORLDGEN_PATH
-            ].find(path => entry.name.match(path)) || WORLDGEN_PATH;
-            promises.push(parseFile([LEGACY_DIMENSIONS_PATH, LEGACY_WORLDGEN_PATH].includes(regex), regex, entry.name, zip.file(entry.name).async('text')));
+            const paths = legacy ? [LEGACY_DIMENSIONS_PATH, LEGACY_WORLDGEN_PATH] : [DIMENSIONS_PATH, WORLDGEN_PATH];
+            const regex = paths.find(path => entry.name.match(path)) || WORLDGEN_PATH;
+            promises.push(parseFile(legacy, regex, entry.name, zip.file(entry.name).async('text')));
         });
-
-        if (!mcmeta) {
-            reject(new Error('Invalid datapack: no pack.mcmeta'));
-        }
 
         Promise.all(promises).then(function(values) {
             values.forEach(function(value) {

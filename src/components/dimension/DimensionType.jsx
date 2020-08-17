@@ -116,7 +116,7 @@ export function DimensionTypeForm({ data = OVERWORLD_DIMENSION_TYPE, onSave }) {
                 <div className="form-row">
                     {typeof config.fixed_time !== 'number' && <label htmlFor="fixed_time-toggle">Fixed time : </label>}
                     {typeof config.fixed_time === 'number' && <NumberInput id="fixed_time" value={config.fixed_time} upChange={handleNumberChange} step={1200}>Fixed time</NumberInput>}
-                    <input type="checkbox" onChange={handleFixedTimeToggle} className="checkbox" id="fixed_time-toggle" />
+                    <input type="checkbox" checked={typeof config.fixed_time === 'number'} onChange={handleFixedTimeToggle} className="checkbox" id="fixed_time-toggle" />
                 </div>
             </div>
             <p style={{ marginBottom: 0, textAlign: 'center' }}><small className="text-muted">These settings are only used for appearance and some game mechanics<br />such as chorus fruits tp. To modify the world generation, change the noise parameters.</small></p>
