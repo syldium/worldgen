@@ -103,7 +103,7 @@ export function NamespacedKey({ children, example = 'daily_resource', type, valu
                 <p className="alert--warning">Warning: changing the name of a resource may break other resources that depend on it.</p>
             }
             {!mayReplaceVanilla && !replace && key.startsWith('minecraft:') &&
-                <p className="alert--warning">Warning: datapacks cannot currently replace vanilla {children}s.</p>
+                <p className="alert--warning">Warning: datapacks cannot currently replace vanilla {type}.</p>
             }
         </div>
     </>;
