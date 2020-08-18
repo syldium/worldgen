@@ -48,7 +48,7 @@ const FEATURES = [
 });
 
 const OPTIONS = FEATURES
-    .map(feature => ({ value: feature.type, label: capitalize(feature.type.substr(10).replace(/_/, ' ')) }));
+    .map(feature => ({ value: feature.type, label: capitalize(feature.type.substr(10).replace(/_/g, ' ')) }));
 
 export function RawConfiguredFeature({ data = DECORATED_TREE_CONFIG, onSave }) {
 

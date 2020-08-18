@@ -18,11 +18,11 @@ export function Dimension({data = DIMENSION, onSave}) {
         setState(state => ({ ...state, generator }));
     }, [setState]);
 
-    const handleVanillaSelect = useCallback(function(dimension) {
+    const handleVanillaSelect = function(dimension) {
         dimension.generator.seed = state.generator.seed;
         dimension.generator.biome_source.seed = state.generator.biome_source.seed;
         setState(dimension);
-    }, [setState, state.generator.seed, state.generator.biome_source.seed]);
+    };
 
     const handleSubmit = useCallback(function(e) {
         e.preventDefault();
