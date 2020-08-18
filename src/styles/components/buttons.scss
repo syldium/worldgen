@@ -42,6 +42,7 @@ button {
                 &:active,
                 &:focus,
                 &:hover {
+                    outline: none;
                     @if ($theme == light) {
                         background-color: darken($background-color, 10%);
                     } @else {
