@@ -87,7 +87,7 @@ export function RawConfiguredFeature({ data = DECORATED_TREE_CONFIG, onSave }) {
     const FeatureConfig = (FEATURES.find(f => feature.type === f.type) || { config: 'p' }).config || (() => <p className="text-muted">No config options</p>);
 
     return <form onSubmit={handleSubmit}>
-        <NamespacedKey example="concrete_tree" type="features" value={data.key} expectBreakage={typeof data.key !== 'undefined'} mayReplaceVanilla={true} onSelectLoad={handleVanillaSelect}>
+        <NamespacedKey example="concrete_tree" type="features" value={data.key} expectBreakage={typeof data.key !== 'undefined'} onSelectLoad={handleVanillaSelect}>
             configured feature
             <JsonViewer data={() => buildDecorated(feature, decorators, data.key || 'feature')} />
         </NamespacedKey>

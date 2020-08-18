@@ -5,12 +5,14 @@ import { useKeyedListOptions } from '../hooks/context';
 import { DataContext } from '../context/DataContext';
 import { Button } from '../ui/Button';
 
-export function NamespacedKey({ children, example = 'daily_resource', type, value = '', expectBreakage = false, mayReplaceVanilla = false, defaultReplace = false, onChange, onSelect, onSelectLoad }) {
+export function NamespacedKey({ children, example = 'daily_resource', type, value = '', expectBreakage = false, inline = true, mayReplaceVanilla = true, defaultReplace = false, onChange, onSelect, onSelectLoad }) {
     // To trigger form submit
     const hidden = useRef(null);
 
     // Final namespaced key
     const [key, setKey] = useState(value);
+    const [fill, toggleFill] = useToggle(true);
+    const [mayFill, setMayFill] = useToggle(value !== '');
 
     const options = useKeyedListOptions(type, false, !mayReplaceVanilla);
 
@@ -31,15 +33,17 @@ export function NamespacedKey({ children, example = 'daily_resource', type, valu
     const handleReplaceTargetChange = useCallback((selected) => {
         const key = selected.value;
         setKey(key);
+        setMayFill(true);
         if (typeof onSelect === 'function') {
             onSelect(key);
         }
-        if (typeof onSelectLoad === 'function') {
+        if (fill && typeof onSelectLoad === 'function') {
             context.vanilla.getVanillaResource(type, key)
                 .then(onSelectLoad)
+                .then(setMayFill)
                 .catch(console.error);
         }
-    }, [context.vanilla, onSelect, onSelectLoad, setKey, type]);
+    }, [context.vanilla, fill, onSelect, onSelectLoad, setKey, setMayFill, type]);
 
     // Fire onChange
     useEffect(function() {
@@ -66,6 +70,16 @@ export function NamespacedKey({ children, example = 'daily_resource', type, valu
         }
         toggle(e);
     }, [defaultNamespace, key, setKey, replace, toggle]);
+
+    const handleFillToggle = useCallback(function (e) {
+        if (e.target.checked && mayFill && typeof onSelectLoad === 'function') {
+            context.vanilla.getVanillaResource(type, key)
+                .then(onSelectLoad)
+                .then(setMayFill)
+                .catch(console.error);
+        }
+        toggleFill(e);
+    }, [context.vanilla, key, mayFill, onSelectLoad, setMayFill, toggleFill, type]);
 
     // Displayed input value - trim namespace if default
     const inputValue = useMemo(function () {
@@ -109,6 +123,7 @@ export function NamespacedKey({ children, example = 'daily_resource', type, valu
             <input type={replace ? 'text' : 'hidden'} name="key" value={hiddenInputValue} onChange={dummyOnChange} ref={hidden}
                 required tabIndex="-1" style={{ opacity: 0, height: 0, position: 'absolute' }} />
             {mayReplaceVanilla && <Button cat="info mlm" onClick={handleToggle}>{replace ? 'Create a new one' : 'Replace vanilla'}</Button>}
+            {!inline && <br />}{replace && <><input type="checkbox" className="checkbox mls" id="fill-values" checked={fill} onChange={handleFillToggle} /> Fill with values</>}
         
             {expectBreakage && value !== key && !key.startsWith('minecraft:') &&
                 <p className="alert--warning">Warning: changing the name of a resource may break other resources that depend on it.</p>

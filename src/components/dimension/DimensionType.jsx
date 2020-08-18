@@ -89,7 +89,7 @@ export function DimensionTypeForm({ data = OVERWORLD_DIMENSION_TYPE, onSave }) {
     }, [config, onSave, updateDimensionTypes]);
 
     return <form onSubmit={handleSubmit}>
-        <NamespacedKey example="typed" type="dimension_types" value={data.key} mayReplaceVanilla={true} onSelect={handleVanillaSelect} expectBreakage={typeof data.key !== 'undefined'}>
+        <NamespacedKey example="typed" type="dimension_types" value={data.key} onSelect={handleVanillaSelect} expectBreakage={typeof data.key !== 'undefined'}>
             dimension type
             <JsonViewer data={config} />
         </NamespacedKey>

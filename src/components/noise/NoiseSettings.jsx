@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback } from 'react';
 import { BlockState } from '../state/BlockState';
 import { Button } from '../../ui/Button';
 import { JsonViewer } from '../../ui/JsonViewer';
@@ -9,7 +9,7 @@ import { OVERWORLD_NOISE } from './NoiseDefaults';
 import { Structures } from './Structures';
 import { NamespacedKey } from '../NamespacedKey';
 import { INT_MIN_VALUE } from '../../utils/math';
-import { useKeyedListOptions } from '../../hooks/context';
+import { useKeyedListOptions, useIndexableState } from '../../hooks/context';
 
 export const NoiseGenerator = React.memo(function({onChange, settings = 'minecraft:overworld'}) {
     const options = useKeyedListOptions('noises').map(option => {
@@ -32,33 +32,33 @@ export const NoiseGenerator = React.memo(function({onChange, settings = 'minecra
 
 export const NoiseSettings = React.memo(function ({ data = OVERWORLD_NOISE, onSave }) {
 
-    const [state, setState] = useState(data);
+    const [state, setState] = useIndexableState(data);
 
     const handleSubmit = useCallback(function (e) {
         e.preventDefault();
         const formData = Object.fromEntries(new FormData(e.target));
-        const data = { ...state, ...formData };
-        Object.keys(formData).forEach(function (key) {
-            if (!isNaN(formData[key])) {
-                data[key] = parseFloat(formData[key]);
-            }
-        });
-        data.disable_mob_generation = formData.hasOwnProperty('disable_mob_generation');
-        onSave(data);
+        onSave({ ...state, ...formData });
     }, [onSave, state]);
 
     const handleBlockChange = useCallback(function (name, s) {
         setState(state => ({ ...state, [name]: s }));
-    }, []);
+    }, [setState]);
     const handleStructuresChange = useCallback(function (structures) {
         setState(state => ({ ...state, structures }));
-    }, []);
+    }, [setState]);
     const handleNoiseChange = useCallback(function (noise) {
         setState(state => ({ ...state, noise: { ...state.noise, ...noise } }));
-    }, []);
+    }, [setState]);
+    const handleChange = useCallback(function(value) {
+        setState(state => ({ ...state, ...value }));
+    }, [setState]);
+    const handleDisableMobGenerationChange = useCallback(function(e) {
+        const disable_mob_generation = e.target.checked;
+        setState(state => ({ ...state, disable_mob_generation }));
+    }, [setState]);
 
     return <form onSubmit={handleSubmit}>
-        <NamespacedKey example="epic" type="noises" value={data.key} expectBreakage={typeof data.key !== 'undefined'}>
+        <NamespacedKey example="epic" type="noises" value={data.key} expectBreakage={typeof data.key !== 'undefined'} onSelectLoad={setState}>
             noise
             <JsonViewer data={state} />
         </NamespacedKey>
@@ -78,10 +78,10 @@ export const NoiseSettings = React.memo(function ({ data = OVERWORLD_NOISE, onSa
         <fieldset>
             <legend>Main</legend>
             <div className="form-group form-row">
-                <NumberInput name="bedrock_roof_position" defaultValue={data.bedrock_roof_position} min={-20} max={276}>Bedrock roof position</NumberInput>
-                <NumberInput name="bedrock_floor_position" defaultValue={data.bedrock_floor_position} min={-20} max={276}>Bedrock floor position</NumberInput>
-                <NumberInput name="sea_level" defaultValue={data.sea_level} max={256}>Sea level</NumberInput>
-                <ConfInput name="disable_mob_generation" defaultChecked={data.disable_mob_generation}>Disable mob generation</ConfInput>
+                <NumberInput id="bedrock_roof_position" value={state.bedrock_roof_position} min={-20} max={276} upChange={handleChange}>Bedrock roof position</NumberInput>
+                <NumberInput id="bedrock_floor_position" value={state.bedrock_floor_position} min={-20} max={276} upChange={handleChange}>Bedrock floor position</NumberInput>
+                <NumberInput id="sea_level" value={state.sea_level} max={255} upChange={handleChange}>Sea level</NumberInput>
+                <ConfInput id="disable_mob_generation" checked={state.disable_mob_generation} onChange={handleDisableMobGenerationChange}>Disable mob generation</ConfInput>
             </div>
         </fieldset>
 
@@ -107,17 +107,17 @@ const NoiseConfig = React.memo(function ({ data, onChange }) {
     return <fieldset>
         <legend>Noise config (advanced)</legend>
         <div className="form-group form-row">
-            <NumberInput id="height" value={data.height} upChange={onChange} min="0" max="256">Height</NumberInput>
-            <NumberInput id="size_horizontal" value={data.size_horizontal} upChange={onChange} min="1" max="4">Size horizontal</NumberInput>
-            <NumberInput id="size_vertical" value={data.size_vertical} upChange={onChange} min="1" max="4">Size vertical</NumberInput>
-            <NumberInput id="density_factor" value={data.density_factor} upChange={onChange} step="0.01">Density factor</NumberInput>
-            <NumberInput id="density_offset" value={data.density_offset} upChange={onChange} min="-10000" step="0.01">Density offset</NumberInput>
+            <NumberInput id="height" value={data.height} upChange={onChange} max={256}>Height</NumberInput>
+            <NumberInput id="size_horizontal" value={data.size_horizontal} upChange={onChange} min={1} max={4}>Size horizontal</NumberInput>
+            <NumberInput id="size_vertical" value={data.size_vertical} upChange={onChange} min={1} max={4}>Size vertical</NumberInput>
+            <NumberInput id="density_factor" value={data.density_factor} upChange={onChange} step={0.01}>Density factor</NumberInput>
+            <NumberInput id="density_offset" value={data.density_offset} upChange={onChange} min={INT_MIN_VALUE} step={0.01}>Density offset</NumberInput>
         </div>
         <div className="form-group form-row">
             <ConfInput id="simplex_surface_noise" checked={data.simplex_surface_noise} onChange={handleChange}>Simplex surface noise</ConfInput>
-            <ConfInput id="random_density_offset" checked={data.random_density_offset} onChange={handleChange}>Random density offset</ConfInput>
-            <ConfInput id="island_noise_override" checked={data.island_noise_override} onChange={handleChange}>Island noise override</ConfInput>
-            <ConfInput id="amplified" checked={data.amplified} onChange={handleChange}>Amplified</ConfInput>
+            <ConfInput id="random_density_offset" checked={data.random_density_offset || false} onChange={handleChange}>Random density offset</ConfInput>
+            <ConfInput id="island_noise_override" checked={data.island_noise_override || false} onChange={handleChange}>Island noise override</ConfInput>
+            <ConfInput id="amplified" checked={data.amplified || false} onChange={handleChange}>Amplified</ConfInput>
         </div>
 
         <NoiseSamplingConfig data={data.sampling} onChange={handleSamplingChange}>Sampling</NoiseSamplingConfig>
@@ -131,10 +131,10 @@ const NoiseSamplingConfig = React.memo(function ({ children, data, onChange }) {
     return <fieldset>
         <legend>{children}</legend>
         <div className="form-group form-row">
-            <NumberInput name="xz_scale" value={data.xz_scale} upChange={onChange}>XY scale</NumberInput>
-            <NumberInput name="y_scale" value={data.y_scale} upChange={onChange}>Y scale</NumberInput>
-            <NumberInput name="xz_factor" value={data.xz_factor} upChange={onChange}>XZ factor</NumberInput>
-            <NumberInput name="y_factor" value={data.y_factor} upChange={onChange}>Y factor</NumberInput>
+            <NumberInput id="xz_scale" value={data.xz_scale} min={0.001} max={1000} step={0.1} upChange={onChange}>XY scale</NumberInput>
+            <NumberInput id="y_scale" value={data.y_scale} min={0.001} max={1000} step={0.1} upChange={onChange}>Y scale</NumberInput>
+            <NumberInput id="xz_factor" value={data.xz_factor} min={0.001} max={1000} step={0.1} upChange={onChange}>XZ factor</NumberInput>
+            <NumberInput id="y_factor" value={data.y_factor} min={0.001} max={1000} step={0.1} upChange={onChange}>Y factor</NumberInput>
         </div>
     </fieldset>
 });

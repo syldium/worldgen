@@ -154,11 +154,7 @@ export const OVERWORLD_NOISE = {
         size_vertical: 2,
         density_factor: 1.0,
         density_offset: -0.47,
-        simplex_surface_noise: true,
-        random_density_offset: true,
-        island_noise_override: false,
-        amplified: false
-        
+        simplex_surface_noise: true
     },
     default_block: {
         Name: "minecraft:stone"

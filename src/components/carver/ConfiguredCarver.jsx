@@ -1,7 +1,7 @@
-import React, { useCallback, useContext } from 'react';
+import React, { useCallback, useContext, useState } from 'react';
 import { NamespacedKey } from "../NamespacedKey";
 import { VANILLA_CARVERS } from './CarverDefaults';
-import { useIndexableState, useKeyedListOptions } from '../../hooks/context';
+import { useKeyedListOptions } from '../../hooks/context';
 import { DataContext } from '../../context/DataContext';
 import { useJsonEffect } from '../../hooks/form';
 import { Button } from '../../ui/Button';
@@ -54,7 +54,7 @@ export const ConfiguredCarver = React.memo(function({ carvers, onChange }) {
 
 export function ConfiguredCarverForm({ data = { type: 'minecraft:cave', config: { probability: 0.143 } }, onSave }) {
 
-    const [carver, setCarver] = useIndexableState(data);
+    const [carver, setCarver] = useState(data);
 
     const handleSelectChange = useCallback(function (option) {
         setCarver({
@@ -63,16 +63,17 @@ export function ConfiguredCarverForm({ data = { type: 'minecraft:cave', config: 
             },
             type: option.value
         });
-    }, [setCarver]);
+    }, []);
     const handleProbabilityChange = useCallback(function (probability) {
         setCarver(carver => ({ ...carver, config: { probability } }));
-    }, [setCarver]);
+    }, []);
 
     const updateCarvers = useContext(DataContext).custom.updateCarvers;
     const handleSubmit = useCallback(function (e) {
         e.preventDefault();
         e.stopPropagation();
         const c = ({
+            ...data,
             ...carver,
             ...Object.fromEntries(new FormData(e.target))
         });
@@ -80,10 +81,10 @@ export function ConfiguredCarverForm({ data = { type: 'minecraft:cave', config: 
         if (typeof onSave === 'function') {
             onSave(c);
         }
-    }, [carver, onSave, updateCarvers]);
+    }, [data, carver, onSave, updateCarvers]);
 
     return <form onSubmit={handleSubmit}>
-        <NamespacedKey example="pit" type="carvers" value={data.key} expectBreakage={typeof data.key !== 'undefined'}>
+        <NamespacedKey example="pit" type="carvers" value={data.key} inline={false} expectBreakage={typeof data.key !== 'undefined'} onSelectLoad={setCarver}>
             configured carver
             <JsonViewer data={carver} />
         </NamespacedKey>

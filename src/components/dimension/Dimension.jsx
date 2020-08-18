@@ -33,7 +33,7 @@ export function Dimension({data = DIMENSION, onSave}) {
     }, [onSave, state])
 
     return <form onSubmit={handleSubmit}>
-        <NamespacedKey example="blue_dimension" type="dimensions" value={data.key} mayReplaceVanilla={true} onSelectLoad={handleVanillaSelect}>
+        <NamespacedKey example="blue_dimension" type="dimensions" value={data.key} onSelectLoad={handleVanillaSelect}>
             dimension
             <JsonViewer data={state} />
         </NamespacedKey>
