@@ -16,6 +16,9 @@ input {
     &:focus {
         border-color: var(--focus-color);
     }
+    &:invalid {
+        border-color: #f10101;
+    }
 }
 
 input[type="color"] {

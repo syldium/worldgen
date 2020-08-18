@@ -71,7 +71,7 @@ export const NumberInput = React.memo(function ({
                 // Fix browser step
                 setValue(val => maintainPrecision(val + (n > val ? step : -step)));
             } else {
-                setValue(n);
+                setValue(value);
             }
         }
     }, [step]);
