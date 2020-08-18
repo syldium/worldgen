@@ -1,34 +1,24 @@
-import React, { useCallback, useState, useEffect } from 'react';
+import React, { useCallback } from 'react';
 import Select from '../../ui/Select';
 import { FEATURES } from './BiomeDefaults';
 import { useKeyedListOptions } from '../../hooks/context';
+import { useJsonEffect } from '../../hooks/form';
 
 export const GenFeatures = React.memo(function({ onChange, features }) {
 
-    const [levels, setLevels] = useState(features || FEATURES);
-
     const handleLevelChange = useCallback(function(priority, list) {
-        setLevels(levels => {
-            levels[priority] = list;
-            return levels;
-        })
-        onChange(levels);
-    }, [levels, onChange]);
+        onChange(features.map((level, p) => priority === p ? list : level));
+    }, [features, onChange]);
+    useJsonEffect(features || FEATURES, features, onChange);
 
-    useEffect(function() {
-        if (levels !== features) {
-            onChange(levels);
-        }
-    }, [features, levels, onChange]);
-
-    const elements = [];
-    levels.forEach((level, i) => {
-        elements.push(<li key={i}><GenFeaturesLevel value={level} onChange={handleLevelChange} priority={i} /></li>);
-    });
     return <div className="form-group">
         <label>Features</label>
         <p className="help"><small className="text-muted">Each generation feature is associated with a priority. The higher the priority, the later the feature will be applied.</small></p>
-        <ol>{elements}</ol>
+        <ol>
+            {features.map((level, i) =>
+                <li key={i}><GenFeaturesLevel value={level} onChange={handleLevelChange} priority={i} /></li>
+            )}
+        </ol>
     </div>;
 });
 

@@ -1,7 +1,7 @@
-import React, { useState, useCallback, useContext } from 'react';
+import React, { useCallback, useContext } from 'react';
 import { DataContext } from '../../context/DataContext';
 import { OVERWORLD_DIMENSION_TYPE, THE_NETHER_DIMENSION_TYPE, THE_END_DIMENSION_TYPE, OVERWORLD_CAVES_DIMENSION_TYPE, DIMENSION_TYPE_INFINIBURN, DIMENSION_TYPE_EFFECTS } from './DimensionDefaults';
-import { useKeyedListOptions } from '../../hooks/context';
+import { useIndexableState, useKeyedListOptions } from '../../hooks/context';
 import { useToggle } from '../../hooks/ui';
 import { ConfInput, NumberInput } from '../../ui/Input';
 import { JsonViewer } from '../../ui/JsonViewer';
@@ -43,7 +43,7 @@ export function DimensionType({ type = 'minecraft:overworld', onChange }) {
 }
 
 export function DimensionTypeForm({ data = OVERWORLD_DIMENSION_TYPE, onSave }) {
-    const [config, setConfig] = useState(data);
+    const [config, setConfig] = useIndexableState(data);
 
     const handleVanillaSelect = useCallback(function (value) {
         setConfig({
@@ -54,25 +54,25 @@ export function DimensionTypeForm({ data = OVERWORLD_DIMENSION_TYPE, onSave }) {
                 'minecraft:the_end': THE_END_DIMENSION_TYPE
             }[value]
         });
-    }, []);
+    }, [setConfig]);
     const handleNumberChange = useCallback(function (value) {
         setConfig(config => ({ ...config, ...value }))
-    }, []);
+    }, [setConfig]);
     const handleSelectChange = useCallback(function (name, option) {
         setConfig(config => ({ ...config, [name]: option.value }))
-    }, []);
+    }, [setConfig]);
     const handleCheckboxChange = useCallback(function (e) {
         const name = e.target.dataset.name;
         const checked = e.target.checked;
         setConfig(config => ({ ...config, [name]: checked }))
-    }, []);
+    }, [setConfig]);
     const handleFixedTimeToggle = useCallback(function (e) {
         if (e.target.checked) {
             setConfig(config => ({ ...config, fixed_time: 18000 }));
         } else {
             setConfig((({ fixed_time, ...config }) => config));
         }
-    }, []);
+    }, [setConfig]);
 
     const updateDimensionTypes = useContext(DataContext).custom.updateDimensionTypes;
     const handleSubmit = useCallback(function (e) {

@@ -20,6 +20,7 @@ export const BiomeSource = React.memo(function({source = { type: 'minecraft:fixe
             { value: 'minecraft:checkerboard', label: 'Checkerboard' },
             { value: 'minecraft:fixed', label: 'Fixed' },
             { value: 'minecraft:multi_noise', label: 'Multi noise' },
+            { value: 'minecraft:the_end', label: 'The end' },
             { value: 'minecraft:vanilla_layered', label: 'Vanilla layered' }
         ];
     }, []);

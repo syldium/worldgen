@@ -1,6 +1,7 @@
 import JSZip from "jszip";
 import { saveAs } from "file-saver";
 import { dataUpper } from "./data";
+import { PATHS } from "../context/Paths";
 
 const DIMENSIONS_PATH = /^data\/([a-z0-9_.-]+)\/(dimension|dimension_type)\/([a-z0-9/._-]+).json$/;
 const WORLDGEN_PATH = /^data\/([a-z0-9_.-]+)\/worldgen\/(biome|configured_carver|configured_feature|configured_surface_builder|noise_settings)\/([a-z0-9/._-]+).json$/;
@@ -31,14 +32,7 @@ export function buildZip(custom) {
             description: 'Custom ' + modified
         }
     }, null, 4));
-    const namespace = '%namespace%';
-    writeFile(zip, `data/${namespace}/dimension`, custom.dimensions);
-    writeFile(zip, `data/${namespace}/dimension_type`, custom.dimension_types);
-    writeFile(zip, `data/${namespace}/worldgen/biome`, custom.biomes);
-    writeFile(zip, `data/${namespace}/worldgen/configured_carver`, custom.carvers);
-    writeFile(zip, `data/${namespace}/worldgen/configured_feature`, custom.features);
-    writeFile(zip, `data/${namespace}/worldgen/configured_surface_builder`, custom.surfaces);
-    writeFile(zip, `data/${namespace}/worldgen/noise_settings`, custom.noises);
+    Object.entries(PATHS).forEach(([type, path]) => writeFile(zip, path, custom[type]));
     zip.generateAsync({ type: 'blob' })
         .then(function(content) {
             saveAs(content, 'generated_datapack.zip');

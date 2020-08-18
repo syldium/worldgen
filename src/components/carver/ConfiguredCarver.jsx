@@ -1,7 +1,7 @@
-import React, { useCallback, useContext, useState } from 'react';
+import React, { useCallback, useContext } from 'react';
 import { NamespacedKey } from "../NamespacedKey";
 import { VANILLA_CARVERS } from './CarverDefaults';
-import { useKeyedListOptions } from '../../hooks/context';
+import { useIndexableState, useKeyedListOptions } from '../../hooks/context';
 import { DataContext } from '../../context/DataContext';
 import { useJsonEffect } from '../../hooks/form';
 import { Button } from '../../ui/Button';
@@ -54,7 +54,7 @@ export const ConfiguredCarver = React.memo(function({ carvers, onChange }) {
 
 export function ConfiguredCarverForm({ data = { type: 'minecraft:cave', config: { probability: 0.143 } }, onSave }) {
 
-    const [carver, setCarver] = useState(data);
+    const [carver, setCarver] = useIndexableState(data);
 
     const handleSelectChange = useCallback(function (option) {
         setCarver({
@@ -63,10 +63,10 @@ export function ConfiguredCarverForm({ data = { type: 'minecraft:cave', config: 
             },
             type: option.value
         });
-    }, []);
+    }, [setCarver]);
     const handleProbabilityChange = useCallback(function (probability) {
         setCarver(carver => ({ ...carver, config: { probability } }));
-    }, []);
+    }, [setCarver]);
 
     const updateCarvers = useContext(DataContext).custom.updateCarvers;
     const handleSubmit = useCallback(function (e) {
@@ -76,7 +76,7 @@ export function ConfiguredCarverForm({ data = { type: 'minecraft:cave', config: 
             ...carver,
             ...Object.fromEntries(new FormData(e.target))
         });
-        updateCarvers(c)
+        updateCarvers(c);
         if (typeof onSave === 'function') {
             onSave(c);
         }

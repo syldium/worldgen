@@ -1,10 +1,10 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback } from 'react';
 import { NamespacedKey } from '../NamespacedKey';
 import { BiomeEffects } from './BiomeEffects';
 import { BiomeSpawners } from './BiomeSpawners';
 import { BiomeStarts } from './BiomeStarts';
 import { GenFeatures } from './Features';
-import { useKeyedListOptions } from '../../hooks/context';
+import { useIndexableState, useKeyedListOptions } from '../../hooks/context';
 import { BIOME_DEFAULTS } from './BiomeDefaults';
 import { ConfiguredCarver } from '../carver/ConfiguredCarver';
 import { Button } from '../../ui/Button';
@@ -15,40 +15,48 @@ import { INT_MIN_VALUE } from '../../utils/math';
 
 export function Biome({data = BIOME_DEFAULTS, onSave}) {
 
-    const [state, setState] = useState(data);
+    const [state, setState] = useIndexableState(data);
 
     const handleCarversChange = useCallback(function(carvers) {
         setState(state => ({ ...state, carvers }));
-    }, []);
+    }, [setState]);
     const handleStartsChange = useCallback(function(starts) {
         setState(state => ({ ...state, starts }));
-    }, []);
+    }, [setState]);
     const handleEffectsChange = useCallback(function(effects) {
         setState(state => ({ ...state, effects }));
-    }, []);
+    }, [setState]);
     const handleFeaturesChange = useCallback(function(features) {
         setState(state => ({ ...state, features }));
-    }, []);
+    }, [setState]);
     const handleSpawnersChange = useCallback(function(spawners) {
         setState(state => ({ ...state, spawners }));
-    }, []);
+    }, [setState]);
+    const handleSurfaceBuilderChange = useCallback(function(option) {
+        setState(state => ({ ...state, surface_builder: option.value }));
+    }, [setState]);
+    const handlePrecipitationChange = useCallback(function(option) {
+        setState(state => ({ ...state, precipitation: option.value }));
+    }, [setState]);
+    const handleCategoryChange = useCallback(function(option) {
+        setState(state => ({ ...state, category: option.value }));
+    }, [setState]);
+    const handleChange = useCallback(function(value) {
+        setState(state => ({ ...state, ...value }));
+    }, [setState]);
+    const handleSpawnFriendlyChange = useCallback(function(e) {
+        const player_spawn_friendly = e.target.checked;
+        setState(state => ({ ...state, player_spawn_friendly }));
+    }, [setState]);
 
     const handleSubmit = useCallback(function(e) {
         e.preventDefault();
         const formData = Object.fromEntries(new FormData(e.target));
-        const data = { ...state, ...formData };
-        data.spawn_costs = {};
-        Object.keys(formData).forEach(function(key) {
-            if (!isNaN(formData[key])) {
-                data[key] = parseFloat(formData[key]);
-            }
-        });
-        data.player_spawn_friendly = formData.hasOwnProperty('player_spawn_friendly');
-        onSave(data);
+        onSave({ ...state, ...formData });
     }, [onSave, state]);
 
     return <form onSubmit={handleSubmit}>
-        <NamespacedKey example="arctic" type="biomes" value={state.key} mayReplaceVanilla={true} expectBreakage={typeof data.key !== 'undefined'}>
+        <NamespacedKey example="arctic" type="biomes" value={state.key} mayReplaceVanilla={true} expectBreakage={typeof data.key !== 'undefined'} onSelectLoad={setState}>
             biome
             <JsonViewer data={state} />
         </NamespacedKey>
@@ -56,14 +64,14 @@ export function Biome({data = BIOME_DEFAULTS, onSave}) {
         <BiomeEffects effects={state.effects} onChange={handleEffectsChange} />
 
         <fieldset>
-            <BiomeCategory category={state.category} />
-            <BiomePrecipitation value={state.precipitation} />
+            <BiomeCategory category={state.category} onChange={handleCategoryChange} />
+            <BiomePrecipitation value={state.precipitation} onChange={handlePrecipitationChange} />
         </fieldset>
 
         <fieldset>
             <legend>Generation</legend>
-            <SurfaceBuilder value={state.surface_builder} />
-            <BiomeStarts onChange={handleStartsChange} starts={state.starts} />
+            <SurfaceBuilder value={state.surface_builder} onChange={handleSurfaceBuilderChange} />
+            <BiomeStarts starts={state.starts} onChange={handleStartsChange} />
             <GenFeatures features={state.features} onChange={handleFeaturesChange} />
         </fieldset>
 
@@ -77,11 +85,14 @@ export function Biome({data = BIOME_DEFAULTS, onSave}) {
         <fieldset>
             <legend>Settings</legend>
             <div className="form-group form-row">
-                <NumberInput name="scale" defaultValue={data.scale || 0.05} min={INT_MIN_VALUE} step={0.05}>Scale</NumberInput>
-                <NumberInput name="downfall" defaultValue={data.downfall || 0.4} min={INT_MIN_VALUE} step={0.1}>Downfall</NumberInput>
-                <NumberInput name="depth" defaultValue={data.depth || 0.12} min={INT_MIN_VALUE} step={0.01}>Depth</NumberInput>
-                <NumberInput name="temperature" defaultValue={data.temperature || 0.8} min={INT_MIN_VALUE} step={0.1}>Temperature</NumberInput>
-                <ConfInput name="player_spawn_friendly" defaultChecked={typeof data.player_spawn_friendly === 'boolean' ? data.player_spawn_friendly : true}>Player spawn friendly</ConfInput>
+                <ConfInput id="player_spawn_friendly" checked={typeof state.player_spawn_friendly === 'boolean' ? state.player_spawn_friendly : true} onChange={handleSpawnFriendlyChange}>Player spawn friendly</ConfInput>
+                <NumberInput id="creature_spawn_probability" value={state.creature_spawn_probability} defaultValue={0.1} step={0.1} required={false} upChange={handleChange}>Creature spawn probability</NumberInput>
+            </div>
+            <div className="form-group form-row">
+                <NumberInput id="scale" value={state.scale || 0.05} min={INT_MIN_VALUE} step={0.05} upChange={handleChange}>Scale</NumberInput>
+                <NumberInput id="downfall" value={state.downfall || 0.4} min={INT_MIN_VALUE} step={0.1} upChange={handleChange}>Downfall</NumberInput>
+                <NumberInput id="depth" value={state.depth || 0.12} min={INT_MIN_VALUE} step={0.01} upChange={handleChange}>Depth</NumberInput>
+                <NumberInput id="temperature" value={state.temperature || 0.8} min={INT_MIN_VALUE} step={0.1} upChange={handleChange}>Temperature</NumberInput>
                 <p className="mts"><small className="text-muted">The <em>scale</em> parameter defines terrain amplitude, <em>downfall</em> controls grass and foliage color, <em>depth</em> is the difference from sea level, <em>temperature</em> controls some gameplay features like whether snow golems take damage. The default values are those of the plains biome.</small></p>
             </div>
         </fieldset>
@@ -89,7 +100,7 @@ export function Biome({data = BIOME_DEFAULTS, onSave}) {
     </form>;
 }
 
-const BiomeCategory = React.memo(function({category = 'plains'}) {
+const BiomeCategory = React.memo(function({ category = 'plains', onChange }) {
 
     const options = [
         { value: 'beach', label: 'Beach' },
@@ -112,11 +123,11 @@ const BiomeCategory = React.memo(function({category = 'plains'}) {
 
     return <div className="form-group">
         <label htmlFor="category">Category</label>
-        <Select options={options} defaultValue={options.find(o => o.value === category)} name="category" />
+        <Select options={options} value={options.find(o => o.value === category)} onChange={onChange} />
     </div>;
 });
 
-const BiomePrecipitation = React.memo(function({value = 'rain'}) {
+const BiomePrecipitation = React.memo(function({ onChange, value = 'rain' }) {
 
     const options = [
         { value: 'none', label: 'None' },
@@ -126,14 +137,14 @@ const BiomePrecipitation = React.memo(function({value = 'rain'}) {
 
     return <div className="form-group">
         <label htmlFor="precipitation">Precipitation</label>
-        <Select options={options} defaultValue={options.find(o => o.value === value)} name="precipitation" />
+        <Select options={options} value={options.find(o => o.value === value)} onChange={onChange} />
     </div>;
 });
 
-const SurfaceBuilder = React.memo(function({value = 'minecraft:grass'}) {
+const SurfaceBuilder = React.memo(function({ onChange, value = 'minecraft:grass' }) {
     const options = useKeyedListOptions('surfaces');
     return <div className="form-group">
         <label htmlFor="surface_builder">Surface builder</label>
-        <Select options={options} defaultValue={options.find(o => o.value === value)} name="surface_builder" />
+        <Select options={options} value={options.find(o => o.value === value)} onChange={onChange} />
     </div>;
 });

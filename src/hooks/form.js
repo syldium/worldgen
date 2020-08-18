@@ -20,6 +20,8 @@ function crudReducer(state, action) {
             return state.map(element => element === action.target ? action.payload : element);
         case REMOVE:
             return state.filter(element => element !== action.payload);
+        case REPLACE:
+            return action.payload;
         default:
             return state;
     }
@@ -32,7 +34,7 @@ export function useCrud(data = []) {
 /**
  * @param {object[]} [data] 
  * @param {object|function (object[]): object} [initial] 
- * @returns {[object[], function (SyntheticEvent): void, function (number|object, number|object): void, function (SyntheticEvent, number): void}
+ * @returns {[object[], function (SyntheticEvent): void, function (number|object, number|object): void, function (SyntheticEvent, number): void, function (object[]): void}
  */
 export function useCrudPreset(data = [], initial = {}, unshift = false) {
     const [entities, dispatch] = useCrud(data);
@@ -53,8 +55,11 @@ export function useCrudPreset(data = [], initial = {}, unshift = false) {
         e.preventDefault();
         dispatch({ type: CRUD.REMOVE, payload: entities[index] });
     }, [dispatch, entities]);
+    const replace = useCallback(function(entities) {
+        dispatch({ type: CRUD.REPLACE, payload: entities });
+    }, [dispatch]);
 
-    return [entities, add, update, remove];
+    return [entities, add, update, remove, replace];
 }
 
 export function useBlocksOptions(mapped = true) {
@@ -145,4 +150,5 @@ export function useKeyedOptionsState(category, initial, multiple) {
 const ADD = 'ADD';
 const UPDATE = 'UPDATE';
 const REMOVE = 'REMOVE';
-export const CRUD = { ADD, UPDATE, REMOVE };
+const REPLACE = 'REPLACE';
+export const CRUD = { ADD, UPDATE, REMOVE, REPLACE };

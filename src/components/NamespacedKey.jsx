@@ -5,7 +5,7 @@ import { useKeyedListOptions } from '../hooks/context';
 import { DataContext } from '../context/DataContext';
 import { Button } from '../ui/Button';
 
-export function NamespacedKey({ children, example = 'daily_resource', type, value = '', onChange, expectBreakage = false, mayReplaceVanilla = false, onSelect }) {
+export function NamespacedKey({ children, example = 'daily_resource', type, value = '', expectBreakage = false, mayReplaceVanilla = false, defaultReplace = false, onChange, onSelect, onSelectLoad }) {
     // To trigger form submit
     const hidden = useRef(null);
 
@@ -14,8 +14,9 @@ export function NamespacedKey({ children, example = 'daily_resource', type, valu
 
     const options = useKeyedListOptions(type, false, !mayReplaceVanilla);
 
-    const defaultNamespace = useContext(DataContext).namespace;
-    const [replace, toggle] = useToggle(options.some(o => key === o.value));
+    const context = useContext(DataContext);
+    const defaultNamespace = context.namespace;
+    const [replace, toggle] = useToggle(value === '' ? defaultReplace : options.some(o => key === o.value));
 
     // Adjust value with default namespace if needed
     const handleKeyChange = useCallback(function (e) {
@@ -28,11 +29,17 @@ export function NamespacedKey({ children, example = 'daily_resource', type, valu
     }, [defaultNamespace, setKey]);
 
     const handleReplaceTargetChange = useCallback((selected) => {
-        setKey(selected.value);
+        const key = selected.value;
+        setKey(key);
         if (typeof onSelect === 'function') {
-            onSelect(selected.value);
+            onSelect(key);
         }
-    }, [onSelect, setKey]);
+        if (typeof onSelectLoad === 'function') {
+            context.vanilla.getVanillaResource(type, key)
+                .then(onSelectLoad)
+                .catch(console.error);
+        }
+    }, [context.vanilla, onSelect, onSelectLoad, setKey, type]);
 
     // Fire onChange
     useEffect(function() {
@@ -78,7 +85,11 @@ export function NamespacedKey({ children, example = 'daily_resource', type, valu
 
     // Adapt select width to its content
     const style = useMemo(function () {
-        return { width: 8 * Math.max.apply(Math, options.map(o => o.label.length)) + 60 };
+        let width = 8 * Math.max.apply(Math, options.map(o => o.label.length)) + 60;
+        if (!isFinite(width)) {
+            width = '250px';
+        }
+        return { width };
     }, [options]);
 
     const dummyOnChange = useCallback(console.log, []);

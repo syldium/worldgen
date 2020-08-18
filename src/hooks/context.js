@@ -1,4 +1,4 @@
-import { useState, useContext } from "react";
+import { useCallback, useContext, useState } from "react";
 import { DataContext } from "../context/DataContext";
 import { displayNamespacedKey } from "../utils/data";
 
@@ -65,4 +65,21 @@ export function useKeyedListOptions(category, includeCustom = true, empty = fals
         }
     });
     return options;
+}
+
+/**
+ * useState hook variant ensuring that the index is kept.
+ * 
+ * @param {object} initial 
+ * @returns {[object, function (object): void]}
+ */
+export function useIndexableState(initial) {
+    const [state, setState] = useState(initial);
+    const setIndexableState = useCallback(function (next) {
+        if (typeof initial === 'object' && typeof initial.index === 'number') {
+            next.index = initial.index;
+        }
+        setState(next);
+    }, [initial]);
+    return [state, setIndexableState];
 }

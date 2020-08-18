@@ -48,6 +48,6 @@ export const BiomeStarts = React.memo(function({onChange, starts}) {
 
     return <div className="form-group">
         <label htmlFor="starts">Structures</label>
-        <Select isMulti id="starts" options={options} onChange={handleChange} defaultValue={options.filter(o => starts.includes(o.value))} />
+        <Select isMulti id="starts" options={options} onChange={handleChange} value={options.filter(o => starts.includes(o.value))} />
     </div>;
 });
