@@ -71,6 +71,12 @@ export function RawConfiguredFeature({ data = DECORATED_TREE_CONFIG, onSave }) {
         setDecorators(decorators);
     }, []);
 
+    const handleVanillaSelect = useCallback(function (configured_feature) {
+        const [decorators, feature] = findDecorators(configured_feature);
+        setFeature(feature);
+        setDecorators(decorators);
+    }, []);
+
     const handleSubmit = useCallback(function (e) {
         e.preventDefault();
         const decorated = buildDecorated(feature, decorators, new FormData(e.target).get('key'));
@@ -81,7 +87,7 @@ export function RawConfiguredFeature({ data = DECORATED_TREE_CONFIG, onSave }) {
     const FeatureConfig = (FEATURES.find(f => feature.type === f.type) || { config: 'p' }).config || (() => <p className="text-muted">No config options</p>);
 
     return <form onSubmit={handleSubmit}>
-        <NamespacedKey example="concrete_tree" type="features" value={data.key} expectBreakage={typeof data.key !== 'undefined'}>
+        <NamespacedKey example="concrete_tree" type="features" value={data.key} expectBreakage={typeof data.key !== 'undefined'} mayReplaceVanilla={true} onSelectLoad={handleVanillaSelect}>
             configured feature
             <JsonViewer data={() => buildDecorated(feature, decorators, data.key || 'feature')} />
         </NamespacedKey>

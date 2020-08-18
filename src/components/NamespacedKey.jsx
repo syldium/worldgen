@@ -110,7 +110,7 @@ export function NamespacedKey({ children, example = 'daily_resource', type, valu
                 required tabIndex="-1" style={{ opacity: 0, height: 0, position: 'absolute' }} />
             {mayReplaceVanilla && <Button cat="info mlm" onClick={handleToggle}>{replace ? 'Create a new one' : 'Replace vanilla'}</Button>}
         
-            {expectBreakage && value !== key &&
+            {expectBreakage && value !== key && !key.startsWith('minecraft:') &&
                 <p className="alert--warning">Warning: changing the name of a resource may break other resources that depend on it.</p>
             }
             {!mayReplaceVanilla && !replace && key.startsWith('minecraft:') &&

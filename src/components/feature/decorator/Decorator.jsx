@@ -8,11 +8,20 @@ import { NumberInput } from '../../../ui/Input';
 import { UniformInt } from '../../utils/UniformInt';
 
 export const DecoratorsList = React.memo(function({data, onChange}) {
-    const [decorators, handleAdd, handleChange, handleRemove] = useCrudPreset(data, function(decorators) {
+    const [previous, setPrevious] = useState(data);
+    const [decorators, handleAdd, handleChange, handleRemove, replace] = useCrudPreset(data, function(decorators) {
         // Get the first non taken decorator
         return { type: (DECORATORS_OPTIONS.filter(o => !decorators.some(d => d.type === o.value))[0] || { value: 'minecraft:count' }).value };
     });
-    useJsonEffect(decorators, data, onChange);
+    if (data !== previous) {
+        replace(data);
+        setPrevious(data);
+    }
+    useEffect(function() {
+        if (decorators !== data && previous === data) {
+            onChange(decorators);
+        }
+    }, [data, decorators, onChange, previous]);
 
     const shouldCancelStart = useCallback(function(e) {
         return !e.target.parentNode.classList.contains('sortable-item');
