@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { NumberInput } from '../../ui/Input';
 import { useToggle } from '../../hooks/ui';
-import { useCrud, CRUD } from '../../hooks/form';
+import { CRUD, useCrudState } from '../../hooks/form';
 import Select from '../../ui/Select';
 import { STRUCTURES } from './NoiseDefaults';
 import { Button } from '../../ui/Button';
@@ -55,7 +55,13 @@ const Stronghold = React.memo(function ({ data, onChange }) {
 
 const StructuresList = React.memo(function({ data, onChange }) {
     const [visibility, toggle] = useToggle();
-    const [structures, dispatch] = useCrud(Object.entries(data).map(([type, d]) => ({ ...d, type })));
+    const [structures, dispatch] = useCrudState(Object.entries(data).map(([type, d]) => ({ ...d, type })));
+
+    const [previous, setPrevious] = useState(data);
+    if (data !== previous) {
+        dispatch({ type: CRUD.REPLACE, payload: Object.entries(data).map(([type, d]) => ({ ...d, type })) });
+        setPrevious(data);
+    }
 
     const handleAdd = useCallback(function(e) {
         e.preventDefault();
@@ -77,6 +83,10 @@ const StructuresList = React.memo(function({ data, onChange }) {
     }, [dispatch]);
 
     useEffect(function() {
+        if (previous !== data) {
+            return;
+        }
+
         const obj = {};
         for (const structure of structures) {
             obj[structure.type] = {
@@ -88,7 +98,7 @@ const StructuresList = React.memo(function({ data, onChange }) {
         if (JSON.stringify(obj) !== JSON.stringify(data)) {
             onChange(obj);
         }
-    }, [data, onChange, structures]);
+    }, [data, onChange, previous, structures]);
 
     return <div>
         <div className="toggle-label">

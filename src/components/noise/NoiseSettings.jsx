@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import { BlockState } from '../state/BlockState';
 import { Button } from '../../ui/Button';
 import { JsonViewer } from '../../ui/JsonViewer';
@@ -9,7 +9,7 @@ import { OVERWORLD_NOISE } from './NoiseDefaults';
 import { Structures } from './Structures';
 import { NamespacedKey } from '../NamespacedKey';
 import { INT_MIN_VALUE } from '../../utils/math';
-import { useKeyedListOptions, useIndexableState } from '../../hooks/context';
+import { useKeyedListOptions } from '../../hooks/context';
 
 export const NoiseGenerator = React.memo(function({onChange, settings = 'minecraft:overworld'}) {
     const options = useKeyedListOptions('noises').map(option => {
@@ -32,7 +32,7 @@ export const NoiseGenerator = React.memo(function({onChange, settings = 'minecra
 
 export const NoiseSettings = React.memo(function ({ data = OVERWORLD_NOISE, onSave }) {
 
-    const [state, setState] = useIndexableState(data);
+    const [state, setState] = useState(data);
 
     const handleSubmit = useCallback(function (e) {
         e.preventDefault();
@@ -42,20 +42,20 @@ export const NoiseSettings = React.memo(function ({ data = OVERWORLD_NOISE, onSa
 
     const handleBlockChange = useCallback(function (name, s) {
         setState(state => ({ ...state, [name]: s }));
-    }, [setState]);
+    }, []);
     const handleStructuresChange = useCallback(function (structures) {
         setState(state => ({ ...state, structures }));
-    }, [setState]);
+    }, []);
     const handleNoiseChange = useCallback(function (noise) {
         setState(state => ({ ...state, noise: { ...state.noise, ...noise } }));
-    }, [setState]);
+    }, []);
     const handleChange = useCallback(function(value) {
         setState(state => ({ ...state, ...value }));
-    }, [setState]);
+    }, []);
     const handleDisableMobGenerationChange = useCallback(function(e) {
         const disable_mob_generation = e.target.checked;
         setState(state => ({ ...state, disable_mob_generation }));
-    }, [setState]);
+    }, []);
 
     return <form onSubmit={handleSubmit}>
         <NamespacedKey example="epic" type="noises" value={data.key} expectBreakage={typeof data.key !== 'undefined'} onSelectLoad={setState}>
@@ -63,7 +63,7 @@ export const NoiseSettings = React.memo(function ({ data = OVERWORLD_NOISE, onSa
             <JsonViewer data={state} />
         </NamespacedKey>
 
-        <Structures data={data.structures} onChange={handleStructuresChange} />
+        <Structures data={state.structures} onChange={handleStructuresChange} />
 
         <fieldset>
             <legend>Defaults</legend>
@@ -85,6 +85,9 @@ export const NoiseSettings = React.memo(function ({ data = OVERWORLD_NOISE, onSa
             </div>
         </fieldset>
 
+        {Object.keys(state.structures.structures).includes('minecraft:nether_fossil') && (state.noise.height - 2 - state.sea_level) < 0 &&
+            <p className="alert--warning">The game may crash when trying to generate nether fossils, because (height - 2 - sea_level) is negative (actually: {state.noise.height - 2 - state.sea_level}).</p>
+        }
         <NoiseConfig data={state.noise} onChange={handleNoiseChange} />
 
         <Button type="submit">Save</Button>

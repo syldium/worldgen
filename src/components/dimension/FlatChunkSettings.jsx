@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback } from 'react';
 import { FixedBiomeSource } from './BiomeSource';
 import { useCrudPreset, useJsonEffect } from '../../hooks/form';
 import { NumberInput, ConfInput } from '../../ui/Input';
@@ -44,21 +44,15 @@ export const FlatChunkSettings = React.memo(function ({ settings, onChange }) {
 });
 
 const GeneratorLayers = React.memo(function ({ config, onChange }) {
-    const [layers, handleAdd, handleChange, handleRemove] = useCrudPreset(config, { block: 'minecraft:grass_block', height: 1 });
+    const [layers, handleAdd, handleChange, handleRemove] = useCrudPreset(onChange, config, { block: 'minecraft:grass_block', height: 1 });
 
     const shouldCancelStart = useCallback(function (e) {
         return !e.target.parentNode.classList.contains('sortable-item');
     }, []);
 
     const handleReversedSort = useCallback(function ({ oldIndex, newIndex }) {
-        handleChange(layers.length - 1 - oldIndex, layers.length - 1 - newIndex);
+        handleChange({ oldIndex: layers.length - 1 - oldIndex, newIndex: layers.length - 1 - newIndex });
     }, [layers, handleChange]);
-
-    useEffect(() => {
-        if (layers !== config) {
-            onChange(layers);
-        }
-    }, [config, layers, onChange]);
 
     return <fieldset>
         <legend>Layers <Button onClick={handleAdd}>Add layer</Button></legend>

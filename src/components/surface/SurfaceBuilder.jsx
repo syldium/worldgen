@@ -27,10 +27,9 @@ export function SurfaceBuilder({data = SURFACE_BUILDER, onSave}) {
         const formData = new FormData(e.target);
         onSave({
             ...state,
-            key: formData.get('key'),
-            index: data.index
+            key: formData.get('key')
         });
-    }, [state, data.index, onSave]);
+    }, [onSave, state]);
 
     return <form onSubmit={handleSubmit}>
         <NamespacedKey example="blackstone" type="surfaces" value={state.key} expectBreakage={typeof data.key !== 'undefined'} onSelectLoad={setState}>

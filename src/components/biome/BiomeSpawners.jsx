@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useContext, useMemo } from 'react';
 import Select from '../../ui/Select';
 import { useCrudPreset, useJsonEffect } from "../../hooks/form";
 import { useToggle } from '../../hooks/ui';
@@ -30,15 +30,10 @@ const SpawnGroup = React.memo(function({children, entities, data = [], group, on
     const [visibility, toggle] = useToggle();
     const text = visibility ? 'Less...' : 'More...';
 
-    const [previous, setPrevious] = useState(data);
-    const [spawners, insert, handleChange, handleRemove, replace] = useCrudPreset(data, function(spawners) {
+    const [spawners, insert, handleChange, handleRemove] = useCrudPreset(spawners => onChange(group, spawners), data, function(spawners) {
         // Get the first non taken entity
         return { type: (entities.filter(o => !spawners.some(s => s.type === o.value))[0] || { value: 'minecraft:cow' }).value, minCount: 1, maxCount: 1, weight: 1 };
     }, true);
-    if (data !== previous) {
-        replace(data);
-        setPrevious(data);
-    }
 
     const handleAdd = useCallback(function(e) {
         insert(e);
@@ -46,12 +41,6 @@ const SpawnGroup = React.memo(function({children, entities, data = [], group, on
             toggle();
         }
     }, [insert, toggle, visibility]);
-
-    useEffect(function() {
-        if (spawners !== data && previous === data) {
-            onChange(group, spawners);
-        }
-    }, [data, group, onChange, previous, spawners]);
 
     if (visibility) {
         return <div>

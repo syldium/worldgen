@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect, useMemo } from "react";
+import React, { useCallback, useContext, useMemo } from "react";
 import Select from "../../ui/Select";
 import { BlockSelect } from "./BlockPredicate";
 import { DataContext } from "../../context/DataContext";
@@ -50,26 +50,16 @@ export const BlockState = React.memo(function ({ block = {}, children, className
 export const BlocksList = React.memo(function ({ list, onChange }) {
     const options = useBlocksOptions();
 
-    const [blocks, handleAdd, handleChange, handleRemove] = useCrudPreset(list, function (blocks) {
+    const [blocks, handleAdd, handleChange, handleRemove] = useCrudPreset(onChange, list, function (blocks) {
         // Get the first non taken block name
         return { Name: (options.find(o => !blocks.some(b => b.Name === o.value)) || { value: 'minecraft:stone' }).value };
     });
 
-    const handleStateChange = useCallback(function (state, i) {
-        handleChange(state, blocks[i]);
-    }, [blocks, handleChange]);
-
-    useEffect(() => {
-        if (blocks !== list) {
-            onChange(blocks);
-        }
-    }, [blocks, list, onChange]);
-
     return <div className="form-group">
         {blocks.map((block, i) => {
             const filteredOptions = options.filter(o => o.value === block.Name || !blocks.some(d => d.Name === o.value));
-            return <BlockState block={block} options={filteredOptions} key={block.Name} onChange={state => handleStateChange(state, i)}>
-                <Button cat="danger mlm" onClick={(e) => handleRemove(e, i)}>Remove</Button>
+            return <BlockState block={block} options={filteredOptions} key={block.Name} onChange={handleChange}>
+                <Button cat="danger mlm" onClick={e => handleRemove(e, i)}>Remove</Button>
             </BlockState>
         })}
         <Button onClick={handleAdd}>Add block</Button>
@@ -79,23 +69,17 @@ export const BlocksList = React.memo(function ({ list, onChange }) {
 export const BlocksNamesList = React.memo(function ({ list, onChange }) {
     const options = useBlocksOptions();
 
-    const [blocks, handleAdd, handleChange, handleRemove] = useCrudPreset(list, function (blocks) {
+    const [blocks, handleAdd, handleChange, handleRemove] = useCrudPreset(onChange, list, function (blocks) {
         // Get the first non taken block name
         return (options.find(o => !blocks.some(b => b === o.value)) || { value: 'minecraft:stone' }).value;
     });
-
-    useEffect(() => {
-        if (blocks !== list) {
-            onChange(blocks);
-        }
-    }, [blocks, list, onChange]);
 
     return <div className="form-group">
         {blocks.map((block, i) => {
             const filteredOptions = options.filter(o => o.value === block || !blocks.some(d => d === o.value));
             return <div className="form-group form-row" key={block}>
                 <div style={{ flexGrow: 1 }}><BlockSelect block={block} options={filteredOptions} onChange={o => handleChange(o.value, block)} /></div>
-                <Button cat="danger mlm" onClick={(e) => handleRemove(e, i)}>Remove</Button>
+                <Button cat="danger mlm" onClick={e => handleRemove(e, i)}>Remove</Button>
             </div>
         })}
         <Button cat="primary mts" onClick={handleAdd}>Add block</Button>

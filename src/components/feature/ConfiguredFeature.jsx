@@ -80,9 +80,8 @@ export function RawConfiguredFeature({ data = DECORATED_TREE_CONFIG, onSave }) {
     const handleSubmit = useCallback(function (e) {
         e.preventDefault();
         const decorated = buildDecorated(feature, decorators, new FormData(e.target).get('key'));
-        decorated.index = data.index;
         onSave(decorated);
-    }, [data.index, decorators, feature, onSave]);
+    }, [decorators, feature, onSave]);
 
     const FeatureConfig = (FEATURES.find(f => feature.type === f.type) || { config: 'p' }).config || (() => <p className="text-muted">No config options</p>);
 

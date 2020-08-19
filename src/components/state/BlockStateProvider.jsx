@@ -1,14 +1,12 @@
-import React, { useState, useCallback, useMemo } from "react";
+import React, { useCallback, useMemo } from "react";
 import Select from "../../ui/Select";
 import { Button } from '../../ui/Button';
 import { NumberInput } from '../../ui/Input';
 import { useEffect } from "react";
-import { useJsonEffect, useCrudPreset, useBlocksOptions } from "../../hooks/form";
+import { useCrudPreset, useBlocksOptions } from "../../hooks/form";
 import { BlockState } from "./BlockState";
 
 export const BlockStateProvider = React.memo(function({block = { type: 'minecraft:simple_state_provider' }, onChange}) {
-    const [provider, setProvider] = useState(block);
-
     const options = useMemo(function() {
         return [
             { value: 'minecraft:forest_flower_provider', label: 'Forest flower provider' },
@@ -21,35 +19,33 @@ export const BlockStateProvider = React.memo(function({block = { type: 'minecraf
 
     const handleTypeChange = useCallback(function(option) {
         const similarities = ['minecraft:simple_state_provider', 'minecraft:rotated_block_provider'];
-        if (similarities.includes(provider.type) && similarities.includes(option.value)) {
-            setProvider({ ...provider, type: option.value });
+        if (similarities.includes(block.type) && similarities.includes(option.value)) {
+            onChange({ ...block, type: option.value }, block);
         } else {
-            setProvider({ type: option.value });
+            onChange({ type: option.value }, block);
         }
-    }, [provider]);
+    }, [block, onChange]);
 
     const handleSimpleStateChange = useCallback(function(state) {
-        setProvider(provider => ({ ...provider, state }));
-    }, []);
+        onChange({ ...block, state }, block);
+    }, [block, onChange]);
 
     const handleWeighestStateChange = useCallback(function(entries) {
-        setProvider(provider => ({ ...provider, entries }));
-    }, []);
-
-    useJsonEffect(provider, block, onChange);
+        onChange({ ...block, entries }, block);
+    }, [block, onChange]);
 
     const blocks = useBlocksOptions(false);
     const filteredBlocks = useMemo(function () {
-        const filtered = provider.type === 'minecraft:rotated_block_provider' ?
+        const filtered = block.type === 'minecraft:rotated_block_provider' ?
             blocks.filter(b => b.states.some(state => state.name === 'axis')) : blocks;
         return filtered.map(block => ({ value: 'minecraft:' + block.name, label: block.displayName }));
-    }, [blocks, provider.type]);
+    }, [blocks, block.type]);
 
     return <div>
         <label>Provider type</label>
-        <Select options={options} value={options.find(o => o.value === provider.type)} onChange={handleTypeChange} />
-        {(provider.type === 'minecraft:simple_state_provider' || provider.type === 'minecraft:rotated_block_provider') && <BlockState block={provider.state} options={filteredBlocks} onChange={handleSimpleStateChange} />}
-        {provider.type === 'minecraft:weighted_state_provider' && <WeightedStateProvider entries={provider.entries} onChange={handleWeighestStateChange} />}
+        <Select options={options} value={options.find(o => o.value === block.type)} onChange={handleTypeChange} />
+        {(block.type === 'minecraft:simple_state_provider' || block.type === 'minecraft:rotated_block_provider') && <BlockState block={block.state} options={filteredBlocks} onChange={handleSimpleStateChange} />}
+        {block.type === 'minecraft:weighted_state_provider' && <WeightedStateProvider entries={block.entries} onChange={handleWeighestStateChange} />}
     </div>
 });
 
@@ -57,7 +53,7 @@ export const BlockStateProvider = React.memo(function({block = { type: 'minecraf
 const WeightedStateProvider = React.memo(function({entries = [], onChange}) {
     const options = useBlocksOptions();
 
-    const [blocks, handleAdd, handleChange, handleRemove] = useCrudPreset(entries, function(blocks) {
+    const [blocks, handleAdd, handleChange, handleRemove] = useCrudPreset(onChange, entries, function(blocks) {
         // Get the first non taken block name
         return { data: { Name: (options.find(o => !blocks.some(b => b.data.Name === o.value)) || { value: 'minecraft:stone' }).value } };
     });

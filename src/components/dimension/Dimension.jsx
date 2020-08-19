@@ -1,22 +1,21 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import { DimensionType } from './DimensionType';
 import { DimensionGenerator } from './DimensionGenerator';
 import { Button } from '../../ui/Button';
 import { DIMENSION } from './DimensionDefaults';
 import { NamespacedKey } from '../NamespacedKey';
 import { JsonViewer } from '../../ui/JsonViewer';
-import { useIndexableState } from '../../hooks/context';
 
 export function Dimension({data = DIMENSION, onSave}) {
 
-    const [state, setState] = useIndexableState(data);
+    const [state, setState] = useState(data);
 
     const handleTypeChange = useCallback(function(type) {
         setState(state => ({ ...state, type }));
-    }, [setState]);
+    }, []);
     const handleGeneratorChange = useCallback(function(generator) {
         setState(state => ({ ...state, generator }));
-    }, [setState]);
+    }, []);
 
     const handleVanillaSelect = function(dimension) {
         dimension.generator.seed = state.generator.seed;

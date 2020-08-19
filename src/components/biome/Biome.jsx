@@ -1,10 +1,10 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import { NamespacedKey } from '../NamespacedKey';
 import { BiomeEffects } from './BiomeEffects';
 import { BiomeSpawners } from './BiomeSpawners';
 import { BiomeStarts } from './BiomeStarts';
 import { GenFeatures } from './Features';
-import { useIndexableState, useKeyedListOptions } from '../../hooks/context';
+import { useKeyedListOptions } from '../../hooks/context';
 import { BIOME_DEFAULTS } from './BiomeDefaults';
 import { ConfiguredCarver } from '../carver/ConfiguredCarver';
 import { Button } from '../../ui/Button';
@@ -15,39 +15,39 @@ import { INT_MIN_VALUE } from '../../utils/math';
 
 export function Biome({data = BIOME_DEFAULTS, onSave}) {
 
-    const [state, setState] = useIndexableState(data);
+    const [state, setState] = useState(data);
 
     const handleCarversChange = useCallback(function(carvers) {
         setState(state => ({ ...state, carvers }));
-    }, [setState]);
+    }, []);
     const handleStartsChange = useCallback(function(starts) {
         setState(state => ({ ...state, starts }));
-    }, [setState]);
+    }, []);
     const handleEffectsChange = useCallback(function(effects) {
         setState(state => ({ ...state, effects }));
-    }, [setState]);
+    }, []);
     const handleFeaturesChange = useCallback(function(features) {
         setState(state => ({ ...state, features }));
-    }, [setState]);
+    }, []);
     const handleSpawnersChange = useCallback(function(spawners) {
         setState(state => ({ ...state, spawners }));
-    }, [setState]);
+    }, []);
     const handleSurfaceBuilderChange = useCallback(function(option) {
         setState(state => ({ ...state, surface_builder: option.value }));
-    }, [setState]);
+    }, []);
     const handlePrecipitationChange = useCallback(function(option) {
         setState(state => ({ ...state, precipitation: option.value }));
-    }, [setState]);
+    }, []);
     const handleCategoryChange = useCallback(function(option) {
         setState(state => ({ ...state, category: option.value }));
-    }, [setState]);
+    }, []);
     const handleChange = useCallback(function(value) {
         setState(state => ({ ...state, ...value }));
-    }, [setState]);
+    }, []);
     const handleSpawnFriendlyChange = useCallback(function(e) {
         const player_spawn_friendly = e.target.checked;
         setState(state => ({ ...state, player_spawn_friendly }));
-    }, [setState]);
+    }, []);
 
     const handleSubmit = useCallback(function(e) {
         e.preventDefault();

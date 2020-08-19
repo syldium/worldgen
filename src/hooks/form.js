@@ -27,7 +27,7 @@ function crudReducer(state, action) {
     }
 }
 
-export function useCrud(data = []) {
+export function useCrudState(data = []) {
     return useReducer(crudReducer, data);
 }
 
@@ -36,30 +36,37 @@ export function useCrud(data = []) {
  * @param {object|function (object[]): object} [initial] 
  * @returns {[object[], function (SyntheticEvent): void, function (number|object, number|object): void, function (SyntheticEvent, number): void, function (object[]): void}
  */
-export function useCrudPreset(data = [], initial = {}, unshift = false) {
-    const [entities, dispatch] = useCrud(data);
-
+export function useCrudPreset(onChange, data = [], initial = {}, unshift = false) {
     const add = useCallback(function(e) {
         e.preventDefault();
-        const n = typeof initial === 'function' ? initial(entities) : { ...initial };
-        dispatch({ type: CRUD.ADD, payload: n, unshift });
-    }, [dispatch, entities, initial, unshift]);
+        const n = typeof initial === 'function' ? initial(data) : { ...initial };
+        if (unshift) {
+            onChange([n, ...data]);
+        }
+        onChange([...data, n]);
+    }, [data, initial, onChange, unshift]);
     const update = useCallback(function(state, previous) {
         if (state.hasOwnProperty('oldIndex') && state.hasOwnProperty('newIndex')) {
-            dispatch({ type: CRUD.UPDATE, target: state.oldIndex, payload: state.newIndex });
-            return;
+            onChange(arrayMove(data, state.oldIndex, state.newIndex));
+        } else {
+            if (typeof previous === 'undefined') {
+                throw new Error('Cannot update an element without its previous state.');
+            }
+            onChange(data.map(element => element === previous ? state : element));
         }
-        dispatch({ type: CRUD.UPDATE, target: previous, payload: state });
-    }, [dispatch]);
-    const remove = useCallback(function(e, index) {
+    }, [data, onChange]);
+    const remove = useCallback(function(e, entity) {
         e.preventDefault();
-        dispatch({ type: CRUD.REMOVE, payload: entities[index] });
-    }, [dispatch, entities]);
+        if (typeof entity === 'number') {
+            entity = data[entity];
+        }
+        onChange(data.filter(element => element !== entity));
+    }, [data, onChange]);
     const replace = useCallback(function(entities) {
-        dispatch({ type: CRUD.REPLACE, payload: entities });
-    }, [dispatch]);
+        onChange(entities);
+    }, [onChange]);
 
-    return [entities, add, update, remove, replace];
+    return [data, add, update, remove, replace];
 }
 
 export function useBlocksOptions(mapped = true) {

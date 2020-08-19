@@ -1,28 +1,25 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { ConfInput, NumberInput } from '../../../ui/Input';
-import { useBlocksOptions, useJsonEffect } from '../../../hooks/form';
+import { useBlocksOptions } from '../../../hooks/form';
 import { BlockSelect } from '../../state/BlockPredicate';
 import { BlocksNamesList } from '../../state/BlockState';
 import { HUGE_FUNGUS_FEATURE_CONFIG } from './FeatureConfigDefaults';
 
 export function SpringFeature({ configuration = HUGE_FUNGUS_FEATURE_CONFIG, onChange }) {
 
-    const [config, setConfig] = useState(configuration);
-
     const handlRequiresBlockBelowChange = useCallback(function (e) {
         const requires_block_below = e.target.checked;
-        setConfig(config => ({ ...config, requires_block_below }));
-    }, []);
+        onChange(({ ...configuration, requires_block_below }));
+    }, [configuration, onChange]);
     const handleStateChange = useCallback(function (option) {
-        setConfig(config => ({ ...config, state: { Name: option.value, Properties: { falling: 'true' } } }));
-    }, []);
+        onChange({ ...configuration, state: { Name: option.value, Properties: { falling: 'true' } } });
+    }, [configuration, onChange]);
     const handleValidBlocksChange = useCallback(function (valid_blocks) {
-        setConfig(config => ({ ...config, valid_blocks }));
-    }, []);
+        onChange({ ...configuration, valid_blocks });
+    }, [configuration, onChange]);
     const handleValueChange = useCallback(function (value) {
-        setConfig(config => ({ ...config, ...value }));
-    }, []);
-    useJsonEffect(config, configuration, onChange);
+        onChange({ ...configuration, ...value });
+    }, [configuration, onChange]);
 
     const blocks = useBlocksOptions(false);
     const filteredBlocks = useMemo(function () {
@@ -33,18 +30,18 @@ export function SpringFeature({ configuration = HUGE_FUNGUS_FEATURE_CONFIG, onCh
     return <div>
         <fieldset>
             <legend>Fluid</legend>
-            <div className="form-group"><BlockSelect block={config.state.Name} onChange={handleStateChange} options={filteredBlocks} /></div>
+            <div className="form-group"><BlockSelect block={configuration.state.Name} onChange={handleStateChange} options={filteredBlocks} /></div>
         </fieldset>
         <fieldset>
             <legend>Valid blocks</legend>
-            <BlocksNamesList list={config.valid_blocks} onChange={handleValidBlocksChange} />
+            <BlocksNamesList list={configuration.valid_blocks} onChange={handleValidBlocksChange} />
         </fieldset>
         <fieldset>
             <legend>Configuration</legend>
             <div className="form-row">
-                <NumberInput id="rock_count" value={config.rock_count} upChange={handleValueChange}>Rock count</NumberInput>
-                <NumberInput id="hole_count" value={config.hole_count} upChange={handleValueChange}>Hole count</NumberInput>
-                <ConfInput id="requires_block_below" checked={config.requires_block_below} onChange={handlRequiresBlockBelowChange}>Requires block below</ConfInput>
+                <NumberInput id="rock_count" value={configuration.rock_count} upChange={handleValueChange}>Rock count</NumberInput>
+                <NumberInput id="hole_count" value={configuration.hole_count} upChange={handleValueChange}>Hole count</NumberInput>
+                <ConfInput id="requires_block_below" checked={configuration.requires_block_below} onChange={handlRequiresBlockBelowChange}>Requires block below</ConfInput>
             </div>
         </fieldset>
     </div>

@@ -3,7 +3,7 @@ import Select from '../../ui/Select';
 import { SeedField } from './DimensionGenerator';
 import { useKeyedListOptions } from '../../hooks/context';
 import { useMemo } from 'react';
-import { useCrud, CRUD } from '../../hooks/form';
+import { useCrudPreset } from '../../hooks/form';
 import { useToggle } from '../../hooks/ui';
 import { DataContext } from '../../context/DataContext';
 import { Button } from '../../ui/Button';
@@ -96,30 +96,18 @@ export const FixedBiomeSource = React.memo(function({biome = 'minecraft:plains',
 
 const MultiNoiseBiomeSource = React.memo(function({source = MULTI_NOISE_BIOME_SOURCE, onChange}) {
     const options = useKeyedListOptions('biomes');
-    const [biomes, dispatch] = useCrud(source.biomes);
+    const [biomes, handleAdd, handleChange, handleRemove] = useCrudPreset(biomes => onChange({ ...source, biomes }), source.biomes, { biome: 'minecraft:plains', parameters: {
+        altitude: 0,
+        weirdness: 0,
+        offset: 0,
+        temperature: 0.8,
+        humidity: 0.4
+    } });
 
     const [advanced, toggleAdvanced] = useToggle();
     const handleNoiseChange = useCallback(function(type, noise) {
         onChange(({ ...source, [type]: noise }));
     }, [source, onChange]);
-
-    const handleAddClick = useCallback(function(e) {
-        e.preventDefault();
-        dispatch({ type: CRUD.ADD, payload: { biome: 'minecraft:plains', parameters: {
-            altitude: 0,
-            weirdness: 0,
-            offset: 0,
-            temperature: 0.8,
-            humidity: 0.4
-        } } });
-    }, [dispatch]);
-    const handleChange = useCallback(function(state, previous) {
-        dispatch({ type: CRUD.UPDATE, target: previous, payload: state });
-    }, [dispatch]);
-    const handleDeleteClick = useCallback(function(e, index) {
-        e.preventDefault();
-        dispatch({ type: CRUD.REMOVE, payload: biomes[index] });
-    }, [biomes, dispatch]);
 
     const vanilla = useContext(DataContext).vanilla.biomes;
     const custom = useContext(DataContext).custom.biomes;
@@ -131,21 +119,18 @@ const MultiNoiseBiomeSource = React.memo(function({source = MULTI_NOISE_BIOME_SO
                 return;
             }
         }
-        if (biomes !== source.biomes) {
-            onChange({ ...source, biomes });
-        }
     }, [biomes, onChange, source]);
 
     const values = [];
     biomes.forEach((entry, i) => {
         const key = i;
-        values.push(<BiomeSelection namespace={namespace} vanilla={vanilla} custom={custom} biomesOptions={options} entry={entry} key={key} onChange={handleChange}><Button cat="danger" onClick={(e) => handleDeleteClick(e, i)}>Delete</Button></BiomeSelection>);
+        values.push(<BiomeSelection namespace={namespace} vanilla={vanilla} custom={custom} biomesOptions={options} entry={entry} key={key} onChange={handleChange}><Button cat="danger" onClick={e => handleRemove(e, i)}>Delete</Button></BiomeSelection>);
     });
     return <>
         <div className="flex-container" style={{ alignItems: 'baseline' }}>
             <h4>
                 Biomes list
-                <Button onClick={handleAddClick} cat="primary mls">Add biome</Button>
+                <Button onClick={handleAdd} cat="primary mls">Add biome</Button>
                 <Button onClick={toggleAdvanced} cat="secondary">Advanced</Button>
             </h4>
         </div>

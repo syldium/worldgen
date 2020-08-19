@@ -1,6 +1,6 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { CRUD, useCrud, useJsonEffect } from '../../../hooks/form';
-import { TREE_DECORATORS_OPTIONS, TREE_FEATURE_CONFIG } from './FeatureConfigDefaults';
+import React, { useCallback, useMemo } from 'react';
+import { useCrudPreset } from '../../../hooks/form';
+import { TREE_DECORATORS_OPTIONS } from './FeatureConfigDefaults';
 import { BlockStateProvider } from '../../state/BlockStateProvider';
 import { Button } from '../../../ui/Button';
 import { NumberInput } from '../../../ui/Input';
@@ -9,36 +9,33 @@ import { UniformInt } from '../../utils/UniformInt';
 
 export function TreeFeature({configuration, onChange}) {
 
-    const [config, setConfig] = useState(configuration || TREE_FEATURE_CONFIG);
-
     const handleTrunkProviderChange = useCallback(function(trunk_provider) {
-        setConfig(config => ({ ...config, trunk_provider }));
-    }, []);
+        onChange({ ...configuration, trunk_provider });
+    }, [configuration, onChange]);
     const handleLeavesProviderChange = useCallback(function(leaves_provider) {
-        setConfig(config => ({ ...config, leaves_provider }));
-    }, []);
+        onChange({ ...configuration, leaves_provider });
+    }, [configuration, onChange]);
     const handleFoliagePlacerChange = useCallback(function(foliage_placer) {
-        setConfig(config => ({ ...config, foliage_placer }));
-    }, []);
+        onChange({ ...configuration, foliage_placer });
+    }, [configuration, onChange]);
     const handleTrunkPlacerChange = useCallback(function(trunk_placer) {
-        setConfig(config => ({ ...config, trunk_placer: { ...config.trunk_placer, ...trunk_placer } }));
-    }, []);
+        onChange({ ...configuration, trunk_placer: { ...configuration.trunk_placer, ...trunk_placer } });
+    }, [configuration, onChange]);
     const handleDecoratorsChange = useCallback(function(decorators) {
-        setConfig(config => ({ ...config, decorators }));
-    }, []);
-    useJsonEffect(config, configuration, onChange);
+        onChange({ ...configuration, decorators });
+    }, [configuration, onChange]);
 
     return <div>
         <fieldset>
             <legend>Trunk provider</legend>
-            <BlockStateProvider block={config.trunk_provider} onChange={handleTrunkProviderChange} />
+            <BlockStateProvider block={configuration.trunk_provider} onChange={handleTrunkProviderChange} />
         </fieldset>
         <fieldset>
             <legend>Leaves provider</legend>
-            <BlockStateProvider block={config.leaves_provider} onChange={handleLeavesProviderChange} />
+            <BlockStateProvider block={configuration.leaves_provider} onChange={handleLeavesProviderChange} />
         </fieldset>
-        <FoliagePlacer placer={config.foliage_placer} onChange={handleFoliagePlacerChange} />
-        <TrunkPlacer placer={config.trunk_placer} onChange={handleTrunkPlacerChange} />
+        <FoliagePlacer placer={configuration.foliage_placer} onChange={handleFoliagePlacerChange} />
+        <TrunkPlacer placer={configuration.trunk_placer} onChange={handleTrunkPlacerChange} />
         <TreeDecorators data={configuration.decorators} onChange={handleDecoratorsChange}></TreeDecorators>
     </div>;
 }
@@ -138,69 +135,46 @@ const TrunkPlacer = React.memo(function({placer, onChange}) {
 });
 
 const TreeDecorators = React.memo(function({data, onChange}) {
-    const [decorators, dispatch] = useCrud(data);
-
-    const handleAddClick = useCallback(function(e) {
-        e.preventDefault();
-        const decorator = TREE_DECORATORS_OPTIONS.find(o => !decorators.some(d => d.type === o.value));
-        if (typeof decorator !== 'undefined') {
-            dispatch({ type: CRUD.ADD, payload: { type: decorator.value } });
-        }
-    }, [decorators, dispatch]);
-    const handleChange = useCallback(function(decorator, previous) {
-        dispatch({ type: CRUD.UPDATE, target: previous, payload: decorator });
-    }, [dispatch]);
-    const handleDeleteClick = useCallback(function(e, index) {
-        e.preventDefault();
-        dispatch({ type: CRUD.REMOVE, payload: decorators[index] });
-    }, [decorators, dispatch]);
-    useJsonEffect(decorators.map(decorator => {
-        delete decorator.index;
-        return decorator;
-    }), data, onChange);
+    const [decorators, handleAdd, handleChange, handleRemove] = useCrudPreset(onChange, data, function(decorators) {
+        // Get the first non taken decorator
+        return { type: (TREE_DECORATORS_OPTIONS.filter(o => !decorators.some(d => d.type === o.value))[0] || { value: 'minecraft:alter_ground' }).value };
+    });
     
     return <fieldset>
-        <legend>Tree decorators {decorators.length < 5 && <Button onClick={handleAddClick}>Add decorator</Button>}</legend>
+        <legend>Tree decorators {decorators.length < 5 && <Button onClick={handleAdd}>Add decorator</Button>}</legend>
         {decorators.map((decorator, i) => {
             const options = TREE_DECORATORS_OPTIONS.filter(o => o.value === decorator.type || !decorators.some(d => d.type === o.value));
-            return <TreeDecorator data={decorator }key={decorator.type} onChange={handleChange} options={options}>
-                <Button cat="danger mlm" onClick={(e) => handleDeleteClick(e, i)}>Remove</Button>
+            return <TreeDecorator data={decorator} key={decorator.type} onChange={handleChange} options={options}>
+                <Button cat="danger mlm" onClick={e => handleRemove(e, i)}>Remove</Button>
             </TreeDecorator>
         })}
     </fieldset>
 });
 
 const TreeDecorator = React.memo(function({children, data, options, onChange}) {
-    const [decorator, setDecorator] = useState(data);
-
     const handleSelectChange = useCallback(function(option) {
-        setDecorator({ type: option.value, ...option.default });
-    }, []);
+        onChange({ type: option.value, ...option.default }, data);
+    }, [data, onChange]);
     const handleAlterGroundChange = useCallback(function(provider) {
-        setDecorator(decorator => ({ type: decorator.type, provider }));
-    }, []);
+        onChange({ type: data.type, provider }, data);
+    }, [data, onChange]);
     const handleProbabilityChange = useCallback(function(probability) {
-        setDecorator(decorator => ({ type: decorator.type, probability }));
-    }, []);
-    useEffect(() => {
-        if (decorator !== data) {
-            onChange(decorator, data);
-        }
-    }, [data, decorator, onChange]);
+        onChange({ type: data.type, probability }, data);
+    }, [data, onChange]);
 
-    const CustomTag = ['minecraft:leave_vine', 'minecraft:trunk_vine'].indexOf(decorator.type) < 0 ? 'fieldset' : 'div';
+    const CustomTag = ['minecraft:leave_vine', 'minecraft:trunk_vine'].indexOf(data.type) < 0 ? 'fieldset' : 'div';
 
     const selected = useMemo(function() {
-        return options.find(o => o.value === decorator.type);
-    }, [decorator.type, options]);
+        return options.find(o => o.value === data.type);
+    }, [data.type, options]);
     return <CustomTag>
         <legend style={{ fontWeight: 'normal', fontSize: 'inherit' }}>
             <div style={{ width: '200px', display: 'inline-block' }}><Select options={options} value={selected} onChange={handleSelectChange} /></div>
             {children}
         </legend>
         <div className="form-group">
-            {decorator.type === 'minecraft:alter_ground' && <BlockStateProvider block={decorator.provider} onChange={handleAlterGroundChange} />}
-            {(decorator.type === 'minecraft:beehive' || decorator.type === 'minecraft:cocoa') && <NumberInput id="probability" value={decorator.probability} onChange={handleProbabilityChange} max="1" step="0.05" defaultValue="0.05">Probability</NumberInput>}
+            {data.type === 'minecraft:alter_ground' && <BlockStateProvider block={data.provider} onChange={handleAlterGroundChange} />}
+            {(data.type === 'minecraft:beehive' || data.type === 'minecraft:cocoa') && <NumberInput id="probability" value={data.probability} onChange={handleProbabilityChange} max="1" step="0.05" defaultValue="0.05">Probability</NumberInput>}
         </div>
     </CustomTag>
 });
