@@ -1,9 +1,10 @@
-import React, { useState, useCallback, useMemo, useEffect, useContext } from "react";
+import React, { useCallback, useContext, useEffect, useMemo, useState } from "react";
+
+import { BlockState } from "./BlockState";
+import { DataContext } from "../../context/DataContext";
+import { NumberInput } from "../../ui/Input";
 import Select from "../../ui/Select";
 import { TAGS_OPTIONS } from "./Tags";
-import { BlockState } from "./BlockState";
-import { NumberInput } from "../../ui/Input";
-import { DataContext } from "../../context/DataContext";
 
 export const BlockPredicate = React.memo(function({target, onChange}) {
     const [predicate, setPredicate] = useState(target);

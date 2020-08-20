@@ -1,10 +1,11 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import { NumberInput } from '../../ui/Input';
-import { useToggle } from '../../hooks/ui';
 import { CRUD, useCrudState } from '../../hooks/form';
-import Select from '../../ui/Select';
-import { STRUCTURES } from './NoiseDefaults';
+import React, { useCallback, useEffect, useState } from 'react';
+
 import { Button } from '../../ui/Button';
+import { NumberInput } from '../../ui/Input';
+import { STRUCTURES } from './NoiseDefaults';
+import Select from '../../ui/Select';
+import { useToggle } from '../../hooks/ui';
 
 export const Structures = React.memo(function ({ data, onChange }) {
 

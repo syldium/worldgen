@@ -1,5 +1,6 @@
-import React, { useCallback } from 'react';
 import { ConfInput, NumberInput } from '../../../ui/Input';
+import React, { useCallback } from 'react';
+
 import { BlockStateProvider } from '../../state/BlockStateProvider';
 import { BlocksList } from '../../state/BlockState';
 import { RANDOM_PATCH_FEATURE_CONFIG } from './FeatureConfigDefaults';

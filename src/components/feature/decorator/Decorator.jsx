@@ -1,10 +1,11 @@
-import React, { useCallback, useState, useMemo, useEffect } from 'react';
+import { CARVERS_OPTIONS, DECORATORS_OPTIONS, DECORATOR_CARVING_MASK_DEFAULTS, DECORATOR_DECORATED_DEFAULTS, DECORATOR_EXTRA_COUNT_DEFAULTS, DECORATOR_RANGE_DEFAULTS } from './DecoratorDefaults';
+import React, { useCallback, useEffect, useState } from 'react';
 import { SortableContainer, SortableElement } from 'react-sortable-hoc';
 import { useCrudPreset, useJsonEffect } from '../../../hooks/form';
+
 import { Button } from '../../../ui/Button';
-import Select from '../../../ui/Select';
-import { DECORATORS_OPTIONS, DECORATOR_EXTRA_COUNT_DEFAULTS, DECORATOR_DECORATED_DEFAULTS, DECORATOR_RANGE_DEFAULTS, DECORATOR_CARVING_MASK_DEFAULTS, CARVERS_OPTIONS } from './DecoratorDefaults';
 import { NumberInput } from '../../../ui/Input';
+import Select from '../../../ui/Select';
 import { UniformInt } from '../../utils/UniformInt';
 
 export const DecoratorsList = React.memo(function({data, onChange}) {
@@ -46,12 +47,9 @@ const Decorator = React.memo(SortableElement(function({children, data = { type: 
     }, []);
     useJsonEffect(decorator, data, onChange);
 
-    const selected = useMemo(function() {
-        return options.find(o => o.value === decorator.type);
-    }, [decorator.type, options]);
     return <li className="sortable-item">
         <div className="form-group form-row">
-            <div style={{ flexGrow: 1 }}><Select options={options} value={selected} onChange={handleSelectChange} /></div>
+            <div style={{ flexGrow: 1 }}><Select options={options} value={options.find(o => o.value === decorator.type)} onChange={handleSelectChange} /></div>
             {children}
         </div>
         <div className="form-group form-row">

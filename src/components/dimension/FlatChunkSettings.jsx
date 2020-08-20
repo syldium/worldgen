@@ -1,11 +1,12 @@
+import { ConfInput, NumberInput } from '../../ui/Input';
 import React, { useCallback } from 'react';
-import { FixedBiomeSource } from './BiomeSource';
-import { useCrudPreset, useJsonEffect } from '../../hooks/form';
-import { NumberInput, ConfInput } from '../../ui/Input';
-import { Button } from '../../ui/Button';
-import { Structures } from '../noise/Structures';
-import { BlockSelect } from '../state/BlockPredicate';
 import { SortableContainer, SortableElement } from 'react-sortable-hoc';
+import { useCrudPreset, useJsonEffect } from '../../hooks/form';
+
+import { BlockSelect } from '../state/BlockPredicate';
+import { Button } from '../../ui/Button';
+import { FixedBiomeSource } from './BiomeSource';
+import { Structures } from '../noise/Structures';
 
 export const FlatChunkSettings = React.memo(function ({ settings, onChange }) {
 

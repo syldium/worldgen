@@ -1,7 +1,8 @@
-import { useReducer, useState, useCallback, useEffect, useContext, useMemo } from "react";
-import { useKeyedListOptions } from "./context";
+import { useCallback, useContext, useEffect, useMemo, useReducer, useState } from "react";
+
 import { DataContext } from "../context/DataContext";
 import arrayMove from "array-move";
+import { useKeyedListOptions } from "./context";
 
 function crudReducer(state, action) {
     switch (action.type) {

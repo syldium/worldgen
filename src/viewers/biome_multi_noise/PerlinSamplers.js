@@ -1,4 +1,5 @@
-import { grad, INT_MAX_VALUE, INT_MIN_VALUE, lerp3, perlinFade } from '../../utils/math';
+import { INT_MAX_VALUE, INT_MIN_VALUE, grad, lerp3, perlinFade } from '../../utils/math';
+
 import Random from 'java-random';
 
 export class DoublePerlinSampler {

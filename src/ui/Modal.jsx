@@ -1,7 +1,8 @@
 import React, { useEffect } from 'react';
+
+import { Button } from './Button';
 import { createPortal } from 'react-dom';
 import useModal from '@delangle/use-modal';
-import { Button } from './Button';
 
 export const Modal = ({ children, open, onClose }) => {
     const modal = useModal({ open, onClose: () => onClose(false) });

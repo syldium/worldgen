@@ -1,10 +1,11 @@
-import React, { useCallback, useState, useContext } from 'react';
+import { ColorInput, ConfInput, NumberInput } from '../../ui/Input';
 import { PARTICLES, PARTICLE_DEFAULTS } from './BiomeDefaults';
-import { NumberInput, ConfInput, ColorInput } from '../../ui/Input';
-import Select from '../../ui/Select';
+import React, { useCallback, useContext, useState } from 'react';
+
 import { BlockState } from '../state/BlockState';
-import { useJsonEffect } from '../../hooks/form';
 import { DataContext } from '../../context/DataContext';
+import Select from '../../ui/Select';
+import { useJsonEffect } from '../../hooks/form';
 
 export const BiomeEffects = React.memo(function ({ effects, onChange }) {
 

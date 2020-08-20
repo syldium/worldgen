@@ -1,17 +1,18 @@
+import { ConfInput, NumberInput } from '../../ui/Input';
+import { MULTI_NOISE_BIOME_SOURCE, NOISES_NAMES } from './DimensionDefaults';
 import React, { useCallback, useContext, useEffect } from 'react';
-import Select from '../../ui/Select';
+import { capitalize, hasDuplicatedObjects } from '../../utils/data';
+
+import { Button } from '../../ui/Button';
+import { DataContext } from '../../context/DataContext';
+import { MultiNoiseRepresentation } from './MultiNoiseBiomeSource';
+import { NumberList } from '../../ui/NumberList';
 import { SeedField } from './DimensionGenerator';
+import Select from '../../ui/Select';
+import { useCrudPreset } from '../../hooks/form';
 import { useKeyedListOptions } from '../../hooks/context';
 import { useMemo } from 'react';
-import { useCrudPreset } from '../../hooks/form';
 import { useToggle } from '../../hooks/ui';
-import { DataContext } from '../../context/DataContext';
-import { Button } from '../../ui/Button';
-import { capitalize, hasDuplicatedObjects } from '../../utils/data';
-import { NumberList } from '../../ui/NumberList';
-import { MULTI_NOISE_BIOME_SOURCE, NOISES_NAMES } from './DimensionDefaults';
-import { NumberInput, ConfInput } from '../../ui/Input';
-import { MultiNoiseRepresentation } from './MultiNoiseBiomeSource';
 
 export const BiomeSource = React.memo(function({source = { type: 'minecraft:fixed' }, onChange}) {
 
@@ -174,7 +175,7 @@ const PerlinNoiseParameters = React.memo(function({children, noise = { firstOcta
         <legend>{children}</legend>
         <div className="form-group form-row">
             <NumberInput id="firstOctave" value={noise.firstOctave} onChange={handleFirstOctaveChange} min={-1000}>First octave</NumberInput>
-            <NumberList numbers={noise.amplitudes} onChange={handleAmplitudesChange}>Amplitudes</NumberList>
+            <NumberList numbers={noise.amplitudes} step={0.1} onChange={handleAmplitudesChange}>Amplitudes</NumberList>
         </div>
     </fieldset>;
 });

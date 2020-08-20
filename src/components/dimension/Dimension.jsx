@@ -1,10 +1,11 @@
 import React, { useCallback, useState } from 'react';
-import { DimensionType } from './DimensionType';
-import { DimensionGenerator } from './DimensionGenerator';
+
 import { Button } from '../../ui/Button';
 import { DIMENSION } from './DimensionDefaults';
-import { NamespacedKey } from '../NamespacedKey';
+import { DimensionGenerator } from './DimensionGenerator';
+import { DimensionType } from './DimensionType';
 import { JsonViewer } from '../../ui/JsonViewer';
+import { NamespacedKey } from '../NamespacedKey';
 
 export function Dimension({data = DIMENSION, onSave}) {
 

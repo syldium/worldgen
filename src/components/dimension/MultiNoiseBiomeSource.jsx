@@ -1,8 +1,9 @@
-import React, { useCallback, useRef, useState, useEffect } from 'react';
-import { useToggle } from '../../hooks/ui';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+
 import { Button } from '../../ui/Button';
 import { MultiNoiseDimension } from '../../viewers/biome_multi_noise/MultiNoiseDimension';
 import { integerColorToHex } from '../../utils/color';
+import { useToggle } from '../../hooks/ui';
 
 export const MultiNoiseRepresentation = React.memo(function ({ source }) {
 

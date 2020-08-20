@@ -1,16 +1,17 @@
 import React, { useCallback, useContext, useState } from 'react';
-import { NamespacedKey } from "../NamespacedKey";
-import { VANILLA_CARVERS } from './CarverDefaults';
-import { useKeyedListOptions } from '../../hooks/context';
-import { DataContext } from '../../context/DataContext';
-import { useJsonEffect } from '../../hooks/form';
+
 import { Button } from '../../ui/Button';
-import { NumberInput } from '../../ui/Input';
+import { DataContext } from '../../context/DataContext';
 import { JsonViewer } from '../../ui/JsonViewer';
-import Select from '../../ui/Select';
 import { Modal } from '../../ui/Modal';
-import { useToggle } from '../../hooks/ui';
+import { NamespacedKey } from "../NamespacedKey";
+import { NumberInput } from '../../ui/Input';
+import Select from '../../ui/Select';
+import { VANILLA_CARVERS } from './CarverDefaults';
 import { useInlineResources } from '../../hooks/select';
+import { useJsonEffect } from '../../hooks/form';
+import { useKeyedListOptions } from '../../hooks/context';
+import { useToggle } from '../../hooks/ui';
 
 export const ConfiguredCarver = React.memo(function({ carvers, onChange }) {
 

@@ -1,9 +1,10 @@
-import React, { useCallback, useMemo } from 'react';
 import { ConfInput, NumberInput } from '../../../ui/Input';
-import { useBlocksOptions } from '../../../hooks/form';
+import React, { useCallback, useMemo } from 'react';
+
 import { BlockSelect } from '../../state/BlockPredicate';
 import { BlocksNamesList } from '../../state/BlockState';
 import { HUGE_FUNGUS_FEATURE_CONFIG } from './FeatureConfigDefaults';
+import { useBlocksOptions } from '../../../hooks/form';
 
 export function SpringFeature({ configuration = HUGE_FUNGUS_FEATURE_CONFIG, onChange }) {
 

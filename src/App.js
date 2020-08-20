@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
 import './styles/App.scss';
-import { Datapack } from './components/Datapack';
+import React, { useState } from 'react';
 import { DataContextProvider } from './context/DataContext';
+import { Datapack } from './components/Datapack';
 import { DatapackForm } from './components/DatapackForm';
 
 function App() {

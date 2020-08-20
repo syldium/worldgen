@@ -1,5 +1,6 @@
-import React, { useCallback } from 'react';
 import { BlockState, BlocksList } from '../../state/BlockState';
+import React, { useCallback } from 'react';
+
 import { NumberInput } from '../../../ui/Input';
 import { UniformInt } from '../../utils/UniformInt';
 

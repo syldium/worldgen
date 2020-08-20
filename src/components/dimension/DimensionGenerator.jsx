@@ -1,11 +1,12 @@
-import React, { useState, useCallback, useEffect } from 'react';
-import { BiomeSource } from './BiomeSource';
-import { hashCode } from './../../utils/hash';
-import Select from '../../ui/Select';
-import { ConfInput } from '../../ui/Input';
 import { CHUNK_GENERATOR_TYPES, DIMENSION } from './DimensionDefaults';
+import React, { useCallback, useEffect, useState } from 'react';
+
+import { BiomeSource } from './BiomeSource';
+import { ConfInput } from '../../ui/Input';
 import { FlatChunkSettings } from './FlatChunkSettings';
 import { NoiseGenerator } from '../noise/NoiseSettings';
+import Select from '../../ui/Select';
+import { hashCode } from './../../utils/hash';
 
 export function DimensionGenerator({generator, onChange}) {
 

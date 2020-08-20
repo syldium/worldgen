@@ -1,6 +1,7 @@
 import React, { useCallback, useMemo } from 'react';
-import Select from '../../ui/Select';
+
 import { STARTS } from './BiomeDefaults';
+import Select from '../../ui/Select';
 import { useJsonEffect } from '../../hooks/form';
 
 export const BiomeStarts = React.memo(function({onChange, starts}) {

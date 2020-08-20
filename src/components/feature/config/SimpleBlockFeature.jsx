@@ -1,5 +1,5 @@
+import { BlockState, BlocksList } from '../../state/BlockState';
 import React, { useCallback } from 'react';
-import { BlocksList, BlockState } from '../../state/BlockState';
 
 export function SimpleBlockFeature({ configuration, onChange }) {
 

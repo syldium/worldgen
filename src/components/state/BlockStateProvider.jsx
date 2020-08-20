@@ -1,10 +1,11 @@
 import React, { useCallback, useMemo } from "react";
-import Select from "../../ui/Select";
+import { useBlocksOptions, useCrudPreset } from "../../hooks/form";
+
+import { BlockState } from "./BlockState";
 import { Button } from '../../ui/Button';
 import { NumberInput } from '../../ui/Input';
+import Select from "../../ui/Select";
 import { useEffect } from "react";
-import { useCrudPreset, useBlocksOptions } from "../../hooks/form";
-import { BlockState } from "./BlockState";
 
 export const BlockStateProvider = React.memo(function({block = { type: 'minecraft:simple_state_provider' }, onChange}) {
     const options = useMemo(function() {

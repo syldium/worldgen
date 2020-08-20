@@ -1,17 +1,18 @@
+import { ConfInput, NumberInput } from '../../ui/Input';
 import React, { useCallback, useState } from 'react';
-import { NamespacedKey } from '../NamespacedKey';
+
+import { BIOME_DEFAULTS } from './BiomeDefaults';
 import { BiomeEffects } from './BiomeEffects';
 import { BiomeSpawners } from './BiomeSpawners';
 import { BiomeStarts } from './BiomeStarts';
-import { GenFeatures } from './Features';
-import { useKeyedListOptions } from '../../hooks/context';
-import { BIOME_DEFAULTS } from './BiomeDefaults';
-import { ConfiguredCarver } from '../carver/ConfiguredCarver';
 import { Button } from '../../ui/Button';
-import { ConfInput, NumberInput } from '../../ui/Input';
-import { JsonViewer } from '../../ui/JsonViewer';
-import Select from '../../ui/Select';
+import { ConfiguredCarver } from '../carver/ConfiguredCarver';
+import { GenFeatures } from './Features';
 import { INT_MIN_VALUE } from '../../utils/math';
+import { JsonViewer } from '../../ui/JsonViewer';
+import { NamespacedKey } from '../NamespacedKey';
+import Select from '../../ui/Select';
+import { useKeyedListOptions } from '../../hooks/context';
 
 export function Biome({data = BIOME_DEFAULTS, onSave}) {
 

@@ -1,9 +1,10 @@
-import React, { useState, useCallback, useRef, useMemo, useContext, useEffect } from 'react';
-import { useToggle } from '../hooks/ui';
+import React, { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
+
+import { Button } from '../ui/Button';
+import { DataContext } from '../context/DataContext';
 import Select from '../ui/Select';
 import { useKeyedListOptions } from '../hooks/context';
-import { DataContext } from '../context/DataContext';
-import { Button } from '../ui/Button';
+import { useToggle } from '../hooks/ui';
 
 export function NamespacedKey({ children, example = 'daily_resource', type, value = '', expectBreakage = false, inline = true, mayReplaceVanilla = true, defaultReplace = false, onChange, onSelect, onSelectLoad }) {
     // To trigger form submit

@@ -1,11 +1,12 @@
 import React, { useCallback, useMemo } from 'react';
-import { useCrudPreset } from '../../../hooks/form';
-import { TREE_DECORATORS_OPTIONS } from './FeatureConfigDefaults';
+
 import { BlockStateProvider } from '../../state/BlockStateProvider';
 import { Button } from '../../../ui/Button';
 import { NumberInput } from '../../../ui/Input';
 import Select from '../../../ui/Select';
+import { TREE_DECORATORS_OPTIONS } from './FeatureConfigDefaults';
 import { UniformInt } from '../../utils/UniformInt';
+import { useCrudPreset } from '../../../hooks/form';
 
 export function TreeFeature({configuration, onChange}) {
 

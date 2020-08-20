@@ -1,11 +1,12 @@
-import React, { useCallback, useContext, useMemo } from "react";
-import Select from "../../ui/Select";
-import { BlockSelect } from "./BlockPredicate";
-import { DataContext } from "../../context/DataContext";
-import { Button } from '../../ui/Button';
-import { getStateValue } from "../../utils/data";
-import { useCrudPreset, useBlocksOptions } from "../../hooks/form";
 import { ConfInput, NumberInput } from "../../ui/Input";
+import React, { useCallback, useContext, useMemo } from "react";
+import { useBlocksOptions, useCrudPreset } from "../../hooks/form";
+
+import { BlockSelect } from "./BlockPredicate";
+import { Button } from '../../ui/Button';
+import { DataContext } from "../../context/DataContext";
+import Select from "../../ui/Select";
+import { getStateValue } from "../../utils/data";
 
 export const BlockState = React.memo(function ({ block = {}, children, className = 'form-group', inputId, name, onChange, options }) {
     const context = useContext(DataContext);

@@ -1,5 +1,5 @@
-import React from 'react';
 import { NumberInput } from '../../../ui/Input';
+import React from 'react';
 
 export function ProbabilityFeature({ configuration, onChange }) {
 

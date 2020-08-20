@@ -1,5 +1,5 @@
-import React from 'react';
 import { DarkModeToggle } from './DarkModeToggle';
+import React from 'react';
 
 export function MenuItem({active, children, onClick}) {
     return <li><a href="#_" role="menuitem" aria-current={active} onClick={onClick}>{children}</a></li>

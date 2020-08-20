@@ -1,14 +1,15 @@
-import React, { useCallback, useContext, useState } from 'react';
-import { DataContext } from '../../context/DataContext';
-import { OVERWORLD_DIMENSION_TYPE, THE_NETHER_DIMENSION_TYPE, THE_END_DIMENSION_TYPE, OVERWORLD_CAVES_DIMENSION_TYPE, DIMENSION_TYPE_INFINIBURN, DIMENSION_TYPE_EFFECTS } from './DimensionDefaults';
-import { useKeyedListOptions } from '../../hooks/context';
-import { useToggle } from '../../hooks/ui';
 import { ConfInput, NumberInput } from '../../ui/Input';
+import { DIMENSION_TYPE_EFFECTS, DIMENSION_TYPE_INFINIBURN, OVERWORLD_CAVES_DIMENSION_TYPE, OVERWORLD_DIMENSION_TYPE, THE_END_DIMENSION_TYPE, THE_NETHER_DIMENSION_TYPE } from './DimensionDefaults';
+import React, { useCallback, useContext, useState } from 'react';
+
+import { Button } from '../../ui/Button';
+import { DataContext } from '../../context/DataContext';
 import { JsonViewer } from '../../ui/JsonViewer';
 import { Modal } from '../../ui/Modal';
-import Select from '../../ui/Select';
-import { Button } from '../../ui/Button';
 import { NamespacedKey } from '../NamespacedKey';
+import Select from '../../ui/Select';
+import { useKeyedListOptions } from '../../hooks/context';
+import { useToggle } from '../../hooks/ui';
 
 export function DimensionType({ type = 'minecraft:overworld', onChange }) {
     const [open, toggleModal] = useToggle();

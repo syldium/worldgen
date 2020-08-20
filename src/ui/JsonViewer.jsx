@@ -1,7 +1,8 @@
 import React, { useCallback } from 'react';
+
+import { JsonView } from 'json-view-for-react'
 import { Modal } from './Modal';
 import { useToggle } from '../hooks/ui';
-import { JsonView } from 'json-view-for-react'
 
 export function JsonViewer({ data }) {
     const [open, toggleModal] = useToggle();

@@ -1,15 +1,16 @@
+import { ConfInput, NumberInput } from '../../ui/Input';
 import React, { useCallback, useState } from 'react';
+
 import { BlockState } from '../state/BlockState';
 import { Button } from '../../ui/Button';
-import { JsonViewer } from '../../ui/JsonViewer';
-import { ConfInput, NumberInput } from '../../ui/Input';
-import Select from '../../ui/Select';
-import { useValueChange } from '../../hooks/form';
-import { OVERWORLD_NOISE } from './NoiseDefaults';
-import { Structures } from './Structures';
-import { NamespacedKey } from '../NamespacedKey';
 import { INT_MIN_VALUE } from '../../utils/math';
+import { JsonViewer } from '../../ui/JsonViewer';
+import { NamespacedKey } from '../NamespacedKey';
+import { OVERWORLD_NOISE } from './NoiseDefaults';
+import Select from '../../ui/Select';
+import { Structures } from './Structures';
 import { useKeyedListOptions } from '../../hooks/context';
+import { useValueChange } from '../../hooks/form';
 
 export const NoiseGenerator = React.memo(function({onChange, settings = 'minecraft:overworld'}) {
     const options = useKeyedListOptions('noises').map(option => {
