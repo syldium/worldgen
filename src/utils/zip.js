@@ -1,13 +1,13 @@
 import JSZip from "jszip";
-import { saveAs } from "file-saver";
-import { dataUpper } from "./data";
 import { PATHS } from "../context/Paths";
+import { dataUpper } from "./data";
+import { saveAs } from "file-saver";
 
 const DIMENSIONS_PATH = /^data\/([a-z0-9_.-]+)\/(dimension|dimension_type)\/([a-z0-9/._-]+).json$/;
-const WORLDGEN_PATH = /^data\/([a-z0-9_.-]+)\/worldgen\/(biome|configured_carver|configured_feature|configured_surface_builder|noise_settings)\/([a-z0-9/._-]+).json$/;
+const WORLDGEN_PATH = /^data\/([a-z0-9_.-]+)\/worldgen\/(biome|configured_carver|configured_feature|configured_surface_builder|noise_settings|processor_list)\/([a-z0-9/._-]+).json$/;
 
 const LEGACY_DIMENSIONS_PATH = /^data\/minecraft\/(dimension|dimension_type)\/([a-z0-9_.-]+)\/([a-z0-9/._-]+).json$/;
-const LEGACY_WORLDGEN_PATH = /^data\/minecraft\/worldgen\/(biome|configured_carver|configured_feature|configured_surface_builder|noise_settings)\/([a-z0-9_.-]+)\/([a-z0-9/._-]+).json$/;
+const LEGACY_WORLDGEN_PATH = /^data\/minecraft\/worldgen\/(biome|configured_carver|configured_feature|configured_surface_builder|noise_settings|processor_list)\/([a-z0-9_.-]+)\/([a-z0-9/._-]+).json$/;
 
 /**
  * Build zip in blob.
@@ -70,6 +70,7 @@ async function extractDatapack(zip) {
         dimension_types: [],
         features: [],
         noises: [],
+        processors: [],
         surfaces: []
     };
 
@@ -123,6 +124,8 @@ function getFolderType(folder) {
             return 'surfaces';
         case 'noise_settings':
             return 'noises';
+        case 'processor_list':
+            return 'processors';
         default:
             return folder + 's';
     }

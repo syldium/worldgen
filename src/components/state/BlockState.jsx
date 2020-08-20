@@ -48,7 +48,7 @@ export const BlockState = React.memo(function ({ block = {}, children, className
     </div>;
 });
 
-export const BlocksList = React.memo(function ({ list, onChange }) {
+export const BlocksList = React.memo(function ({ addButton = true, list, onChange }) {
     const options = useBlocksOptions();
 
     const [blocks, handleAdd, handleChange, handleRemove] = useCrudPreset(onChange, list, function (blocks) {
@@ -63,7 +63,7 @@ export const BlocksList = React.memo(function ({ list, onChange }) {
                 <Button cat="danger mlm" onClick={e => handleRemove(e, i)}>Remove</Button>
             </BlockState>
         })}
-        <Button onClick={handleAdd}>Add block</Button>
+        {addButton && <Button onClick={handleAdd}>Add block</Button>}
     </div>;
 });
 

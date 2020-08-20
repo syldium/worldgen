@@ -1,4 +1,4 @@
-import { TREE_FEATURE_CONFIG, RANDOM_PATCH_FEATURE_CONFIG, HUGE_FUNGUS_FEATURE_CONFIG, BLOCK_PILE_FEATURE_CONFIG, SPRING_FEATURE_CONFIG, ORE_FEATURE_CONFIG } from "./config/FeatureConfigDefaults";
+import { BLOCK_PILE_FEATURE_CONFIG, HUGE_FUNGUS_FEATURE_CONFIG, ORE_FEATURE_CONFIG, RANDOM_PATCH_FEATURE_CONFIG, SPRING_FEATURE_CONFIG, TREE_FEATURE_CONFIG } from "./config/FeatureConfigDefaults";
 
 export const DECORATED_BAMBOO_CONFIG = {
     config: {
@@ -694,6 +694,51 @@ export const DECORATED_SIMPLE_BLOCK_CONFIG = {
                 probability: 0.1
             },
             type: "minecraft:carving_mask"
+        }
+    },
+    type: "minecraft:decorated"
+};
+
+
+export const DECORATED_RANDOM_SELECTOR_CONFIG = {
+    config: {
+        feature: {
+            config: {
+                feature: {
+                    config: {
+                        features: [
+                            {
+                                feature: "minecraft:fancy_oak_bees_005",
+                                chance: 0.33333334
+                            }
+                        ],
+                        default: "minecraft:oak_bees_005"
+                    },
+                    type: "minecraft:random_selector"
+                },
+                decorator: {
+                    config: {
+                        outer: {
+                            config: {},
+                            type: "minecraft:square"
+                        },
+                        inner: {
+                            config: {},
+                            type: "minecraft:heightmap"
+                        }
+                    },
+                    type: "minecraft:decorated"
+                }
+            },
+            type: "minecraft:decorated"
+        },
+        decorator: {
+            config: {
+                count: 0,
+                extra_chance: 0.05,
+                extra_count: 1
+            },
+            type: "minecraft:count_extra"
         }
     },
     type: "minecraft:decorated"

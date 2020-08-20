@@ -1,19 +1,21 @@
+import { MenuItem, NavBar } from './../ui/Menu';
 import React, { useContext, useEffect } from 'react';
+
 import { Biome } from './biome/Biome';
 import { Button } from './../ui/Button';
-import { MenuItem, NavBar } from './../ui/Menu';
+import { ConfiguredCarverForm } from './carver/ConfiguredCarver';
+import { DataContext } from './../context/DataContext';
 import { Dimension } from './dimension/Dimension';
 import { DimensionTypeForm } from './dimension/DimensionType';
-import { DataContext } from './../context/DataContext';
-import { RawConfiguredFeature } from './feature/ConfiguredFeature';
-import { capitalize } from '../utils/data';
-import { buildZip } from '../utils/zip';
-import { SurfaceBuilder } from './surface/SurfaceBuilder';
+import Masonry from 'masonry-layout';
 import { NoiseSettings } from './noise/NoiseSettings';
+import { ProcessorList } from './processor/ProcessorList';
+import { RawConfiguredFeature } from './feature/ConfiguredFeature';
+import { SurfaceBuilder } from './surface/SurfaceBuilder';
+import { buildZip } from '../utils/zip';
+import { capitalize } from '../utils/data';
 import { displayNamespacedKey } from '../utils/data';
 import { useMenu } from '../hooks/ui';
-import { ConfiguredCarverForm } from './carver/ConfiguredCarver';
-import Masonry from 'masonry-layout';
 
 export function Datapack() {
     const context = useContext(DataContext);
@@ -57,6 +59,7 @@ export function Datapack() {
                 <MenuItem onClick={e => setMenu(e, 'feature')} active={page === 'feature'}>Feature</MenuItem>
                 <MenuItem onClick={e => setMenu(e, 'dimension')} active={page === 'dimension'}>Dimension</MenuItem>
                 <MenuItem onClick={e => setMenu(e, 'noise')} active={page === 'noise'}>Noise</MenuItem>
+                <MenuItem onClick={e => setMenu(e, 'processor')} active={page === 'processor'}>Processor</MenuItem>
             </ul></nav>
         </NavBar>
         <div className="content">
@@ -65,6 +68,7 @@ export function Datapack() {
             {page === 'surface' && <SurfaceBuilder onSave={surface => handleSave('surface', surface)} data={custom.surfaces[index]} />}
             {page === 'feature' && <RawConfiguredFeature onSave={feature => handleSave('feature', feature)} data={custom.features[index]} />}
             {page === 'noise' && <NoiseSettings onSave={noise => handleSave('noise', noise)} data={custom.noises[index]} />}
+            {page === 'processor' && <ProcessorList onSave={processor => handleSave('processor', processor)} data={custom.processors[index]} />}
             {page === 'dimension' && <Dimension onSave={dimension => handleSave('dimension', dimension)} data={custom.dimensions[index]} />}
             {page === 'dimension_type' && <DimensionTypeForm onSave={dimension => handleSave('dimension_type', dimension)} data={custom.dimension_types[index]} />}
             {page === 'main' && <>
@@ -75,7 +79,7 @@ export function Datapack() {
     </div>
 }
 
-function Main({custom, namespace, onSave, setPage}) {
+function Main({namespace, onSave, setPage}) {
 
     useEffect(() => {
         new Masonry( '.stats', {
@@ -93,6 +97,7 @@ function Main({custom, namespace, onSave, setPage}) {
         <StatsTitle type="noise" namespace={namespace} onClick={setPage} onDelete={onSave}>custom noise</StatsTitle>
         <StatsTitle type="dimension_type" namespace={namespace} onClick={setPage} onDelete={onSave} invisible={true}>custom dimension type</StatsTitle>
         
+        <StatsTitle type="processor" namespace={namespace} onClick={setPage} onDelete={onSave}>custom processor list</StatsTitle>
         <StatsTitle type="carver" namespace={namespace} onClick={setPage} onDelete={onSave} invisible={true}>custom carver</StatsTitle>
         <div>
         </div>

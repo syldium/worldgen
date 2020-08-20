@@ -1,13 +1,15 @@
-import React, { useCallback, useState, useEffect } from 'react';
-import { jsonFetch } from '../utils/fetch';
-import { VANILLA_FEATURES } from '../components/feature/VanillaFeatures';
-import { useData } from '../hooks/context';
-import { VANILLA_SURFACE_BUILDERS } from '../components/surface/SurfaceBuilderDefaults';
-import { VANILLA_NOISES } from '../components/noise/NoiseDefaults';
-import { VANILLA_DIMENSION_TYPES } from '../components/dimension/DimensionDefaults';
-import { VANILLA_CARVERS } from '../components/carver/CarverDefaults';
+import React, { useCallback, useEffect, useState } from 'react';
+
 import JSZip from 'jszip';
+import { VANILLA_CARVERS } from '../components/carver/CarverDefaults';
+import { VANILLA_DIMENSION_TYPES } from '../components/dimension/DimensionDefaults';
+import { VANILLA_FEATURES } from '../components/feature/VanillaFeatures';
+import { VANILLA_NOISES } from '../components/noise/NoiseDefaults';
+import { VANILLA_PROCESSORS } from '../components/processor/ProcessorDefaults';
+import { VANILLA_SURFACE_BUILDERS } from '../components/surface/SurfaceBuilderDefaults';
 import { getAbsolutePath } from './Paths';
+import { jsonFetch } from '../utils/fetch';
+import { useData } from '../hooks/context';
 
 export const DataContext = React.createContext({
     vanilla: {
@@ -19,6 +21,7 @@ export const DataContext = React.createContext({
         entities: [],
         features: [],
         noises: [],
+        processors: [],
         sounds: [],
         surfaces: [],
         /**
@@ -93,10 +96,10 @@ export function DataContextProvider({children, namespace, initial = {}}) {
         } else if (zip instanceof Error) {
             return Promise.reject(zip);
         }
-        const relative = getAbsolutePath(type, 'minecraft', key).substr(15).replace('minecraft:', '');
-        const file = zip.file(relative);
+        const absolute = getAbsolutePath(type, 'minecraft', key).substr(15).replace('minecraft:', '');
+        const file = zip.file(absolute);
         if (file === null) {
-            return Promise.reject(new Error('Unable to find the associated vanilla file.'));
+            return Promise.reject(new Error(`Unable to find the associated vanilla file (tested ${absolute}).`));
         }
         return Promise.resolve(JSON.parse(await file.async('text')));
     }, [vanillaZip]);
@@ -111,6 +114,7 @@ export function DataContextProvider({children, namespace, initial = {}}) {
             entities,
             features: VANILLA_FEATURES,
             noises: VANILLA_NOISES,
+            processors: VANILLA_PROCESSORS,
             sounds,
             surfaces: VANILLA_SURFACE_BUILDERS,
             getVanillaResource
