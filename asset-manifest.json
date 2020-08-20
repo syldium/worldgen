@@ -1,22 +1,22 @@
 {
   "files": {
     "main.css": "/worldgen/static/css/main.4406e3ec.chunk.css",
-    "main.js": "/worldgen/static/js/main.4ffece59.chunk.js",
-    "main.js.map": "/worldgen/static/js/main.4ffece59.chunk.js.map",
+    "main.js": "/worldgen/static/js/main.d47ccef7.chunk.js",
+    "main.js.map": "/worldgen/static/js/main.d47ccef7.chunk.js.map",
     "runtime-main.js": "/worldgen/static/js/runtime-main.f1f42b5a.js",
     "runtime-main.js.map": "/worldgen/static/js/runtime-main.f1f42b5a.js.map",
-    "static/js/2.da1d6797.chunk.js": "/worldgen/static/js/2.da1d6797.chunk.js",
-    "static/js/2.da1d6797.chunk.js.map": "/worldgen/static/js/2.da1d6797.chunk.js.map",
+    "static/js/2.f449960c.chunk.js": "/worldgen/static/js/2.f449960c.chunk.js",
+    "static/js/2.f449960c.chunk.js.map": "/worldgen/static/js/2.f449960c.chunk.js.map",
     "index.html": "/worldgen/index.html",
-    "precache-manifest.f9fb2c03a9c49552cba24c11b1fe7b25.js": "/worldgen/precache-manifest.f9fb2c03a9c49552cba24c11b1fe7b25.js",
+    "precache-manifest.7919b6b861ac00fe545bb8d778d41a1c.js": "/worldgen/precache-manifest.7919b6b861ac00fe545bb8d778d41a1c.js",
     "service-worker.js": "/worldgen/service-worker.js",
     "static/css/main.4406e3ec.chunk.css.map": "/worldgen/static/css/main.4406e3ec.chunk.css.map",
-    "static/js/2.da1d6797.chunk.js.LICENSE.txt": "/worldgen/static/js/2.da1d6797.chunk.js.LICENSE.txt"
+    "static/js/2.f449960c.chunk.js.LICENSE.txt": "/worldgen/static/js/2.f449960c.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
     "static/js/runtime-main.f1f42b5a.js",
-    "static/js/2.da1d6797.chunk.js",
+    "static/js/2.f449960c.chunk.js",
     "static/css/main.4406e3ec.chunk.css",
-    "static/js/main.4ffece59.chunk.js"
+    "static/js/main.d47ccef7.chunk.js"
   ]
 }
