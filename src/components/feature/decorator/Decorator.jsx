@@ -105,7 +105,7 @@ const NoiseCountDecorator = React.memo(function({config, onChange}) {
     }, config, onChange);
 
     return <>
-        <NumberInput id="noise_level" value={config.noise_level} min={INT_MIN_VALUE} upChange={onChange}>Noise level</NumberInput>
+        <NumberInput id="noise_level" value={config.noise_level} min={INT_MIN_VALUE} step={0.1} upChange={onChange}>Noise level</NumberInput>
         <NumberInput id="below_noise" value={config.below_noise} upChange={onChange}>Below noise</NumberInput>
         <NumberInput id="above_noise" value={config.above_noise} upChange={onChange}>Above noise</NumberInput>
     </>

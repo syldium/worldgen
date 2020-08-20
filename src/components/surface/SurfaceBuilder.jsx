@@ -1,10 +1,11 @@
 import React, { useCallback, useState } from 'react';
+import { SURFACE_BUILDER, SURFACE_TYPES_OPTIONS } from './SurfaceBuilderDefaults';
+
 import { BlockState } from '../state/BlockState';
 import { Button } from '../../ui/Button';
 import { JsonViewer } from '../../ui/JsonViewer';
-import Select from '../../ui/Select';
-import { SURFACE_BUILDER, SURFACE_TYPES_OPTIONS } from './SurfaceBuilderDefaults';
 import { NamespacedKey } from '../NamespacedKey';
+import Select from '../../ui/Select';
 
 export function SurfaceBuilder({data = SURFACE_BUILDER, onSave}) {
     const [state, setState] = useState(data);
