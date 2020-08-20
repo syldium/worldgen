@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useContext, useMemo } from "react";
 
 import { BlockState } from "./BlockState";
 import { DataContext } from "../../context/DataContext";
@@ -7,8 +7,6 @@ import Select from "../../ui/Select";
 import { TAGS_OPTIONS } from "./Tags";
 
 export const BlockPredicate = React.memo(function({target, onChange}) {
-    const [predicate, setPredicate] = useState(target);
-
     const options = useMemo(function() {
         return [
             { value: 'minecraft:always_true', label: 'Always true' },
@@ -21,37 +19,32 @@ export const BlockPredicate = React.memo(function({target, onChange}) {
     }, []);
 
     const handleTypeChange = useCallback(function(option) {
-        setPredicate({ predicate_type: option.value });
-    }, []);
+        onChange({ predicate_type: option.value });
+    }, [onChange]);
     const handleBlockChange = useCallback(function(option) {
-        setPredicate(predicate => ({ ...predicate, block: option.value }));
-    }, []);
+        onChange({ ...target, block: option.value });
+    }, [target, onChange]);
     const handleBlockStateChange = useCallback(function(block_state) {
-        setPredicate(predicate => ({ ...predicate, block_state }));
-    }, []);
+        onChange({ ...target, block_state });
+    }, [target, onChange]);
     const handleTagChange = useCallback(function(option) {
-        setPredicate(predicate => ({ ...predicate, tag: option.value }));
-    }, []);
+        onChange({ ...target, tag: option.value });
+    }, [target, onChange]);
     const handleChange = useCallback(function(content) {
-        setPredicate(predicate => ({ ...predicate, ...content }));
-    }, []);
-    useEffect(() => {
-        if (predicate !== target) {
-            onChange(predicate, target);
-        }
-    }, [onChange, predicate, target]);
+        onChange({ ...target, ...content });
+    }, [target, onChange]);
 
-    const type = predicate.predicate_type;
+    const type = target.predicate_type;
 
     return <div>
         <label>Predicate type</label>
-        <Select options={options} value={options.find(o => o.value === predicate.predicate_type)} onChange={handleTypeChange} />
-        {type === 'minecraft:block_match' && <BlockSelect block={predicate.block} onChange={handleBlockChange} />}
-        {type === 'minecraft:blockstate_match' && <BlockState block={predicate.block_state} onChange={handleBlockStateChange} />}
+        <Select options={options} value={options.find(o => o.value === target.predicate_type)} onChange={handleTypeChange} />
+        {type === 'minecraft:block_match' && <BlockSelect block={target.block} onChange={handleBlockChange} />}
+        {type === 'minecraft:blockstate_match' && <BlockState block={target.block_state} onChange={handleBlockStateChange} />}
         {(type === 'minecraft:random_block_match' || type === 'minecraft:random_blockstate_match') &&
-            <RandomBlockMatch block={predicate.block} probability={predicate.probability} onChange={handleChange} type={type} />
+            <RandomBlockMatch block={target.block} probability={target.probability} onChange={handleChange} type={type} />
         }
-        {type === 'minecraft:tag_match' && <Select options={TAGS_OPTIONS} value={TAGS_OPTIONS.find(t => t.value === predicate.tag)} onChange={handleTagChange} />}
+        {type === 'minecraft:tag_match' && <Select options={TAGS_OPTIONS} value={TAGS_OPTIONS.find(t => t.value === target.tag)} onChange={handleTagChange} />}
     </div>;
 });
 
