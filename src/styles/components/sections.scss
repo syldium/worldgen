@@ -21,8 +21,7 @@ body {
         text-decoration: underline;
     }
 }
-h5 {
-    font-size: 1rem;
+h2, h5 {
     font-weight: 500;
 }
 hr {
@@ -47,6 +46,64 @@ ol.sortable-container {
 body > .sortable-item:hover {
     display: block;
     cursor: grabbing;
+}
+
+h2 button {
+    margin-left: 0.5rem
+}
+
+.stats {
+    margin-top: 1.5rem;
+    display: flex;
+    flex-wrap: wrap;
+
+    .card {
+        display: inline-block;
+        border: 1px solid rgba(0, 0, 0, 0.125);
+        min-height: 150px;
+        min-width: 290px;
+        margin-bottom: 1rem;
+    }
+
+    h5 {
+        padding: 0.5rem 1rem;
+        background-color: var(--bg-color-nav);
+        flex-grow: 0;
+        font-size: 1.05rem;
+        font-weight: 500;
+    }
+
+    ul {
+        list-style-type: none;
+        white-space: nowrap;
+        padding: 0;
+    }
+    li {
+        padding: 0.25rem 1.5rem 0 0.5rem;
+        display: flex;
+        align-items: center;
+        &:before {
+            content: "● ";
+            margin-right: -18px;
+            padding-left: 10px;
+        }
+
+        &:hover {
+            background-color: var(--bg-color-input-hover);
+
+            &:before {
+                content: "";
+                margin-right: -7px;
+            }
+
+            .delete {
+                opacity: 0.9;
+            }
+        }
+    }
+    a {
+        text-decoration: none;
+    }
 }
 
 @include respond-to("small") {

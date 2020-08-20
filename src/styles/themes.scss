@@ -2,6 +2,7 @@
     --bg-color-section: #fefefe;
     --bg-color-input: #fefefe;
     --bg-color-btn: #e7e9ed;
+    --bg-color-nav: #bbe3ff;
     --bg-color-input-hover: #f4f9ff;
     --bg-color-select-focus: #2684ff;
     --primary-color: #{darken($black, 6%)};
@@ -15,6 +16,7 @@
 .dark-mode {
     --bg-color-section: #262c35;
     --bg-color-input: #35404b;
+    --bg-color-nav: #1b2938;
     --bg-color-input-hover: #343e49;
     --bg-color-select-focus: #1b3a5a;
     --bg-color-btn: #424242;

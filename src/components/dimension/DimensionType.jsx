@@ -82,11 +82,11 @@ export function DimensionTypeForm({ data = OVERWORLD_DIMENSION_TYPE, onSave }) {
             ...config,
             ...Object.fromEntries(new FormData(e.target))
         });
-        updateDimensionTypes(d);
+        updateDimensionTypes(d, data);
         if (typeof onSave === 'function') {
             onSave(d);
         }
-    }, [config, onSave, updateDimensionTypes]);
+    }, [config, data, onSave, updateDimensionTypes]);
 
     return <form onSubmit={handleSubmit}>
         <NamespacedKey example="typed" type="dimension_types" value={data.key} onSelect={handleVanillaSelect} expectBreakage={typeof data.key !== 'undefined'}>

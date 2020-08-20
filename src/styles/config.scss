@@ -18,3 +18,7 @@ $variants-list: (
         dark: #c14f51
     ), $white, none)
 );
+
+@function min($numbers...) {
+    @return m#{i}n(#{$numbers})
+}

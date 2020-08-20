@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { Biome } from './biome/Biome';
 import { Button } from './../ui/Button';
 import { MenuItem, NavBar } from './../ui/Menu';
@@ -13,6 +13,7 @@ import { NoiseSettings } from './noise/NoiseSettings';
 import { displayNamespacedKey } from '../utils/data';
 import { useMenu } from '../hooks/ui';
 import { ConfiguredCarverForm } from './carver/ConfiguredCarver';
+import Masonry from 'masonry-layout';
 
 export function Datapack() {
     const context = useContext(DataContext);
@@ -21,18 +22,38 @@ export function Datapack() {
     const [page, index, setMenu] = useMenu();
 
     const handleSave = function (type, data) {
-        const method = 'update' + (type === 'surface' ? 'SurfacesBuilder' : capitalize(type)) + 's'
-        custom[method](data);
+        const method = 'update' + function () {
+            switch (type) {
+                case 'surface':
+                    return 'SurfacesBuilders';
+                case 'dimension_type':
+                    return 'DimensionTypes';
+                default:
+                    return capitalize(type) + 's';
+            }
+        }();
+        custom[method](data, custom[type + 's'][index]);
         setMenu(null);
     }
+    const handleGenerateClick = function(e) {
+        e.preventDefault();
+        buildZip(custom);
+    }
     window.scrollTo(0, 0);
+
+    const mayGenerate = Object.values(custom).some(content => {
+        if (Array.isArray(content)) {
+            return content.length;
+        }
+        return false;
+    });
 
     return <div>
         <NavBar>
             <nav className="tabs"><ul>
-                <MenuItem onClick={e => setMenu(e, 'stats')} active={page === 'stats'}>Stats</MenuItem>
+                <MenuItem onClick={e => setMenu(e, 'main')} active={page === 'main'}>Main</MenuItem>
                 <MenuItem onClick={e => setMenu(e, 'biome')} active={page === 'biome'}>Biome</MenuItem>
-                <MenuItem onClick={e => setMenu(e, 'surface')} active={page === 'surface'}>Surface builders</MenuItem>
+                <MenuItem onClick={e => setMenu(e, 'surface')} active={page === 'surface'}>Surface builder</MenuItem>
                 <MenuItem onClick={e => setMenu(e, 'feature')} active={page === 'feature'}>Feature</MenuItem>
                 <MenuItem onClick={e => setMenu(e, 'dimension')} active={page === 'dimension'}>Dimension</MenuItem>
                 <MenuItem onClick={e => setMenu(e, 'noise')} active={page === 'noise'}>Noise</MenuItem>
@@ -45,50 +66,60 @@ export function Datapack() {
             {page === 'feature' && <RawConfiguredFeature onSave={feature => handleSave('feature', feature)} data={custom.features[index]} />}
             {page === 'noise' && <NoiseSettings onSave={noise => handleSave('noise', noise)} data={custom.noises[index]} />}
             {page === 'dimension' && <Dimension onSave={dimension => handleSave('dimension', dimension)} data={custom.dimensions[index]} />}
-            {page === 'dimension_type' && <DimensionTypeForm onSave={dimension => handleSave('dimension', dimension)} data={custom.dimension_types[index]} />}
-            {page === 'stats' && <><h2>Datapack {namespace}</h2><Stats custom={custom} namespace={namespace} setPage={setMenu} /></>}
+            {page === 'dimension_type' && <DimensionTypeForm onSave={dimension => handleSave('dimension_type', dimension)} data={custom.dimension_types[index]} />}
+            {page === 'main' && <>
+                <h2>Datapack {namespace} <Button type="submit" onClick={handleGenerateClick} disabled={!mayGenerate}>Generate</Button></h2>
+                <Main custom={custom} namespace={namespace} onSave={handleSave} setPage={setMenu} />
+            </>}
         </div>
     </div>
 }
 
-function Stats({custom, namespace, setPage}) {
+function Main({custom, namespace, onSave, setPage}) {
 
-    const handleGenerateClick = function(e) {
-        e.preventDefault();
-        buildZip(custom);
-    }
+    useEffect(() => {
+        new Masonry( '.stats', {
+        itemSelector: '.card',
+        gutter: 15
+      });
+    }, []);
 
-    const mayGenerate = Object.values(custom).some(content => {
-        if (Array.isArray(content)) {
-            return content.length;
-        }
-        return false;
-    });
-
-    return <div className="mtm">
-        <StatsTitle data={custom.biomes} namespace={namespace} onClick={(e, i) => setPage(e, 'biome', i)}>custom biome</StatsTitle>
-        <StatsTitle data={custom.dimensions} namespace={namespace} onClick={(e, i) => setPage(e, 'dimension', i)}>custom dimension</StatsTitle>
-        <StatsTitle data={custom.dimension_types} namespace={namespace} onClick={(e, i) => setPage(e, 'dimension_type', i)} invisible={true}>custom dimension type</StatsTitle>
-        <StatsTitle data={custom.features} namespace={namespace} onClick={(e, i) => setPage(e, 'feature', i)}>configured feature</StatsTitle>
-        <StatsTitle data={custom.surfaces} namespace={namespace} onClick={(e, i) => setPage(e, 'surface', i)}>configured surface builder</StatsTitle>
-        <StatsTitle data={custom.noises} namespace={namespace} onClick={(e, i) => setPage(e, 'noise', i)}>custom noise</StatsTitle>
-        <StatsTitle data={custom.carvers} namespace={namespace} onClick={(e, i) => setPage(e, 'carver', i)} invisible={true}>custom carver</StatsTitle>
-        {mayGenerate && <p><Button type="submit" onClick={handleGenerateClick}>Generate</Button></p>}
+    return <div className="stats">
+        <StatsTitle type="feature" namespace={namespace} onClick={setPage} onDelete={onSave}>configured feature</StatsTitle>
+        <StatsTitle type="biome" namespace={namespace} onClick={setPage} onDelete={onSave}>custom biome</StatsTitle>
+        <StatsTitle type="surface" namespace={namespace} onClick={setPage} onDelete={onSave}>configured surface builder</StatsTitle>
+        
+        <StatsTitle type="dimension" namespace={namespace} onClick={setPage} onDelete={onSave}>custom dimension</StatsTitle>
+        <StatsTitle type="noise" namespace={namespace} onClick={setPage} onDelete={onSave}>custom noise</StatsTitle>
+        <StatsTitle type="dimension_type" namespace={namespace} onClick={setPage} onDelete={onSave} invisible={true}>custom dimension type</StatsTitle>
+        
+        <StatsTitle type="carver" namespace={namespace} onClick={setPage} onDelete={onSave} invisible={true}>custom carver</StatsTitle>
+        <div>
+        </div>
     </div>
 }
 
-function StatsTitle({ children, data, invisible = false, namespace, onClick }) {
+function StatsTitle({ children, type, invisible = false, namespace, onClick, onDelete }) {
+    const data = useContext(DataContext).custom[type + 's'];
     if (invisible && data.length < 1) {
         return <></>
     }
 
-    return <>
+    const handleRemove = function (e, data) {
+        e.preventDefault();
+        if (window.confirm('Do you really want to remove this resource?')) {
+            delete data.key;
+            onDelete(type, data);
+        }
+    };
+
+    return <div className="card">
         <h5><strong>{data.length}</strong> {children}{data.length > 1 && 's'}</h5>
         <ul>
             {data.map((d, i) => {
                 const name = displayNamespacedKey(d.key, namespace);
-                return <li key={i}><a href="#edit" onClick={(e) => onClick(e, i)}>{name}</a></li>
+                return <li key={i}><a href="#remove" onClick={e => handleRemove(e, d)}><i className="delete"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M6 2l2-2h4l2 2h4v2H2V2h4zM3 6h14l-1 14H4L3 6zm5 2v10h1V8H8zm3 0v10h1V8h-1z"/></svg></i></a><a href="#edit" onClick={e => onClick(e, type, i)}>{name}</a></li>
             })}
         </ul>
-    </>
+    </div>
 }

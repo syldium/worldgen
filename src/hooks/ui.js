@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 /**
  * @param {boolean} initial 
@@ -6,7 +6,7 @@ import { useState, useRef, useEffect } from "react";
  */
 export function useToggle(initial = false) {
     const [status, setState] = useState(initial);
-    const toggle = function (e = null) {
+    const toggle = useCallback(function (e = null) {
         if (e !== null && (typeof e === 'boolean' || typeof e.target.checked === 'boolean')) {
             setState(typeof e === 'boolean' ? e : e.target.checked);
             return;
@@ -16,7 +16,7 @@ export function useToggle(initial = false) {
             e.preventDefault();
         }
         setState(current => !current);
-    }
+    }, []);
     return [status, toggle];
 }
 
@@ -26,10 +26,10 @@ export function useToggle(initial = false) {
  * @param {number} [index] 
  * @returns {[string, number, function (SyntheticEvent, string, number): void]}
  */
-export function useMenu(page = 'stats', index = -1) {
+export function useMenu(page = 'main', index = -1) {
     const [state, setState] = useState({ page, index });
 
-    const setPage = function (e, page = 'stats', index = -1) {
+    const setPage = function (e, page = 'main', index = -1) {
         if (e !== null) {
             e.preventDefault();
         }

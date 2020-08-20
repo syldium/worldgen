@@ -34,7 +34,7 @@ input[type="color"] {
 input[type="file"] {
     display: none;
 }
-[type="submit"]:last-child {
+form > [type="submit"]:last-child {
     margin-left: 2rem;
     margin-top: 1rem;
     padding: .75rem 2rem;

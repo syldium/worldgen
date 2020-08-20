@@ -1,4 +1,4 @@
-import { useCallback, useContext, useState } from "react";
+import { useContext, useState } from "react";
 import { DataContext } from "../context/DataContext";
 import { displayNamespacedKey } from "../utils/data";
 
@@ -8,21 +8,27 @@ import { displayNamespacedKey } from "../utils/data";
  */
 export function useData(initial = []) {
     const [data, setData] = useState(initial);
-    const updateData = function(object) {
+
+    const updateData = function(object, previous) {
         setData(stored => {
-            const existing = stored.findIndex(({key}) => object.key === key);
-            if (existing > -1 && existing !== object.index) {
-                object.index = stored.length;
-                object.key = object.key + '2';
+            if (!object.hasOwnProperty('key')) {
+                stored.splice(stored.findIndex(obj => obj === (previous || object)), 1);
+                return stored;
+            }
+
+            const existing = stored.find(({ key }) => object.key === key);
+            if (typeof existing !== 'undefined' && existing !== previous) {
+                do {
+                    object.key += '2';
+                } while (stored.findIndex(({ key }) => object.key === key) > -1)
                 stored.push(object);
                 return stored;
             }
 
-            if (typeof object.index === 'undefined') {
-                object.index = stored.length;
+            if (typeof previous === 'undefined' || !previous.hasOwnProperty('key')) {
                 stored.push(object);
             } else {
-                stored[object.index] = object;
+                stored[stored.indexOf(previous)] = object;
             }
             return stored;
         });
@@ -31,7 +37,7 @@ export function useData(initial = []) {
 }
 
 /**
- * @param {('biomes'|'carvers|'dimensions'|'dimension_types'|'features'|'noises'|'surfaces')} category Data category
+ * @param {('dimensions'|'dimension_types'|'biomes'|'carvers'|'features'|'surfaces'|'noises')} category Data category
  * @param {boolean} [includeCustom]
  * @param {boolean} [empty]
  * @returns {{ value: string, label: string }[]} Options list for react-select
@@ -65,21 +71,4 @@ export function useKeyedListOptions(category, includeCustom = true, empty = fals
         }
     });
     return options;
-}
-
-/**
- * useState hook variant ensuring that the index is kept.
- * 
- * @param {object} initial 
- * @returns {[object, function (object): void]}
- */
-export function useIndexableState(initial) {
-    const [state, setState] = useState(initial);
-    const setIndexableState = useCallback(function (next) {
-        if (typeof initial === 'object' && typeof initial.index === 'number') {
-            next.index = initial.index;
-        }
-        setState(next);
-    }, [initial]);
-    return [state, setIndexableState];
 }

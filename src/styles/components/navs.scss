@@ -5,7 +5,7 @@
     width: 100%;
     display: flex;
     align-items: center;
-    background-color: #bbe3ff;
+    background-color: var(--bg-color-nav);
     padding: 0.5rem 1rem 0;
     box-shadow: 0 0 1px 0 #5e6d6f;
     transition: 0.2s background-color;
@@ -19,10 +19,6 @@
         margin-top: .75rem;
         margin-bottom: .75rem;
     }
-}
-
-.dark-mode .navbar {
-    background-color: #1b2938;
 }
 
 @include respond-to("medium") {

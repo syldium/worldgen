@@ -77,7 +77,7 @@ export function ConfiguredCarverForm({ data = { type: 'minecraft:cave', config: 
             ...carver,
             ...Object.fromEntries(new FormData(e.target))
         });
-        updateCarvers(c);
+        updateCarvers(c, data);
         if (typeof onSave === 'function') {
             onSave(c);
         }

@@ -12,7 +12,7 @@ const LEGACY_WORLDGEN_PATH = /^data\/minecraft\/worldgen\/(biome|configured_carv
 /**
  * Build zip in blob.
  * 
- * @param {{ biomes: object[], carvers: object[], dimensions: object[], dimension_types: object[], features: object[], noises: object[], surfaces: object[] }} custom 
+ * @param {object} custom 
  */
 export function buildZip(custom) {
     const zip = new JSZip();
@@ -106,7 +106,6 @@ async function extractDatapack(zip) {
                 if (value.namespace !== 'minecraft') {
                     namespace = value.namespace;
                 }
-                value.data.index = data[value.type].length;
                 data[value.type].push(value.data);
             });
             resolve([namespace, data]);
