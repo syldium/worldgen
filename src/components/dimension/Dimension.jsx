@@ -18,8 +18,13 @@ export function Dimension({data = DIMENSION, onSave}) {
     }, []);
 
     const handleVanillaSelect = function(dimension) {
-        dimension.generator.seed = state.generator.seed;
-        dimension.generator.biome_source.seed = state.generator.biome_source.seed;
+        if (state.generator.type === 'minecraft:noise') {
+            dimension.generator.seed = state.generator.seed;
+            dimension.generator.biome_source.seed = state.generator.biome_source.seed;
+        } else {
+            dimension.generator.seed = 286956243;
+            dimension.generator.biome_source.seed = 286956243;
+        }
         setState(dimension);
     };
 
