@@ -7,16 +7,17 @@ import { NumberInput } from '../../ui/Input';
 import Select from "../../ui/Select";
 import { useEffect } from "react";
 
-export const BlockStateProvider = React.memo(function({block = { type: 'minecraft:simple_state_provider' }, onChange}) {
+export const BlockStateProvider = React.memo(function({block = { type: 'minecraft:simple_state_provider' }, filter, onChange, blocks}) {
     const options = useMemo(function() {
-        return [
+        const options = [
             { value: 'minecraft:forest_flower_provider', label: 'Forest flower provider' },
             { value: 'minecraft:plain_flower_provider', label: 'Plain flower provider' },
             { value: 'minecraft:simple_state_provider', label: 'Simple state provider' },
             { value: 'minecraft:rotated_block_provider', label: 'Rotated block provider' },
             { value: 'minecraft:weighted_state_provider', label: 'Weighted state provider' }
         ];
-    }, []);
+        return typeof filter === 'function' ? options.filter(filter) : options;
+    }, [filter]);
 
     const handleTypeChange = useCallback(function(option) {
         const similarities = ['minecraft:simple_state_provider', 'minecraft:rotated_block_provider'];
@@ -35,7 +36,7 @@ export const BlockStateProvider = React.memo(function({block = { type: 'minecraf
         onChange({ ...block, entries }, block);
     }, [block, onChange]);
 
-    const blocks = useBlocksOptions(false);
+    blocks = blocks || useBlocksOptions(false);
     const filteredBlocks = useMemo(function () {
         const filtered = block.type === 'minecraft:rotated_block_provider' ?
             blocks.filter(b => b.states.some(state => state.name === 'axis')) : blocks;
@@ -46,13 +47,13 @@ export const BlockStateProvider = React.memo(function({block = { type: 'minecraf
         <label>Provider type</label>
         <Select options={options} value={options.find(o => o.value === block.type)} onChange={handleTypeChange} />
         {(block.type === 'minecraft:simple_state_provider' || block.type === 'minecraft:rotated_block_provider') && <BlockState block={block.state} options={filteredBlocks} onChange={handleSimpleStateChange} />}
-        {block.type === 'minecraft:weighted_state_provider' && <WeightedStateProvider entries={block.entries} onChange={handleWeighestStateChange} />}
+        {block.type === 'minecraft:weighted_state_provider' && <WeightedStateProvider entries={block.entries} options={filteredBlocks} onChange={handleWeighestStateChange} />}
     </div>
 });
 
 
-const WeightedStateProvider = React.memo(function({entries = [], onChange}) {
-    const options = useBlocksOptions();
+const WeightedStateProvider = React.memo(function({entries = [], onChange, options}) {
+    options = options || useBlocksOptions();
 
     const [blocks, handleAdd, handleChange, handleRemove] = useCrudPreset(onChange, entries, function(blocks) {
         // Get the first non taken block name

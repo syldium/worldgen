@@ -38,7 +38,7 @@ export const BlockPredicate = React.memo(function({target, onChange}) {
 
     return <div>
         <label>Predicate type</label>
-        <Select options={options} value={options.find(o => o.value === target.predicate_type)} onChange={handleTypeChange} />
+        <Select options={options} value={options.find(o => o.value === type)} onChange={handleTypeChange} />
         {type === 'minecraft:block_match' && <BlockSelect block={target.block} onChange={handleBlockChange} />}
         {type === 'minecraft:blockstate_match' && <BlockState block={target.block_state} onChange={handleBlockStateChange} />}
         {(type === 'minecraft:random_block_match' || type === 'minecraft:random_blockstate_match') &&

@@ -35,13 +35,9 @@ export const BlockState = React.memo(function ({ block = {}, children, className
         return options;
     }, [context.vanilla.blocks, options]);
 
-    const selected = useMemo(function () {
-        return blocks.find(o => o.value === block.Name);
-    }, [blocks, block.Name]);
-
     return <div className={className}>
         <div className="form-row">
-            <div style={{ flexGrow: 1 }}><Select options={blocks} value={selected} name={name} onChange={handleTypeChange} inputId={inputId} /></div>
+            <div style={{ flexGrow: 1 }}><Select options={blocks} value={blocks.find(o => o.value === block.Name) || null} name={name} onChange={handleTypeChange} inputId={inputId} /></div>
             {children}
         </div>
         <BlockStateProperties block={block.Name} properties={block.Properties} onChange={handlePropertiesChange} />

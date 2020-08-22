@@ -78,7 +78,7 @@ export function findDecorators(feature) {
 }
 
 /**
- * @param {object} feature 
+ * @param {string|object} feature 
  * @param {{type: string, config: object}[]} decorators 
  * @param {string} name
  * @returns {object} Decorated feature
@@ -98,7 +98,7 @@ export function buildDecorated(feature, decorators, name) {
             decorator
         };
         current = f;
-        if (i < 1) {
+        if (i < 1 && typeof f === 'object') {
             f.name = name;
         }
     });

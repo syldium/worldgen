@@ -25,7 +25,7 @@ export function OreFeature({configuration, onChange}) {
         </fieldset>
         <fieldset>
             <legend>Settings</legend>
-            <NumberInput id="size" value={configuration.size} upChange={handleValueChange}>Size</NumberInput>
+            <NumberInput id="size" value={configuration.size} max={64} upChange={handleValueChange}>Size</NumberInput>
         </fieldset>
-    </div>;
+    </div>
 }

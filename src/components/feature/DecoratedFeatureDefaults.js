@@ -1,6 +1,6 @@
 import { BLOCK_PILE_FEATURE_CONFIG, HUGE_FUNGUS_FEATURE_CONFIG, ORE_FEATURE_CONFIG, RANDOM_PATCH_FEATURE_CONFIG, SPRING_FEATURE_CONFIG, TREE_FEATURE_CONFIG } from "./config/FeatureConfigDefaults";
 
-export const DECORATED_BAMBOO_CONFIG = {
+export const DECORATED_BAMBOO = {
     config: {
         feature: {
             config: {
@@ -38,7 +38,67 @@ export const DECORATED_BAMBOO_CONFIG = {
     type: "minecraft:decorated"
 };
 
-export const DECORATED_BLOCK_PILE_CONFIG = {
+export const DECORATED_BASALT_COLUMNS = {
+    config: {
+        feature: {
+            config: {
+                reach: 1,
+                height: {
+                    base: 1,
+                    spread: 3
+                }
+            },
+            type: "minecraft:basalt_columns"
+        },
+        decorator: {
+            config: {
+                count: 4
+            },
+            type: "minecraft:count_multilayer"
+        }
+    },
+    type: "minecraft:decorated"
+};
+
+export const DECORATED_BASALT_PILLAR = {
+    config: {
+        feature: {
+            config: {
+                feature: {
+                    config: {
+                        feature: {
+                            config: {},
+                            type: "minecraft:basalt_pillar"
+                        },
+                        decorator: {
+                            config: {
+                                bottom_offset: 0,
+                                top_offset: 0,
+                                maximum: 128
+                            },
+                            type: "minecraft:range"
+                        }
+                    },
+                    type: "minecraft:decorated"
+                },
+                decorator: {
+                    config: {},
+                    type: "minecraft:square"
+                }
+            },
+            type: "minecraft:decorated"
+        },
+        decorator: {
+            config: {
+                count: 10
+            },
+            type: "minecraft:count"
+        }
+    },
+    type: "minecraft:decorated"
+};
+
+export const DECORATED_BLOCK_PILE = {
     config: {
         feature: {
             type: "minecraft:decorated",
@@ -65,7 +125,53 @@ export const DECORATED_BLOCK_PILE_CONFIG = {
     type: "minecraft:decorated"
 };
 
-export const DECORATED_CHORUS_PLANT_CONFIG = {
+export const DECORATED_BLUE_ICE = {
+    config: {
+        feature: {
+            config: {
+                feature: {
+                    config: {
+                        feature: {
+                            config: {},
+                            type: "minecraft:blue_ice"
+                        },
+                        decorator: {
+                            config: {
+                                bottom_offset: 30,
+                                top_offset: 32,
+                                maximum: 64
+                            },
+                            type: "minecraft:range"
+                        }
+                    },
+                    type: "minecraft:decorated"
+                },
+                decorator: {
+                    config: {},
+                    type: "minecraft:square"
+                }
+            },
+            type: "minecraft:decorated"
+        },
+        decorator: {
+            config: {
+                count: {
+                    base: 0,
+                    spread: 19
+                }
+            },
+            type: "minecraft:count"
+        }
+    },
+    type: "minecraft:decorated"
+};
+
+export const DECORATED_BONUS_CHEST = {
+    config: {},
+    type: "minecraft:bonus_chest"
+};
+
+export const DECORATED_CHORUS_PLANT = {
     config: {
         feature: {
             config: {
@@ -102,7 +208,33 @@ export const DECORATED_CHORUS_PLANT_CONFIG = {
     type: "minecraft:decorated"
 };
 
-export const DECORATED_DELTA_CONFIG = {
+export const DECORATED_CORAL_CLAW = {
+    config: {},
+    type: "minecraft:coral_claw"
+};
+
+export const DECORATED_CORAL_MUSHROOM = {
+    config: {},
+    type: "minecraft:coral_mushroom"
+};
+
+export const DECORATED_CORAL_TREE = {
+    config: {},
+    type: "minecraft:coral_tree"
+};
+
+export const DECORATED_DECORATED = {
+    config: {
+        feature: "minecraft:end_island",
+        decorator: {
+            config: {},
+            type: "minecraft:end_island"
+        }
+    },
+    type: "minecraft:decorated"
+};
+
+export const DECORATED_DELTA_FEATURE = {
     config: {
         feature: {
             config: {
@@ -136,7 +268,7 @@ export const DECORATED_DELTA_CONFIG = {
     type: "minecraft:decorated"
 };
 
-export const DECORATED_DESERT_WELL_CONFIG = {
+export const DECORATED_DESERT_WELL = {
     config: {
         feature: {
             config: {
@@ -170,7 +302,7 @@ export const DECORATED_DESERT_WELL_CONFIG = {
     type: "minecraft:decorated"
 };
 
-export const DECORATED_DISK_CONFIG = {
+export const DECORATED_DISK = {
     config: {
         feature: {
             config: {
@@ -224,7 +356,92 @@ export const DECORATED_DISK_CONFIG = {
     type: "minecraft:decorated"
 };
 
-export const DECORATED_FOREST_ROCK_CONFIG = {
+export const DECORATED_EMERALD_ORE = {
+    config: {
+        feature: {
+            config: {
+                target: {
+                    Name: "minecraft:stone"
+                },
+                state: {
+                    Name: "minecraft:emerald_ore"
+                }
+            },
+            type: "minecraft:emerald_ore"
+        },
+        decorator: {
+            config: {},
+            type: "minecraft:emerald_ore"
+        }
+    },
+    type: "minecraft:decorated"
+};
+
+export const DECORATED_END_GATEWAY = {
+    config: {
+        feature: {
+            config: {
+                exit: [100, 50, 0],
+                exact: true
+            },
+            type: "minecraft:end_gateway"
+        },
+        decorator: {
+            config: {},
+            type: "minecraft:end_gateway"
+        }
+    },
+    type: "minecraft:decorated"
+};
+
+export const DECORATED_END_ISLAND = {
+    config: {
+        feature: {
+            config: {},
+            type: "minecraft:end_island"
+        },
+        decorator: {
+            config: {},
+            type: "minecraft:end_island"
+        }
+    },
+    type: "minecraft:decorated"
+};
+
+export const DECORATED_END_SPIKE = {
+    config: {
+        crystal_invulnerable: false,
+        spikes: []
+    },
+    type: "minecraft:end_spike"
+};
+
+export const DECORATED_FILL_LAYER = {
+    config: {
+        height: 64,
+        state: {
+            Name: "minecraft:green_concrete"
+        }
+    },
+    type: "minecraft:fill_layer"
+};
+
+export const DECORATED_FLOWER = {
+    config: {
+        whitelist: [],
+        blacklist: [],
+        tries: 64,
+        state_provider: {
+            type: "minecraft:plain_flower_provider"
+        },
+        block_placer: {
+            type: "minecraft:simple_block_placer"
+        }
+    },
+    type: "minecraft:flower"
+};
+
+export const DECORATED_FOREST_ROCK = {
     config: {
         feature: {
             config: {
@@ -265,8 +482,7 @@ export const DECORATED_FOREST_ROCK_CONFIG = {
     type: "minecraft:decorated"
 };
 
-
-export const DECORATED_FOSSIL_CONFIG = {
+export const DECORATED_FOSSIL = {
     config: {
         feature: {
             config: {},
@@ -282,7 +498,12 @@ export const DECORATED_FOSSIL_CONFIG = {
     type: "minecraft:decorated"
 };
 
-export const DECORATED_GLOWSTONE_BLOB_CONFIG = {
+export const DECORATED_FREEZE_TOP_LAYER = {
+    config: {},
+    type: "minecraft:freeze_top_layer"
+};
+
+export const DECORATED_GLOWSTONE_BLOB = {
     config: {
         feature: {
             config: {
@@ -320,7 +541,77 @@ export const DECORATED_GLOWSTONE_BLOB_CONFIG = {
     type: "minecraft:decorated"
 };
 
-export const DECORATED_HUGE_FUNGUS_CONFIG = {
+export const DECORATED_HUGE_BROWN_MUSHROOM = {
+    config: {
+        cap_provider: {
+            state: {
+                Properties: {
+                    west: "true",
+                    up: "true",
+                    south: "true",
+                    north: "true",
+                    east: "true",
+                    down: "false"
+                },
+                Name: "minecraft:brown_mushroom_block"
+            },
+            type: "minecraft:simple_state_provider"
+        },
+        stem_provider: {
+            state: {
+                Properties: {
+                    west: "true",
+                    up: "false",
+                    south: "true",
+                    north: "true",
+                    east: "true",
+                    down: "false"
+                },
+                Name: "minecraft:mushroom_stem"
+            },
+            type: "minecraft:simple_state_provider"
+        },
+        foliage_radius: 3
+    },
+    type: "minecraft:huge_brown_mushroom"
+};
+
+export const DECORATED_HUGE_FUNGUS = {
+    config: {
+        cap_provider: {
+            state: {
+                Properties: {
+                    west: "true",
+                    up: "true",
+                    south: "true",
+                    north: "true",
+                    east: "true",
+                    down: "false"
+                },
+                Name: "minecraft:red_mushroom_block"
+            },
+            type: "minecraft:simple_state_provider"
+        },
+        stem_provider: {
+            state: {
+                Properties: {
+                    west: "true",
+                    up: "false",
+                    south: "true",
+                    north: "true",
+                    east: "true",
+                    down: "false"
+                },
+                Name: "minecraft:mushroom_stem"
+            },
+            type: "minecraft:simple_state_provider"
+        },
+        foliage_radius: 2
+    },
+    type: "minecraft:huge_red_mushroom"
+};
+
+export const DECORATED_HUGE_RED_MUSHROOM = {
     config: {
         feature: {
             config: HUGE_FUNGUS_FEATURE_CONFIG,
@@ -336,7 +627,7 @@ export const DECORATED_HUGE_FUNGUS_CONFIG = {
     type: "minecraft:decorated"
 };
 
-export const DECORATED_ICEBERG_CONFIG = {
+export const DECORATED_ICEBERG = {
     config: {
         feature: {
             config: {
@@ -365,7 +656,7 @@ export const DECORATED_ICEBERG_CONFIG = {
     type: "minecraft:decorated"
 };
 
-export const DECORATED_ICE_PATCH_CONFIG = {
+export const DECORATED_ICE_PATCH = {
     config: {
         feature: {
             config: {
@@ -440,7 +731,7 @@ export const DECORATED_ICE_PATCH_CONFIG = {
     type: "minecraft:decorated"
 };
 
-export const DECORATED_ICE_SPIKE_CONFIG = {
+export const DECORATED_ICE_SPIKE = {
     config: {
         feature: {
             config: {
@@ -474,7 +765,43 @@ export const DECORATED_ICE_SPIKE_CONFIG = {
     type: "minecraft:decorated"
 };
 
-export const DECORATED_LAKE_CONFIG = {
+export const DECORATED_KELP = {
+    config: {
+        feature: {
+            config: {
+                feature: {
+                    config: {
+                        feature: {
+                            config: {},
+                            type: "minecraft:kelp"
+                        },
+                        decorator: {
+                            config: {},
+                            type: "minecraft:top_solid_heightmap"
+                        }
+                    },
+                    type: "minecraft:decorated"
+                },
+                decorator: {
+                    config: {},
+                    type: "minecraft:square"
+                }
+            },
+            type: "minecraft:decorated"
+        },
+        decorator: {
+            config: {
+                noise_to_count_ratio: 80,
+                noise_factor: 80.0,
+                noise_offset: 0.0
+            },
+            type: "minecraft:count_noise_biased"
+        }
+    },
+    type: "minecraft:decorated"
+};
+
+export const DECORATED_LAKE = {
     config: {
         feature: {
             config: {
@@ -497,7 +824,85 @@ export const DECORATED_LAKE_CONFIG = {
     type: "minecraft:decorated"
 };
 
-export const DECORATED_NETHERRACK_REPLACE_BLOBS_CONFIG = {
+export const DECORATED_MONSTER_ROOM = {
+    config: {
+        feature: {
+            config: {
+                feature: {
+                    config: {
+                        feature: {
+                            config: {},
+                            type: "minecraft:monster_room"
+                        },
+                        decorator: {
+                            config: {
+                                bottom_offset: 0,
+                                top_offset: 0,
+                                maximum: 256
+                            },
+                            type: "minecraft:range"
+                        }
+                    },
+                    type: "minecraft:decorated"
+                },
+                decorator: {
+                    config: {},
+                    type: "minecraft:square"
+                }
+            },
+            type: "minecraft:decorated"
+        },
+        decorator: {
+            config: {
+                count: 8
+            },
+            type: "minecraft:count"
+        }
+    },
+    type: "minecraft:decorated"
+};
+
+export const DECORATED_NETHER_FOREST_VEGETATION = {
+    config: {
+        feature: {
+            config: {
+                state_provider: {
+                    entries: [
+                        {
+                            weight: 87,
+                            data: {
+                                Name: "minecraft:crimson_roots"
+                            }
+                        },
+                        {
+                            weight: 11,
+                            data: {
+                                Name: "minecraft:crimson_fungus"
+                            }
+                        },
+                        {
+                            weight: 1,
+                            data: {
+                                Name: "minecraft:warped_fungus"
+                            }
+                        }
+                    ],
+                    type: "minecraft:weighted_state_provider"
+                }
+            },
+            type: "minecraft:nether_forest_vegetation"
+        },
+        decorator: {
+            config: {
+                count: 6
+            },
+            type: "minecraft:count_multilayer"
+        }
+    },
+    type: "minecraft:decorated"
+};
+
+export const DECORATED_NETHERRACK_REPLACE_BLOBS = {
     config: {
         feature: {
             config: {
@@ -549,7 +954,65 @@ export const DECORATED_NETHERRACK_REPLACE_BLOBS_CONFIG = {
     type: "minecraft:decorated"
 };
 
-export const DECORATED_ORE_FEATURE_CONFIG = {
+export const DECORATED_NO_BONEMEAL_FLOWER = {
+    config: {
+        whitelist: [],
+        blacklist: [],
+        tries: 64,
+        state_provider: {
+            state: {
+                Name: "minecraft:lily_of_the_valley"
+            },
+            type: "minecraft:simple_state_provider"
+        },
+        block_placer: {
+            type: "minecraft:simple_block_placer"
+        }
+    },
+    type: "minecraft:no_bonemeal_flower"
+};
+
+export const DECORATED_NO_SURFACE_ORE = {
+    config: {
+        feature: {
+            config: {
+                feature: {
+                    config: {
+                        target: {
+                            tag: "minecraft:base_stone_nether",
+                            predicate_type: "minecraft:tag_match"
+                        },
+                        state: {
+                            Name: "minecraft:ancient_debris"
+                        },
+                        size: 3
+                    },
+                    type: "minecraft:no_surface_ore"
+                },
+                decorator: {
+                    config: {
+                        baseline: 16,
+                        spread: 8
+                    },
+                    type: "minecraft:depth_average"
+                }
+            },
+            type: "minecraft:decorated"
+        },
+        decorator: {
+            config: {},
+            type: "minecraft:square"
+        }
+    },
+    type: "minecraft:decorated"
+};
+
+export const DECORATED_NO_OP = {
+    config: {},
+    type: "minecraft:no_op"
+};
+
+export const DECORATED_ORE = {
     config: {
         feature: {
             config: {
@@ -587,7 +1050,33 @@ export const DECORATED_ORE_FEATURE_CONFIG = {
     type: "minecraft:decorated"
 };
 
-export const DECORATED_RANDOM_PATCH_CONFIG = {
+export const DECORATED_RANDOM_BOOLEAN_SELECTOR = {
+    config: {
+        feature: {
+            config: {
+                feature_true: "minecraft:huge_red_mushroom",
+                feature_false: "minecraft:huge_brown_mushroom"
+            },
+            type: "minecraft:random_boolean_selector"
+        },
+        decorator: {
+            config: {
+                outer: {
+                    config: {},
+                    type: "minecraft:square"
+                },
+                inner: {
+                    config: {},
+                    type: "minecraft:heightmap"
+                }
+            },
+            type: "minecraft:decorated"
+        }
+    },
+    type: "minecraft:decorated"
+};
+
+export const DECORATED_RANDOM_PATCH = {
     config: {
         feature: {
             config: {
@@ -621,7 +1110,7 @@ export const DECORATED_RANDOM_PATCH_CONFIG = {
     type: "minecraft:decorated"
 };
 
-export const DECORATED_SEAGRASS_CONFIG = {
+export const DECORATED_SEAGRASS = {
     config: {
         feature: {
             config: {
@@ -657,7 +1146,87 @@ export const DECORATED_SEAGRASS_CONFIG = {
     type: "minecraft:decorated"
 };
 
-export const DECORATED_SIMPLE_BLOCK_CONFIG = {
+export const DECORATED_SEA_PICKLE = {
+    config: {
+        feature: {
+            config: {
+                feature: {
+                    config: {
+                        count: 20
+                    },
+                    type: "minecraft:sea_pickle"
+                },
+                decorator: {
+                    config: {
+                        outer: {
+                            config: {},
+                            type: "minecraft:square"
+                        },
+                        inner: {
+                            config: {},
+                            type: "minecraft:top_solid_heightmap"
+                        }
+                    },
+                    type: "minecraft:decorated"
+                }
+            },
+            type: "minecraft:decorated"
+        },
+        decorator: {
+            config: {
+                chance: 16
+            },
+            type: "minecraft:chance"
+        }
+    },
+    type: "minecraft:decorated"
+};
+
+export const DECORATED_RANDOM_SELECTOR = {
+    config: {
+        feature: {
+            config: {
+                feature: {
+                    config: {
+                        features: [
+                            {
+                                feature: "minecraft:fancy_oak_bees_005",
+                                chance: 0.334
+                            }
+                        ],
+                        default: "minecraft:oak_bees_005"
+                    },
+                    type: "minecraft:random_selector"
+                },
+                decorator: {
+                    config: {
+                        outer: {
+                            config: {},
+                            type: "minecraft:square"
+                        },
+                        inner: {
+                            config: {},
+                            type: "minecraft:heightmap"
+                        }
+                    },
+                    type: "minecraft:decorated"
+                }
+            },
+            type: "minecraft:decorated"
+        },
+        decorator: {
+            config: {
+                count: 0,
+                extra_chance: 0.05,
+                extra_count: 1
+            },
+            type: "minecraft:count_extra"
+        }
+    },
+    type: "minecraft:decorated"
+};
+
+export const DECORATED_SIMPLE_BLOCK = {
     config: {
         feature: {
             config: {
@@ -699,52 +1268,58 @@ export const DECORATED_SIMPLE_BLOCK_CONFIG = {
     type: "minecraft:decorated"
 };
 
-
-export const DECORATED_RANDOM_SELECTOR_CONFIG = {
+export const DECORATED_SIMPLE_RANDOM_SELECTOR = {
     config: {
         feature: {
             config: {
                 feature: {
                     config: {
-                        features: [
-                            {
-                                feature: "minecraft:fancy_oak_bees_005",
-                                chance: 0.33333334
-                            }
-                        ],
-                        default: "minecraft:oak_bees_005"
-                    },
-                    type: "minecraft:random_selector"
-                },
-                decorator: {
-                    config: {
-                        outer: {
-                            config: {},
-                            type: "minecraft:square"
+                        feature: {
+                            config: {
+                                features: [
+                                    {
+                                        config: {},
+                                        type: "minecraft:coral_tree"
+                                    },
+                                    {
+                                        config: {},
+                                        type: "minecraft:coral_claw"
+                                    },
+                                    {
+                                        config: {},
+                                        type: "minecraft:coral_mushroom"
+                                    }
+                                ]
+                            },
+                            type: "minecraft:simple_random_selector"
                         },
-                        inner: {
+                        decorator: {
                             config: {},
-                            type: "minecraft:heightmap"
+                            type: "minecraft:top_solid_heightmap"
                         }
                     },
                     type: "minecraft:decorated"
+                },
+                decorator: {
+                    config: {},
+                    type: "minecraft:square"
                 }
             },
             type: "minecraft:decorated"
         },
         decorator: {
             config: {
-                count: 0,
-                extra_chance: 0.05,
-                extra_count: 1
+                noise_to_count_ratio: 20,
+                noise_factor: 400.0,
+                noise_offset: 0.0
             },
-            type: "minecraft:count_extra"
+            type: "minecraft:count_noise_biased"
         }
     },
     type: "minecraft:decorated"
 };
 
-export const DECORATED_SPRING_FEATURE_CONFIG = {
+export const DECORATED_SPRING_FEATURE = {
     config: {
         feature: {
             config: {
@@ -782,7 +1357,7 @@ export const DECORATED_SPRING_FEATURE_CONFIG = {
     type: "minecraft:decorated"
 };
 
-export const DECORATED_TREE_CONFIG = {
+export const DECORATED_TREE = {
     config: {
         feature: {
             config: {
@@ -818,7 +1393,108 @@ export const DECORATED_TREE_CONFIG = {
     type: "minecraft:decorated"
 };
 
-export const DECORATED_VOID_START_PLATFORM_CONFIG = {
+export const DECORATED_TWISTING_VINES = {
+    config: {
+        feature: {
+            config: {
+                feature: {
+                    config: {
+                        feature: {
+                            config: {},
+                            type: "minecraft:twisting_vines"
+                        },
+                        decorator: {
+                            config: {
+                                bottom_offset: 0,
+                                top_offset: 0,
+                                maximum: 128
+                            },
+                            type: "minecraft:range"
+                        }
+                    },
+                    type: "minecraft:decorated"
+                },
+                decorator: {
+                    config: {},
+                    type: "minecraft:square"
+                }
+            },
+            type: "minecraft:decorated"
+        },
+        decorator: {
+            config: {
+                count: 10
+            },
+            type: "minecraft:count"
+        }
+    },
+    type: "minecraft:decorated"
+};
+
+export const DECORATED_VINES = {
+    config: {
+        feature: {
+            config: {
+                feature: {
+                    config: {},
+                    type: "minecraft:vines"
+                },
+                decorator: {
+                    config: {},
+                    type: "minecraft:square"
+                }
+            },
+            type: "minecraft:decorated"
+        },
+        decorator: {
+            config: {
+                count: 50
+            },
+            type: "minecraft:count"
+        }
+    },
+    type: "minecraft:decorated"
+};
+
+export const DECORATED_VOID_START_PLATFORM = {
     config: {},
     type: "minecraft:void_start_platform"
+};
+
+export const DECORATED_WEEPING_VINES = {
+    config: {
+        feature: {
+            config: {
+                feature: {
+                    config: {
+                        feature: {
+                            config: {},
+                            type: "minecraft:weeping_vines"
+                        },
+                        decorator: {
+                            config: {
+                                bottom_offset: 0,
+                                top_offset: 0,
+                                maximum: 128
+                            },
+                            type: "minecraft:range"
+                        }
+                    },
+                    type: "minecraft:decorated"
+                },
+                decorator: {
+                    config: {},
+                    type: "minecraft:square"
+                }
+            },
+            type: "minecraft:decorated"
+        },
+        decorator: {
+            config: {
+                count: 10
+            },
+            type: "minecraft:count"
+        }
+    },
+    type: "minecraft:decorated"
 };

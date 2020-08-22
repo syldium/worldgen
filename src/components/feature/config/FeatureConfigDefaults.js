@@ -112,12 +112,6 @@ export const TREE_FEATURE_CONFIG = {
 };
 
 export const RANDOM_PATCH_FEATURE_CONFIG = {
-    can_replace: false,
-    project: true,
-    need_water: false,
-    xspread: 7,
-    yspread: 3,
-    zspread: 7,
     whitelist: [
         {
             Properties: {

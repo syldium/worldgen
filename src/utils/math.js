@@ -6,7 +6,12 @@ export const INT_MAX_VALUE = 0x7FFFFFFF;
  * @returns {number}
  */
 export function maintainPrecision(n) {
-    return parseFloat(n.toFixed(12));
+    try {
+        return parseFloat(n.toFixed(12));
+    } catch (e) {
+        console.error(e);
+        return n;
+    }
 }
 
 /**

@@ -1,24 +1,63 @@
-import { CARVERS_OPTIONS, DECORATORS_OPTIONS, DECORATOR_CARVING_MASK_DEFAULTS, DECORATOR_DECORATED_DEFAULTS, DECORATOR_EXTRA_COUNT_DEFAULTS, DECORATOR_RANGE_DEFAULTS } from './DecoratorDefaults';
-import React, { useCallback, useEffect, useState } from 'react';
+import { CarvingMaskDecorator, ChanceDecorator, CountDecorator, CountExtraDecorator, CountNoiseBiasedDecorator, CountNoiseDecorator, DecoratedDecorator, DepthAverageDecorator, RangeDecorator } from './DecoratorConfig';
+import { DECORATOR_CARVING_MASK, DECORATOR_COUNT_NOISE, DECORATOR_COUNT_NOISE_BIASED, DECORATOR_DECORATED, DECORATOR_DEPTH_AVERAGE, DECORATOR_EXTRA_COUNT, DECORATOR_RANGE } from './DecoratorDefaults';
+import React, { useCallback } from 'react';
 import { SortableContainer, SortableElement } from 'react-sortable-hoc';
-import { useCrudPreset, useJsonEffect } from '../../../hooks/form';
 
 import { Button } from '../../../ui/Button';
-import { INT_MIN_VALUE } from '../../../utils/math';
-import { NumberInput } from '../../../ui/Input';
 import Select from '../../../ui/Select';
-import { UniformInt } from '../../utils/UniformInt';
+import { capitalize } from '../../../utils/data';
+import { useCrudPreset } from '../../../hooks/form';
 
-export const DecoratorsList = React.memo(function({data, onChange}) {
-    const [decorators, handleAdd, handleChange, handleRemove] = useCrudPreset(onChange, data, function(decorators) {
+const DECORATORS = [
+    { type: 'carving_mask', default: DECORATOR_CARVING_MASK, config: CarvingMaskDecorator },
+    { type: 'chance', default: { chance: 32 }, config: ChanceDecorator },
+    { type: 'count', default: { count: 25 }, config: CountDecorator },
+    { type: 'count_extra', default: DECORATOR_EXTRA_COUNT, config: CountExtraDecorator },
+    { type: 'count_multilayer', default: { count: 6 }, config: CountDecorator },
+    { type: 'count_noise', default: DECORATOR_COUNT_NOISE, config: CountNoiseDecorator },
+    { type: 'count_noise_biased', default: DECORATOR_COUNT_NOISE_BIASED, config: CountNoiseBiasedDecorator },
+    { type: 'dark_oak_tree' },
+    { type: 'decorated', default: DECORATOR_DECORATED, config: DecoratedDecorator },
+    { type: 'depth_average', default: DECORATOR_DEPTH_AVERAGE, config: DepthAverageDecorator },
+    { type: 'emerald_ore' },
+    { type: 'end_gateway' },
+    { type: 'end_island' },
+    { type: 'fire', default: { count: 10 }, config: CountDecorator },
+    { type: 'glowstone', default: { count: 10 }, config: CountDecorator },
+    { type: 'heightmap' },
+    { type: 'heightmap_spread_double' },
+    { type: 'heightmap_world_surface' },
+    { type: 'iceberg' },
+    { type: 'lava_lake', default: { chance: 80 }, config: ChanceDecorator },
+    { type: 'magma' },
+    { type: 'nope' },
+    { type: 'range', default: DECORATOR_RANGE, config: RangeDecorator },
+    { type: 'range_biased', default: DECORATOR_RANGE, config: RangeDecorator },
+    { type: 'range_very_biased', default: DECORATOR_RANGE, config: RangeDecorator },
+    { type: 'spread_32_above' },
+    { type: 'square' },
+    { type: 'top_solid_heightmap' },
+    { type: 'water_lake', default: { chance: 4 }, config: ChanceDecorator }
+].map(decorator => {
+    decorator.default = decorator.default || {};
+    decorator.type = 'minecraft:' + decorator.type;
+    return decorator;
+});
+
+export const DECORATORS_OPTIONS = DECORATORS
+    .map(decorator => ({ value: decorator.type, label: capitalize(decorator.type.substr(10).replace(/_/g, ' ')) }));
+
+export const DecoratorsList = React.memo(function ({ data, onChange }) {
+    const [decorators, handleAdd, handleChange, handleRemove] = useCrudPreset(onChange, data, function (decorators) {
         // Get the first non taken decorator
-        return { type: (DECORATORS_OPTIONS.filter(o => !decorators.some(d => d.type === o.value))[0] || { value: 'minecraft:count' }).value };
+        const type = (DECORATORS_OPTIONS.filter(o => !decorators.some(d => d.type === o.value))[0] || { value: 'minecraft:count' }).value;
+        return { config: DECORATORS.find(d => type === d.type).default || {}, type };
     });
 
-    const shouldCancelStart = useCallback(function(e) {
+    const shouldCancelStart = useCallback(function (e) {
         return !e.target.parentNode.classList.contains('sortable-item');
     }, []);
-    
+
     return <fieldset>
         <legend>Decorators wrappers {DECORATORS_OPTIONS.length > decorators.length && <Button onClick={handleAdd}>Add decorator</Button>}</legend>
         <SortableDecoratorsList decorators={decorators} handleChange={handleChange} handleRemove={handleRemove}
@@ -26,120 +65,41 @@ export const DecoratorsList = React.memo(function({data, onChange}) {
     </fieldset>
 });
 
-const SortableDecoratorsList = SortableContainer(function({decorators, handleChange, handleRemove}) {
+const SortableDecoratorsList = SortableContainer(function ({ decorators, handleChange, handleRemove }) {
     return <ol className="sortable-container">
         {decorators.map((decorator, index) => {
             const options = DECORATORS_OPTIONS.filter(o => decorator.type === o.value || !decorators.some(d => d.type === o.value));
-            return <Decorator key={decorator.type} data={decorator} index={index} onChange={handleChange} options={options}>
+            return <SortableDecorator key={decorator.type + index} decorator={decorator} index={index} onChange={handleChange} options={options}>
                 <Button cat="danger mlm" onClick={(e) => handleRemove(e, index)}>Remove</Button>
-            </Decorator>
+            </SortableDecorator>
         })}
     </ol>
 });
 
-const Decorator = React.memo(SortableElement(function({children, data = { type: 'minecraft:count' }, onChange, options}) {
-    const [decorator, setDecorator] = useState(data);
+export const Decorator = React.memo(function ({ children, className = "form-group form-row", decorator = { config: {}, type: 'minecraft:heightmap' }, onChange, options }) {
 
-    const handleSelectChange = useCallback(function(option) {
-        setDecorator({ type: option.value });
-    }, []);
-    const handleConfigChange = useCallback(function(config) {
-        setDecorator(decorator => ({ type: decorator.type, config: { ...decorator.config, ...config }}));
-    }, []);
-    useJsonEffect(decorator, data, onChange);
+    const handleSelectChange = useCallback(function (option) {
+        onChange({
+            type: option.value,
+            config: DECORATORS.find(decorator => option.value === decorator.type).default
+        }, decorator);
+    }, [decorator, onChange]);
+    const handleConfigChange = useCallback(function (config) {
+        onChange({ type: decorator.type, config: { ...decorator.config, ...config } }, decorator);
+    }, [decorator, onChange]);
+    const DecoratorConfig = (DECORATORS.find(d => decorator.type === d.type) || { config: 'p' }).config || (() => <div></div>);
 
-    return <li className="sortable-item">
-        <div className="form-group form-row">
-            <div style={{ flexGrow: 1 }}><Select options={options} value={options.find(o => o.value === decorator.type)} onChange={handleSelectChange} /></div>
+    return <>
+        <div className={className}>
+            <div className="flex-grow"><Select options={options} value={options.find(o => o.value === decorator.type)} onChange={handleSelectChange} /></div>
             {children}
         </div>
         <div className="form-group form-row">
-            {decorator.type === 'minecraft:carving_mask' && <CarvingMaskDecorator config={decorator.config} onChange={handleConfigChange} />}
-            {(decorator.type === 'minecraft:chance' || decorator.type === 'minecraft:lava_lake' || decorator.type === 'minecraft:water_lake') && <ChanceDecorator config={decorator.config} onChange={handleConfigChange} />}
-            {(decorator.type === 'minecraft:count' || decorator.type === 'minecraft:fire' || decorator.type === 'minecraft:count_multilayer') && <CountDecorator config={decorator.config} onChange={handleConfigChange} />}
-            {decorator.type === 'minecraft:count_extra' && <ExtraCountDecorator config={decorator.config} onChange={handleConfigChange} />}
-            {decorator.type === 'minecraft:count_noise' && <NoiseCountDecorator config={decorator.config} onChange={handleConfigChange} />}
-            {decorator.type === 'minecraft:count_noise_biased' && <NoiseBiasedCountDecorator config={decorator.config} onChange={handleConfigChange} />}
-            {(decorator.type === 'minecraft:decorated' || decorator.type === 'minecraft:square') && <DecoratedDecorator config={decorator.config} onChange={handleConfigChange} />}
-            {(decorator.type === 'minecraft:range' || decorator.type === 'minecraft:range_biased' || decorator.type === 'minecraft:range_very_biased') && <RangeDecorator config={decorator.config} onChange={handleConfigChange} />}
+            <DecoratorConfig config={decorator.config} onChange={handleConfigChange}>Currently not supported (<code>{decorator.type}</code>).</DecoratorConfig>
         </div>
-    </li>;
-}));
-
-const CarvingMaskDecorator = React.memo(function({config, onChange}) {
-    config = useJsonEffect(config || DECORATOR_CARVING_MASK_DEFAULTS, config, onChange);
-
-    const handleStepChange = useCallback(function (option) {
-        onChange({ probability: config.probability, step: option.value });
-    }, [config.probability, onChange]);
-
-    return <>
-        <div className="inbl"><Select options={CARVERS_OPTIONS} value={CARVERS_OPTIONS.find(o => o.value === config.step)} onChange={handleStepChange} /></div>
-        <NumberInput id="probability" value={config.probability} upChange={onChange} step="0.05">Probability</NumberInput>
-    </>
+    </>;
 });
 
-const ChanceDecorator = React.memo(function({config = {}, onChange}) {
-    return <NumberInput id="chance" value={config.chance} defaultValue={32} upChange={onChange}>Chance</NumberInput>
-});
-
-const CountDecorator = React.memo(function({config = {}, onChange}) {
-    return <UniformInt id="count" value={config.count} minBase={-10} maxBase={128} maxSpread={128} defaultValue={25} upChange={onChange}>Count</UniformInt>
-});
-
-const ExtraCountDecorator = React.memo(function({config, onChange}) {
-    config = useJsonEffect(config || DECORATOR_EXTRA_COUNT_DEFAULTS, config, onChange);
-
-    return <>
-        <NumberInput id="count" value={config.count} upChange={onChange}>Count</NumberInput>
-        <NumberInput id="extra_chance" value={config.extra_chance} upChange={onChange} step="0.05">Extra chance</NumberInput>
-        <NumberInput id="extra_count" value={config.extra_count} upChange={onChange}>Extra count</NumberInput>
-    </>
-});
-
-const NoiseCountDecorator = React.memo(function({config, onChange}) {
-    config = useJsonEffect(config || {
-        noise_level: -0.8,
-        below_noise: 15,
-        above_noise: 4
-    }, config, onChange);
-
-    return <>
-        <NumberInput id="noise_level" value={config.noise_level} min={INT_MIN_VALUE} step={0.1} upChange={onChange}>Noise level</NumberInput>
-        <NumberInput id="below_noise" value={config.below_noise} upChange={onChange}>Below noise</NumberInput>
-        <NumberInput id="above_noise" value={config.above_noise} upChange={onChange}>Above noise</NumberInput>
-    </>
-});
-
-const NoiseBiasedCountDecorator = React.memo(function({config, onChange}) {
-    config = useJsonEffect(config || {
-        noise_to_count_ratio: 160,
-        noise_factor: 80.0,
-        noise_offset: 0.3
-    }, config, onChange);
-
-    return <>
-        <NumberInput id="noise_to_count_ratio" value={config.noise_to_count_ratio} upChange={onChange}>Noise to count ratio</NumberInput>
-        <NumberInput id="noise_factor" value={config.noise_factor} upChange={onChange} step="0.05">Noise factor</NumberInput>
-        <NumberInput id="noise_offset" value={config.noise_offset} upChange={onChange} step="0.05">Noise factor</NumberInput>
-    </>
-});
-
-const DecoratedDecorator = React.memo(function({config, onChange}) {
-    useEffect(() => {
-        if (typeof config === 'undefined') {
-            onChange(DECORATOR_DECORATED_DEFAULTS);
-        }
-    }, [config, onChange]);
-    return <div></div>;
-});
-
-const RangeDecorator = React.memo(function({config, onChange}) {
-    config = useJsonEffect(config || DECORATOR_RANGE_DEFAULTS, config, onChange);
-
-    return <>
-        <NumberInput id="bottom_offset" value={config.bottom_offset} upChange={onChange}>Bottom offset</NumberInput>
-        <NumberInput id="top_offset" value={config.top_offset} upChange={onChange}>Top offset</NumberInput>
-        <NumberInput id="maximum" value={config.maximum} upChange={onChange}>Y maximum</NumberInput>
-    </>
-});
+const SortableDecorator = SortableElement(({ index, ...props }) =>
+    <li className="sortable-item" index={index}><Decorator {...props} /></li>
+);
