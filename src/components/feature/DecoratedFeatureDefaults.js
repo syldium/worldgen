@@ -578,37 +578,35 @@ export const DECORATED_HUGE_BROWN_MUSHROOM = {
 
 export const DECORATED_HUGE_FUNGUS = {
     config: {
-        cap_provider: {
-            state: {
-                Properties: {
-                    west: "true",
-                    up: "true",
-                    south: "true",
-                    north: "true",
-                    east: "true",
-                    down: "false"
+        feature: {
+            config: {
+                hat_state: {
+                    Name: "minecraft:nether_wart_block"
                 },
-                Name: "minecraft:red_mushroom_block"
-            },
-            type: "minecraft:simple_state_provider"
-        },
-        stem_provider: {
-            state: {
-                Properties: {
-                    west: "true",
-                    up: "false",
-                    south: "true",
-                    north: "true",
-                    east: "true",
-                    down: "false"
+                decor_state: {
+                    Name: "minecraft:shroomlight"
                 },
-                Name: "minecraft:mushroom_stem"
+                planted: false,
+                valid_base_block: {
+                    Name: "minecraft:crimson_nylium"
+                },
+                stem_state: {
+                    Properties: {
+                        axis: "y"
+                    },
+                    Name: "minecraft:crimson_stem"
+                }
             },
-            type: "minecraft:simple_state_provider"
+            type: "minecraft:huge_fungus"
         },
-        foliage_radius: 2
+        decorator: {
+            config: {
+                count: 8
+            },
+            type: "minecraft:count_multilayer"
+        }
     },
-    type: "minecraft:huge_red_mushroom"
+    type: "minecraft:decorated"
 };
 
 export const DECORATED_HUGE_RED_MUSHROOM = {
