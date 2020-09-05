@@ -121,7 +121,7 @@ export const NumberInput = React.memo(function ({
             return;
         }
 
-        if (!isNaN(n) && val !== value && n >= min && n < max && click === null) {
+        if (!isNaN(n) && val !== value && n >= min && n <= max && click === null) {
             if (typeof upChange === 'function') {
                 upChange({ [id || name]: n });
             } else if (typeof onChange === 'function') {
