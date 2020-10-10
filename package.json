@@ -3,10 +3,10 @@
   "version": "0.1.0",
   "homepage": "/worldgen",
   "dependencies": {
-    "@delangle/use-modal": "^1.4.107",
+    "@delangle/use-modal": "^1.5.4",
     "@testing-library/jest-dom": "^5.11.1",
-    "@testing-library/react": "^10.4.7",
-    "@testing-library/user-event": "^12.0.11",
+    "@testing-library/react": "^11.0.4",
+    "@testing-library/user-event": "^12.1.6",
     "array-move": "^3.0.0",
     "file-saver": "^2.0.2",
     "java-random": "^0.4.0",
@@ -23,6 +23,7 @@
     "use-dark-mode": "^2.3.1"
   },
   "scripts": {
+    "analyze": "source-map-explorer 'build/static/js/*.js'",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
@@ -45,5 +46,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "source-map-explorer": "^2.5.0"
   }
 }

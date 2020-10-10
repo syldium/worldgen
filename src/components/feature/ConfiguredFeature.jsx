@@ -161,3 +161,5 @@ export function RawConfiguredFeature({ data = DECORATED_TREE, onSave }) {
         <Button type="submit">Save</Button>
     </form>
 }
+
+export default RawConfiguredFeature;

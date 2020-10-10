@@ -149,3 +149,5 @@ const SurfaceBuilder = React.memo(function({ onChange, value = 'minecraft:grass'
         <Select options={options} value={options.find(o => o.value === value)} onChange={onChange} />
     </div>;
 });
+
+export default Biome;

@@ -1,21 +1,22 @@
 import { MenuItem, NavBar } from './../ui/Menu';
-import React, { useContext, useEffect } from 'react';
+import React, { Suspense, lazy, useContext, useEffect } from 'react';
 
-import { Biome } from './biome/Biome';
 import { Button } from './../ui/Button';
 import { ConfiguredCarverForm } from './carver/ConfiguredCarver';
 import { DataContext } from './../context/DataContext';
-import { Dimension } from './dimension/Dimension';
 import { DimensionTypeForm } from './dimension/DimensionType';
 import Masonry from 'masonry-layout';
 import { NoiseSettings } from './noise/NoiseSettings';
 import { ProcessorList } from './processor/ProcessorList';
-import { RawConfiguredFeature } from './feature/ConfiguredFeature';
 import { SurfaceBuilder } from './surface/SurfaceBuilder';
 import { buildZip } from '../utils/zip';
 import { capitalize } from '../utils/data';
 import { displayNamespacedKey } from '../utils/data';
 import { useMenu } from '../hooks/ui';
+
+const Biome = lazy(() => import('./biome/Biome'));
+const Dimension = lazy(() => import('./dimension/Dimension'));
+const ConfiguredFeature = lazy(() => import('./feature/ConfiguredFeature'));
 
 export function Datapack() {
     const context = useContext(DataContext);
@@ -61,12 +62,11 @@ export function Datapack() {
                 <MenuItem onClick={e => setMenu(e, 'noise')} active={page === 'noise'}>Noise</MenuItem>
                 <MenuItem onClick={e => setMenu(e, 'processor')} active={page === 'processor'}>Processor</MenuItem>
             </ul></nav>
-        </NavBar>
-        <div className="content">
+        </NavBar><div className="content"><Suspense fallback={<div>Loading...</div>}>
             {page === 'biome' && <Biome onSave={biome => handleSave('biome', biome)} data={custom.biomes[index]} />}
             {page === 'carver' && <ConfiguredCarverForm onSave={carver => handleSave('carver', carver)} data={custom.carvers[index]} />}
             {page === 'surface' && <SurfaceBuilder onSave={surface => handleSave('surface', surface)} data={custom.surfaces[index]} />}
-            {page === 'feature' && <RawConfiguredFeature onSave={feature => handleSave('feature', feature)} data={custom.features[index]} />}
+            {page === 'feature' && <ConfiguredFeature onSave={feature => handleSave('feature', feature)} data={custom.features[index]} />}
             {page === 'noise' && <NoiseSettings onSave={noise => handleSave('noise', noise)} data={custom.noises[index]} />}
             {page === 'processor' && <ProcessorList onSave={processor => handleSave('processor', processor)} data={custom.processors[index]} />}
             {page === 'dimension' && <Dimension onSave={dimension => handleSave('dimension', dimension)} data={custom.dimensions[index]} />}
@@ -75,7 +75,7 @@ export function Datapack() {
                 <h2>Datapack {namespace} <Button type="submit" onClick={handleGenerateClick} disabled={!mayGenerate}>Generate</Button></h2>
                 <Main custom={custom} namespace={namespace} onSave={handleSave} setPage={setMenu} />
             </>}
-        </div>
+        </Suspense></div>
     </div>
 }
 

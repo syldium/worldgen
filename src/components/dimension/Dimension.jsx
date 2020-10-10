@@ -47,3 +47,5 @@ export function Dimension({data = DIMENSION, onSave}) {
         <Button type="submit">Save</Button>
     </form>
 }
+
+export default Dimension;
