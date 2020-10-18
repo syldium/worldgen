@@ -58,7 +58,7 @@ export function NamespacedKey({ children, example = 'daily_resource', type, valu
         if (e.key === 'Enter') {
             e.preventDefault();
             const form = hidden.current.form;
-            if (form !== null) {
+            if (form !== null && form.checkValidity()) {
                 form.dispatchEvent(new Event('submit', { cancelable: true }));
             }
         }
