@@ -1,10 +1,11 @@
-import { useContext, useState } from "react";
+import { capitalize, displayNamespacedKey } from "../utils/data";
+import { useCallback, useContext, useState } from "react";
+
 import { DataContext } from "../context/DataContext";
-import { displayNamespacedKey } from "../utils/data";
 
 /**
  * @param {object[]} initial
- * @returns {[object[], function(object): void]} 
+ * @returns {[object[], function(object): void, function(object[]): void]} 
  */
 export function useData(initial = []) {
     const [data, setData] = useState(initial);
@@ -33,7 +34,7 @@ export function useData(initial = []) {
             return stored;
         });
     }
-    return [data, updateData];
+    return [data, updateData, setData];
 }
 
 /**
@@ -71,4 +72,28 @@ export function useKeyedListOptions(category, includeCustom = true, empty = fals
         }
     });
     return options;
+}
+
+/**
+ * @param {string} type 
+ * @param {History} history 
+ * @param {number} [id] 
+ * @returns {function(object): void}
+ */
+export function useSave(type, history, id) {
+    const custom = useContext(DataContext).custom;
+    return useCallback(function (data) {
+        const method = 'update' + function () {
+            switch (type) {
+                case 'surface':
+                    return 'SurfacesBuilders';
+                case 'dimension_type':
+                    return 'DimensionTypes';
+                default:
+                    return capitalize(type) + 's';
+            }
+        }();
+        custom[method](data, custom[type + 's'][id]);
+        history.push('/');
+    }, [custom, history, id, type]);
 }

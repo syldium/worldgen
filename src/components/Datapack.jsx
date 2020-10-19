@@ -1,48 +1,51 @@
-import { MenuItem, NavBar } from './../ui/Menu';
-import React, { Suspense, lazy, useContext, useEffect } from 'react';
+import {
+    Link,
+    Route,
+    Switch,
+    useHistory,
+    useParams
+} from 'react-router-dom';
+import React, { Suspense, lazy, useCallback, useContext, useEffect } from 'react';
 
 import { Button } from './../ui/Button';
 import { ConfiguredCarverForm } from './carver/ConfiguredCarver';
 import { DataContext } from './../context/DataContext';
+import { DatapackForm } from './DatapackForm';
 import { DimensionTypeForm } from './dimension/DimensionType';
 import Masonry from 'masonry-layout';
+import { Modal } from '../ui/Modal';
+import { NavBar } from './../ui/Menu';
 import { NoiseSettings } from './noise/NoiseSettings';
 import { ProcessorList } from './processor/ProcessorList';
 import { SurfaceBuilder } from './surface/SurfaceBuilder';
 import { buildZip } from '../utils/zip';
-import { capitalize } from '../utils/data';
 import { displayNamespacedKey } from '../utils/data';
-import { useMenu } from '../hooks/ui';
+import { useSave } from '../hooks/context';
+import { useToggle } from '../hooks/ui';
 
 const Biome = lazy(() => import('./biome/Biome'));
 const Dimension = lazy(() => import('./dimension/Dimension'));
 const ConfiguredFeature = lazy(() => import('./feature/ConfiguredFeature'));
 
-export function Datapack() {
+export function Datapack({ onCreate }) {
     const context = useContext(DataContext);
     const custom = context.custom;
     const namespace = context.namespace;
-    const [page, index, setMenu] = useMenu();
+    const history = useHistory();
+    const [open, toggleModal] = useToggle();
 
-    const handleSave = function (type, data) {
-        const method = 'update' + function () {
-            switch (type) {
-                case 'surface':
-                    return 'SurfacesBuilders';
-                case 'dimension_type':
-                    return 'DimensionTypes';
-                default:
-                    return capitalize(type) + 's';
-            }
-        }();
-        custom[method](data, custom[type + 's'][index]);
-        setMenu(null);
-    }
-    const handleGenerateClick = function(e) {
+    const setPage = useCallback(function (e, page, index) {
+        e.preventDefault();
+        history.push(page + '/' + index);
+    }, [history]);
+    const handleNamespaceChange = useCallback(function (s) {
+        onCreate(s);
+        toggleModal();
+    }, [onCreate, toggleModal]);
+    const handleGenerateClick = useCallback(function (e) {
         e.preventDefault();
         buildZip(custom);
-    }
-    window.scrollTo(0, 0);
+    }, [custom]);
 
     const mayGenerate = Object.values(custom).some(content => {
         if (Array.isArray(content)) {
@@ -54,29 +57,59 @@ export function Datapack() {
     return <div>
         <NavBar>
             <nav className="tabs"><ul>
-                <MenuItem onClick={e => setMenu(e, 'main')} active={page === 'main'}>Main</MenuItem>
-                <MenuItem onClick={e => setMenu(e, 'biome')} active={page === 'biome'}>Biome</MenuItem>
-                <MenuItem onClick={e => setMenu(e, 'surface')} active={page === 'surface'}>Surface builder</MenuItem>
-                <MenuItem onClick={e => setMenu(e, 'feature')} active={page === 'feature'}>Feature</MenuItem>
-                <MenuItem onClick={e => setMenu(e, 'dimension')} active={page === 'dimension'}>Dimension</MenuItem>
-                <MenuItem onClick={e => setMenu(e, 'noise')} active={page === 'noise'}>Noise</MenuItem>
-                <MenuItem onClick={e => setMenu(e, 'processor')} active={page === 'processor'}>Processor</MenuItem>
+                <li><Link to="">Main</Link></li>
+                <li><Link to="biome">Biome</Link></li>
+                <li><Link to="surface">Surface builder</Link></li>
+                <li><Link to="feature">Feature</Link></li>
+                <li><Link to="dimension">Dimension</Link></li>
+                <li><Link to="noise">Noise</Link></li>
+                <li><Link to="processor">Processor</Link></li>
             </ul></nav>
-        </NavBar><div className="content"><Suspense fallback={<div>Loading...</div>}>
-            {page === 'biome' && <Biome onSave={biome => handleSave('biome', biome)} data={custom.biomes[index]} />}
-            {page === 'carver' && <ConfiguredCarverForm onSave={carver => handleSave('carver', carver)} data={custom.carvers[index]} />}
-            {page === 'surface' && <SurfaceBuilder onSave={surface => handleSave('surface', surface)} data={custom.surfaces[index]} />}
-            {page === 'feature' && <ConfiguredFeature onSave={feature => handleSave('feature', feature)} data={custom.features[index]} />}
-            {page === 'noise' && <NoiseSettings onSave={noise => handleSave('noise', noise)} data={custom.noises[index]} />}
-            {page === 'processor' && <ProcessorList onSave={processor => handleSave('processor', processor)} data={custom.processors[index]} />}
-            {page === 'dimension' && <Dimension onSave={dimension => handleSave('dimension', dimension)} data={custom.dimensions[index]} />}
-            {page === 'dimension_type' && <DimensionTypeForm onSave={dimension => handleSave('dimension_type', dimension)} data={custom.dimension_types[index]} />}
-            {page === 'main' && <>
-                <h2>Datapack {namespace} <Button type="submit" onClick={handleGenerateClick} disabled={!mayGenerate}>Generate</Button></h2>
-                <Main custom={custom} namespace={namespace} onSave={handleSave} setPage={setMenu} />
-            </>}
+        </NavBar>
+        {open && <Modal open={open} onClose={toggleModal}>
+            <DatapackForm onCreate={handleNamespaceChange}></DatapackForm>
+        </Modal>}
+        <div className="content"><Suspense fallback={<div>Loading...</div>}>
+            <Switch>
+                <Route exact path="/">
+                    <h2>Datapack <code onClick={toggleModal}>{namespace}</code> <Button type="submit" onClick={handleGenerateClick} disabled={!mayGenerate}>Generate</Button></h2>
+                    <Main custom={custom} namespace={namespace} setPage={setPage} />
+                </Route>
+                <Route path="/biome/:id?">
+                    <Resource component={Biome} type="biome" />
+                </Route>
+                <Route path="/carver/:id?">
+                    <Resource component={ConfiguredCarverForm} type="carver" />
+                </Route>
+                <Route path="/surface/:id?">
+                    <Resource component={SurfaceBuilder} type="surface" />
+                </Route>
+                <Route path="/feature/:id?">
+                    <Resource component={ConfiguredFeature} type="feature" />
+                </Route>
+                <Route path="/noise/:id?">
+                    <Resource component={NoiseSettings} type="noise" />
+                </Route>
+                <Route path="/processor/:id?">
+                    <Resource component={ProcessorList} type="processor" />
+                </Route>
+                <Route path="/dimension/:id?">
+                    <Resource component={Dimension} type="dimension" />
+                </Route>
+                <Route path="/dimension/type/:id?">
+                    <Resource component={DimensionTypeForm} type="dimension_type" />
+                </Route>
+            </Switch>
         </Suspense></div>
     </div>
+}
+
+function Resource({ component, type }) {
+    const history = useHistory();
+    const custom = useContext(DataContext).custom;
+    const { id } = useParams();
+
+    return React.createElement(component, { data: custom[type + 's'][id], onSave: useSave(type, history, id) })
 }
 
 function Main({namespace, onSave, setPage}) {
@@ -104,8 +137,9 @@ function Main({namespace, onSave, setPage}) {
     </div>
 }
 
-function StatsTitle({ children, type, invisible = false, namespace, onClick, onDelete }) {
+function StatsTitle({ children, type, invisible = false, namespace }) {
     const data = useContext(DataContext).custom[type + 's'];
+    const remove = useSave(type, useHistory());
     if (invisible && data.length < 1) {
         return <></>
     }
@@ -114,7 +148,7 @@ function StatsTitle({ children, type, invisible = false, namespace, onClick, onD
         e.preventDefault();
         if (window.confirm('Do you really want to remove this resource?')) {
             delete data.key;
-            onDelete(type, data);
+            remove(data);
         }
     };
 
@@ -123,7 +157,12 @@ function StatsTitle({ children, type, invisible = false, namespace, onClick, onD
         <ul>
             {data.map((d, i) => {
                 const name = displayNamespacedKey(d.key, namespace);
-                return <li key={i}><a href="#remove" onClick={e => handleRemove(e, d)}><i className="delete"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M6 2l2-2h4l2 2h4v2H2V2h4zM3 6h14l-1 14H4L3 6zm5 2v10h1V8H8zm3 0v10h1V8h-1z"/></svg></i></a><a href="#edit" onClick={e => onClick(e, type, i)}>{name}</a></li>
+                return <li key={i}>
+                    <a href="#remove" onClick={e => handleRemove(e, d)}>
+                        <i className="delete"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M6 2l2-2h4l2 2h4v2H2V2h4zM3 6h14l-1 14H4L3 6zm5 2v10h1V8H8zm3 0v10h1V8h-1z"/></svg></i>
+                    </a>
+                    <Link to={type.replace('_', '/') + '/' + i}>{name}</Link>
+                </li>
             })}
         </ul>
     </div>

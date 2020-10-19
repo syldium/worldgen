@@ -1,2 +1,12 @@
 # worldgen
-A datapack generator for Minecraft Java Edition that creates custom biomes and dimensions since snapshot 20w28a
+An online datapack generator for Minecraft Java Edition 1.16.3 and custom biomes/dimensions.
+
+Supports:
+- dimension
+- dimension_type
+- worldgen/biome
+- wordlgen/configured_carver
+- wordlgen/configured_feature
+- wordlgen/configured_surface_builder
+- wordlgen/noise_settings
+- wordlgen/processor_list
