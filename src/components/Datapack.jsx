@@ -57,13 +57,13 @@ export function Datapack({ onCreate }) {
     return <div>
         <NavBar>
             <nav className="tabs"><ul>
-                <li><Link to="">Main</Link></li>
-                <li><Link to="biome">Biome</Link></li>
-                <li><Link to="surface">Surface builder</Link></li>
-                <li><Link to="feature">Feature</Link></li>
-                <li><Link to="dimension">Dimension</Link></li>
-                <li><Link to="noise">Noise</Link></li>
-                <li><Link to="processor">Processor</Link></li>
+                <li><Link to="/">Main</Link></li>
+                <li><Link to="/biome">Biome</Link></li>
+                <li><Link to="/surface">Surface builder</Link></li>
+                <li><Link to="/feature">Feature</Link></li>
+                <li><Link to="/dimension">Dimension</Link></li>
+                <li><Link to="/noise">Noise</Link></li>
+                <li><Link to="/processor">Processor</Link></li>
             </ul></nav>
         </NavBar>
         {open && <Modal open={open} onClose={toggleModal}>
