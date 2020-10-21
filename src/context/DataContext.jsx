@@ -39,7 +39,9 @@ export const DataContext = React.createContext({
         features: [],
         noises: [],
         processors: [],
+        structures: [],
         surfaces: [],
+        template_pools: [],
         updateBiomes: (biome) => {},
         updateCarvers: (carver) => {},
         updateDimensions: (dimension) => {},
@@ -47,7 +49,10 @@ export const DataContext = React.createContext({
         updateFeatures: (feature) => {},
         updateNoises: (noise) => {},
         updateProcessors: (processor) => {},
-        updateSurfacesBuilders: (surface_builder) => {}
+        updateStructures: (structure) => {},
+        updateSurfacesBuilders: (surface_builder) => {},
+        updateTemplatePools: (template_pool) => {},
+        resetAll: (initial = {}) => {}
     },
     namespace: ''
 });
@@ -58,24 +63,26 @@ export function DataContextProvider({children, namespace, initial = {}}) {
     const [entities, setEntities] = useState([]);
     const [sounds, setSounds] = useState([]);
 
-    const [customBiomes, updateBiomes] = useData(initial.biomes);
-    const [carvers, updateCarvers] = useData(initial.carvers);
-    const [dimensions, updateDimensions] = useData(initial.dimensions);
-    const [dimension_types, updateDimensionTypes] = useData(initial.dimension_types);
-    const [features, updateFeatures] = useData(initial.features);
-    const [noises, updateNoises] = useData(initial.noises);
-    const [processors, updateProcessors] = useData(initial.processors);
-    const [surfaces, updateSurfacesBuilders] = useData(initial.surfaces);
+    const [customBiomes, updateBiomes, resetBiomes] = useData(initial.biomes);
+    const [carvers, updateCarvers, resetCarvers] = useData(initial.carvers);
+    const [dimensions, updateDimensions, resetDimensions] = useData(initial.dimensions);
+    const [dimension_types, updateDimensionTypes, resetDimensionTypes] = useData(initial.dimension_types);
+    const [features, updateFeatures, resetFeatures] = useData(initial.features);
+    const [noises, updateNoises, resetNoises] = useData(initial.noises);
+    const [processors, updateProcessors, resetProcessors] = useData(initial.processors);
+    const [structures, updateStructures, resetStructures] = useData(initial.structures);
+    const [surfaces, updateSurfacesBuilders, resetSurfacesBuilders] = useData(initial.surfaces);
+    const [template_pools, updateTemplatePools, resetTemplatePools] = useData(initial.template_pools);
 
     const [vanillaZip, setVanillaZip] = useState(null);
 
     useEffect(() => {
         (async function () {
-            jsonFetch('https://unpkg.com/minecraft-data@2.65.0/minecraft-data/data/pc/1.16.1/biomes.json')
+            jsonFetch('https://unpkg.com/minecraft-data@2.69.1/minecraft-data/data/pc/1.16.2/biomes.json')
                 .then(biomes => setBiomes(biomes));
-            jsonFetch('https://unpkg.com/minecraft-data@2.65.0/minecraft-data/data/pc/1.16.1/blocks.json')
+            jsonFetch('https://unpkg.com/minecraft-data@2.69.1/minecraft-data/data/pc/1.16.2/blocks.json')
                 .then(blocks => setBlocks(blocks));
-            jsonFetch('https://unpkg.com/minecraft-data@2.65.0/minecraft-data/data/pc/1.16.1/entities.json')
+            jsonFetch('https://unpkg.com/minecraft-data@2.69.1/minecraft-data/data/pc/1.16.2/entities.json')
                 .then(entities => setEntities(entities.map(entity => ({ value: 'minecraft:' + entity.name, label: entity.displayName }))));
             jsonFetch('https://raw.githubusercontent.com/Arcensoth/mcdata/master/processed/reports/registries/sound_event/data.min.json', {}, {})
                 .then(sounds => setSounds(sounds.values.map(sound => ({ value: sound, label: sound.substr(10) }))));
@@ -120,8 +127,20 @@ export function DataContextProvider({children, namespace, initial = {}}) {
             getVanillaResource
         },
         custom: {
-            biomes: customBiomes, carvers, dimensions, dimension_types, features, noises, processors, surfaces,
-            updateBiomes, updateCarvers, updateDimensions, updateDimensionTypes, updateFeatures, updateNoises, updateProcessors, updateSurfacesBuilders
+            biomes: customBiomes, carvers, dimensions, dimension_types, features, noises, processors, structures, surfaces, template_pools,
+            updateBiomes, updateCarvers, updateDimensions, updateDimensionTypes, updateFeatures, updateNoises, updateProcessors, updateStructures, updateSurfacesBuilders, updateTemplatePools,
+            resetAll: function (initial = {}) {
+                resetBiomes(initial.biomes);
+                resetCarvers(initial.carvers);
+                resetDimensions(initial.dimensions);
+                resetDimensionTypes(initial.dimension_types);
+                resetFeatures(initial.features);
+                resetNoises(initial.noises);
+                resetProcessors(initial.processors);
+                resetStructures(initial.structures);
+                resetSurfacesBuilders(initial.surfaces);
+                resetTemplatePools(initial.template_pools);
+            }
         },
         namespace
     }}>{children}</DataContext.Provider>

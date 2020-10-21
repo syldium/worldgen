@@ -37,3 +37,15 @@
         font-size: 5vw;
     }
 }
+
+.content h2 {
+    display: inline;
+    padding: 5px 0 8px 8px;
+    transition: 0.2s;
+}
+h2 code {
+    cursor: pointer;
+}
+.content h2:hover {
+    background-color: var(--bg-color-nav);
+}
