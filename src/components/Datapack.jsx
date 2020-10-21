@@ -67,7 +67,7 @@ export function Datapack({ onCreate }) {
             </ul></nav>
         </NavBar>
         {open && <Modal open={open} onClose={toggleModal}>
-            <DatapackForm onCreate={handleNamespaceChange}></DatapackForm>
+            <DatapackForm onCreate={handleNamespaceChange} nav={false}></DatapackForm>
         </Modal>}
         <div className="content"><Suspense fallback={<div>Loading...</div>}>
             <Switch>
