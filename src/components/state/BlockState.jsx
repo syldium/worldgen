@@ -87,7 +87,7 @@ function BlockStateProperties({ block, children, onChange, properties = {} }) {
     const states = (useContext(DataContext).vanilla.blocks.find(b => 'minecraft:' + b.name === block) || { states: [] }).states;
 
     const handlePropertyChange = useCallback(function (option) {
-        onChange({ ...properties, [option.name]: option.value });
+        onChange({ ...properties, [option.name]: option.value.toLowerCase() });
     }, [onChange, properties]);
     const handleCheckboxChange = useCallback(function (e) {
         const value = e.target.checked.toString();
@@ -111,17 +111,22 @@ function BlockStateProperties({ block, children, onChange, properties = {} }) {
                 );
                 break;
             case 'int':
+                let min = possible.name === 'distance' ? 1 : 0;
+                let max = possible.num_values;
+                if (possible.name !== 'distance') {
+                    max -= 1;
+                }
                 selects.push(
                     <NumberInput key={possible.name} id={possible.name}
                         value={properties[possible.name] || 0} upChange={handleNumberChange}
-                        min="0" max={possible.num_values - 1}>
+                        min={min} max={max}>
                         {possible.name}
                     </NumberInput>
                 );
                 break;
             default:
                 const options = possible.values.map(value => ({ value, name: possible.name, label: value }));
-                const defaultValue = options.find(o => o.value === properties[possible.name]) || options[0];
+                const defaultValue = options.find(o => o.value.toLowerCase() === properties[possible.name]) || options[0];
                 selects.push(<div key={possible.name}>
                     <label>{possible.name}</label> : <div className="inbl">
                         <Select options={options} value={defaultValue} onChange={handlePropertyChange} />
