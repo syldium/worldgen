@@ -1,10 +1,10 @@
+import {ConfInput, NumberInput} from '../../../ui/Input';
 import React, { useCallback, useMemo } from 'react';
 
 import { BlockStateProvider } from '../../state/BlockStateProvider';
 import { Button } from '../../../ui/Button';
-import {ConfInput, NumberInput} from '../../../ui/Input';
-import Select from '../../../ui/Select';
 import {Heightmap} from "../Heightmap";
+import Select from '../../../ui/Select';
 import { TREE_DECORATORS_OPTIONS } from './FeatureConfigDefaults';
 import { UniformInt } from '../../utils/UniformInt';
 import { useCrudPreset } from '../../../hooks/form';
