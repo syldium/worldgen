@@ -1,4 +1,4 @@
-import { MULTI_NOISE_BIOME_SOURCE, NOISES_NAMES } from './../components/dimension/DimensionDefaults';
+import { MULTI_NOISE_BIOME_SOURCE, NOISES_NAMES } from '../components/dimension/DimensionDefaults';
 
 /**
  * @param {object} a 
@@ -142,7 +142,7 @@ export function dataUpper(group, data) {
         case 'features':
             // 20w30a: name -> type
             const [decorators, feature] = findDecorators(data);
-            if (!feature.hasOwnProperty('type')) {
+            if (!feature.hasOwnProperty('type') && typeof feature === 'object') {
                 feature.type = feature.name;
                 delete feature.name;
                 return buildDecorated(
