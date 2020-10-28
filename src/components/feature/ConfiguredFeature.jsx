@@ -94,7 +94,7 @@ FEATURES_OPTIONS.push({ value: 'minecraft:decorated', label: 'Decorated' });
 
 export function FeatureConfig({ type, ...props }) {
     const Tag = (FEATURES.find(f => type === f.type) || { config: 'p' }).config || (() => <p className="text-muted">No config options</p>);
-    return <Tag {...props}>Unknown feature type (<code>{type}</code>).</Tag>;
+    return <Tag {...{type, ...props}}>Unknown feature type (<code>{type}</code>).</Tag>;
 }
 
 export function RawConfiguredFeature({ data = DECORATED_TREE, onSave }) {
