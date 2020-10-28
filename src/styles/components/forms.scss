@@ -64,6 +64,11 @@ label + .form-group {
     margin-bottom: 0.8rem;
 }
 
+span[title] {
+    border-bottom: 1px dashed var(--secondary-color);
+    cursor: help;
+}
+
 @include respond-to("small") {
     fieldset {
         padding: 0.5rem;

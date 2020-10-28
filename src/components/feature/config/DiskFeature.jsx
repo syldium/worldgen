@@ -4,7 +4,7 @@ import React, { useCallback } from 'react';
 import { NumberInput } from '../../../ui/Input';
 import { UniformInt } from '../../utils/UniformInt';
 
-export function DiskFeature({ configuration, onChange }) {
+export function DiskFeature({ configuration, onChange, type }) {
 
     const handleChange = useCallback(function (value) {
         onChange({ ...configuration, ...value });
@@ -16,16 +16,19 @@ export function DiskFeature({ configuration, onChange }) {
         onChange({ ...configuration, targets });
     }, [configuration, onChange]);
 
-    return <fieldset>
-        <legend>Config</legend>
-        <BlockState block={configuration.state} onChange={handleStateChange} />
-        <div className="form-group form-row">
-            <UniformInt id="radius" value={configuration.radius} upChange={handleChange}>Radius</UniformInt>
-            <NumberInput id="half_height" value={configuration.half_height} upChange={handleChange}>Half height</NumberInput>
-        </div>
+    return <div>
+        <p className="help text-muted">A <code>{type}</code> feature need to be { type === 'minecraft:disk' ? 'underwater' : 'in snow blocks' } to be generated.</p>
         <fieldset>
-            <legend>Targets</legend>
-            <BlocksList list={configuration.targets} onChange={handleTargetsChange} />
+            <legend>Config</legend>
+            <BlockState block={configuration.state} onChange={handleStateChange} />
+            <div className="form-group form-row">
+                <UniformInt id="radius" value={configuration.radius} upChange={handleChange}>Radius</UniformInt>
+                <NumberInput id="half_height" value={configuration.half_height} upChange={handleChange}>Half height</NumberInput>
+            </div>
+            <fieldset>
+                <legend>Targets</legend>
+                <BlocksList list={configuration.targets} onChange={handleTargetsChange} />
+            </fieldset>
         </fieldset>
-    </fieldset>
+    </div>
 }

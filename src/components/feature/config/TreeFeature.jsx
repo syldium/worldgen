@@ -1,8 +1,9 @@
+import {ConfInput, NumberInput} from '../../../ui/Input';
 import React, { useCallback, useMemo } from 'react';
 
 import { BlockStateProvider } from '../../state/BlockStateProvider';
 import { Button } from '../../../ui/Button';
-import { NumberInput } from '../../../ui/Input';
+import {Heightmap} from "../Heightmap";
 import Select from '../../../ui/Select';
 import { TREE_DECORATORS_OPTIONS } from './FeatureConfigDefaults';
 import { UniformInt } from '../../utils/UniformInt';
@@ -25,8 +26,18 @@ export function TreeFeature({configuration, onChange}) {
     const handleDecoratorsChange = useCallback(function(decorators) {
         onChange({ ...configuration, decorators });
     }, [configuration, onChange]);
+    const handleConfigChange = useCallback(function(config) {
+        onChange({ ...configuration, ...config });
+    }, [configuration, onChange]);
+    const handleIgnoreVinesChange = useCallback(function(e) {
+        onChange({ ...configuration, ignore_vines: e.target.checked });
+    }, [configuration, onChange]);
+    const handleHeightmapChange = useCallback(function(option) {
+        onChange({ ...configuration, heightmap: option.value });
+    }, [configuration, onChange]);
 
     return <div>
+        <p className="help text-muted">A tree necessarily needs <span title="Dirt, grass block, podzol, coarse dirt or mycelium">a soil block</span> or a farmland block underneath to be generated.</p>
         <fieldset>
             <legend>Trunk provider</legend>
             <BlockStateProvider block={configuration.trunk_provider} onChange={handleTrunkProviderChange} />
@@ -38,6 +49,14 @@ export function TreeFeature({configuration, onChange}) {
         <FoliagePlacer placer={configuration.foliage_placer} onChange={handleFoliagePlacerChange} />
         <TrunkPlacer placer={configuration.trunk_placer} onChange={handleTrunkPlacerChange} />
         <TreeDecorators data={configuration.decorators} onChange={handleDecoratorsChange}></TreeDecorators>
+        <fieldset>
+            <legend>Config</legend>
+            <Heightmap heightmap={configuration.heightmap} onChange={handleHeightmapChange} />
+            <div className="form-group form-row">
+                <ConfInput id="ignore_vines" checked={configuration.ignore_vines || false} onChange={handleIgnoreVinesChange}>Ignore vines</ConfInput>
+                <NumberInput id="max_water_depth" value={configuration.max_water_depth} required={false} upChange={handleConfigChange}>Max water depth</NumberInput>
+            </div>
+        </fieldset>
     </div>;
 }
 
