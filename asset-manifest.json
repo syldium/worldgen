@@ -3,8 +3,8 @@
     "static/js/0.bb275346.chunk.js": "/worldgen/static/js/0.bb275346.chunk.js",
     "static/js/0.bb275346.chunk.js.map": "/worldgen/static/js/0.bb275346.chunk.js.map",
     "main.css": "/worldgen/static/css/main.2f2be63d.chunk.css",
-    "main.js": "/worldgen/static/js/main.d7c8e73f.chunk.js",
-    "main.js.map": "/worldgen/static/js/main.d7c8e73f.chunk.js.map",
+    "main.js": "/worldgen/static/js/main.f564fb8b.chunk.js",
+    "main.js.map": "/worldgen/static/js/main.f564fb8b.chunk.js.map",
     "runtime-main.js": "/worldgen/static/js/runtime-main.b8d9330e.js",
     "runtime-main.js.map": "/worldgen/static/js/runtime-main.b8d9330e.js.map",
     "static/js/3.6eafca5b.chunk.js": "/worldgen/static/js/3.6eafca5b.chunk.js",
@@ -16,7 +16,7 @@
     "static/js/6.e7cfcf69.chunk.js": "/worldgen/static/js/6.e7cfcf69.chunk.js",
     "static/js/6.e7cfcf69.chunk.js.map": "/worldgen/static/js/6.e7cfcf69.chunk.js.map",
     "index.html": "/worldgen/index.html",
-    "precache-manifest.800aa5034e759a9402ed0d2b9d1f1198.js": "/worldgen/precache-manifest.800aa5034e759a9402ed0d2b9d1f1198.js",
+    "precache-manifest.149781a3aa08a252c26b64ac2090fe4e.js": "/worldgen/precache-manifest.149781a3aa08a252c26b64ac2090fe4e.js",
     "service-worker.js": "/worldgen/service-worker.js",
     "static/css/main.2f2be63d.chunk.css.map": "/worldgen/static/css/main.2f2be63d.chunk.css.map",
     "static/js/3.6eafca5b.chunk.js.LICENSE.txt": "/worldgen/static/js/3.6eafca5b.chunk.js.LICENSE.txt"
@@ -25,6 +25,6 @@
     "static/js/runtime-main.b8d9330e.js",
     "static/js/3.6eafca5b.chunk.js",
     "static/css/main.2f2be63d.chunk.css",
-    "static/js/main.d7c8e73f.chunk.js"
+    "static/js/main.f564fb8b.chunk.js"
   ]
 }

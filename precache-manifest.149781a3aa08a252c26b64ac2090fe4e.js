@@ -1,10 +1,10 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "cc470dac19025f81720f6fb9898c9745",
+    "revision": "20f33aacffc17a4e7993b070d71ad91d",
     "url": "/worldgen/index.html"
   },
   {
-    "revision": "1c0837c69b4d8f966331",
+    "revision": "ac585604a603c2d6f21e",
     "url": "/worldgen/static/css/main.2f2be63d.chunk.css"
   },
   {
@@ -32,8 +32,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/worldgen/static/js/6.e7cfcf69.chunk.js"
   },
   {
-    "revision": "1c0837c69b4d8f966331",
-    "url": "/worldgen/static/js/main.d7c8e73f.chunk.js"
+    "revision": "ac585604a603c2d6f21e",
+    "url": "/worldgen/static/js/main.f564fb8b.chunk.js"
   },
   {
     "revision": "82150a987576620166a0",
