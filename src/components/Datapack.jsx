@@ -47,13 +47,6 @@ export function Datapack({ onCreate }) {
         buildZip(custom);
     }, [custom]);
 
-    const mayGenerate = Object.values(custom).some(content => {
-        if (Array.isArray(content)) {
-            return content.length;
-        }
-        return false;
-    });
-
     return <div>
         <NavBar>
             <nav className="tabs"><ul>
@@ -72,7 +65,7 @@ export function Datapack({ onCreate }) {
         <div className="content"><Suspense fallback={<div>Loading...</div>}>
             <Switch>
                 <Route exact path="/">
-                    <h2>Datapack <code onClick={toggleModal}>{namespace}</code> <Button type="submit" onClick={handleGenerateClick} disabled={!mayGenerate}>Generate</Button></h2>
+                    <h2>Datapack <code onClick={toggleModal}>{namespace}</code> <Button type="submit" onClick={handleGenerateClick}>Generate</Button></h2>
                     <Main custom={custom} namespace={namespace} setPage={setPage} />
                 </Route>
                 <Route path="/biome/:id?">
