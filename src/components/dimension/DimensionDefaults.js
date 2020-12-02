@@ -78,6 +78,8 @@ export const OVERWORLD_DIMENSION_TYPE = {
     ultrawarm: false,
     natural: true,
     coordinate_scale: 1,
+    min_y: 0,
+    height: 256,
     has_skylight: true,
     has_ceiling: false
 }
@@ -96,6 +98,8 @@ export const THE_NETHER_DIMENSION_TYPE = {
     ultrawarm: true,
     natural: false,
     coordinate_scale: 8,
+    min_y: 0,
+    height: 256,
     fixed_time: 18000,
     has_skylight: false,
     has_ceiling: true
@@ -113,6 +117,8 @@ export const THE_END_DIMENSION_TYPE = {
     ultrawarm: false,
     natural: false,
     coordinate_scale: 1,
+    min_y: 0,
+    height: 256,
     fixed_time: 6000,
     has_skylight: false,
     has_ceiling: false

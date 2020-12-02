@@ -102,6 +102,19 @@ export function DimensionTypeForm({ data = OVERWORLD_DIMENSION_TYPE, onSave }) {
             </div>
         </fieldset>
         <fieldset>
+            <legend>Height (20w49a only)</legend>
+            <div className="form-row">
+                <NumberInput id="min_y" value={config.min_y} min={-2048} max={2048 - config.height} step={16} upChange={handleNumberChange}>Min Y</NumberInput>
+                <NumberInput id="height" value={config.height} min={0} max={2048 - config.min_y} step={16} upChange={handleNumberChange}>Height</NumberInput>
+            </div>
+            {config.logical_height > config.height &&
+                <p className="alert--warning"><code>logical_height</code> cannot be higher than <code>height</code>.</p>
+            }
+            {(config.min_y & 0xF !== 0 || config.height & 0xF !== 0) &&
+                <p className="alert--warning">The values has to be multiple of 16.</p>
+            }
+        </fieldset>
+        <fieldset>
             <legend>Apparence</legend>
             <div className="form-row">
                 <InfiniburnIdentifier value={config.infiniburn} onChange={handleSelectChange} inputId="infiniburn" />
@@ -113,7 +126,7 @@ export function DimensionTypeForm({ data = OVERWORLD_DIMENSION_TYPE, onSave }) {
                 </div>
             </div>
             <div className="form-group form-row">
-                <NumberInput id="logical_height" value={config.logical_height} upChange={handleNumberChange} max={256} title="Logical height from vanilla dimensions cannot be replaced due to MC-197338.">Logical height</NumberInput>
+                <NumberInput id="logical_height" value={config.logical_height} upChange={handleNumberChange} max={256}>Logical height</NumberInput>
                 <div className="form-row">
                     {typeof config.fixed_time !== 'number' && <label htmlFor="fixed_time-toggle">Fixed time : </label>}
                     {typeof config.fixed_time === 'number' && <NumberInput id="fixed_time" value={config.fixed_time} upChange={handleNumberChange} step={1200}>Fixed time</NumberInput>}

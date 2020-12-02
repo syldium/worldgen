@@ -139,7 +139,7 @@ export const NumberInput = React.memo(function ({
                 type={type} name={name} id={uId} style={style}
                 min={min} max={max}
                 value={val} data-name={name || id} required={required}
-                step={step < 1 ? 'any' : 1} onChange={handleChange}
+                step={step < 1 ? 'any' : step} onChange={handleChange}
             />
             {type === 'number' &&
                 <div className="number-controls">
