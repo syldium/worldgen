@@ -36,7 +36,8 @@ export const BlockStateProvider = React.memo(function({block = { type: 'minecraf
         onChange({ ...block, entries }, block);
     }, [block, onChange]);
 
-    blocks = blocks || useBlocksOptions(false);
+    const defaultOptions = useBlocksOptions(false);
+    blocks = blocks || defaultOptions;
     const filteredBlocks = useMemo(function () {
         const filtered = block.type === 'minecraft:rotated_block_provider' ?
             blocks.filter(b => b.states.some(state => state.name === 'axis')) : blocks;
@@ -53,7 +54,8 @@ export const BlockStateProvider = React.memo(function({block = { type: 'minecraf
 
 
 const WeightedStateProvider = React.memo(function({entries = [], onChange, options}) {
-    options = options || useBlocksOptions();
+    const defaultOptions = useBlocksOptions();
+    options = options || defaultOptions;
 
     const [blocks, handleAdd, handleChange, handleRemove] = useCrudPreset(onChange, entries, function(blocks) {
         // Get the first non taken block name

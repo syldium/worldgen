@@ -59,7 +59,7 @@ export function NamespacedKey({ children, example = 'daily_resource', type, valu
             e.preventDefault();
             const form = hidden.current.form;
             if (form !== null && form.checkValidity()) {
-                form.dispatchEvent(new Event('submit', { cancelable: true }));
+                form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
             }
         }
     }, []);
@@ -107,8 +107,6 @@ export function NamespacedKey({ children, example = 'daily_resource', type, valu
         return { width };
     }, [options]);
 
-    const dummyOnChange = useCallback(console.log, []);
-
     return <>
         {typeof children !== 'undefined' && <h3>{(typeof value === 'undefined' || value === '') ? 'Create new ' : 'Edit '}{children}</h3>}
         <div className="form-group">
@@ -121,7 +119,7 @@ export function NamespacedKey({ children, example = 'daily_resource', type, valu
                     autoCapitalize="none" spellCheck="false" autoComplete="off" value={inputValue}
                     onChange={handleKeyChange} onKeyPress={handleKeyDown} />
             }
-            <input type={replace ? 'text' : 'hidden'} name="key" value={hiddenInputValue} onChange={dummyOnChange} ref={hidden}
+            <input type={replace ? 'text' : 'hidden'} name="key" value={hiddenInputValue} onChange={console.log} ref={hidden}
                 required tabIndex="-1" style={{ opacity: 0, height: 0, position: 'absolute' }} />
             {mayReplaceVanilla && <Button cat="info mlm" onClick={handleToggle}>{replace ? 'Create a new one' : 'Replace vanilla'}</Button>}
             {!inline && <br />}{replace && <><input type="checkbox" className="checkbox mls" id="fill-values" checked={fill} onChange={handleFillToggle} /> Fill with values</>}

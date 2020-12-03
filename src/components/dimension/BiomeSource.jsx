@@ -66,7 +66,7 @@ const CheckerboardBiomeSource = React.memo(function({source, onChange}) {
         onChange({ ...source, scale });
     }, [onChange, source]);
 
-    const biomes = source.biomes || (options.length > 0 ? [options[0].value] : []);
+    const biomes = useMemo(() => source.biomes || (options.length > 0 ? [options[0].value] : []), [options, source.biomes]);
     useEffect(() => {
         if (!Array.isArray(source.biomes)) {
             onChange({ biomes, scale: source.scale || 2 });
@@ -124,8 +124,7 @@ const MultiNoiseBiomeSource = React.memo(function({source = MULTI_NOISE_BIOME_SO
 
     const values = [];
     biomes.forEach((entry, i) => {
-        const key = i;
-        values.push(<BiomeSelection namespace={namespace} vanilla={vanilla} custom={custom} biomesOptions={options} entry={entry} key={key} onChange={handleChange}><Button cat="danger" onClick={e => handleRemove(e, i)}>Delete</Button></BiomeSelection>);
+        values.push(<BiomeSelection namespace={namespace} vanilla={vanilla} custom={custom} biomesOptions={options} entry={entry} key={i} onChange={handleChange}><Button cat="danger" onClick={e => handleRemove(e, i)}>Delete</Button></BiomeSelection>);
     });
     return <>
         <div className="flex-container" style={{ alignItems: 'baseline' }}>

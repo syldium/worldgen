@@ -105,13 +105,13 @@ export function DimensionTypeForm({ data = OVERWORLD_DIMENSION_TYPE, onSave }) {
             <legend>Height (20w49a only)</legend>
             <div className="form-row">
                 <NumberInput id="min_y" value={config.min_y} min={-2048} max={2048 - config.height} step={16} upChange={handleNumberChange}>Min Y</NumberInput>
-                <NumberInput id="height" value={config.height} min={0} max={2048 - config.min_y} step={16} upChange={handleNumberChange}>Height</NumberInput>
+                <NumberInput id="height" value={config.height} max={2048 - config.min_y} step={16} upChange={handleNumberChange}>Height</NumberInput>
             </div>
             {config.logical_height > config.height &&
                 <p className="alert--warning"><code>logical_height</code> cannot be higher than <code>height</code>.</p>
             }
             {(config.min_y & 0xF !== 0 || config.height & 0xF !== 0) &&
-                <p className="alert--warning">The values has to be multiple of 16.</p>
+                <p className="alert--warning">These values have to be multiples of 16.</p>
             }
         </fieldset>
         <fieldset>

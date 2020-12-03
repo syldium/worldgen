@@ -1,5 +1,5 @@
-import React from 'react';
 import { NumberInput } from './Input';
+import React from 'react';
 
 export const NumberList = React.memo(function ({ children, numbers = [], onChange, step }) {
 
