@@ -2,9 +2,9 @@
   "files": {
     "static/js/0.459997bf.chunk.js": "/worldgen/static/js/0.459997bf.chunk.js",
     "static/js/0.459997bf.chunk.js.map": "/worldgen/static/js/0.459997bf.chunk.js.map",
-    "main.css": "/worldgen/static/css/main.f71734b4.chunk.css",
-    "main.js": "/worldgen/static/js/main.a7d97d35.chunk.js",
-    "main.js.map": "/worldgen/static/js/main.a7d97d35.chunk.js.map",
+    "main.css": "/worldgen/static/css/main.094fecb1.chunk.css",
+    "main.js": "/worldgen/static/js/main.b83b4e18.chunk.js",
+    "main.js.map": "/worldgen/static/js/main.b83b4e18.chunk.js.map",
     "runtime-main.js": "/worldgen/static/js/runtime-main.cd8040c9.js",
     "runtime-main.js.map": "/worldgen/static/js/runtime-main.cd8040c9.js.map",
     "static/js/3.0c83a06e.chunk.js": "/worldgen/static/js/3.0c83a06e.chunk.js",
@@ -16,13 +16,13 @@
     "static/js/6.696d5f97.chunk.js": "/worldgen/static/js/6.696d5f97.chunk.js",
     "static/js/6.696d5f97.chunk.js.map": "/worldgen/static/js/6.696d5f97.chunk.js.map",
     "index.html": "/worldgen/index.html",
-    "static/css/main.f71734b4.chunk.css.map": "/worldgen/static/css/main.f71734b4.chunk.css.map",
+    "static/css/main.094fecb1.chunk.css.map": "/worldgen/static/css/main.094fecb1.chunk.css.map",
     "static/js/3.0c83a06e.chunk.js.LICENSE.txt": "/worldgen/static/js/3.0c83a06e.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
     "static/js/runtime-main.cd8040c9.js",
     "static/js/3.0c83a06e.chunk.js",
-    "static/css/main.f71734b4.chunk.css",
-    "static/js/main.a7d97d35.chunk.js"
+    "static/css/main.094fecb1.chunk.css",
+    "static/js/main.b83b4e18.chunk.js"
   ]
 }
