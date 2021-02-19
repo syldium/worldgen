@@ -46,7 +46,7 @@ export function DatapackForm({ nav = true, onCreate }) {
                 {nav && <div className="mbm">
                     <h3>What's this?</h3>
                     <p className="mbm" style={{ fontSize: '0.95rem' }}>
-                        This online generator under development allows you to create world generation datapacks for Minecraft 1.16.3. You'll be able to create your own biomes or edit existing ones, custom trees, change the amplitude of the terrain, mix generated blocks and more in the following menus. To continue, choose your datapack identifier.
+                        This online generator under development allows you to create world generation datapacks for Minecraft 1.16.5. You'll be able to create your own biomes or edit existing ones, custom trees, change the amplitude of the terrain, mix generated blocks and more in the following menus. To continue, choose your datapack identifier.
                     </p>
                     <hr />
                 </div>}
