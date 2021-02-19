@@ -1,5 +1,5 @@
-@import "~knacss/sass/_config/_variables";
-@import "~knacss/sass/_config/_mixins";
+@import "~knacss/sass/abstracts/_variables-sass";
+@import "~knacss/sass/abstracts/_mixins-sass";
 
 @import "config";
 
@@ -16,8 +16,8 @@
 @import "components/tabs";
 @import "components/toggles";
 
-@import "~knacss/sass/_library/grillade-grid";
-@import "~knacss/sass/_library/utilities";
+@import "~knacss/sass/utils/grillade";
+@import "spacers";
 
 *,
 *::before,

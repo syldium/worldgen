@@ -1,20 +1,22 @@
 $black: #212529;
+$color-base: $color-gray-4;
+$color-muted: #e7e9ed;
 
 $variants-list: (
     (primary, (
-        light: $color-primary,
+        light: $color-blue-1,
         dark: #09716a
     ), $white, none),
     (info, (
-        light: $color-info,
+        light: $color-alternate-2,
         dark: #097c99
     ), var(--primary-color), none),
     (warning, (
-        light: $color-warning,
+        light: $color-alternate-3,
         dark: #d57411
     ), $black, none),
     (danger, (
-        light: $color-danger,
+        light: $color-alternate-4,
         dark: #c14f51
     ), $white, none)
 );

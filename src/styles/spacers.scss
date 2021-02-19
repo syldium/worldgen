@@ -1,0 +1,12 @@
+$sides: (top, bottom, left, right);
+@each $shortcut, $space in ("s": $spacer-small, "m": $spacer-medium, "l": $spacer-large) {
+  @each $side in $sides {
+    .m#{str-slice($side, 0, 1)}#{$shortcut} {
+      margin-#{$side}: #{$space};
+    }
+
+    .p#{str-slice($side, 0, 1)}#{$shortcut} {
+      padding-#{$side}: #{$space};
+    }
+  }
+}
