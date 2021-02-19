@@ -92,7 +92,7 @@ export function DataContextProvider({children, namespace, initial = {}}) {
     const getVanillaResource = useCallback(async function (type, key) {
         let zip = vanillaZip;
         if (zip === null) {
-            const blob = (await fetch('https://raw.githubusercontent.com/slicedlime/examples/master/vanilla_worldgen.zip')).blob();
+            const blob = (await fetch('https://raw.githubusercontent.com/slicedlime/examples/80fb4b8418ff3ff5724f4a0438bb422f58960bd9/vanilla_worldgen.zip')).blob();
             try {
                 zip = await JSZip.loadAsync(blob);
             } catch (e) {

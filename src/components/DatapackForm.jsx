@@ -60,7 +60,7 @@ export function DatapackForm({ nav = true, onCreate }) {
                 <div className="mtm">
                     {error !== null && <div className="alert--danger">{error}</div>}
                     <p className="alert--warning">
-                        This generator is currently built for 1.16.3.
+                        This generator is currently built for 1.16.5.
                     </p>
                 </div>
             </div>
