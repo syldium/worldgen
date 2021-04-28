@@ -1,6 +1,7 @@
 import { ConfInput, NumberInput } from '../../../ui/Input';
+import {useBlocks} from "../../../hooks/context";
+import {useJsonEffect} from '../../../hooks/form';
 import React, { useCallback, useMemo } from 'react';
-import { useBlocksOptions, useJsonEffect } from '../../../hooks/form';
 
 import { BlockStateProvider } from '../../state/BlockStateProvider';
 import { BlocksList } from '../../state/BlockState';
@@ -37,7 +38,7 @@ export function RandomPatchFeature({ configuration, onChange }) {
         onChange({ ...config, [e.target.dataset.name]: e.target.checked });
     }, [config, onChange]);
 
-    const blocks = useBlocksOptions(false);
+    const blocks = useBlocks();
     const filteredBlocks = useMemo(function () {
         return config.block_placer.type.endsWith('double_plant_placer') ?
             blocks.filter(b => b.states.some(state => state.name === 'half') && (b.material === 'plant' || b.name === 'peony'))

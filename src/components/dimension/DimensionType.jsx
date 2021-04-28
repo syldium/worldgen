@@ -7,9 +7,9 @@ import { DataContext } from '../../context/DataContext';
 import { JsonViewer } from '../../ui/JsonViewer';
 import { Modal } from '../../ui/Modal';
 import { NamespacedKey } from '../NamespacedKey';
-import Select from '../../ui/Select';
 import { useKeyedListOptions } from '../../hooks/context';
 import { useToggle } from '../../hooks/ui';
+import Select from '../../ui/Select';
 
 export function DimensionType({ type = 'minecraft:overworld', onChange }) {
     const [open, toggleModal] = useToggle();

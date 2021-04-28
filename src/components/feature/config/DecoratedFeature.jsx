@@ -1,6 +1,6 @@
+import { useKeyedListOptions } from '../../../hooks/context';
 import React, { useCallback } from 'react';
 import Select from '../../../ui/Select';
-import { useKeyedListOptions } from '../../../hooks/context';
 
 export function DecoratedFeature({ feature, onChange }) {
 

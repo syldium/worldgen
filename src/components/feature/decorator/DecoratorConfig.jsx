@@ -4,8 +4,8 @@ import React, { useCallback } from 'react';
 import { CARVERS_OPTIONS, } from './DecoratorDefaults';
 import { INT_MIN_VALUE } from '../../../utils/math';
 import { NumberInput } from '../../../ui/Input';
-import Select from '../../../ui/Select';
 import { UniformInt } from '../../utils/UniformInt';
+import Select from '../../../ui/Select';
 
 export const CarvingMaskDecorator = React.memo(function ({ config, onChange }) {
     const handleStepChange = useCallback(function (option) {

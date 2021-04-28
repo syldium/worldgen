@@ -1,9 +1,9 @@
 import React, { useCallback } from 'react';
 
 import { FEATURES } from './BiomeDefaults';
-import Select from '../../ui/Select';
 import { useJsonEffect } from '../../hooks/form';
 import { useKeyedListOptions } from '../../hooks/context';
+import Select from '../../ui/Select';
 
 export const GenFeatures = React.memo(function({ onChange, features }) {
 

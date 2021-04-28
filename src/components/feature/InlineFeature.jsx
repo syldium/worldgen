@@ -1,9 +1,9 @@
 import { FEATURES, FEATURES_OPTIONS, FeatureConfig } from './ConfiguredFeature';
 import React, { useCallback } from 'react';
 
-import Select from '../../ui/Select';
 import { findDecorators } from '../../utils/data';
 import { useKeyedListOptions } from '../../hooks/context';
+import Select from '../../ui/Select';
 
 export const InlineFeature = React.memo(function ({ children, feature, legend, onChange }) {
 

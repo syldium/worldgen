@@ -2,9 +2,9 @@ import React, { useCallback } from 'react';
 
 import { Button } from '../../../ui/Button';
 import { FeatureField } from '../InlineFeature';
-import Select from '../../../ui/Select';
 import { useCrudPreset } from '../../../hooks/form';
 import { useKeyedListOptions } from '../../../hooks/context';
+import Select from '../../../ui/Select';
 
 export function SimpleRandomFeature({ configuration, onChange }) {
 

@@ -1,8 +1,8 @@
-import React, { useCallback } from 'react';
 import { BlockState } from '../../state/BlockState';
 import { INT_MAX_VALUE } from '../../../utils/math';
 import { NumberInput } from '../../../ui/Input';
 import { UniformInt } from '../../utils/UniformInt';
+import React, { useCallback } from 'react';
 
 export function NetherrackReplaceBlobsFeature({ configuration, onChange }) {
 

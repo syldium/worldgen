@@ -1,7 +1,7 @@
 import { ConfInput, NumberInput } from '../../ui/Input';
-import React, { useCallback } from 'react';
 import { SortableContainer, SortableElement } from 'react-sortable-hoc';
 import { useCrudPreset, useJsonEffect } from '../../hooks/form';
+import React, { useCallback } from 'react';
 
 import { BlockSelect } from '../state/BlockPredicate';
 import { Button } from '../../ui/Button';

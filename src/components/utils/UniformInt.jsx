@@ -1,5 +1,5 @@
-import React, { useCallback } from 'react';
 import { NumberInput } from '../../ui/Input';
+import React, { useCallback } from 'react';
 
 export const UniformInt = React.memo(function ({ children, id, minBase = 0, maxBase = 4, maxSpread = 4, upChange, value, defaultValue = 4 }) {
     const handleChange = useCallback(function (val) {

@@ -1,7 +1,7 @@
-import JSZip from "jszip";
 import { PATHS } from "../context/Paths";
 import { dataUpper } from "./data";
 import { saveAs } from "file-saver";
+import JSZip from "jszip";
 
 const DIMENSIONS_PATH = /^data\/([a-z0-9_.-]+)\/(dimension|dimension_type)\/([a-z0-9/._-]+).json$/;
 const WORLDGEN_PATH = /^data\/([a-z0-9_.-]+)\/worldgen\/(biome|configured_carver|configured_feature|configured_surface_builder|noise_settings|processor_list)\/([a-z0-9/._-]+).json$/;

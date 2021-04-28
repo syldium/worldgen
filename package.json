@@ -18,9 +18,9 @@
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-router-dom": "^5.2.0",
-    "react-scripts": "4.0.2",
+    "react-scripts": "4.0.3",
     "react-select": "^4.1.0",
-    "react-sortable-hoc": "^1.11.0",
+    "react-sortable-hoc": "^2.0.0",
     "use-dark-mode": "^2.3.1",
     "use-persisted-state": "^0.3.3"
   },
@@ -29,12 +29,20 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "lint": "eslint --fix --ext .js,.jsx src/"
   },
   "eslintConfig": {
     "extends": "react-app",
+    "plugins": [
+      "sort-imports-es6-autofix"
+    ],
     "rules": {
-      "sort-imports": "warn"
+      "sort-imports-es6-autofix/sort-imports-es6": [1, {
+        "ignoreCase": false,
+        "ignoreMemberSort": false,
+        "memberSyntaxSortOrder": ["none", "all", "multiple", "single"]
+      }]
     }
   },
   "browserslist": {
@@ -50,6 +58,7 @@
     ]
   },
   "devDependencies": {
+    "eslint-plugin-sort-imports-es6-autofix": "^0.6.0",
     "source-map-explorer": "^2.5.1"
   }
 }

@@ -1,8 +1,8 @@
-import React, { useCallback } from 'react';
 import { BlockState } from '../../state/BlockState';
 import { ConfInput } from '../../../ui/Input';
 import { HUGE_FUNGUS_FEATURE_CONFIG } from './FeatureConfigDefaults';
 import { useJsonEffect } from '../../../hooks/form';
+import React, { useCallback } from 'react';
 
 export function HugeFungusFeature({ configuration = HUGE_FUNGUS_FEATURE_CONFIG, onChange }) {
 

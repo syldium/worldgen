@@ -1,12 +1,12 @@
 import { CarvingMaskDecorator, ChanceDecorator, CountDecorator, CountExtraDecorator, CountNoiseBiasedDecorator, CountNoiseDecorator, DecoratedDecorator, DepthAverageDecorator, RangeDecorator } from './DecoratorConfig';
 import { DECORATOR_CARVING_MASK, DECORATOR_COUNT_NOISE, DECORATOR_COUNT_NOISE_BIASED, DECORATOR_DECORATED, DECORATOR_DEPTH_AVERAGE, DECORATOR_EXTRA_COUNT, DECORATOR_RANGE } from './DecoratorDefaults';
-import React, { useCallback } from 'react';
 import { SortableContainer, SortableElement } from 'react-sortable-hoc';
+import React, { useCallback } from 'react';
 
 import { Button } from '../../../ui/Button';
-import Select from '../../../ui/Select';
 import { capitalize } from '../../../utils/data';
 import { useCrudPreset } from '../../../hooks/form';
+import Select from '../../../ui/Select';
 
 const DECORATORS = [
     { type: 'carving_mask', default: DECORATOR_CARVING_MASK, config: CarvingMaskDecorator },

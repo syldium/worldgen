@@ -4,8 +4,8 @@ import React, { useCallback, useContext, useState } from 'react';
 
 import { BlockState } from '../state/BlockState';
 import { DataContext } from '../../context/DataContext';
-import Select from '../../ui/Select';
 import { useJsonEffect } from '../../hooks/form';
+import Select from '../../ui/Select';
 
 export const BiomeEffects = React.memo(function ({ effects, onChange }) {
 

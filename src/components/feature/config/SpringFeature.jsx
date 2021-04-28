@@ -1,10 +1,10 @@
 import { ConfInput, NumberInput } from '../../../ui/Input';
+import {useBlocks} from "../../../hooks/context";
 import React, { useCallback, useMemo } from 'react';
 
 import { BlockSelect } from '../../state/BlockPredicate';
 import { BlocksNamesList } from '../../state/BlockState';
 import { HUGE_FUNGUS_FEATURE_CONFIG } from './FeatureConfigDefaults';
-import { useBlocksOptions } from '../../../hooks/form';
 
 export function SpringFeature({ configuration = HUGE_FUNGUS_FEATURE_CONFIG, onChange }) {
 
@@ -22,7 +22,7 @@ export function SpringFeature({ configuration = HUGE_FUNGUS_FEATURE_CONFIG, onCh
         onChange({ ...configuration, ...value });
     }, [configuration, onChange]);
 
-    const blocks = useBlocksOptions(false);
+    const blocks = useBlocks();
     const filteredBlocks = useMemo(function () {
         return blocks.filter(b => b.name === 'lava' || b.name === 'water')
             .map(block => ({ value: 'minecraft:' + block.name, label: block.displayName }));

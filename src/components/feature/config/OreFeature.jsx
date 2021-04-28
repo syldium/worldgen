@@ -1,7 +1,7 @@
-import React, { useCallback } from 'react';
 import { BlockPredicate } from '../../state/BlockPredicate';
 import { BlockState } from '../../state/BlockState';
 import { NumberInput } from '../../../ui/Input';
+import React, { useCallback } from 'react';
 
 export function OreFeature({configuration, onChange}) {
     const handlePredicateChange = useCallback(function(target) {

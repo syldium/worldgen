@@ -1,6 +1,6 @@
 import { DECORATED_BAMBOO, DECORATED_BASALT_COLUMNS, DECORATED_BASALT_PILLAR, DECORATED_BLOCK_PILE, DECORATED_BLUE_ICE, DECORATED_BONUS_CHEST, DECORATED_CHORUS_PLANT, DECORATED_CORAL_CLAW, DECORATED_CORAL_MUSHROOM, DECORATED_CORAL_TREE, DECORATED_DECORATED, DECORATED_DELTA_FEATURE, DECORATED_DESERT_WELL, DECORATED_DISK, DECORATED_EMERALD_ORE, DECORATED_END_GATEWAY, DECORATED_END_ISLAND, DECORATED_END_SPIKE, DECORATED_FILL_LAYER, DECORATED_FLOWER, DECORATED_FOREST_ROCK, DECORATED_FOSSIL, DECORATED_FREEZE_TOP_LAYER, DECORATED_GLOWSTONE_BLOB, DECORATED_HUGE_BROWN_MUSHROOM, DECORATED_HUGE_FUNGUS, DECORATED_HUGE_RED_MUSHROOM, DECORATED_ICEBERG, DECORATED_ICE_PATCH, DECORATED_ICE_SPIKE, DECORATED_KELP, DECORATED_LAKE, DECORATED_MONSTER_ROOM, DECORATED_NETHERRACK_REPLACE_BLOBS, DECORATED_NETHER_FOREST_VEGETATION, DECORATED_NO_BONEMEAL_FLOWER, DECORATED_NO_OP, DECORATED_NO_SURFACE_ORE, DECORATED_ORE, DECORATED_RANDOM_BOOLEAN_SELECTOR, DECORATED_RANDOM_PATCH, DECORATED_RANDOM_SELECTOR, DECORATED_SEAGRASS, DECORATED_SEA_PICKLE, DECORATED_SIMPLE_BLOCK, DECORATED_SIMPLE_RANDOM_SELECTOR, DECORATED_SPRING_FEATURE, DECORATED_TREE, DECORATED_TWISTING_VINES, DECORATED_VINES, DECORATED_VOID_START_PLATFORM, DECORATED_WEEPING_VINES } from './DecoratedFeatureDefaults';
-import React, { useCallback, useMemo, useState } from 'react';
 import { buildDecorated, capitalize, findDecorators } from '../../utils/data';
+import React, { useCallback, useMemo, useState } from 'react';
 
 import { BasaltColumnsFeature } from './config/BasaltColumnsFeature';
 import { BlockPileFeature } from './config/BlockPileFeature';
@@ -24,12 +24,12 @@ import { ProbabilityFeature } from './config/ProbabilityFeature';
 import { RandomBooleanFeature } from './config/RandomBooleanFeature';
 import { RandomFeature } from './config/RandomFeature';
 import { RandomPatchFeature } from './config/RandomPatchFeature';
-import Select from '../../ui/Select';
 import { SimpleBlockFeature } from './config/SimpleBlockFeature';
 import { SimpleRandomFeature } from './config/SimpleRandomFeature';
 import { SingleStateFeature } from './config/SingleStateFeature';
 import { SpringFeature } from './config/SpringFeature';
 import { TreeFeature } from './config/TreeFeature';
+import Select from '../../ui/Select';
 
 export const FEATURES = [
     { type: 'bamboo', default: DECORATED_BAMBOO, config: ProbabilityFeature },

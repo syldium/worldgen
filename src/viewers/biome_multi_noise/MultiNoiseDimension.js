@@ -1,6 +1,6 @@
 import { DoublePerlinSampler } from './PerlinSamplers';
-import Random from 'java-random';
 import { hashCode } from '../../utils/hash';
+import Random from 'java-random';
 
 /**
  * @typedef Biome

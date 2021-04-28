@@ -1,5 +1,5 @@
-import React from 'react';
 import { UniformInt } from '../../utils/UniformInt';
+import React from 'react';
 
 export function CountFeature({ configuration, onChange }) {
 

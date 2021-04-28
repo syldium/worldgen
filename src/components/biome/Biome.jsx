@@ -11,8 +11,8 @@ import { GenFeatures } from './Features';
 import { INT_MIN_VALUE } from '../../utils/math';
 import { JsonViewer } from '../../ui/JsonViewer';
 import { NamespacedKey } from '../NamespacedKey';
-import Select from '../../ui/Select';
 import { useKeyedListOptions } from '../../hooks/context';
+import Select from '../../ui/Select';
 
 export function Biome({data = BIOME_DEFAULTS, onSave}) {
 

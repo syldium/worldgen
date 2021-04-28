@@ -1,6 +1,6 @@
 import { INT_MAX_VALUE, maintainPrecision } from '../utils/math';
-import React, { useCallback, useEffect, useState } from 'react';
 import { hexColorToInteger, integerColorToHex } from '../utils/color';
+import React, { useCallback, useEffect, useState } from 'react';
 
 export const ConfInput = React.memo(function ({
     attr, type,

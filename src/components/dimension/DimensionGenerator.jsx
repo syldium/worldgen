@@ -5,8 +5,8 @@ import { BiomeSource } from './BiomeSource';
 import { ConfInput } from '../../ui/Input';
 import { FlatChunkSettings } from './FlatChunkSettings';
 import { NoiseGenerator } from '../noise/NoiseSettings';
-import Select from '../../ui/Select';
 import { hashCode } from './../../utils/hash';
+import Select from '../../ui/Select';
 
 export function DimensionGenerator({generator, onChange}) {
 

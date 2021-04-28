@@ -1,18 +1,18 @@
 import { ConfInput, NumberInput } from '../../ui/Input';
 import { MULTI_NOISE_BIOME_SOURCE, NOISES_NAMES } from './DimensionDefaults';
-import React, { useCallback, useContext, useEffect } from 'react';
 import { capitalize, hasDuplicatedObjects } from '../../utils/data';
+import React, { useCallback, useContext, useEffect } from 'react';
 
 import { Button } from '../../ui/Button';
 import { DataContext } from '../../context/DataContext';
 import { MultiNoiseRepresentation } from './MultiNoiseBiomeSource';
 import { NumberList } from '../../ui/NumberList';
 import { SeedField } from './DimensionGenerator';
-import Select from '../../ui/Select';
 import { useCrudPreset } from '../../hooks/form';
 import { useKeyedListOptions } from '../../hooks/context';
 import { useMemo } from 'react';
 import { useToggle } from '../../hooks/ui';
+import Select from '../../ui/Select';
 
 export const BiomeSource = React.memo(function({source = { type: 'minecraft:fixed' }, onChange}) {
 

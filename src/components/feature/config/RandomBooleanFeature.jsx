@@ -1,5 +1,5 @@
-import React, { useCallback } from 'react';
 import { FeatureField } from '../InlineFeature';
+import React, { useCallback } from 'react';
 
 export function RandomBooleanFeature({ configuration, onChange }) {
 

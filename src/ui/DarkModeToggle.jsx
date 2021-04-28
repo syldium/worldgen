@@ -1,5 +1,5 @@
-import React from 'react';
 import { Toggle } from './Toggle';
+import React from 'react';
 import useDarkMode from 'use-dark-mode';
 
 export function DarkModeToggle() {

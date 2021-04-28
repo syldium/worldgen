@@ -7,10 +7,10 @@ import { INT_MIN_VALUE } from '../../utils/math';
 import { JsonViewer } from '../../ui/JsonViewer';
 import { NamespacedKey } from '../NamespacedKey';
 import { OVERWORLD_NOISE } from './NoiseDefaults';
-import Select from '../../ui/Select';
 import { Structures } from './Structures';
 import { useKeyedListOptions } from '../../hooks/context';
 import { useValueChange } from '../../hooks/form';
+import Select from '../../ui/Select';
 
 export const NoiseGenerator = React.memo(function({onChange, settings = 'minecraft:overworld'}) {
     const options = useKeyedListOptions('noises').map(option => {

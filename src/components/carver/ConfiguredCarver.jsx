@@ -6,12 +6,12 @@ import { JsonViewer } from '../../ui/JsonViewer';
 import { Modal } from '../../ui/Modal';
 import { NamespacedKey } from "../NamespacedKey";
 import { NumberInput } from '../../ui/Input';
-import Select from '../../ui/Select';
 import { VANILLA_CARVERS } from './CarverDefaults';
 import { useInlineResources } from '../../hooks/select';
 import { useJsonEffect } from '../../hooks/form';
 import { useKeyedListOptions } from '../../hooks/context';
 import { useToggle } from '../../hooks/ui';
+import Select from '../../ui/Select';
 
 export const ConfiguredCarver = React.memo(function({ carvers, onChange }) {
 

@@ -4,10 +4,10 @@ import React, { useCallback, useMemo } from 'react';
 import { BlockStateProvider } from '../../state/BlockStateProvider';
 import { Button } from '../../../ui/Button';
 import {Heightmap} from "../Heightmap";
-import Select from '../../../ui/Select';
 import { TREE_DECORATORS_OPTIONS } from './FeatureConfigDefaults';
 import { UniformInt } from '../../utils/UniformInt';
 import { useCrudPreset } from '../../../hooks/form';
+import Select from '../../../ui/Select';
 
 export function TreeFeature({configuration, onChange}) {
 

@@ -1,12 +1,12 @@
-import React, { useCallback, useContext, useMemo } from 'react';
 import { useCrudPreset, useJsonEffect } from "../../hooks/form";
+import React, { useCallback, useContext, useMemo } from 'react';
 
 import { Button } from '../../ui/Button';
 import { DataContext } from '../../context/DataContext';
 import { NumberInput } from '../../ui/Input';
 import { SPAWNERS_DEFAULTS } from './BiomeDefaults';
-import Select from '../../ui/Select';
 import { useToggle } from '../../hooks/ui';
+import Select from '../../ui/Select';
 
 export const BiomeSpawners = React.memo(function({onChange, data}) {
 

@@ -1,6 +1,6 @@
-import React, { useCallback } from 'react';
 import { BlockState } from '../../state/BlockState';
 import { NumberInput } from '../../../ui/Input';
+import React, { useCallback } from 'react';
 
 export function FillLayerFeature({ configuration, onChange }) {
 

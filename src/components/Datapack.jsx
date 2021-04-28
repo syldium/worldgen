@@ -7,14 +7,13 @@ import {
 } from 'react-router-dom';
 import React, { Suspense, lazy, useCallback, useContext, useEffect } from 'react';
 
-import { Button } from './../ui/Button';
+import { Button } from '../ui/Button';
 import { ConfiguredCarverForm } from './carver/ConfiguredCarver';
-import { DataContext } from './../context/DataContext';
+import { DataContext } from '../context/DataContext';
 import { DatapackForm } from './DatapackForm';
 import { DimensionTypeForm } from './dimension/DimensionType';
-import Masonry from 'masonry-layout';
 import { Modal } from '../ui/Modal';
-import { NavBar } from './../ui/Menu';
+import { NavBar } from '../ui/Menu';
 import { NoiseSettings } from './noise/NoiseSettings';
 import { ProcessorList } from './processor/ProcessorList';
 import { SurfaceBuilder } from './surface/SurfaceBuilder';
@@ -22,6 +21,7 @@ import { buildZip } from '../utils/zip';
 import { displayNamespacedKey } from '../utils/data';
 import { useSave } from '../hooks/context';
 import { useToggle } from '../hooks/ui';
+import Masonry from 'masonry-layout';
 
 const Biome = lazy(() => import('./biome/Biome'));
 const Dimension = lazy(() => import('./dimension/Dimension'));

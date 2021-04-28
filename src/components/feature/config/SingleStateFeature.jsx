@@ -1,5 +1,5 @@
-import React, { useCallback } from 'react';
 import { BlockState } from '../../state/BlockState';
+import React, { useCallback } from 'react';
 
 export function SingleStateFeature({ configuration, onChange }) {
 

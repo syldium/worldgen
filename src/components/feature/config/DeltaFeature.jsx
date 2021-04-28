@@ -1,6 +1,6 @@
-import React, { useCallback } from 'react';
 import { BlockState } from '../../state/BlockState';
 import { UniformInt } from '../../utils/UniformInt';
+import React, { useCallback } from 'react';
 
 export function DeltaFeature({ configuration, onChange }) {
 
