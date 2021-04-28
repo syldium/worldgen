@@ -1,16 +1,18 @@
 import { ConfInput, NumberInput } from "../../ui/Input";
-import React, { useCallback, useContext, useMemo } from "react";
+import { getStateValue, isValidModKey } from "../../utils/data";
 import { useBlocksOptions, useCrudPreset } from "../../hooks/form";
+import React, { useCallback, useContext } from "react";
+import Select, { CreatableSelect } from "../../ui/Select";
+
 
 import { BlockSelect } from "./BlockPredicate";
 import { Button } from '../../ui/Button';
 import { DataContext } from "../../context/DataContext";
-import Select from "../../ui/Select";
-import { getStateValue } from "../../utils/data";
 
 export const BlockState = React.memo(function ({ block = {}, children, className = 'form-group', inputId, name, onChange, options }) {
     const context = useContext(DataContext);
 
+    const blocks = useBlocksOptions(options);
     const handleTypeChange = useCallback(function (option) {
         const Name = option.value;
         const Properties = {};
@@ -24,20 +26,21 @@ export const BlockState = React.memo(function ({ block = {}, children, className
             onChange({ ...block, Name }, block);
         }
     }, [block, context.vanilla.blocks, onChange]);
+    const handleValidNewOption = useCallback(function (string) {
+        return isValidModKey(string) && !blocks.some(o => o.value === string);
+    }, [blocks]);
+    const handleOptionCreation = useCallback(function (string) {
+        context.custom.addBlock(string);
+        onChange({ ...block, Name: string }, block);
+    }, [block, context.custom, onChange]);
     const handlePropertiesChange = useCallback(function (properties) {
         onChange({ ...block, Properties: { ...block.Properties, ...properties } }, block);
     }, [block, onChange]);
 
-    const blocks = useMemo(function () {
-        if (typeof options === 'undefined') {
-            return context.vanilla.blocks.map(block => ({ value: 'minecraft:' + block.name, label: block.displayName }));
-        }
-        return options;
-    }, [context.vanilla.blocks, options]);
 
     return <div className={className}>
         <div className="form-row">
-            <div style={{ flexGrow: 1 }}><Select options={blocks} value={blocks.find(o => o.value === block.Name) || null} name={name} onChange={handleTypeChange} inputId={inputId} /></div>
+            <div style={{ flexGrow: 1 }}><CreatableSelect isValidNewOption={handleValidNewOption} onCreateOption={handleOptionCreation} options={blocks} value={blocks.find(o => o.value === block.Name) || null} name={name} onChange={handleTypeChange} inputId={inputId} /></div>
             {children}
         </div>
         <BlockStateProperties block={block.Name} properties={block.Properties} onChange={handlePropertiesChange} />

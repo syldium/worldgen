@@ -1,11 +1,13 @@
-import React, { useCallback, useMemo } from "react";
+import {defaultNamespace} from "../../utils/data";
+import {useBlocks} from "../../hooks/context";
 import { useBlocksOptions, useCrudPreset } from "../../hooks/form";
+import React, { useCallback, useMemo } from "react";
 
 import { BlockState } from "./BlockState";
 import { Button } from '../../ui/Button';
 import { NumberInput } from '../../ui/Input';
-import Select from "../../ui/Select";
 import { useEffect } from "react";
+import Select from "../../ui/Select";
 
 export const BlockStateProvider = React.memo(function({block = { type: 'minecraft:simple_state_provider' }, filter, onChange, blocks}) {
     const options = useMemo(function() {
@@ -36,13 +38,14 @@ export const BlockStateProvider = React.memo(function({block = { type: 'minecraf
         onChange({ ...block, entries }, block);
     }, [block, onChange]);
 
-    const defaultOptions = useBlocksOptions(false);
+    const defaultOptions = useBlocks();
     blocks = blocks || defaultOptions;
     const filteredBlocks = useMemo(function () {
         const filtered = block.type === 'minecraft:rotated_block_provider' ?
             blocks.filter(b => b.states.some(state => state.name === 'axis')) : blocks;
-        return filtered.map(block => ({ value: 'minecraft:' + block.name, label: block.displayName }));
+        return filtered.map(block => ({ value: defaultNamespace(block.name), label: block.displayName }));
     }, [blocks, block.type]);
+    console.log(defaultOptions.find(o => o.name.endsWith('dice')), filteredBlocks.find(o => o.value.endsWith('dice')))
 
     return <div>
         <label>Provider type</label>

@@ -1,8 +1,8 @@
-import { useCallback, useContext, useEffect, useMemo, useReducer, useState } from "react";
+import { useCallback, useEffect, useMemo, useReducer, useState } from "react";
 
-import { DataContext } from "../context/DataContext";
+import {defaultNamespace} from "../utils/data";
+import {useBlocks, useKeyedListOptions} from "./context";
 import arrayMove from "array-move";
-import { useKeyedListOptions } from "./context";
 
 function crudReducer(state, action) {
     switch (action.type) {
@@ -70,11 +70,15 @@ export function useCrudPreset(onChange, data = [], initial = {}, unshift = false
     return [data, add, update, remove, replace];
 }
 
-export function useBlocksOptions(mapped = true) {
-    const blocks = useContext(DataContext).vanilla.blocks;
-    return useMemo(function() {
-        return mapped ? blocks.map(block => ({ value: 'minecraft:' + block.name, label: block.displayName })): blocks;
-    }, [blocks, mapped]);
+/**
+ * @param {{label: string, value: string}[]} [options]
+ * @return {{label: string, value: string}[]}
+ */
+export function useBlocksOptions(options) {
+    const blocks = useBlocks();
+    return useMemo(function () {
+        return Array.isArray(options) ? options : blocks.map(block => ({ value: defaultNamespace(block.name), label: block.displayName }));
+    }, [blocks, options]);
 }
 
 /**

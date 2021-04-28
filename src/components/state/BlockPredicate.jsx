@@ -1,10 +1,10 @@
-import React, { useCallback, useContext, useMemo } from "react";
+import {useBlocksOptions} from "../../hooks/form";
+import React, { useCallback, useMemo } from "react";
 
 import { BlockState } from "./BlockState";
-import { DataContext } from "../../context/DataContext";
 import { NumberInput } from "../../ui/Input";
-import Select from "../../ui/Select";
 import { TAGS_OPTIONS } from "./Tags";
+import Select from "../../ui/Select";
 
 export const BlockPredicate = React.memo(function({target, onChange}) {
     const options = useMemo(function() {
@@ -69,12 +69,6 @@ const RandomBlockMatch = React.memo(function({block, onChange, type, probability
 });
 
 export const BlockSelect = React.memo(function({block, inputId, onChange, options}) {
-    const context = useContext(DataContext);
-    const blocks = useMemo(function () {
-        if (typeof options === 'undefined') {
-            return context.vanilla.blocks.map(block => ({ value: 'minecraft:' + block.name, label: block.displayName }));
-        }
-        return options;
-    }, [context.vanilla.blocks, options]);
+    const blocks = useBlocksOptions(options);
     return <Select options={blocks} value={blocks.find(b => b.value === block)} onChange={onChange} inputId={inputId} />;
 });

@@ -1,5 +1,5 @@
-import { capitalize, displayNamespacedKey } from "../utils/data";
-import { useCallback, useContext, useState } from "react";
+import {capitalize, defaultNamespace, displayNamespacedKey} from "../utils/data";
+import {useCallback, useContext, useMemo, useState} from "react";
 
 import { DataContext } from "../context/DataContext";
 
@@ -62,13 +62,13 @@ export function useKeyedListOptions(category, includeCustom = true, empty = fals
         }
         switch(struct) {
             case 1: // displayName
-                options.push({ value: 'minecraft:' + keyed.name, label: keyed.displayName });
+                options.push({ value: defaultNamespace(keyed.name), label: keyed.displayName });
                 return;
             case 2: // already option
                 options.push(keyed);
                 return;
             default:
-                options.push({ value: 'minecraft:' + keyed, label: keyed });
+                options.push({ value: defaultNamespace(keyed), label: keyed });
         }
     });
     return options;
@@ -96,4 +96,14 @@ export function useSave(type, history, id) {
         custom[method](data, custom[type + 's'][id]);
         history.push('/');
     }, [custom, history, id, type]);
+}
+
+/**
+ * @return {{ name: string, displayName: string, material: string, states: { name: string, type: 'bool'|'int'|'enum', num_values: number }[] }[]}
+ */
+export function useBlocks() {
+    const context = useContext(DataContext);
+    return useMemo(function () {
+        return context.vanilla.blocks.concat(context.custom.blocks);
+    }, [context.custom.blocks, context.vanilla.blocks]);
 }

@@ -27,6 +27,18 @@ export function displayNamespacedKey(key = 'undefined', defaultNamespace) {
     return key.startsWith(defaultNamespace + ':') ? key.split(':')[1] : key;
 }
 
+/**
+ * @param {string} namespacedKey
+ * @param {string} namespace
+ * @return {string}
+ */
+export function defaultNamespace(namespacedKey, namespace = 'minecraft') {
+    if (namespacedKey.includes(':')) {
+        return namespacedKey;
+    }
+    return namespace + ':' + namespacedKey;
+}
+
 export function getStateValue(state, properties = {}) {
     const actual = properties[state.name];
     switch (state.type) {
@@ -37,6 +49,18 @@ export function getStateValue(state, properties = {}) {
         default:
             return actual || state.values[0];
     }
+}
+
+/**
+ * @param {string} namespacedKey
+ * @return {boolean}
+ */
+export function isValidModKey(namespacedKey) {
+    const separatorIndex = namespacedKey.indexOf(':');
+    if (separatorIndex < 1 || separatorIndex === namespacedKey.length - 1) {
+        return false;
+    }
+    return !namespacedKey.startsWith('minecraft:') && !namespacedKey.includes(' ');
 }
 
 export function hasDuplicatedObjects(objects) {

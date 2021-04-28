@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
 
-import JSZip from 'jszip';
 import { VANILLA_CARVERS } from '../components/carver/CarverDefaults';
 import { VANILLA_DIMENSION_TYPES } from '../components/dimension/DimensionDefaults';
 import { VANILLA_FEATURES } from '../components/feature/VanillaFeatures';
@@ -9,7 +8,9 @@ import { VANILLA_PROCESSORS } from '../components/processor/ProcessorDefaults';
 import { VANILLA_SURFACE_BUILDERS } from '../components/surface/SurfaceBuilderDefaults';
 import { getAbsolutePath } from './Paths';
 import { jsonFetch } from '../utils/fetch';
+import {useCrudState} from "../hooks/form";
 import { useData } from '../hooks/context';
+import JSZip from 'jszip';
 
 export const DataContext = React.createContext({
     vanilla: {
@@ -33,6 +34,7 @@ export const DataContext = React.createContext({
     },
     custom: {
         biomes: [],
+        blocks: [],
         carvers: [],
         dimensions: [],
         dimension_types: [],
@@ -43,6 +45,7 @@ export const DataContext = React.createContext({
         surfaces: [],
         template_pools: [],
         updateBiomes: (biome) => {},
+        addBlock: (block) => {},
         updateCarvers: (carver) => {},
         updateDimensions: (dimension) => {},
         updateDimensionTypes: (dimension_type) => {},
@@ -64,6 +67,7 @@ export function DataContextProvider({children, namespace, initial = {}}) {
     const [sounds, setSounds] = useState([]);
 
     const [customBiomes, updateBiomes, resetBiomes] = useData(initial.biomes);
+    const [customBlocks, dispatchBlock] = useCrudState();
     const [carvers, updateCarvers, resetCarvers] = useData(initial.carvers);
     const [dimensions, updateDimensions, resetDimensions] = useData(initial.dimensions);
     const [dimension_types, updateDimensionTypes, resetDimensionTypes] = useData(initial.dimension_types);
@@ -78,11 +82,11 @@ export function DataContextProvider({children, namespace, initial = {}}) {
 
     useEffect(() => {
         (async function () {
-            jsonFetch('https://unpkg.com/minecraft-data@2.69.1/minecraft-data/data/pc/1.16.2/biomes.json')
+            jsonFetch('https://unpkg.com/minecraft-data@2.84.0/minecraft-data/data/pc/1.16.2/biomes.json')
                 .then(biomes => setBiomes(biomes));
-            jsonFetch('https://unpkg.com/minecraft-data@2.69.1/minecraft-data/data/pc/1.16.2/blocks.json')
+            jsonFetch('https://unpkg.com/minecraft-data@2.84.0/minecraft-data/data/pc/1.16.2/blocks.json')
                 .then(blocks => setBlocks(blocks));
-            jsonFetch('https://unpkg.com/minecraft-data@2.69.1/minecraft-data/data/pc/1.16.2/entities.json')
+            jsonFetch('https://unpkg.com/minecraft-data@2.84.0/minecraft-data/data/pc/1.16.2/entities.json')
                 .then(entities => setEntities(entities.map(entity => ({ value: 'minecraft:' + entity.name, label: entity.displayName }))));
             jsonFetch('https://raw.githubusercontent.com/Arcensoth/mcdata/master/processed/reports/registries/sound_event/data.min.json', {}, {})
                 .then(sounds => setSounds(sounds.values.map(sound => ({ value: sound, label: sound.substr(10) }))));
@@ -111,6 +115,10 @@ export function DataContextProvider({children, namespace, initial = {}}) {
         return Promise.resolve(JSON.parse(await file.async('text')));
     }, [vanillaZip]);
 
+    const addBlock = useCallback(function (block) {
+        dispatchBlock({ type: 'ADD', payload: { displayName: "(Custom) " + block, name: block } });
+    }, [dispatchBlock]);
+
     return <DataContext.Provider value={{
         vanilla: {
             biomes,
@@ -127,8 +135,8 @@ export function DataContextProvider({children, namespace, initial = {}}) {
             getVanillaResource
         },
         custom: {
-            biomes: customBiomes, carvers, dimensions, dimension_types, features, noises, processors, structures, surfaces, template_pools,
-            updateBiomes, updateCarvers, updateDimensions, updateDimensionTypes, updateFeatures, updateNoises, updateProcessors, updateStructures, updateSurfacesBuilders, updateTemplatePools,
+            biomes: customBiomes, blocks: customBlocks, carvers, dimensions, dimension_types, features, noises, processors, structures, surfaces, template_pools,
+            updateBiomes, addBlock, updateCarvers, updateDimensions, updateDimensionTypes, updateFeatures, updateNoises, updateProcessors, updateStructures, updateSurfacesBuilders, updateTemplatePools,
             resetAll: function (initial = {}) {
                 resetBiomes(initial.biomes);
                 resetCarvers(initial.carvers);
