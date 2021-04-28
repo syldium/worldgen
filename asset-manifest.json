@@ -1,28 +1,28 @@
 {
   "files": {
-    "static/js/0.83d9f254.chunk.js": "/worldgen/static/js/0.83d9f254.chunk.js",
-    "static/js/0.83d9f254.chunk.js.map": "/worldgen/static/js/0.83d9f254.chunk.js.map",
-    "main.css": "/worldgen/static/css/main.094fecb1.chunk.css",
-    "main.js": "/worldgen/static/js/main.f75f655d.chunk.js",
-    "main.js.map": "/worldgen/static/js/main.f75f655d.chunk.js.map",
-    "runtime-main.js": "/worldgen/static/js/runtime-main.06e1b3c4.js",
-    "runtime-main.js.map": "/worldgen/static/js/runtime-main.06e1b3c4.js.map",
-    "static/js/3.d0e72640.chunk.js": "/worldgen/static/js/3.d0e72640.chunk.js",
-    "static/js/3.d0e72640.chunk.js.map": "/worldgen/static/js/3.d0e72640.chunk.js.map",
-    "static/js/4.32386e9d.chunk.js": "/worldgen/static/js/4.32386e9d.chunk.js",
-    "static/js/4.32386e9d.chunk.js.map": "/worldgen/static/js/4.32386e9d.chunk.js.map",
-    "static/js/5.a8795ed9.chunk.js": "/worldgen/static/js/5.a8795ed9.chunk.js",
-    "static/js/5.a8795ed9.chunk.js.map": "/worldgen/static/js/5.a8795ed9.chunk.js.map",
-    "static/js/6.fd5be168.chunk.js": "/worldgen/static/js/6.fd5be168.chunk.js",
-    "static/js/6.fd5be168.chunk.js.map": "/worldgen/static/js/6.fd5be168.chunk.js.map",
+    "static/js/0.bd6efdc3.chunk.js": "/worldgen/static/js/0.bd6efdc3.chunk.js",
+    "static/js/0.bd6efdc3.chunk.js.map": "/worldgen/static/js/0.bd6efdc3.chunk.js.map",
+    "main.css": "/worldgen/static/css/main.7ca042fa.chunk.css",
+    "main.js": "/worldgen/static/js/main.a9b85d56.chunk.js",
+    "main.js.map": "/worldgen/static/js/main.a9b85d56.chunk.js.map",
+    "runtime-main.js": "/worldgen/static/js/runtime-main.a9926f1a.js",
+    "runtime-main.js.map": "/worldgen/static/js/runtime-main.a9926f1a.js.map",
+    "static/js/3.d98f4716.chunk.js": "/worldgen/static/js/3.d98f4716.chunk.js",
+    "static/js/3.d98f4716.chunk.js.map": "/worldgen/static/js/3.d98f4716.chunk.js.map",
+    "static/js/4.54365e37.chunk.js": "/worldgen/static/js/4.54365e37.chunk.js",
+    "static/js/4.54365e37.chunk.js.map": "/worldgen/static/js/4.54365e37.chunk.js.map",
+    "static/js/5.9e40ac98.chunk.js": "/worldgen/static/js/5.9e40ac98.chunk.js",
+    "static/js/5.9e40ac98.chunk.js.map": "/worldgen/static/js/5.9e40ac98.chunk.js.map",
+    "static/js/6.e1603e3a.chunk.js": "/worldgen/static/js/6.e1603e3a.chunk.js",
+    "static/js/6.e1603e3a.chunk.js.map": "/worldgen/static/js/6.e1603e3a.chunk.js.map",
     "index.html": "/worldgen/index.html",
-    "static/css/main.094fecb1.chunk.css.map": "/worldgen/static/css/main.094fecb1.chunk.css.map",
-    "static/js/3.d0e72640.chunk.js.LICENSE.txt": "/worldgen/static/js/3.d0e72640.chunk.js.LICENSE.txt"
+    "static/css/main.7ca042fa.chunk.css.map": "/worldgen/static/css/main.7ca042fa.chunk.css.map",
+    "static/js/3.d98f4716.chunk.js.LICENSE.txt": "/worldgen/static/js/3.d98f4716.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
-    "static/js/runtime-main.06e1b3c4.js",
-    "static/js/3.d0e72640.chunk.js",
-    "static/css/main.094fecb1.chunk.css",
-    "static/js/main.f75f655d.chunk.js"
+    "static/js/runtime-main.a9926f1a.js",
+    "static/js/3.d98f4716.chunk.js",
+    "static/css/main.7ca042fa.chunk.css",
+    "static/js/main.a9b85d56.chunk.js"
   ]
 }
