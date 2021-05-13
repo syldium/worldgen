@@ -1,10 +1,12 @@
+import {DataContext} from "../../context/DataContext";
+import {isValidModKey} from "../../utils/data";
 import {useBlocksOptions} from "../../hooks/form";
-import React, { useCallback, useMemo } from "react";
+import React, {useCallback, useContext, useMemo} from "react";
 
 import { BlockState } from "./BlockState";
 import { NumberInput } from "../../ui/Input";
 import { TAGS_OPTIONS } from "./Tags";
-import Select from "../../ui/Select";
+import Select, {CreatableSelect} from "../../ui/Select";
 
 export const BlockPredicate = React.memo(function({target, onChange}) {
     const options = useMemo(function() {
@@ -70,5 +72,15 @@ const RandomBlockMatch = React.memo(function({block, onChange, type, probability
 
 export const BlockSelect = React.memo(function({block, inputId, onChange, options}) {
     const blocks = useBlocksOptions(options);
-    return <Select options={blocks} value={blocks.find(b => b.value === block)} onChange={onChange} inputId={inputId} />;
+    const context = useContext(DataContext);
+
+    const handleValidNewOption = useCallback(function (string) {
+        return isValidModKey(string) && !blocks.some(o => o.value === string);
+    }, [blocks]);
+    const handleOptionCreation = useCallback(function (string) {
+        context.custom.addBlock(string);
+        onChange({ value: string, label: string });
+    }, [context.custom, onChange]);
+
+    return <CreatableSelect isValidNewOption={handleValidNewOption} onCreateOption={handleOptionCreation} options={blocks} value={blocks.find(b => b.value === block)} onChange={onChange} inputId={inputId} />;
 });

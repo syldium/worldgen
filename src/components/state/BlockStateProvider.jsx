@@ -45,7 +45,6 @@ export const BlockStateProvider = React.memo(function({block = { type: 'minecraf
             blocks.filter(b => b.states.some(state => state.name === 'axis')) : blocks;
         return filtered.map(block => ({ value: defaultNamespace(block.name), label: block.displayName }));
     }, [blocks, block.type]);
-    console.log(defaultOptions.find(o => o.name.endsWith('dice')), filteredBlocks.find(o => o.value.endsWith('dice')))
 
     return <div>
         <label>Provider type</label>
