@@ -42,7 +42,7 @@ export const BlockStateProvider = React.memo(function({block = { type: 'minecraf
     blocks = blocks || defaultOptions;
     const filteredBlocks = useMemo(function () {
         const filtered = block.type === 'minecraft:rotated_block_provider' ?
-            blocks.filter(b => b.states.some(state => state.name === 'axis')) : blocks;
+            blocks.filter(b => b.states && b.states.some(state => state.name === 'axis')) : blocks;
         return filtered.map(block => ({ value: defaultNamespace(block.name), label: block.displayName }));
     }, [blocks, block.type]);
 
