@@ -1,0 +1,6 @@
+.light-mode {
+  --primary-color: #131618;
+}
+.dark-mode {
+  --primary-color: #dfdfdf;
+}

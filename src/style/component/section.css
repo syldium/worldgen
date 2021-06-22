@@ -1,0 +1,9 @@
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+    Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif;
+  line-height: 1.5;
+  overflow-y: scroll;
+  color: var(--primary-color);
+  transition: 0.3s;
+}
