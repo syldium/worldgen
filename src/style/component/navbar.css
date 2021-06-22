@@ -1,0 +1,22 @@
+.navbar {
+  position: relative;
+  top: 0;
+  left: 0;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  background-color: var(--bg-color-nav);
+  padding: 0.5rem 1rem 0;
+  box-shadow: 0 0 1px 0 #5e6d6f;
+  transition: 0.2s background-color;
+}
+
+.navbar h2 {
+  font-weight: 450;
+  padding-left: 2rem;
+}
+.github {
+  white-space: nowrap;
+  margin-top: 0.75rem;
+  margin-bottom: 0.75rem;
+}

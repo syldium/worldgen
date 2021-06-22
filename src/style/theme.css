@@ -1,6 +1,8 @@
 .light-mode {
+  --bg-color-nav: #bbe3ff;
   --primary-color: #131618;
 }
 .dark-mode {
+  --bg-color-nav: #1b2938;
   --primary-color: #dfdfdf;
 }
