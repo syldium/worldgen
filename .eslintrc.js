@@ -5,12 +5,14 @@ module.exports = {
         '@typescript-eslint',
         'react',
         'react-hooks',
+        'jest'
     ],
     extends: [
         'eslint:recommended',
         'plugin:@typescript-eslint/recommended',
         'plugin:react/recommended',
         'plugin:react-hooks/recommended',
+        'plugin:jest/recommended',
         'prettier'
     ],
     rules: {

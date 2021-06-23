@@ -1,8 +1,22 @@
 .light-mode {
+  --bg-color-section: #fefefe;
   --bg-color-nav: #bbe3ff;
+  --bg-color-input: var(--bg-color-section);
+  --bg-color-input-hover: #f4f9ff;
+  --bg-color-select-focus: #2684ff;
   --primary-color: #131618;
+  --focus-color: #2380b9;
+  --border-color: #cccccc;
+  --select-label: #e6e6e6;
 }
 .dark-mode {
+  --bg-color-section: #262c35;
   --bg-color-nav: #1b2938;
+  --bg-color-input: #35404b;
+  --bg-color-input-hover: #343e49;
+  --bg-color-select-focus: #1b3a5a;
   --primary-color: #dfdfdf;
+  --focus-color: #19618f;
+  --border-color: transparent;
+  --select-label: var(--bg-color-section);
 }
