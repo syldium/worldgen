@@ -1,3 +1,5 @@
+import { Option } from '../component/ui/Select';
+
 /**
  * Create a name from a key.
  *
@@ -24,6 +26,13 @@ export function labelize(namespacedKey: string): string {
     }
   }
   return builder;
+}
+
+export function labelizeOption(namespacedKey: string): Option {
+  return {
+    label: labelize(namespacedKey),
+    value: defaultNamespace(namespacedKey)
+  };
 }
 
 /**

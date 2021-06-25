@@ -1,23 +1,25 @@
 import React, { useState } from 'react';
 import { NavBar } from './ui/NavBar';
-import { BlockState, BlockStateValue } from './resource/BlockState';
+import { NodeElement } from './NodeElement';
+import { DimensionType } from '../data/1.17/DimensionType';
 
 export function DatapackApp(): JSX.Element {
-  const [blockState, setBlockState] = useState<Record<string, BlockStateValue>>(
-    { block: { Name: 'air' } }
-  );
+  const [resource, setResource] = useState<Record<string, unknown>>({
+    dimension_type: DimensionType.preset('1.17')
+  });
 
   return (
     <div>
       <NavBar />
       <h1>Dimension datapack generator</h1>
-      <BlockState
-        name="block"
-        value={blockState.block}
-        onChange={setBlockState}
+      <NodeElement
+        name="dimension_type"
+        node={DimensionType.node}
+        value={resource}
+        onChange={setResource}
       />
       <code>
-        <pre>{JSON.stringify(blockState, null, 2)}</pre>
+        <pre>{JSON.stringify(resource, null, 2)}</pre>
       </code>
     </div>
   );
