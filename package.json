@@ -5,6 +5,7 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "format": "prettier \"{src,tests}/**/*.{css,ts,tsx}\" --write --tab-width 2 --single-quote --trailing-comma none",
+    "lint": "eslint src/main/** src/test/**",
     "serve": "vite preview",
     "test": "jest"
   },

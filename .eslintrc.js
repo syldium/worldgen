@@ -17,5 +17,10 @@ module.exports = {
     ],
     rules: {
         '@typescript-eslint/ban-ts-comment': 'off'
+    },
+    settings: {
+        react: {
+            version: 'detect'
+        }
     }
 };
