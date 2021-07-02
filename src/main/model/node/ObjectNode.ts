@@ -13,15 +13,9 @@ export const ObjectNode = (
     if (value === null || typeof value !== 'object') {
       return false;
     }
-    for (const [name, node] of Object.entries(records)) {
-      if (
-        node.type !== 'optional' &&
-        !Object.prototype.hasOwnProperty.call(value, name)
-      ) {
-        return false;
-      }
-    }
-    return true;
+    return Object.entries(records).every(([name, node]) =>
+      node.isValid((value as Record<string, unknown>)[name])
+    );
   }
 });
 

@@ -1,30 +1,65 @@
-import React, { ReactNode, useEffect } from 'react';
-import { BlockStateRegistry } from '../model/Registry';
+import React, { ReactNode, useMemo } from 'react';
+import {
+  BlockStateRegistry,
+  Registry,
+  WorldgenRegistryHolder,
+  RegistryKey
+} from '../model/Registry';
 import { createContext, useState } from 'react';
-import { loadBlockStates } from '../data/RegistryFetch';
+import { labelizeOption } from '../util/LabelHelper';
+import { BlockTags } from '../data/1.17/BlockTag';
+import { useFetchData } from '../hook/useFetchData';
+import { EntityTypes } from '../data/1.17/EntityType';
+import { SoundEvents } from '../data/1.17/SoundEvent';
+import { Structures } from '../data/1.17/Structure';
 
 interface GameRegistry {
   blockStates: BlockStateRegistry;
+  registries: Record<RegistryKey, Registry>;
+  worldgen: WorldgenRegistryHolder;
 }
 
 export const GameContext = createContext<GameRegistry>({
-  blockStates: {}
+  blockStates: {} as BlockStateRegistry,
+  registries: {} as Record<RegistryKey, Registry>,
+  worldgen: {} as WorldgenRegistryHolder
 });
 
 interface ProviderProps {
   children?: ReactNode;
+  states?: BlockStateRegistry;
 }
-export function GameRegistryProvider({ children }: ProviderProps): JSX.Element {
-  const [blockStates, setBlockStates] = useState<BlockStateRegistry>({});
+export function GameRegistryProvider({
+  children,
+  states
+}: ProviderProps): JSX.Element {
+  const url =
+    'https://raw.githubusercontent.com/Arcensoth/mcdata/master/processed/reports/blocks/simplified/data.min.json';
+  //const url = '/blocks/data.json';
+  const blockStates = useFetchData<BlockStateRegistry>(url, {}, states);
+  const [worldgen] = useState<WorldgenRegistryHolder>(
+    () => new WorldgenRegistryHolder()
+  );
 
-  useEffect(function () {
-    loadBlockStates(setBlockStates);
-  }, []);
+  const blockTypes: Registry = useMemo(
+    () => ({ options: Object.keys(blockStates).map(labelizeOption) }),
+    [blockStates]
+  );
 
   return (
     <GameContext.Provider
       value={{
-        blockStates: blockStates
+        blockStates,
+        registries: {
+          ...worldgen.worldgen,
+          block: blockTypes,
+          block_state: blockTypes,
+          entity_type: { options: EntityTypes },
+          sound_event: { options: SoundEvents },
+          structure: { options: Structures },
+          'tag/blocks': { options: BlockTags }
+        },
+        worldgen
       }}
     >
       {children}

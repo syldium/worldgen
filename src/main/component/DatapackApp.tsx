@@ -1,20 +1,20 @@
 import React, { useState } from 'react';
 import { NavBar } from './ui/NavBar';
-import { NodeElement } from './NodeElement';
-import { DimensionType } from '../data/1.17/DimensionType';
+import { ModelView } from './NodeElement';
+import { Dimension } from '../data/1.17/Dimension';
 
 export function DatapackApp(): JSX.Element {
-  const [resource, setResource] = useState<Record<string, unknown>>({
-    dimension_type: DimensionType.preset('1.17')
-  });
+  const [resource, setResource] = useState<Record<string, unknown>>(
+    Dimension.preset('1.17')
+  );
 
   return (
     <div>
       <NavBar />
       <h1>Dimension datapack generator</h1>
-      <NodeElement
-        name="dimension_type"
-        node={DimensionType.node}
+      <ModelView
+        name="model"
+        model={Dimension.node}
         value={resource}
         onChange={setResource}
       />

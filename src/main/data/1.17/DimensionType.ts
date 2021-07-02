@@ -5,6 +5,8 @@ import { BoolNode } from '../../model/node/BoolNode';
 import { IntNode, LongNode } from '../../model/node/IntNode';
 import { EnumNode } from '../../model/node/EnumNode';
 import { IdentifierNode } from '../../model/node/ResourceNode';
+import { Option } from '../../component/ui/Select';
+import { labelizeOption } from '../../util/LabelHelper';
 
 export const DimensionType: Model = DefaultedModel(
   {
@@ -45,3 +47,10 @@ export const DimensionType: Model = DefaultedModel(
     ultrawarm: false
   })
 );
+
+export const DimensionTypes: Option[] = [
+  'overworld',
+  'overworld_caves',
+  'the_nether',
+  'the_end'
+].map(labelizeOption);

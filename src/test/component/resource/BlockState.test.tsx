@@ -2,7 +2,7 @@ import React from 'react';
 import { render } from '@testing-library/react';
 import selectEvent from 'react-select-event';
 import { BlockState } from '../../../main/component/resource/BlockState';
-import { GameContext } from '../../../main/context/GameRegistry';
+import { GameRegistryProvider } from '../../../main/context/GameRegistry';
 import {
   BlockStateRegistry,
   DEFAULT_BLOCK_STATE
@@ -28,14 +28,14 @@ describe('block state form', function () {
     const changeCallback = jest.fn();
     const { container, getByTestId } = render(
       <form data-testid="form">
-        <GameContext.Provider value={{ blockStates: BLOCKS_STATES }}>
+        <GameRegistryProvider states={BLOCKS_STATES}>
           <BlockState
             name="block"
             inputId="block"
             value={{ Name: 'air' }}
             onChange={changeCallback}
           />
-        </GameContext.Provider>
+        </GameRegistryProvider>
       </form>
     );
 

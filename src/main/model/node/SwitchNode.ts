@@ -1,8 +1,9 @@
 import { stripDefaultNamespace } from '../../util/LabelHelper';
-import { ModelNode, NodeBase } from './Node';
+import { NodeBase } from './Node';
+import { ObjectOrNodeModel } from '../Model';
 
 export interface SwitchNodeParams extends NodeBase<'switch'> {
-  records: Record<string, ModelNode>;
+  records: Record<string, ObjectOrNodeModel>;
   config: string | null;
   preset: { [type in string]: Record<string, unknown> & Typed };
 }
@@ -23,7 +24,7 @@ function isTyped(value: unknown): value is Record<string, unknown> & Typed {
  * @param config
  */
 export const SwitchNode = (
-  records: Record<string, ModelNode>,
+  records: Record<string, ObjectOrNodeModel>,
   preset: Record<keyof typeof records, Record<string, unknown> & Typed> = {},
   config: string | null = 'config'
 ): SwitchNodeParams => ({
@@ -38,6 +39,21 @@ export const SwitchNode = (
     return stripDefaultNamespace(value.type) in records;
   }
 });
+
+export const forEveryType = (
+  types: ReadonlyArray<string>,
+  value: ObjectOrNodeModel,
+  preset?: Record<typeof types[number], Record<string, unknown> & Typed>,
+  config?: string | null
+): SwitchNodeParams =>
+  SwitchNode(
+    types.reduce((prev, type) => {
+      prev[type] = value;
+      return prev;
+    }, {} as Record<string, ObjectOrNodeModel>),
+    preset,
+    config
+  );
 
 export interface Typed {
   type: string;

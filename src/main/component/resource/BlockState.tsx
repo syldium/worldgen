@@ -1,12 +1,8 @@
-import React, { ChangeEvent, useCallback, useContext, useMemo } from 'react';
+import React, { ChangeEvent, useCallback, useContext } from 'react';
 import Select, { CreatableSelect, Option } from '../ui/Select';
 import { areConsecutiveIntegers } from '../../util/MathHelper';
 import { NumberInput } from '../ui/NumberInput';
-import {
-  defaultNamespace,
-  isValidNamespacedKey,
-  labelize
-} from '../../util/LabelHelper';
+import { defaultNamespace, isValidNamespacedKey } from '../../util/LabelHelper';
 import { GameContext } from '../../context/GameRegistry';
 import { DEFAULT_BLOCK_STATE } from '../../model/Registry';
 
@@ -60,12 +56,7 @@ export function BlockState({
     [name, onChange, states]
   );
 
-  const blocks = useMemo(
-    () =>
-      options ??
-      Object.keys(states).map((value) => ({ label: labelize(value), value })),
-    [states, options]
-  );
+  const blocks = options || context.registries.block.options;
 
   const handlePropertiesChange = useCallback(
     (Properties: Properties) =>

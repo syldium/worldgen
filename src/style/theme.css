@@ -7,6 +7,7 @@
   --primary-color: #131618;
   --focus-color: #2380b9;
   --border-color: #cccccc;
+  --fieldset-color: #d3d7db;
   --select-label: #e6e6e6;
 }
 .dark-mode {
@@ -18,5 +19,6 @@
   --primary-color: #dfdfdf;
   --focus-color: #19618f;
   --border-color: transparent;
+  --fieldset-color: #596169;
   --select-label: var(--bg-color-section);
 }

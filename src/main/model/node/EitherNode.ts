@@ -1,16 +1,22 @@
-import { NodeBase, ModelNode } from './Node';
+import { NodeBase } from './Node';
+import { isValidModel, ObjectOrNodeModel } from '../Model';
+
+type Nodes = readonly [
+  ObjectOrNodeModel,
+  ObjectOrNodeModel,
+  ...ObjectOrNodeModel[]
+];
 
 export interface EitherNodeParams extends NodeBase<'either'> {
-  first: ModelNode;
-  second: ModelNode;
+  nodes: Nodes;
+  findCurrentIndex: (value: unknown) => number;
 }
 
-export const EitherNode = (
-  first: ModelNode,
-  second: ModelNode
-): EitherNodeParams => ({
-  first,
-  second,
+export const EitherNode = (...nodes: Nodes): EitherNodeParams => ({
+  nodes,
   type: 'either',
-  isValid: (value: unknown) => first.isValid(value) || second.isValid(value)
+  isValid: (value: unknown) =>
+    nodes.some((model) => isValidModel(model, value)),
+  findCurrentIndex: (value: unknown) =>
+    nodes.findIndex((model) => isValidModel(model, value))
 });

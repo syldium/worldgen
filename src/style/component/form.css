@@ -1,0 +1,6 @@
+fieldset {
+  border: 1px solid var(--fieldset-color);
+}
+legend {
+  width: 100%;
+}

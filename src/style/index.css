@@ -1,4 +1,5 @@
 @import 'theme.css';
+@import 'component/form.css';
 @import 'component/link.css';
 @import 'component/navbar.css';
 @import 'component/section.css';

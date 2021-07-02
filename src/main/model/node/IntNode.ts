@@ -27,6 +27,7 @@ export interface NumberNodeParams extends NodeBase<'int' | 'float'> {
 export const IntNode = (
   config?: Partial<NumberNodeParams>
 ): NumberNodeParams => {
+  const def = config?.default;
   const min = config?.min ?? INT_MIN_VALUE;
   const max = config?.max ?? INT_MAX_VALUE;
   const step = config?.step ?? 1;
@@ -35,10 +36,12 @@ export const IntNode = (
     min,
     max,
     step,
-    default: config?.default,
+    default: def,
     type: 'int',
     isValid: (value: unknown) =>
-      Number.isInteger(value) && isInRange(value as number, min, max, step)
+      value == null
+        ? typeof def === 'number'
+        : Number.isInteger(value) && isInRange(value as number, min, max, step)
   };
 };
 

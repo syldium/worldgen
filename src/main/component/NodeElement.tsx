@@ -1,7 +1,12 @@
-import React, { ChangeEvent, useCallback, useMemo } from 'react';
-import { ModelNode, NodeBase, NodeType } from '../model/node/Node';
+import React, { ChangeEvent, useCallback, useContext, useMemo } from 'react';
+import { isNode, ModelNode, NodeBase, NodeType } from '../model/node/Node';
 import { NumberNodeParams } from '../model/node/IntNode';
-import { labelize } from '../util/LabelHelper';
+import {
+  defaultNamespace,
+  labelize,
+  labelizeOption,
+  stripDefaultNamespace
+} from '../util/LabelHelper';
 import useId from '@accessible/use-id';
 import { NodeErrorBoundary } from './ui/ErrorBoundary';
 import { EnumNodeParams } from '../model/node/EnumNode';
@@ -11,6 +16,45 @@ import { BoolNodeParams } from '../model/node/BoolNode';
 import { ObjectNodeParams, OptionalNodeParams } from '../model/node/ObjectNode';
 import { IdentifierNodeParams } from '../model/node/ResourceNode';
 import { useOptions } from '../hook/useOptions';
+import { SwitchNodeParams } from '../model/node/SwitchNode';
+import { BlockState, BlockStateValue } from './resource/BlockState';
+import { EitherNodeParams } from '../model/node/EitherNode';
+import { ObjectOrNodeModel } from '../model/Model';
+import { GameContext } from '../context/GameRegistry';
+
+interface ModelViewProps {
+  model: ObjectOrNodeModel;
+  name: string;
+  value: Record<string, unknown>;
+  onChange: (val: Record<string, unknown>) => void;
+}
+
+export function ModelView({
+  model,
+  name,
+  value,
+  onChange
+}: ModelViewProps): JSX.Element {
+  if (isNode(model)) {
+    return (
+      <NodeElement node={model} name={name} value={value} onChange={onChange} />
+    );
+  } else {
+    return (
+      <fieldset>
+        {Object.entries(model).map(([name, codec]) => (
+          <NodeElement
+            key={name}
+            node={codec}
+            name={name}
+            value={value}
+            onChange={onChange}
+          />
+        ))}
+      </fieldset>
+    );
+  }
+}
 
 interface NodeElementProps {
   name: string;
@@ -28,7 +72,11 @@ export function NodeElement({
   const El = findNodeElement(node);
   if (El === null) {
     console.warn("Unknown node for '" + name + "' field!", node);
-    return <p>Unknown node for {name}!</p>;
+    return (
+      <p>
+        Unknown node for <code>{name}</code>!
+      </p>
+    );
   }
   return (
     <NodeErrorBoundary name={name} key={name}>
@@ -46,6 +94,8 @@ function findNodeElement(
     case 'int':
     case 'float':
       return NumberInput;
+    case 'either':
+      return EitherInput;
     case 'enum':
       return SelectInput;
     case 'identifier':
@@ -54,6 +104,10 @@ function findNodeElement(
       return ObjectInput;
     case 'optional':
       return OptionalInput;
+    case 'resource':
+      return ResourceInput;
+    case 'switch':
+      return SelectSwitch;
     default:
       return null;
   }
@@ -93,6 +147,33 @@ function CheckboxInput({
         onChange={handleChange}
       />
     </div>
+  );
+}
+
+function EitherInput({
+  name,
+  node,
+  value,
+  onChange
+}: NodeProps<EitherNodeParams>) {
+  const val = (node.nodes[0].type === 'either' ? value[name] : value) as Record<
+    string,
+    unknown
+  >; // FIXME
+  const i = Math.max(
+    node.findCurrentIndex(name === 'lava_level' ? value[name] : val),
+    0
+  ); // FIXME
+  return (
+    <fieldset>
+      <legend>{labelize(name)}</legend>
+      <ModelView
+        model={node.nodes[i]}
+        name={name}
+        value={val}
+        onChange={onChange}
+      />
+    </fieldset>
   );
 }
 
@@ -267,5 +348,123 @@ function ResourceSelectInput({
         inputId={id}
       />
     </div>
+  );
+}
+
+function ResourceInput({
+  name,
+  node,
+  value,
+  onChange
+}: NodeProps<IdentifierNodeParams>) {
+  const { worldgen } = useContext(GameContext);
+  const resource = value[name];
+
+  const handleChange = useCallback(
+    (value: Record<string, unknown>) => onChange({ [name]: value }),
+    [name, onChange]
+  );
+
+  if (
+    resource !== null &&
+    typeof resource === 'object' &&
+    worldgen.isRegistered(node.registry)
+  ) {
+    const model = worldgen.worldgen[node.registry].model.node;
+    return (
+      <ModelView
+        model={model}
+        name={name}
+        value={resource as Record<string, unknown>}
+        onChange={handleChange}
+      />
+    );
+  } else if (node.registry !== 'block_state') {
+    return (
+      <ResourceSelectInput
+        name={name}
+        node={node}
+        value={value}
+        onChange={onChange}
+      />
+    );
+  }
+  return (
+    <BlockState
+      name={name}
+      value={value[name] as BlockStateValue}
+      onChange={onChange}
+    />
+  );
+}
+
+function SelectSwitch({
+  name,
+  node,
+  value,
+  onChange
+}: NodeProps<SwitchNodeParams>) {
+  const options: Option[] = useMemo(
+    () => Object.keys(node.records).map(labelizeOption),
+    [node.records]
+  );
+  const type = stripDefaultNamespace(
+    (value.type as string) ?? options[0].value
+  );
+  const handleConfigChange = useCallback(
+    function (config) {
+      if (node.config === null) {
+        onChange({ ...value, ...config });
+      } else {
+        onChange({
+          type: value.type,
+          [node.config]: {
+            ...(value[node.config] as Record<string, unknown>),
+            ...config[node.config]
+          }
+        });
+      }
+    },
+    [node.config, onChange, value]
+  );
+  const handleTypeChange = useCallback(
+    function (option: Option | null) {
+      if (!option) return;
+      const type = option.value;
+      const strippedType = stripDefaultNamespace(type);
+      onChange(node.preset[strippedType] || { type });
+    },
+    [node.preset, onChange]
+  );
+  const typeWithNamespace = defaultNamespace(type);
+  const schema = node.records[type];
+  const selected: Option | null = useMemo(
+    () => options.find((o) => o.value === typeWithNamespace) || null,
+    [options, typeWithNamespace]
+  );
+
+  return (
+    <fieldset>
+      <legend>
+        <Select
+          options={options}
+          value={selected}
+          onChange={handleTypeChange}
+        />
+      </legend>
+      {schema && (
+        <ModelView
+          model={schema}
+          name={node.config || name}
+          value={
+            node.config === null ||
+            (isNode(schema) && schema.type === 'resource') // FIXME
+              ? value
+              : (value[node.config] as Record<string, unknown>)
+          }
+          onChange={handleConfigChange}
+        />
+      )}
+    </fieldset>
   );
 }
