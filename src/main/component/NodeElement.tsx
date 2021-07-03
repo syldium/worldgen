@@ -1,5 +1,11 @@
 import React, { ChangeEvent, useCallback, useContext, useMemo } from 'react';
-import { isNode, ModelNode, NodeBase, NodeType } from '../model/node/Node';
+import {
+  isNode,
+  ModelNode,
+  NodeBase,
+  NodeType,
+  providePreset
+} from '../model/node/Node';
 import { NumberNodeParams } from '../model/node/IntNode';
 import {
   defaultNamespace,
@@ -21,6 +27,9 @@ import { BlockState, BlockStateValue } from './resource/BlockState';
 import { EitherNodeParams } from '../model/node/EitherNode';
 import { ObjectOrNodeModel } from '../model/Model';
 import { GameContext } from '../context/GameRegistry';
+import { ListNodeParams } from '../model/node/ListNode';
+import { DataType, useCrudProps } from '../hook/useCrud';
+import { Obj } from '../util/DomHelper';
 
 interface ModelViewProps {
   model: ObjectOrNodeModel;
@@ -100,6 +109,8 @@ function findNodeElement(
       return SelectInput;
     case 'identifier':
       return ResourceSelectInput;
+    case 'list':
+      return ListCrud;
     case 'object':
       return ObjectInput;
     case 'optional':
@@ -173,6 +184,48 @@ function EitherInput({
         value={val}
         onChange={onChange}
       />
+    </fieldset>
+  );
+}
+
+function ListCrud({
+  name,
+  node,
+  value,
+  onChange
+}: NodeProps<ListNodeParams<ModelNode>>) {
+  const handleValuesChange = useCallback(
+    (values) => onChange({ [name]: values }),
+    [name, onChange]
+  );
+  const list = value[name] as Obj[];
+  const initial = useMemo(() => providePreset(node.of), [node.of]) as DataType;
+  const { elements, create, update } = useCrudProps<DataType>(
+    handleValuesChange,
+    list,
+    initial
+  );
+  const handleChange = useCallback(
+    function (values: Record<string, unknown>) {
+      const index = parseInt(Object.keys(values)[0]);
+      update(values[index] as DataType, index);
+    },
+    [update]
+  );
+  return (
+    <fieldset>
+      <legend>
+        {labelize(name)} <button onClick={create}>Add</button>
+      </legend>
+      {elements.map((element, i) => (
+        <NodeElement
+          key={i}
+          name={i.toString()}
+          node={node.of}
+          value={list as Record<number, unknown>}
+          onChange={handleChange}
+        />
+      ))}
     </fieldset>
   );
 }

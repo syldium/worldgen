@@ -46,3 +46,15 @@ export type ModelNode =
 export function isNode(model: ObjectOrNodeModel): model is ModelNode {
   return 'type' in model;
 }
+
+export function providePreset(node: ModelNode): unknown {
+  const { type } = node;
+  if (typeof node.default !== 'undefined') {
+    return node.default;
+  } else if (type === 'object' || type === 'switch') {
+    return {};
+  } else if (type === 'int' || type === 'float') {
+    return 0;
+  }
+  return type === 'bool' ? false : '';
+}
