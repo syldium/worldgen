@@ -6,7 +6,7 @@ interface NavBarProps {
 }
 export const NavBar = ({ children }: NavBarProps): JSX.Element => (
   <div className="navbar">
-    {children}
+    <nav className="tabs">{children}</nav>
     <p className="github">
       <a
         href="https://github.com/syldium/worldgen"

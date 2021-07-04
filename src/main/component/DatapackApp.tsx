@@ -1,26 +1,37 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { NavBar } from './ui/NavBar';
-import { ModelView } from './NodeElement';
-import { Dimension } from '../data/1.17/Dimension';
+import { Link, Route, Switch } from 'react-router-dom';
+import { Resource } from './resource/Resource';
+import { MainMenu } from './MainMenu';
 
-export function DatapackApp(): JSX.Element {
-  const [resource, setResource] = useState<Record<string, unknown>>(
-    Dimension.preset('1.17')
-  );
-
-  return (
-    <div>
-      <NavBar />
-      <h1>Dimension datapack generator</h1>
-      <ModelView
-        name="model"
-        model={Dimension.node}
-        value={resource}
-        onChange={setResource}
-      />
-      <code>
-        <pre>{JSON.stringify(resource, null, 2)}</pre>
-      </code>
+export const DatapackApp = (): JSX.Element => (
+  <div>
+    <NavBar>
+      <ul>
+        <li>
+          <Link to="/">Main</Link>
+        </li>
+        <li>
+          <Link to="/dimension">Dimension</Link>
+        </li>
+        <li>
+          <Link to="/dimension/type">Dimension Type</Link>
+        </li>
+      </ul>
+    </NavBar>
+    <div className="content">
+      <Switch>
+        <Route exact path="/">
+          <h2>Datapack</h2>
+          <MainMenu />
+        </Route>
+        <Route path="/dimension/type/:id?">
+          <Resource registryKey="dimension_type" key={0} />
+        </Route>
+        <Route path="/dimension/:id?">
+          <Resource registryKey="dimension" key={1} />
+        </Route>
+      </Switch>
     </div>
-  );
-}
+  </div>
+);

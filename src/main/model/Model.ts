@@ -1,17 +1,16 @@
 import { GameVersion } from '../context/GameVersion';
 import { isNode, ModelNode } from './node/Node';
-import { ObjectNode } from './node/ObjectNode';
 
 export interface Model {
-  node: ModelNode;
+  node: ObjectOrNodeModel;
   preset: (version: GameVersion) => Record<string, unknown>;
 }
 
-export const DefaultedModel = function <T extends Record<string, ModelNode>>(
+export const DefaultedModel = function <T extends ObjectModel>(
   fields: T,
   preset: (version: GameVersion) => { [key in keyof Partial<T>]: unknown }
 ): Model {
-  return { node: ObjectNode(fields), preset };
+  return { node: fields, preset };
 };
 
 export type ObjectModel = Record<string, ModelNode>;

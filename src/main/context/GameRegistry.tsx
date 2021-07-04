@@ -17,13 +17,10 @@ interface GameRegistry {
   blockStates: BlockStateRegistry;
   registries: Record<RegistryKey, Registry>;
   worldgen: WorldgenRegistryHolder;
+  namespace: string;
 }
 
-export const GameContext = createContext<GameRegistry>({
-  blockStates: {} as BlockStateRegistry,
-  registries: {} as Record<RegistryKey, Registry>,
-  worldgen: {} as WorldgenRegistryHolder
-});
+export const GameContext = createContext<GameRegistry>({} as GameRegistry);
 
 interface ProviderProps {
   children?: ReactNode;
@@ -40,6 +37,7 @@ export function GameRegistryProvider({
   const [worldgen] = useState<WorldgenRegistryHolder>(
     () => new WorldgenRegistryHolder()
   );
+  const [namespace] = useState<string>(Math.random().toString());
 
   const blockTypes: Registry = useMemo(
     () => ({ options: Object.keys(blockStates).map(labelizeOption) }),
@@ -59,7 +57,8 @@ export function GameRegistryProvider({
           structure: { options: Structures },
           'tag/blocks': { options: BlockTags }
         },
-        worldgen
+        worldgen,
+        namespace
       }}
     >
       {children}

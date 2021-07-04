@@ -7,6 +7,9 @@ import {
   NoiseSettings,
   NoiseSettingsOptions
 } from '../data/1.17/NoiseSettings';
+import { Biomes } from '../data/1.17/Biome';
+import { Dimension, Dimensions } from '../data/1.17/Dimension';
+import { Obj } from '../util/DomHelper';
 
 export type GameRegistryKey =
   | 'block'
@@ -35,7 +38,7 @@ export interface Registry {
   options: Option[];
 }
 
-type RegistryEntries = { [identifier: string]: Record<string, unknown> };
+export type RegistryEntries = { [identifier: string]: Obj };
 class WorldgenRegistry implements Registry {
   readonly entries: RegistryEntries;
   readonly model: Model;
@@ -66,9 +69,9 @@ export const DEFAULT_BLOCK_STATE = { default: {}, properties: {} };
 
 export class WorldgenRegistryHolder {
   worldgen: Record<WorldgenRegistryKey, WorldgenRegistry> = {
-    dimension: new WorldgenRegistry(DimensionType),
+    dimension: new WorldgenRegistry(Dimension, Dimensions),
     dimension_type: new WorldgenRegistry(DimensionType, DimensionTypes),
-    'worldgen/biome': new WorldgenRegistry(DimensionType),
+    'worldgen/biome': new WorldgenRegistry(DimensionType, Biomes),
     'worldgen/biome_source': new WorldgenRegistry(BiomeSource),
     'worldgen/chunk_generator': new WorldgenRegistry(
       ChunkGenerator,

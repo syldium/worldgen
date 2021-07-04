@@ -242,7 +242,7 @@ function NumberInput({
       onChange({ [name]: parseFloat(event.target.value) }),
     [name, onChange]
   );
-  const step = node.type === 'int' ? node.step : 0.01;
+  const step = node.step > 0.1 ? node.step : 'any';
   const numberValue: number =
     typeof value[name] === 'number'
       ? (value[name] as number)
