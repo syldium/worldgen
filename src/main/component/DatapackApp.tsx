@@ -1,15 +1,18 @@
 import React from 'react';
 import { NavBar } from './ui/NavBar';
-import { Link, Route, Switch } from 'react-router-dom';
+import { Route, Switch } from 'react-router-dom';
 import { Resource } from './resource/Resource';
 import { MainMenu } from './MainMenu';
+import { Link } from './ui/Link';
 
 export const DatapackApp = (): JSX.Element => (
   <div>
     <NavBar>
       <ul>
         <li>
-          <Link to="/">Main</Link>
+          <Link exact to="/">
+            Main
+          </Link>
         </li>
         <li>
           <Link to="/dimension">Dimension</Link>

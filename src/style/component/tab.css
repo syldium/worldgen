@@ -1,0 +1,30 @@
+.tabs {
+  flex-grow: 1;
+}
+
+.tabs ul {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  list-style: none;
+  margin-bottom: 0;
+}
+
+.tabs a {
+  color: var(--primary-color);
+  display: flex;
+  padding: 0.5em 1em;
+  border-bottom: 2px solid #5e6d6f;
+  text-decoration: none;
+}
+
+.tabs a:hover {
+  text-decoration: none;
+  border-bottom-color: var(--primary-color);
+}
+.tabs a:focus {
+  background-color: var(--bg-color-input-hover);
+}
+.tabs [aria-current] {
+  border-bottom-color: #217dbb !important;
+}
