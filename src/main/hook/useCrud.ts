@@ -1,10 +1,12 @@
-import { MouseEvent, useCallback } from 'react';
+import { MouseEvent, useCallback, useState } from 'react';
 import { Obj, ReactKeyed, addReactKey } from '../util/DomHelper';
 
 interface CrudProps<T> {
   elements: ReadonlyArray<T extends Obj ? T & ReactKeyed : T>;
   create: (event?: MouseEvent<HTMLElement>) => void;
   update: (state: T, index: number) => void;
+  remove: (index: number, event?: MouseEvent<HTMLElement>) => void;
+  replace: (values: T[]) => void;
 }
 
 export type DataType =
@@ -12,6 +14,14 @@ export type DataType =
   | number
   | string
   | boolean;
+
+export function useCrud<T extends DataType>(
+  data: readonly T[] = [],
+  initial: T | ((values: readonly T[]) => T) = {} as T
+): CrudProps<T> {
+  const [state, setState] = useState(data);
+  return useCrudProps(setState, state, initial);
+}
 
 export function useCrudProps<T extends DataType>(
   onChange: (values: readonly T[]) => void,
@@ -34,6 +44,15 @@ export function useCrudProps<T extends DataType>(
     },
     [data, onChange]
   );
+  const remove = useCallback(
+    function (index: number, event?: MouseEvent<HTMLElement>) {
+      if (event) {
+        event.preventDefault();
+      }
+      onChange(data.filter((element, i) => i !== index));
+    },
+    [data, onChange]
+  );
 
   data.forEach((el) => {
     if (el && typeof el === 'object') {
@@ -43,6 +62,8 @@ export function useCrudProps<T extends DataType>(
   return {
     elements: data as ReadonlyArray<T extends Obj ? T & ReactKeyed : T>,
     create,
-    update
+    update,
+    remove,
+    replace: onChange
   };
 }

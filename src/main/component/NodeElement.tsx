@@ -30,6 +30,10 @@ import { GameContext } from '../context/GameRegistry';
 import { ListNodeParams } from '../model/node/ListNode';
 import { DataType, useCrudProps } from '../hook/useCrud';
 import { Obj } from '../util/DomHelper';
+import {
+  BlockStateProvider,
+  StateProvider
+} from './resource/BlockStateProvider';
 
 interface ModelViewProps {
   model: ObjectOrNodeModel;
@@ -51,12 +55,13 @@ export function ModelView({
   } else {
     return (
       <fieldset>
-        {Object.entries(model).map(([name, codec]) => (
+        {Object.entries(model).map(([name, node]) => (
           <NodeElement
             key={name}
-            node={codec}
+            node={node}
             name={name}
             value={value}
+            isObject={true}
             onChange={onChange}
           />
         ))}
@@ -70,13 +75,15 @@ interface NodeElementProps {
   node: ModelNode;
   value: Record<string, unknown>;
   onChange: (val: Record<string, unknown>) => void;
+  isObject?: boolean;
 }
 
-export function NodeElement({
+function _NodeElement({
   name,
   node,
   value,
-  onChange
+  onChange,
+  isObject
 }: NodeElementProps): JSX.Element {
   const El = findNodeElement(node);
   if (El === null) {
@@ -89,10 +96,17 @@ export function NodeElement({
   }
   return (
     <NodeErrorBoundary name={name} key={name}>
-      <El name={name} node={node} value={value} onChange={onChange} />
+      <El
+        name={name}
+        node={node}
+        value={value}
+        onChange={onChange}
+        isObject={isObject}
+      />
     </NodeErrorBoundary>
   );
 }
+export const NodeElement = React.memo(_NodeElement);
 
 function findNodeElement(
   node: ModelNode
@@ -129,6 +143,7 @@ interface NodeProps<T extends NodeBase<NodeType>> {
   node: T;
   value: Record<string, unknown>;
   onChange: (val: Record<string, unknown>) => void;
+  isObject?: boolean;
 }
 
 function CheckboxInput({
@@ -199,7 +214,10 @@ function ListCrud({
     [name, onChange]
   );
   const list = value[name] as Obj[];
-  const initial = useMemo(() => providePreset(node.of), [node.of]) as DataType;
+  const initial = useCallback<() => DataType>(
+    () => providePreset(node.of),
+    [node.of]
+  );
   const { elements, create, update } = useCrudProps<DataType>(
     handleValuesChange,
     list,
@@ -432,62 +450,96 @@ function ResourceInput({
         onChange={handleChange}
       />
     );
-  } else if (node.registry !== 'block_state') {
+  } else if (node.registry === 'block_state') {
     return (
-      <ResourceSelectInput
+      <BlockState
         name={name}
-        node={node}
-        value={value}
+        value={value[name] as BlockStateValue}
+        onChange={onChange}
+      />
+    );
+  } else if (node.registry === 'block_state_provider') {
+    return (
+      <BlockStateProvider
+        name={name}
+        value={value[name] as StateProvider}
         onChange={onChange}
       />
     );
   }
   return (
-    <BlockState
+    <ResourceSelectInput
       name={name}
-      value={value[name] as BlockStateValue}
+      node={node}
+      value={value}
       onChange={onChange}
     />
   );
 }
 
-function SelectSwitch({
+interface SelectSwitchProps extends NodeProps<SwitchNodeParams> {
+  onTypeChange?: (type: string) => void;
+}
+export function SelectSwitch({
   name,
   node,
   value,
-  onChange
-}: NodeProps<SwitchNodeParams>) {
+  onChange,
+  onTypeChange,
+  isObject = false
+}: SelectSwitchProps): JSX.Element {
   const options: Option[] = useMemo(
     () => Object.keys(node.records).map(labelizeOption),
     [node.records]
   );
-  const type = stripDefaultNamespace(
-    (value.type as string) ?? options[0].value
+  const val = useMemo(
+    () => (isObject ? (value[name] as Record<string, unknown>) : value) || {},
+    [isObject, name, value]
+  );
+  const type = stripDefaultNamespace((val.type as string) ?? options[0].value);
+  const interOnChange = useCallback(
+    function (value: Record<string, unknown>) {
+      if (isObject) {
+        onChange({ [name]: value });
+      } else {
+        onChange(value);
+      }
+    },
+    [isObject, name, onChange]
   );
   const handleConfigChange = useCallback(
     function (config) {
       if (node.config === null) {
-        onChange({ ...value, ...config });
+        interOnChange({ ...val, ...config });
       } else {
-        onChange({
-          type: value.type,
+        const configuration =
+          node.config in config ? config[node.config] : config;
+        interOnChange({
+          ...val,
           [node.config]: {
-            ...(value[node.config] as Record<string, unknown>),
-            ...config[node.config]
+            ...(val[node.config] as Record<string, unknown>),
+            ...configuration
           }
         });
       }
     },
-    [node.config, onChange, value]
+    [interOnChange, node.config, val]
   );
   const handleTypeChange = useCallback(
     function (option: Option | null) {
       if (!option) return;
       const type = option.value;
       const strippedType = stripDefaultNamespace(type);
-      onChange(node.preset[strippedType] || { type });
+      if (onTypeChange) {
+        onTypeChange(strippedType);
+      } else {
+        const p = node.preset[strippedType];
+        interOnChange(
+          p ? { [name]: { ...(val[name] as Obj), ...p } } : { type }
+        );
+      }
     },
-    [node.preset, onChange]
+    [interOnChange, name, node.preset, onTypeChange, val]
   );
   const typeWithNamespace = defaultNamespace(type);
   const schema = node.records[type];
@@ -512,8 +564,8 @@ function SelectSwitch({
           value={
             node.config === null ||
             (isNode(schema) && schema.type === 'resource') // FIXME
-              ? value
-              : (value[node.config] as Record<string, unknown>)
+              ? val
+              : (val[node.config] as Record<string, unknown>)
           }
           onChange={handleConfigChange}
         />

@@ -7,11 +7,9 @@ import {
 } from '../model/Registry';
 import { createContext, useState } from 'react';
 import { labelizeOption } from '../util/LabelHelper';
-import { BlockTags } from '../data/1.17/BlockTag';
-import { useFetchData } from '../hook/useFetchData';
-import { EntityTypes } from '../data/1.17/EntityType';
-import { SoundEvents } from '../data/1.17/SoundEvent';
+import { readText, useFetchData } from '../hook/useFetchData';
 import { Structures } from '../data/1.17/Structure';
+import { useOptionsRegistry } from '../hook/useOptions';
 
 interface GameRegistry {
   blockStates: BlockStateRegistry;
@@ -24,16 +22,41 @@ export const GameContext = createContext<GameRegistry>({} as GameRegistry);
 
 interface ProviderProps {
   children?: ReactNode;
+  entities?: string[];
+  sounds?: string[];
   states?: BlockStateRegistry;
 }
 export function GameRegistryProvider({
   children,
+  entities,
+  sounds,
   states
 }: ProviderProps): JSX.Element {
-  const url =
-    'https://raw.githubusercontent.com/Arcensoth/mcdata/master/processed/reports/blocks/simplified/data.min.json';
-  //const url = '/blocks/data.json';
-  const blockStates = useFetchData<BlockStateRegistry>(url, {}, states);
+  const github = 'https://raw.githubusercontent.com/Arcensoth/mcdata/master/processed/';
+  //const github = '/';
+  const blockStates = useFetchData<BlockStateRegistry>(
+    `${github}reports/blocks/simplified/data.min.json`,
+    {},
+    states
+  );
+  const entityTypes = useFetchData<string[]>(
+    `${github}reports/registries/entity_type/data.values.txt`,
+    [],
+    entities,
+    readText
+  );
+  const soundEvents = useFetchData<string[]>(
+    `${github}reports/registries/sound_event/data.values.txt`,
+    [],
+    sounds,
+    readText
+  );
+  const blockTags = useFetchData<string[]>(
+    `${github}data/minecraft/tags/blocks/data.values.txt`,
+    [],
+    sounds,
+    readText
+  );
   const [worldgen] = useState<WorldgenRegistryHolder>(
     () => new WorldgenRegistryHolder()
   );
@@ -51,11 +74,13 @@ export function GameRegistryProvider({
         registries: {
           ...worldgen.worldgen,
           block: blockTypes,
+          block_placer: { options: [] },
           block_state: blockTypes,
-          entity_type: { options: EntityTypes },
-          sound_event: { options: SoundEvents },
+          block_state_provider: { options: [] },
+          entity_type: useOptionsRegistry(entityTypes),
+          sound_event: useOptionsRegistry(soundEvents),
           structure: { options: Structures },
-          'tag/blocks': { options: BlockTags }
+          'tag/blocks': useOptionsRegistry(blockTags)
         },
         worldgen,
         namespace

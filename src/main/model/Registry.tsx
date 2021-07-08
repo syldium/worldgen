@@ -9,11 +9,14 @@ import {
 } from '../data/1.17/NoiseSettings';
 import { Biomes } from '../data/1.17/Biome';
 import { Dimension, Dimensions } from '../data/1.17/Dimension';
-import { Obj } from '../util/DomHelper';
+import { ConfiguredFeature } from '../data/1.17/ConfiguredFeature';
+import { ConfiguredDecorator } from '../data/1.17/ConfiguredDecorator';
 
 export type GameRegistryKey =
   | 'block'
+  | 'block_placer'
   | 'block_state'
+  | 'block_state_provider'
   | 'entity_type'
   | 'sound_event'
   | 'structure'
@@ -26,6 +29,7 @@ export type WorldgenRegistryKey =
   | 'worldgen/biome_source'
   | 'worldgen/chunk_generator'
   | 'worldgen/configured_carver'
+  | 'worldgen/configured_decorator'
   | 'worldgen/configured_feature'
   | 'worldgen/configured_structure_feature'
   | 'worldgen/configured_surface_builder'
@@ -38,7 +42,9 @@ export interface Registry {
   options: Option[];
 }
 
-export type RegistryEntries = { [identifier: string]: Obj };
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+export interface Schema {}
+export type RegistryEntries = { [identifier: string]: Schema };
 class WorldgenRegistry implements Registry {
   readonly entries: RegistryEntries;
   readonly model: Model;
@@ -78,7 +84,8 @@ export class WorldgenRegistryHolder {
       ChunkGenerators
     ),
     'worldgen/configured_carver': new WorldgenRegistry(DimensionType),
-    'worldgen/configured_feature': new WorldgenRegistry(DimensionType),
+    'worldgen/configured_decorator': new WorldgenRegistry(ConfiguredDecorator),
+    'worldgen/configured_feature': new WorldgenRegistry(ConfiguredFeature),
     'worldgen/configured_structure_feature': new WorldgenRegistry(
       DimensionType
     ),

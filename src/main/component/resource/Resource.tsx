@@ -7,7 +7,7 @@ import React, {
 } from 'react';
 import { ModelView } from '../NodeElement';
 import { GameContext } from '../../context/GameRegistry';
-import { WorldgenRegistryKey } from '../../model/Registry';
+import { Schema, WorldgenRegistryKey } from '../../model/Registry';
 import { useHistory, useParams } from 'react-router-dom';
 import { NamespacedKey } from '../NamespacedKey';
 import { Obj } from '../../util/DomHelper';
@@ -23,7 +23,7 @@ export function Resource({
   const history = useHistory();
   const { id } = useParams<{ id: 'resource' }>();
   const registry = useContext(GameContext).worldgen.worldgen[registryKey];
-  const [value, setValue] = useState<Obj>(
+  const [value, setValue] = useState<Schema>(
     registry.entries[id] || registry.model.preset('1.17')
   );
 
@@ -36,7 +36,7 @@ export function Resource({
       e.preventDefault();
       const key = (document.querySelector('[name=key]') as HTMLInputElement)
         .value;
-      registry.register(key, value);
+      registry.register(key, value as Obj & Schema);
       history.push('/');
     },
     [history, registry, value]
@@ -48,10 +48,13 @@ export function Resource({
       <ModelView
         model={registry.model.node}
         name={'model'}
-        value={value}
+        value={value as Obj}
         onChange={handleChange}
       />
       <button>Save</button>
+      <code>
+        <pre>{JSON.stringify(value, null, 2)}</pre>
+      </code>
     </form>
   );
 }

@@ -1,5 +1,10 @@
 import { GameVersion } from '../context/GameVersion';
 import { isNode, ModelNode } from './node/Node';
+import { Typed } from './node/SwitchNode';
+
+export interface Configured extends Typed {
+  config: unknown;
+}
 
 export interface Model {
   node: ObjectOrNodeModel;

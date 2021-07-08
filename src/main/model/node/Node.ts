@@ -7,6 +7,7 @@ import { EnumNodeParams } from './EnumNode';
 import { IdentifierNodeParams } from './ResourceNode';
 import { ObjectOrNodeModel } from '../Model';
 import { ListNodeParams } from './ListNode';
+import { DataType } from '../../hook/useCrud';
 
 export type NodeType =
   | 'bool'
@@ -47,14 +48,16 @@ export function isNode(model: ObjectOrNodeModel): model is ModelNode {
   return 'type' in model;
 }
 
-export function providePreset(node: ModelNode): unknown {
+export function providePreset(node: ModelNode): DataType {
   const { type } = node;
   if (typeof node.default !== 'undefined') {
-    return node.default;
-  } else if (type === 'object' || type === 'switch') {
+    return node.default as DataType;
+  } else if (type === 'object') {
     return {};
   } else if (type === 'int' || type === 'float') {
     return 0;
+  } else if (node.type === 'switch') {
+    return { ...Object.values(node.preset)[0] };
   }
   return type === 'bool' ? false : '';
 }

@@ -4,6 +4,7 @@ import { Route, Switch } from 'react-router-dom';
 import { Resource } from './resource/Resource';
 import { MainMenu } from './MainMenu';
 import { Link } from './ui/Link';
+import { ConfiguredFeature } from './resource/ConfiguredFeature';
 
 export const DatapackApp = (): JSX.Element => (
   <div>
@@ -13,6 +14,9 @@ export const DatapackApp = (): JSX.Element => (
           <Link exact to="/">
             Main
           </Link>
+        </li>
+        <li>
+          <Link to="/feature">Feature</Link>
         </li>
         <li>
           <Link to="/dimension">Dimension</Link>
@@ -27,6 +31,9 @@ export const DatapackApp = (): JSX.Element => (
         <Route exact path="/">
           <h2>Datapack</h2>
           <MainMenu />
+        </Route>
+        <Route path="/feature/:id?">
+          <ConfiguredFeature />
         </Route>
         <Route path="/dimension/type/:id?">
           <Resource registryKey="dimension_type" key={0} />

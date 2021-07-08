@@ -18,7 +18,7 @@ export const EnumNode = <
       ? values.map(labelizeOption)
       : Object.entries(values).map(([value, label]) => ({
           label,
-          value: defaultNamespace(value)
+          value: value.toUpperCase() === value ? value : defaultNamespace(value)
         })),
     type: 'enum',
     isValid: (value: unknown) =>
