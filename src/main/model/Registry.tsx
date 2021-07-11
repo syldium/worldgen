@@ -11,6 +11,7 @@ import { Biomes } from '../data/1.17/Biome';
 import { Dimension, Dimensions } from '../data/1.17/Dimension';
 import { ConfiguredFeature } from '../data/1.17/ConfiguredFeature';
 import { ConfiguredDecorator } from '../data/1.17/ConfiguredDecorator';
+import { GameVersion } from '../context/GameVersion';
 
 export type GameRegistryKey =
   | 'block'
@@ -96,6 +97,11 @@ export class WorldgenRegistryHolder {
     ),
     'worldgen/processor_list': new WorldgenRegistry(DimensionType)
   };
+  readonly packFormat: number;
+
+  constructor(version: GameVersion) {
+    this.packFormat = version === '1.17' ? 7 : 6;
+  }
 
   isRegistered(key: RegistryKey): key is WorldgenRegistryKey {
     return key in this.worldgen;

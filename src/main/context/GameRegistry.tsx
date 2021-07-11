@@ -58,7 +58,7 @@ export function GameRegistryProvider({
     readText
   );
   const [worldgen] = useState<WorldgenRegistryHolder>(
-    () => new WorldgenRegistryHolder()
+    () => new WorldgenRegistryHolder('1.17')
   );
   const [namespace] = useState<string>(Math.random().toString());
 
