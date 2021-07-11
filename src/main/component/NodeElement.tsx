@@ -6,7 +6,7 @@ import {
   NodeType,
   providePreset
 } from '../model/node/Node';
-import { NumberNodeParams } from '../model/node/IntNode';
+import { ColorNodeParams, NumberNodeParams } from '../model/node/IntNode';
 import {
   defaultNamespace,
   labelize,
@@ -34,6 +34,7 @@ import {
   BlockStateProvider,
   StateProvider
 } from './resource/BlockStateProvider';
+import { hexColorToInteger, integerColorToHex } from '../util/ColorHelper';
 
 interface ModelViewProps {
   model: ObjectOrNodeModel;
@@ -114,6 +115,8 @@ function findNodeElement(
   switch (node.type) {
     case 'bool':
       return CheckboxInput;
+    case 'color':
+      return ColorInput;
     case 'int':
     case 'float':
       return NumberInput;
@@ -170,6 +173,35 @@ function CheckboxInput({
         className="checkbox"
         id={id}
         checked={booleanValue}
+        onChange={handleChange}
+      />
+    </div>
+  );
+}
+
+function ColorInput({
+  name,
+  node,
+  value,
+  onChange
+}: NodeProps<ColorNodeParams>) {
+  const id = useId(null, name);
+  const handleChange = useCallback(
+    (event: ChangeEvent<HTMLInputElement>) =>
+      onChange({ [name]: hexColorToInteger(event.target.value) }),
+    [name, onChange]
+  );
+  const colorValue: number =
+    typeof value[name] === 'number'
+      ? (value[name] as number)
+      : node.default || 0;
+  return (
+    <div className="form-group">
+      <label htmlFor={id}>{labelize(name)}</label> :
+      <input
+        id={id}
+        type="color"
+        value={integerColorToHex(colorValue)}
         onChange={handleChange}
       />
     </div>

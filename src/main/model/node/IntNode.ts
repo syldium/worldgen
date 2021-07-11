@@ -52,3 +52,17 @@ export const LongNode = (
     min: config?.min ?? LONG_MIN_VALUE,
     max: config?.max ?? LONG_MAX_VALUE
   });
+
+export interface ColorNodeParams extends NodeBase<'color'> {
+  default?: number;
+}
+const isColor = (value: unknown) =>
+  Number.isInteger(value) && isInRange(value as number, 0, 0xffffff);
+export const ColorNode = (def?: number): ColorNodeParams => {
+  return {
+    default: def,
+    type: 'color',
+    isValid: (value: unknown) =>
+      value == null ? typeof def === 'number' : isColor(value)
+  };
+};

@@ -7,11 +7,11 @@ import {
   NoiseSettings,
   NoiseSettingsOptions
 } from '../data/1.17/NoiseSettings';
-import { Biomes } from '../data/1.17/Biome';
 import { Dimension, Dimensions } from '../data/1.17/Dimension';
 import { ConfiguredFeature } from '../data/1.17/ConfiguredFeature';
 import { ConfiguredDecorator } from '../data/1.17/ConfiguredDecorator';
 import { GameVersion } from '../context/GameVersion';
+import { Biome, Biomes } from '../data/1.17/Biome';
 
 export type GameRegistryKey =
   | 'block'
@@ -78,7 +78,7 @@ export class WorldgenRegistryHolder {
   worldgen: Record<WorldgenRegistryKey, WorldgenRegistry> = {
     dimension: new WorldgenRegistry(Dimension, Dimensions),
     dimension_type: new WorldgenRegistry(DimensionType, DimensionTypes),
-    'worldgen/biome': new WorldgenRegistry(DimensionType, Biomes),
+    'worldgen/biome': new WorldgenRegistry(Biome, Biomes),
     'worldgen/biome_source': new WorldgenRegistry(BiomeSource),
     'worldgen/chunk_generator': new WorldgenRegistry(
       ChunkGenerator,

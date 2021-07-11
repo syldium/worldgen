@@ -1,6 +1,6 @@
 import { BoolNodeParams } from './BoolNode';
 import { EitherNodeParams } from './EitherNode';
-import { NumberNodeParams } from './IntNode';
+import { ColorNodeParams, NumberNodeParams } from './IntNode';
 import { ObjectNodeParams, OptionalNodeParams } from './ObjectNode';
 import { SwitchNodeParams } from './SwitchNode';
 import { EnumNodeParams } from './EnumNode';
@@ -11,6 +11,7 @@ import { DataType } from '../../hook/useCrud';
 
 export type NodeType =
   | 'bool'
+  | 'color'
   | 'either'
   | 'enum'
   | 'float'
@@ -35,6 +36,7 @@ export interface NodeBase<T extends NodeType> {
 
 export type ModelNode =
   | BoolNodeParams
+  | ColorNodeParams
   | EitherNodeParams
   | EnumNodeParams
   | IdentifierNodeParams

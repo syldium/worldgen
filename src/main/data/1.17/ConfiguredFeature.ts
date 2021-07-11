@@ -9,7 +9,7 @@ import { BoolNode } from '../../model/node/BoolNode';
 import { EnumNode } from '../../model/node/EnumNode';
 import { SwitchNode } from '../../model/node/SwitchNode';
 import { VerticalSurface } from './WorldgenStep';
-import FeatureDefaults, { DECORATED_TREE} from './ConfiguredFeatureDefault';
+import FeatureDefaults, { DECORATED_TREE } from './ConfiguredFeatureDefault';
 
 const BlockPileConfig: ObjectModel = {
   state_provider: ResourceNode('block_state_provider')

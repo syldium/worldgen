@@ -24,6 +24,8 @@ export const FloatNode = (
   };
 };
 
+export const DoubleNode = FloatNode;
+
 export const Probability: ObjectModel = {
   probability: FloatNode({ min: 0, max: 1 })
 };

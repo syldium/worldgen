@@ -16,6 +16,9 @@ export const DatapackApp = (): JSX.Element => (
           </Link>
         </li>
         <li>
+          <Link to="/biome">Biome</Link>
+        </li>
+        <li>
           <Link to="/feature">Feature</Link>
         </li>
         <li>
@@ -31,6 +34,9 @@ export const DatapackApp = (): JSX.Element => (
         <Route exact path="/">
           <h2>Datapack</h2>
           <MainMenu />
+        </Route>
+        <Route path="/biome/:id?">
+          <Resource registryKey="worldgen/biome" key={-1} />
         </Route>
         <Route path="/feature/:id?">
           <ConfiguredFeature />
