@@ -11,6 +11,7 @@ interface CrudProps<T> {
 
 export type DataType =
   | Record<string | number, unknown>
+  | ReadonlyArray<DataType>
   | number
   | string
   | boolean;
@@ -28,6 +29,7 @@ export function useCrudProps<T extends DataType>(
   data: readonly T[] = [],
   initial: T | ((values: readonly T[]) => T) = {} as T
 ): CrudProps<T> {
+  data = Array.isArray(data) ? data : [];
   const create = useCallback(
     function (event?: MouseEvent<HTMLElement>) {
       if (event) {
@@ -55,8 +57,8 @@ export function useCrudProps<T extends DataType>(
   );
 
   data.forEach((el) => {
-    if (el && typeof el === 'object') {
-      addReactKey(el);
+    if (el && !Array.isArray(el) && typeof el === 'object') {
+      addReactKey(el as Obj);
     }
   });
   return {

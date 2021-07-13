@@ -60,6 +60,8 @@ export function providePreset(node: ModelNode): DataType {
     return 0;
   } else if (node.type === 'switch') {
     return { ...Object.values(node.preset)[0] };
+  } else if (node.type === 'list') {
+    return [];
   }
   return type === 'bool' ? false : '';
 }

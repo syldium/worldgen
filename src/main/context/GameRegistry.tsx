@@ -7,7 +7,7 @@ import {
 } from '../model/Registry';
 import { createContext, useState } from 'react';
 import { labelizeOption } from '../util/LabelHelper';
-import { readText, useFetchData } from '../hook/useFetchData';
+import { readJson, readText, useFetchData } from '../hook/useFetchData';
 import { Structures } from '../data/1.17/Structure';
 import { useOptionsRegistry } from '../hook/useOptions';
 
@@ -19,6 +19,12 @@ interface GameRegistry {
 }
 
 export const GameContext = createContext<GameRegistry>({} as GameRegistry);
+
+//const github = '/';
+const github =
+  'https://raw.githubusercontent.com/Arcensoth/mcdata/master/processed/';
+const registryUrl = (registry: string) =>
+  `${github}reports/registries/${registry}/data.values.txt`;
 
 interface ProviderProps {
   children?: ReactNode;
@@ -32,21 +38,25 @@ export function GameRegistryProvider({
   sounds,
   states
 }: ProviderProps): JSX.Element {
-  const github = 'https://raw.githubusercontent.com/Arcensoth/mcdata/master/processed/';
-  //const github = '/';
   const blockStates = useFetchData<BlockStateRegistry>(
     `${github}reports/blocks/simplified/data.min.json`,
     {},
     states
   );
   const entityTypes = useFetchData<string[]>(
-    `${github}reports/registries/entity_type/data.values.txt`,
+    registryUrl('entity_type'),
     [],
     entities,
     readText
   );
+  const features = useFetchData<string[]>(
+    '/values/1.17/configured_features.json',
+    [],
+    undefined,
+    readJson
+  );
   const soundEvents = useFetchData<string[]>(
-    `${github}reports/registries/sound_event/data.values.txt`,
+    registryUrl('sound_event'),
     [],
     sounds,
     readText
@@ -80,7 +90,8 @@ export function GameRegistryProvider({
           entity_type: useOptionsRegistry(entityTypes),
           sound_event: useOptionsRegistry(soundEvents),
           structure: { options: Structures },
-          'tag/blocks': useOptionsRegistry(blockTags)
+          'tag/blocks': useOptionsRegistry(blockTags),
+          'worldgen/configured_feature': useOptionsRegistry(features)
         },
         worldgen,
         namespace

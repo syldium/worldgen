@@ -18,12 +18,14 @@ const BiomeEffects = ObjectNode({
   grass_color: Opt(ColorNode())
 });
 
-const Spawners = ObjectNode({
-  type: IdentifierNode('entity_type'),
-  weight: IntNode({ min: 0 }),
-  minCount: IntNode({ min: 0 }),
-  maxCount: IntNode({ min: 0 })
-});
+const Spawners = ListNode(
+  ObjectNode({
+    type: IdentifierNode('entity_type'),
+    weight: IntNode({ min: 0 }),
+    minCount: IntNode({ min: 0 }),
+    maxCount: IntNode({ min: 0 })
+  })
+);
 
 const SpawnCost = ObjectNode({
   energy_budget: DoubleNode({ min: 0 }),

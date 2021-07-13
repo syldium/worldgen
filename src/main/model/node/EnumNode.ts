@@ -11,14 +11,18 @@ export const EnumNode = <
   T extends ReadonlyArray<string> | Record<string, string>
 >(
   values: T,
-  def?: T extends ReadonlyArray<string> ? typeof values[number] : keyof T
+  def?: T extends ReadonlyArray<string> ? typeof values[number] : keyof T,
+  namespace = false
 ): EnumNodeParams => {
   const node: EnumNodeParams = {
     values: Array.isArray(values)
       ? values.map(labelizeOption)
       : Object.entries(values).map(([value, label]) => ({
           label,
-          value: value.toUpperCase() === value ? value : defaultNamespace(value)
+          value:
+            namespace && value.toUpperCase() !== value
+              ? defaultNamespace(value)
+              : value
         })),
     type: 'enum',
     isValid: (value: unknown) =>
