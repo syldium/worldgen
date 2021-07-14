@@ -1,4 +1,8 @@
-import { defaultNamespace, labelizeOption } from '../../util/LabelHelper';
+import {
+  defaultNamespace,
+  labelize,
+  labelizeOption
+} from '../../util/LabelHelper';
 import { NodeBase } from './Node';
 import { Option } from '../../component/ui/Select';
 
@@ -16,7 +20,9 @@ export const EnumNode = <
 ): EnumNodeParams => {
   const node: EnumNodeParams = {
     values: Array.isArray(values)
-      ? values.map(labelizeOption)
+      ? values.map((value) =>
+          namespace ? labelizeOption(value) : { label: labelize(value), value }
+        )
       : Object.entries(values).map(([value, label]) => ({
           label,
           value:

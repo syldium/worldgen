@@ -23,6 +23,12 @@ const NoiseParameters = ObjectNode({
   amplitudes: ListNode(FloatNode())
 });
 
+const generatorSeed = 286956243;
+export const VANILLA_LAYERED_BIOME_SOURCE = {
+  seed: generatorSeed,
+  large_biomes: false,
+  type: 'minecraft:vanilla_layered'
+};
 export const BiomeSource: Model = {
   node: SwitchNode(
     {
@@ -47,8 +53,66 @@ export const BiomeSource: Model = {
         seed: IntNode()
       }
     },
-    {},
+    {
+      checkerboard: {
+        type: 'minecraft:checkerboard',
+        seed: generatorSeed,
+        biomes: ['minecraft:ocean', 'minecraft:plains']
+      },
+      fixed: {
+        type: 'minecraft:fixed',
+        seed: generatorSeed,
+        biome: 'minecraft:plains'
+      },
+      multi_noise: {
+        seed: generatorSeed,
+        type: 'minecraft:multi_noise',
+        temperature_noise: {
+          firstOctave: -7,
+          amplitudes: [1, 1]
+        },
+        humidity_noise: {
+          firstOctave: -7,
+          amplitudes: [1, 1]
+        },
+        altitude_noise: {
+          firstOctave: -7,
+          amplitudes: [1, 1]
+        },
+        weirdness_noise: {
+          firstOctave: -7,
+          amplitudes: [1, 1]
+        },
+        biomes: [
+          {
+            biome: 'minecraft:plains',
+            parameters: {
+              altitude: 0,
+              weirdness: 0,
+              offset: 0,
+              temperature: 0.6,
+              humidity: 0.4
+            }
+          },
+          {
+            biome: 'minecraft:ocean',
+            parameters: {
+              altitude: 0,
+              weirdness: 0,
+              offset: 0,
+              temperature: 0.5,
+              humidity: 0.5
+            }
+          }
+        ]
+      },
+      vanilla_layered: VANILLA_LAYERED_BIOME_SOURCE
+    },
     null
   ),
-  preset: () => ({})
+  preset: () => ({
+    type: 'minecraft:fixed',
+    seed: generatorSeed,
+    biome: 'minecraft:plains'
+  })
 };

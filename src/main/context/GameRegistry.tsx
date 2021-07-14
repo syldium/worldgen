@@ -7,9 +7,12 @@ import {
 } from '../model/Registry';
 import { createContext, useState } from 'react';
 import { labelizeOption } from '../util/LabelHelper';
-import { readJson, readText, useFetchData } from '../hook/useFetchData';
-import { Structures } from '../data/1.17/Structure';
-import { useOptionsRegistry } from '../hook/useOptions';
+import {
+  readJson,
+  readText,
+  useFetchData,
+  useFetchRegistry
+} from '../hook/useFetchData';
 
 interface GameRegistry {
   blockStates: BlockStateRegistry;
@@ -28,14 +31,10 @@ const registryUrl = (registry: string) =>
 
 interface ProviderProps {
   children?: ReactNode;
-  entities?: string[];
-  sounds?: string[];
   states?: BlockStateRegistry;
 }
 export function GameRegistryProvider({
   children,
-  entities,
-  sounds,
   states
 }: ProviderProps): JSX.Element {
   const blockStates = useFetchData<BlockStateRegistry>(
@@ -43,28 +42,26 @@ export function GameRegistryProvider({
     {},
     states
   );
-  const entityTypes = useFetchData<string[]>(
-    registryUrl('entity_type'),
-    [],
-    entities,
-    readText
-  );
-  const features = useFetchData<string[]>(
-    '/values/1.17/configured_features.json',
-    [],
-    undefined,
+  const carvers = useFetchRegistry(
+    '/values/1.17/configured_carvers.json',
     readJson
   );
-  const soundEvents = useFetchData<string[]>(
-    registryUrl('sound_event'),
-    [],
-    sounds,
+  const entityTypes = useFetchRegistry(registryUrl('entity_type'), readText);
+  const features = useFetchRegistry(
+    '/values/1.17/configured_features.json',
+    readJson
+  );
+  const soundEvents = useFetchRegistry(registryUrl('sound_event'), readText);
+  const structures = useFetchRegistry(
+    registryUrl('structure_feature'),
     readText
   );
-  const blockTags = useFetchData<string[]>(
+  const surfaceBuilders = useFetchRegistry(
+    '/values/1.17/configured_surface_builders.json',
+    readJson
+  );
+  const blockTags = useFetchRegistry(
     `${github}data/minecraft/tags/blocks/data.values.txt`,
-    [],
-    sounds,
     readText
   );
   const [worldgen] = useState<WorldgenRegistryHolder>(
@@ -87,11 +84,13 @@ export function GameRegistryProvider({
           block_placer: { options: [] },
           block_state: blockTypes,
           block_state_provider: { options: [] },
-          entity_type: useOptionsRegistry(entityTypes),
-          sound_event: useOptionsRegistry(soundEvents),
-          structure: { options: Structures },
-          'tag/blocks': useOptionsRegistry(blockTags),
-          'worldgen/configured_feature': useOptionsRegistry(features)
+          entity_type: entityTypes,
+          sound_event: soundEvents,
+          'tag/blocks': blockTags,
+          'worldgen/configured_carver': carvers,
+          'worldgen/configured_feature': features,
+          'worldgen/configured_structure_feature': structures,
+          'worldgen/configured_surface_builder': surfaceBuilders
         },
         worldgen,
         namespace

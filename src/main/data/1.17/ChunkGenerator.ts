@@ -7,6 +7,7 @@ import { SwitchNode } from '../../model/node/SwitchNode';
 import { ListNode } from '../../model/node/ListNode';
 import { Option } from '../../component/ui/Select';
 import { labelizeOption } from '../../util/LabelHelper';
+import { BiomeSource, VANILLA_LAYERED_BIOME_SOURCE } from './BiomeSource';
 
 const FlatBlockLayer = ObjectNode({
   block: IdentifierNode('block'),
@@ -28,6 +29,7 @@ const NoiseGenerator: ObjectModel = {
   settings: IdentifierNode('worldgen/noise_settings')
 };
 
+const generatorSeed = 286956243;
 export const ChunkGenerator: Model = {
   node: SwitchNode(
     {
@@ -58,24 +60,16 @@ export const ChunkGenerator: Model = {
       },
       noise: {
         type: 'minecraft:noise',
-        seed: 286956243,
-        biome_source: {
-          type: 'minecraft:fixed',
-          seed: 286956243,
-          biome: 'minecraft:plains'
-        },
+        seed: generatorSeed,
+        biome_source: BiomeSource.preset('1.17'),
         settings: 'minecraft:overworld'
       }
     },
     null
   ),
   preset: () => ({
-    biome_source: {
-      seed: 0,
-      large_biomes: false,
-      type: 'minecraft:vanilla_layered'
-    },
-    seed: 0,
+    biome_source: VANILLA_LAYERED_BIOME_SOURCE,
+    seed: generatorSeed,
     settings: 'minecraft:overworld',
     type: 'minecraft:noise'
   })

@@ -1,4 +1,6 @@
 import { useEffect, useState } from 'react';
+import { useOptionsRegistry } from './useOptions';
+import { Registry } from '../model/Registry';
 
 export const readJson = <S>(response: Response): Promise<S> => response.json();
 export const readText = (response: Response): Promise<string[]> =>
@@ -12,11 +14,18 @@ export function useFetchData<S>(
   const [data, setData] = useState<S>(props || initial);
   useEffect(
     function () {
-      if (!props) {
+      if (!props && 'fetch' in window) {
         fetch(url).then(reader).then(setData);
       }
     },
     [props, reader, url]
   );
   return data;
+}
+
+export function useFetchRegistry(
+  url: RequestInfo,
+  reader: (response: Response) => Promise<string[]> = readJson
+): Registry {
+  return useOptionsRegistry(useFetchData(url, [], undefined, reader));
 }
