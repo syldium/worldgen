@@ -61,6 +61,12 @@ export function defaultNamespace(
   return namespace + ':' + namespacedKey;
 }
 
+export function isStringArray(
+  array: readonly unknown[] = []
+): array is readonly string[] {
+  return array.every((el) => typeof el === 'string');
+}
+
 export function isValidNamespacedKey(key: string): boolean {
   const sepIndex = key.indexOf(':');
   if (sepIndex <= 0) {

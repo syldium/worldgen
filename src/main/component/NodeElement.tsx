@@ -9,6 +9,7 @@ import {
 import { ColorNodeParams, NumberNodeParams } from '../model/node/IntNode';
 import {
   defaultNamespace,
+  isStringArray,
   labelize,
   labelizeOption,
   stripDefaultNamespace
@@ -127,7 +128,7 @@ function findNodeElement(
     case 'identifier':
       return ResourceSelectInput;
     case 'list':
-      return ListCrud;
+      return ListValues;
     case 'object':
       return ObjectInput;
     case 'optional':
@@ -233,6 +234,29 @@ function EitherInput({
       />
     </fieldset>
   );
+}
+
+function ListValues({
+  name,
+  node,
+  value,
+  onChange
+}: NodeProps<ListNodeParams<ModelNode>>) {
+  if (
+    (node.of.type === 'resource' || node.of.type === 'identifier') &&
+    Array.isArray(value[name]) &&
+    isStringArray(value[name] as unknown[])
+  ) {
+    return (
+      <ResourceSelectMultipleInput
+        name={name}
+        node={node.of}
+        value={value}
+        onChange={onChange}
+      />
+    );
+  }
+  return <ListCrud name={name} node={node} value={value} onChange={onChange} />;
 }
 
 function ListCrud({
@@ -451,6 +475,40 @@ function ResourceSelectInput({
         inputId={id}
       />
     </div>
+  );
+}
+
+function ResourceSelectMultipleInput({
+  name,
+  node,
+  value,
+  onChange
+}: NodeProps<IdentifierNodeParams>) {
+  const options = useOptions(node.registry);
+  const selected: Option[] = useMemo(
+    function () {
+      const values = ((value[name] || []) as string[]).map((val: string) =>
+        defaultNamespace(val)
+      );
+      return options.filter((option) => values.includes(option.value));
+    },
+    [name, options, value]
+  );
+  const handleChange = useCallback(
+    function (options: ValueType<Option, true>): void {
+      onChange({
+        [name]: options === null ? [] : options.map((option) => option.value)
+      });
+    },
+    [name, onChange]
+  );
+  return (
+    <Select
+      options={options}
+      value={selected}
+      onChange={handleChange}
+      isMulti={true}
+    />
   );
 }
 
