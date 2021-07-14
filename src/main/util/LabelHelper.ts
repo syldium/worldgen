@@ -17,6 +17,8 @@ export function labelize(namespacedKey: string): string {
     } else if (char === ':') {
       builder += ': ';
       uppercase = true;
+    } else if (!uppercase && char === char.toUpperCase()) {
+      builder += ' ' + char.toLowerCase();
     } else {
       if (uppercase) {
         char = char.toUpperCase();

@@ -17,6 +17,10 @@ describe('label helper', () => {
     expect(labelize('a_very_long_name')).toBe('A very long name');
   });
 
+  it('should handle camelcase', () => {
+    expect(labelize('worldgenTool')).toBe('Worldgen tool');
+  });
+
   it('should be valid namespaced keys', () => {
     expect(isValidNamespacedKey('namespace:key')).toBeTruthy();
     expect(isValidNamespacedKey('block')).toBeTruthy();
