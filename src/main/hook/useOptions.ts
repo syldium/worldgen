@@ -2,7 +2,7 @@ import { Option } from '../component/ui/Select';
 import { Registry, RegistryKey } from '../model/Registry';
 import { useContext, useMemo } from 'react';
 import { GameContext } from '../context/GameRegistry';
-import { labelizeOption } from '../util/LabelHelper';
+import { defaultNamespace, labelizeOption } from '../util/LabelHelper';
 
 export function useOptions(key: RegistryKey, onlyDefault = false): Option[] {
   const context = useContext(GameContext);
@@ -23,6 +23,18 @@ export function useOptionsArray(
   );
 }
 
-export function useOptionsRegistry(values: readonly string[]): Registry {
-  return useMemo(() => ({ options: values.map(labelizeOption) }), [values]);
+export function useOptionsRegistry(
+  values: readonly string[],
+  labelize = true
+): Registry {
+  return useMemo(
+    () => ({
+      options: values.map((value) =>
+        labelize
+          ? labelizeOption(value)
+          : { label: value, value: defaultNamespace(value) }
+      )
+    }),
+    [labelize, values]
+  );
 }

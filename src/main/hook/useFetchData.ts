@@ -25,7 +25,8 @@ export function useFetchData<S>(
 
 export function useFetchRegistry(
   url: RequestInfo,
-  reader: (response: Response) => Promise<string[]> = readJson
+  reader: (response: Response) => Promise<string[]> = readJson,
+  labelize?: boolean
 ): Registry {
-  return useOptionsRegistry(useFetchData(url, [], undefined, reader));
+  return useOptionsRegistry(useFetchData(url, [], undefined, reader), labelize);
 }

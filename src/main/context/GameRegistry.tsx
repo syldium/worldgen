@@ -52,9 +52,14 @@ export function GameRegistryProvider({
     readJson
   );
   const soundEvents = useFetchRegistry(registryUrl('sound_event'), readText);
-  const structures = useFetchRegistry(
+  const structuresFeatures = useFetchRegistry(
     registryUrl('structure_feature'),
     readText
+  );
+  const structures = useFetchRegistry(
+    '/values/1.17/structures.json',
+    readJson,
+    false
   );
   const surfaceBuilders = useFetchRegistry(
     '/values/1.17/configured_surface_builders.json',
@@ -86,10 +91,11 @@ export function GameRegistryProvider({
           block_state_provider: { options: [] },
           entity_type: entityTypes,
           sound_event: soundEvents,
+          structure: structures,
           'tag/blocks': blockTags,
           'worldgen/configured_carver': carvers,
           'worldgen/configured_feature': features,
-          'worldgen/configured_structure_feature': structures,
+          'worldgen/configured_structure_feature': structuresFeatures,
           'worldgen/configured_surface_builder': surfaceBuilders
         },
         worldgen,

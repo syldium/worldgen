@@ -20,6 +20,7 @@ export type GameRegistryKey =
   | 'block_state_provider'
   | 'entity_type'
   | 'sound_event'
+  | 'structure'
   | 'tag/blocks';
 
 export type WorldgenRegistryKey =
