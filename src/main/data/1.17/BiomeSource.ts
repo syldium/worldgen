@@ -26,8 +26,7 @@ const NoiseParameters = ObjectNode({
 const generatorSeed = 286956243;
 export const VANILLA_LAYERED_BIOME_SOURCE = {
   seed: generatorSeed,
-  large_biomes: false,
-  type: 'minecraft:vanilla_layered'
+  large_biomes: false
 };
 export const BiomeSource: Model = {
   node: SwitchNode(
@@ -55,18 +54,15 @@ export const BiomeSource: Model = {
     },
     {
       checkerboard: {
-        type: 'minecraft:checkerboard',
         seed: generatorSeed,
         biomes: ['minecraft:ocean', 'minecraft:plains']
       },
       fixed: {
-        type: 'minecraft:fixed',
         seed: generatorSeed,
         biome: 'minecraft:plains'
       },
       multi_noise: {
         seed: generatorSeed,
-        type: 'minecraft:multi_noise',
         temperature_noise: {
           firstOctave: -7,
           amplitudes: [1, 1]

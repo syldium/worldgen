@@ -104,38 +104,55 @@ const NetherrackReplaceBlobsConfig: ObjectModel = {
   radius: IntProvider(0, 12)
 };
 
-const BlockPredicate = SwitchNode({
-  always_true: {},
-  block_match: {
-    block: ResourceNode('block')
+const BlockPredicate = SwitchNode(
+  {
+    always_true: {},
+    block_match: {
+      block: ResourceNode('block')
+    },
+    blockstate_match: {
+      block_state: ResourceNode('block_state')
+    },
+    tag_match: {
+      tag: IdentifierNode('tag/blocks')
+    },
+    random_block_match: {
+      block: ResourceNode('block'),
+      ...Probability
+    },
+    random_blockstate_match: {
+      block: ResourceNode('block_state'),
+      ...Probability
+    }
   },
-  blockstate_match: {
-    block_state: ResourceNode('block_state')
+  {
+    block_match: {
+      block: 'minecraft:stone'
+    },
+    blockstate_match: {
+      block_state: {
+        Name: 'minecraft:stone'
+      }
+    },
+    tag_match: {
+      tag: 'minecraft:base_stone_overworld'
+    }
   },
-  tag_match: {
-    tag: IdentifierNode('tag/blocks')
-  },
-  random_block_match: {
-    block: ResourceNode('block'),
-    ...Probability
-  },
-  random_blockstate_match: {
-    block: ResourceNode('block_state'),
-    ...Probability
-  }
-});
-const ReplaceTarget = ObjectNode({
+  null,
+  'predicate_type'
+);
+const ReplaceTarget = {
   target: BlockPredicate,
   state: ResourceNode('block_state')
-});
-const ReplaceSingleBlockConfig: ObjectModel = {
-  targets: ListNode(ReplaceTarget)
 };
-const OreConfig = ObjectNode({
-  targets: ReplaceTarget,
+const ReplaceSingleBlockConfig: ObjectModel = {
+  targets: ListNode(ObjectNode(ReplaceTarget))
+};
+const OreConfig: ObjectModel = {
+  targets: ListNode(ObjectNode(ReplaceTarget)),
   size: IntNode({ min: 0, max: 64 }),
   discard_chance_on_air_exposure: FloatNode({ min: 0, max: 1 })
-});
+};
 
 const RandomPatchConfig: ObjectModel = {
   can_replace: BoolNode(false),
@@ -275,11 +292,11 @@ const TreeConfig: ObjectModel = {
   decorators: ListNode(
     SwitchNode(
       {
-        alter_ground: ObjectNode({
+        alter_ground: {
           provider: ResourceNode('block_state_provider')
-        }),
-        beehive: ObjectNode(Probability),
-        cocoa: ObjectNode(Probability),
+        },
+        beehive: Probability,
+        cocoa: Probability,
         leave_vine: {},
         trunk_vine: {}
       },
@@ -293,12 +310,13 @@ const TreeConfig: ObjectModel = {
               Name: 'minecraft:podzol'
             },
             type: 'minecraft:simple_state_provider'
-          },
-          type: 'minecraft:alter_ground'
+          }
         },
         beehive: {
-          probability: 0.05,
-          type: 'minecraft:beehive'
+          probability: 0.05
+        },
+        cocoa: {
+          probability: 0.2
         }
       },
       null

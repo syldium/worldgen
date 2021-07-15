@@ -17,7 +17,8 @@ export const DimensionType: Model = DefaultedModel(
     logical_height: IntNode({ min: 0, max: 4064 }),
     effects: EnumNode(
       ['overworld', 'the_nether', 'the_end'] as const,
-      'overworld'
+      'overworld',
+      true
     ),
     fixed_time: Opt(LongNode()),
     ultrawarm: BoolNode(),

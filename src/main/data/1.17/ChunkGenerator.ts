@@ -38,9 +38,7 @@ export const ChunkGenerator: Model = {
       noise: NoiseGenerator
     },
     {
-      debug: { type: 'minecraft:debug' },
       flat: {
-        type: 'minecraft:flat',
         settings: {
           structures: {
             structures: {}
@@ -59,7 +57,6 @@ export const ChunkGenerator: Model = {
         }
       },
       noise: {
-        type: 'minecraft:noise',
         seed: generatorSeed,
         biome_source: BiomeSource.preset('1.17'),
         settings: 'minecraft:overworld'

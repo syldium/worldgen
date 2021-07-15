@@ -579,28 +579,33 @@ export function SelectSwitch({
   isObject = false
 }: SelectSwitchProps): JSX.Element {
   const options: Option[] = useMemo(
-    () => Object.keys(node.records).map(labelizeOption),
-    [node.records]
+    () => Object.keys(node.values).map(labelizeOption),
+    [node.values]
   );
   const val = useMemo(
     () => (isObject ? (value[name] as Record<string, unknown>) : value) || {},
     [isObject, name, value]
   );
-  const type = stripDefaultNamespace((val.type as string) ?? options[0].value);
+  const content = Array.isArray(val)
+    ? (val[name] as Record<string, unknown>)
+    : val;
+  const type = stripDefaultNamespace(
+    (content[node.typeField] as string) ?? options[0].value
+  );
   const interOnChange = useCallback(
     function (value: Record<string, unknown>) {
-      if (isObject) {
+      if (isObject || Array.isArray(val)) {
         onChange({ [name]: value });
       } else {
         onChange(value);
       }
     },
-    [isObject, name, onChange]
+    [isObject, name, onChange, val]
   );
   const handleConfigChange = useCallback(
     function (config) {
       if (node.config === null) {
-        interOnChange({ ...val, ...config });
+        interOnChange({ ...content, ...config });
       } else {
         const configuration =
           node.config in config ? config[node.config] : config;
@@ -613,7 +618,7 @@ export function SelectSwitch({
         });
       }
     },
-    [interOnChange, node.config, val]
+    [content, interOnChange, node.config, val]
   );
   const handleTypeChange = useCallback(
     function (option: Option | null) {
@@ -625,14 +630,14 @@ export function SelectSwitch({
       } else {
         const p = node.preset[strippedType];
         interOnChange(
-          p ? { [name]: { ...(val[name] as Obj), ...p } } : { type }
+          p ? { ...(val[name] as Obj), ...p } : { [node.typeField]: type }
         );
       }
     },
-    [interOnChange, name, node.preset, onTypeChange, val]
+    [interOnChange, name, node.preset, node.typeField, onTypeChange, val]
   );
   const typeWithNamespace = defaultNamespace(type);
-  const schema = node.records[type];
+  const schema = node.values[type];
   const selected: Option | null = useMemo(
     () => options.find((o) => o.value === typeWithNamespace) || null,
     [options, typeWithNamespace]
@@ -653,8 +658,8 @@ export function SelectSwitch({
           name={node.config || name}
           value={
             node.config === null ||
-            (isNode(schema) && schema.type === 'resource') // FIXME
-              ? val
+            (isNode(schema) && schema.type === 'resource')
+              ? content
               : (val[node.config] as Record<string, unknown>)
           }
           onChange={handleConfigChange}
