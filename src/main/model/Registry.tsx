@@ -12,6 +12,9 @@ import { ConfiguredFeature } from '../data/1.17/ConfiguredFeature';
 import { ConfiguredDecorator } from '../data/1.17/ConfiguredDecorator';
 import { GameVersion } from '../context/GameVersion';
 import { Biome, Biomes } from '../data/1.17/Biome';
+import JSZip from 'jszip';
+import { stripDefaultNamespace } from '../util/LabelHelper';
+import { loadVanillaZip } from '../util/FetchHelper';
 
 export type GameRegistryKey =
   | 'block'
@@ -98,9 +101,30 @@ export class WorldgenRegistryHolder {
     'worldgen/processor_list': new WorldgenRegistry(DimensionType)
   };
   readonly packFormat: number;
+  vanillaZip?: JSZip;
 
   constructor(version: GameVersion) {
     this.packFormat = version === '1.17' ? 7 : 6;
+  }
+
+  async vanillaResource(
+    registry: WorldgenRegistryKey,
+    namespacedKey: string
+  ): Promise<Schema> {
+    if (!this.vanillaZip) {
+      this.vanillaZip = await loadVanillaZip();
+    }
+    const path =
+      registry + '/' + stripDefaultNamespace(namespacedKey) + '.json';
+    const file = this.vanillaZip.file(path);
+    if (file === null) {
+      return Promise.reject(
+        new Error(
+          `Unable to find the associated vanilla file (tested ${file}).`
+        )
+      );
+    }
+    return JSON.parse(await file.async('text'));
   }
 
   isRegistered(key: RegistryKey): key is WorldgenRegistryKey {

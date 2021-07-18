@@ -10,7 +10,7 @@ import React, {
 } from 'react';
 import { useOptions } from '../hook/useOptions';
 import Select from './ui/Select';
-import { WorldgenRegistryKey } from '../model/Registry';
+import { Schema, WorldgenRegistryKey } from '../model/Registry';
 import { GameContext } from '../context/GameRegistry';
 import { useToggle } from '../hook/useToggle';
 
@@ -20,6 +20,7 @@ interface NamespacedKeyProps {
   example?: string;
   registry: WorldgenRegistryKey;
   value?: string;
+  onSelectLoad?: (model: Schema) => void;
   mayReplaceVanilla?: boolean;
 }
 
@@ -29,6 +30,7 @@ export function NamespacedKey({
   example,
   registry,
   value = '',
+  onSelectLoad,
   mayReplaceVanilla = true
 }: NamespacedKeyProps): JSX.Element {
   // To trigger form submit
@@ -76,9 +78,15 @@ export function NamespacedKey({
       const key = selected.value;
       setKey(key);
       setMayFill(true);
-      // TODO fill
+      if (fill && onSelectLoad) {
+        context.worldgen
+          .vanillaResource(registry, key)
+          .then(onSelectLoad)
+          .then(setMayFill)
+          .catch(console.error);
+      }
     },
-    [setMayFill]
+    [context.worldgen, fill, onSelectLoad, registry, setMayFill]
   );
 
   // Allow form submit by pressing enter

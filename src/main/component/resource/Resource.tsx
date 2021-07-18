@@ -44,7 +44,9 @@ export function Resource({
 
   return (
     <form onSubmit={handleSubmit}>
-      <NamespacedKey registry={registryKey}>{children}</NamespacedKey>
+      <NamespacedKey registry={registryKey} onSelectLoad={setValue}>
+        {children}
+      </NamespacedKey>
       <ModelView
         model={registry.model.node}
         name={'model'}

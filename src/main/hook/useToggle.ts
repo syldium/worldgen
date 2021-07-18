@@ -1,6 +1,7 @@
 import { ChangeEvent, MouseEvent, useCallback, useState } from 'react';
 
 type ToggleParam =
+  | void
   | ChangeEvent<HTMLInputElement>
   | MouseEvent<HTMLElement>
   | boolean;

@@ -61,6 +61,15 @@ export function ConfiguredFeature(): JSX.Element {
     [dispatchDecorators]
   );
 
+  const handleVanillaSelect = useCallback(
+    function (configured_feature) {
+      const [decorators, feature] = findDecorators(configured_feature);
+      setFeature(feature);
+      dispatchDecorators.replace(decorators);
+    },
+    [dispatchDecorators]
+  );
+
   const handleSubmit = useCallback(
     function (e: FormEvent<HTMLFormElement>) {
       e.preventDefault();
@@ -74,7 +83,10 @@ export function ConfiguredFeature(): JSX.Element {
 
   return (
     <form onSubmit={handleSubmit}>
-      <NamespacedKey registry="worldgen/configured_feature" />
+      <NamespacedKey
+        registry="worldgen/configured_feature"
+        onSelectLoad={handleVanillaSelect}
+      />
       <div className="form-group">
         <SelectSwitch
           name="feature"
