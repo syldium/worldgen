@@ -35,24 +35,32 @@ import {
   BlockStateProvider,
   StateProvider
 } from './resource/BlockStateProvider';
-import { hexColorToInteger, integerColorToHex } from '../util/ColorHelper';
+import { hexColorToInteger, intColorToHex } from '../util/ColorHelper';
 
 interface ModelViewProps {
   model: ObjectOrNodeModel;
   name: string;
   value: Record<string, unknown>;
   onChange: (val: Record<string, unknown>) => void;
+  isObject?: boolean;
 }
 
 export function ModelView({
   model,
   name,
   value,
-  onChange
+  onChange,
+  isObject
 }: ModelViewProps): JSX.Element {
   if (isNode(model)) {
     return (
-      <NodeElement node={model} name={name} value={value} onChange={onChange} />
+      <NodeElement
+        node={model}
+        name={name}
+        value={value}
+        onChange={onChange}
+        isObject={isObject}
+      />
     );
   } else {
     return (
@@ -202,7 +210,7 @@ function ColorInput({
       <input
         id={id}
         type="color"
-        value={integerColorToHex(colorValue)}
+        value={intColorToHex(colorValue)}
         onChange={handleChange}
       />
     </div>
@@ -213,24 +221,19 @@ function EitherInput({
   name,
   node,
   value,
-  onChange
+  onChange,
+  isObject
 }: NodeProps<EitherNodeParams>) {
-  const val = (node.nodes[0].type === 'either' ? value[name] : value) as Record<
-    string,
-    unknown
-  >; // FIXME
-  const i = Math.max(
-    node.findCurrentIndex(name === 'lava_level' ? value[name] : val),
-    0
-  ); // FIXME
+  const i = Math.max(node.findCurrentIndex(value[name]), 0);
   return (
     <fieldset>
       <legend>{labelize(name)}</legend>
       <ModelView
         model={node.nodes[i]}
         name={name}
-        value={val}
+        value={value}
         onChange={onChange}
+        isObject={isObject}
       />
     </fieldset>
   );
@@ -245,7 +248,8 @@ function ListValues({
   if (
     (node.of.type === 'resource' || node.of.type === 'identifier') &&
     Array.isArray(value[name]) &&
-    isStringArray(value[name] as unknown[])
+    isStringArray(value[name] as unknown[]) &&
+    node.of.registry !== 'block_state'
   ) {
     return (
       <ResourceSelectMultipleInput

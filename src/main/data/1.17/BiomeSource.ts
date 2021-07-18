@@ -49,7 +49,10 @@ export const BiomeSource: Model = {
       vanilla_layered: {
         legacy_biome_init_layer: BoolNode(false),
         large_biomes: BoolNode(false),
-        seed: IntNode()
+        seed: LongNode()
+      },
+      the_end: {
+        seed: LongNode()
       }
     },
     {
@@ -102,7 +105,8 @@ export const BiomeSource: Model = {
           }
         ]
       },
-      vanilla_layered: VANILLA_LAYERED_BIOME_SOURCE
+      vanilla_layered: VANILLA_LAYERED_BIOME_SOURCE,
+      the_end: { seed: generatorSeed }
     },
     null
   ),

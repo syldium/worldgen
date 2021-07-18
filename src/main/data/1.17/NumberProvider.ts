@@ -31,7 +31,7 @@ export const IntProvider = (
 };
 
 export const FloatProvider = (min?: number, max?: number): ModelNode => {
-  const floatNode = FloatNode();
+  const floatNode = FloatNode({ min, max });
   return EitherNode(
     floatNode,
     SwitchNode(
@@ -44,13 +44,13 @@ export const FloatProvider = (min?: number, max?: number): ModelNode => {
         clamped_normal: {
           mean: FloatNode(),
           deviation: FloatNode(),
-          min: FloatNode(),
-          max: FloatNode()
+          min: floatNode,
+          max: floatNode
         },
         trapezoid: {
           plateau: FloatNode(),
-          min: FloatNode(),
-          max: FloatNode()
+          min: floatNode,
+          max: floatNode
         }
       },
       {},

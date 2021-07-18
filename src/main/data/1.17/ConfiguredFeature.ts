@@ -1,4 +1,4 @@
-import { IntProvider } from './NumberProvider';
+import { FloatProvider, IntProvider } from './NumberProvider';
 import { Model, ObjectModel } from '../../model/Model';
 import { IdentifierNode, ResourceNode } from '../../model/node/ResourceNode';
 import { IntNode } from '../../model/node/IntNode';
@@ -10,6 +10,7 @@ import { EnumNode } from '../../model/node/EnumNode';
 import { SwitchNode } from '../../model/node/SwitchNode';
 import { VerticalSurface } from './WorldgenStep';
 import FeatureDefaults, { DECORATED_TREE } from './ConfiguredFeatureDefault';
+import { BlockPlacer } from './BlockPlacer';
 
 const BlockPileConfig: ObjectModel = {
   state_provider: ResourceNode('block_state_provider')
@@ -20,6 +21,26 @@ const DiskConfig: ObjectModel = {
   radius: IntNode({ min: 0, max: 8 }),
   half_height: IntNode({ min: 0, max: 4 }),
   targets: ListNode(ResourceNode('block_state'))
+};
+
+const DripstoneClusterConfig: ObjectModel = {
+  floor_to_ceiling_search_range: IntNode({ min: 5, max: 512 }),
+  height: IntProvider(1, 128),
+  radius: IntProvider(1, 128),
+  max_stalagmite_stalactite_height_diff: IntNode({ min: 0, max: 64 }),
+  height_deviation: IntNode({ min: 1, max: 64 }),
+  dripstone_block_layer_thickness: IntProvider(0, 128),
+  density: FloatProvider(0, 2),
+  wetness: FloatProvider(0, 2),
+  chance_of_dripstone_column_at_max_distance_from_center: FloatNode({
+    min: 0,
+    max: 1
+  }),
+  max_distance_from_edge_affecting_chance_of_dripstone_column: IntNode({
+    min: 1,
+    max: 64
+  }),
+  max_distance_from_center_affecting_height_bias: IntNode({ min: 1, max: 64 })
 };
 
 const FossilConfig: ObjectModel = {
@@ -98,6 +119,18 @@ const HugeMushroomConfig: ObjectModel = {
   foliage_radius: IntNode({ default: 2 })
 };
 
+const LargeDripstoneConfig: ObjectModel = {
+  floor_to_ceiling_search_range: IntNode({ min: 1, max: 512 }),
+  column_radius: IntProvider(1, 60),
+  height_scale: FloatProvider(0, 20),
+  max_column_radius_to_cave_height_ratio: FloatNode({ min: 0.1, max: 1 }),
+  stalactite_bluntness: FloatProvider(0.1, 10),
+  stalagmite_bluntness: FloatProvider(0.1, 10),
+  wind_speed: FloatProvider(0, 2),
+  min_radius_for_wind: IntNode({ min: 0, max: 100 }),
+  min_bluntness_for_wind: FloatNode({ min: 0, max: 5 })
+};
+
 const NetherrackReplaceBlobsConfig: ObjectModel = {
   target: ResourceNode('block_state'),
   state: ResourceNode('block_state'),
@@ -163,9 +196,19 @@ const RandomPatchConfig: ObjectModel = {
   zspread: IntNode({ default: 7 }),
   tries: IntNode({ default: 128 }),
   state_provider: ResourceNode('block_state_provider'),
-  block_placer: ResourceNode('block_placer'),
+  block_placer: BlockPlacer,
   whitelist: ListNode(ResourceNode('block_state')),
   blacklist: ListNode(ResourceNode('block_state'))
+};
+
+const RandomConfig: ObjectModel = {
+  default: ResourceNode('worldgen/configured_feature'),
+  features: ListNode(
+    ObjectNode({
+      feature: ResourceNode('worldgen/configured_feature'),
+      chance: FloatNode({ min: 0, max: 1 })
+    })
+  )
 };
 
 const RootSystemConfig: ObjectModel = {
@@ -188,6 +231,17 @@ const SimpleBlockConfig: ObjectModel = {
   place_on: ListNode(ResourceNode('block_state')),
   place_in: ListNode(ResourceNode('block_state')),
   place_under: ListNode(ResourceNode('block_state'))
+};
+
+const SimpleRandomConfig: ObjectModel = {
+  features: ListNode(ResourceNode('worldgen/configured_feature'))
+};
+
+const SmallDripstoneConfig: ObjectModel = {
+  max_placements: IntNode({ min: 0, max: 100 }),
+  empty_space_search_radius: IntNode({ min: 0, max: 20 }),
+  max_offset_from_origin: IntNode({ min: 0, max: 20 }),
+  chance_of_taller_dripstone: FloatNode({ min: 0, max: 1 })
 };
 
 const SpringConfig: ObjectModel = {
@@ -366,6 +420,7 @@ export const ConfiguredFeature: Model = {
       coral_tree: {},
       desert_well: {},
       disk: DiskConfig,
+      dripstone_cluster: DripstoneClusterConfig,
       flower: RandomPatchConfig,
       forest_rock: StateConfig,
       fossil: FossilConfig,
@@ -381,6 +436,7 @@ export const ConfiguredFeature: Model = {
       ice_spike: {},
       kelp: {},
       lake: StateConfig,
+      large_dripstone: LargeDripstoneConfig,
       monster_room: {},
       nether_forest_vegetation: BlockPileConfig,
       netherrack_replace_blobs: NetherrackReplaceBlobsConfig,
@@ -388,19 +444,24 @@ export const ConfiguredFeature: Model = {
       no_op: {},
       ore: OreConfig,
       random_patch: RandomPatchConfig,
+      random_selector: RandomConfig,
       replace_single_block: ReplaceSingleBlockConfig,
       root_system: RootSystemConfig,
       scattered_ore: OreConfig,
       seagrass: Probability,
       sea_pickle: CountConfig,
       simple_block: SimpleBlockConfig,
+      simple_random_selector: SimpleRandomConfig,
+      small_dripstone: SmallDripstoneConfig,
       spring_feature: SpringConfig,
       tree: TreeConfig,
+      twisting_vines: {},
       underwater_magma: UnderwaterMagmaConfig,
       vegetation_patch: VegetationPatchConfig,
-      waterlogged_vegetation_patch: VegetationPatchConfig,
       vines: {},
-      void_start_platform: {}
+      void_start_platform: {},
+      waterlogged_vegetation_patch: VegetationPatchConfig,
+      weeping_vines: {}
     },
     FeatureDefaults
   ),

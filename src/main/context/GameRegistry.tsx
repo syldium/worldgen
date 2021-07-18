@@ -86,7 +86,6 @@ export function GameRegistryProvider({
         registries: {
           ...worldgen.worldgen,
           block: blockTypes,
-          block_placer: { options: [] },
           block_state: blockTypes,
           block_state_provider: { options: [] },
           entity_type: entityTypes,

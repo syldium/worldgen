@@ -18,7 +18,6 @@ import { loadVanillaZip } from '../util/FetchHelper';
 
 export type GameRegistryKey =
   | 'block'
-  | 'block_placer'
   | 'block_state'
   | 'block_state_provider'
   | 'entity_type'

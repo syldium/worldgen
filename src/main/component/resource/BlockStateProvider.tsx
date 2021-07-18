@@ -165,18 +165,16 @@ function WeightedStateProvider({
               update({ ...block, data: state[i] }, i);
             }}
           >
+            Weight:{' '}
             <input
-              id="weight"
               type="number"
               value={typeof block.weight === 'number' ? block.weight : 1}
               min="1"
               onChange={(event) => {
                 update({ ...block, weight: parseInt(event.target.value) }, i);
               }}
-              className={'mlm ' + block.__reactKey}
-            >
-              Weight
-            </input>
+              className="mlm"
+            />
             <button className="mlm" onClick={(e) => remove(i, e)}>
               Remove
             </button>
