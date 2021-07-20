@@ -11,6 +11,7 @@ import { Schema, WorldgenRegistryKey } from '../../model/Registry';
 import { useHistory, useParams } from 'react-router-dom';
 import { NamespacedKey } from '../NamespacedKey';
 import { Obj } from '../../util/DomHelper';
+import { JsonViewer } from '../ui/JsonViewer';
 
 interface ResourceFormProps {
   registryKey: WorldgenRegistryKey;
@@ -46,6 +47,7 @@ export function Resource({
     <form onSubmit={handleSubmit}>
       <NamespacedKey registry={registryKey} onSelectLoad={setValue}>
         {children}
+        <JsonViewer data={value} />
       </NamespacedKey>
       <ModelView
         model={registry.model.node}
@@ -54,9 +56,6 @@ export function Resource({
         onChange={handleChange}
       />
       <button>Save</button>
-      <code>
-        <pre>{JSON.stringify(value, null, 2)}</pre>
-      </code>
     </form>
   );
 }

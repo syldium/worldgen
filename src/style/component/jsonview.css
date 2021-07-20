@@ -1,0 +1,28 @@
+.jsonview-code {
+  display: block;
+  background-color: var(--shadow-color, inherit);
+  color: #88c6be;
+  white-space: nowrap;
+  width: 600px;
+  max-width: 100%;
+  padding: 2.5rem 2rem;
+}
+.jsonview-str {
+  color: #79b6f2;
+}
+.jsonview-num {
+  color: #ffffc8;
+}
+.jsonview-bool {
+  color: #c5a5c5;
+}
+.jsonview-null {
+  color: #c5a5c5;
+}
+.jsonview-prop {
+  color: #fac863;
+}
+.jsonview-line {
+  padding-right: 1rem;
+  color: #b2b2b2;
+}

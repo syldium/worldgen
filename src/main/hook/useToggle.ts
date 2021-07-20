@@ -20,7 +20,7 @@ export function useToggle(
         e.target?.type === 'checkbox'
       ) {
         value = e.target.checked;
-      } else {
+      } else if ('preventDefault' in e) {
         e.preventDefault();
       }
 

@@ -15,6 +15,7 @@ import { SelectSwitch } from '../NodeElement';
 import { SwitchNodeParams } from '../../model/node/SwitchNode';
 import { Obj } from '../../util/DomHelper';
 import { ConfiguredDecorator } from '../../data/1.17/ConfiguredDecorator';
+import { JsonViewer } from '../ui/JsonViewer';
 
 export function ConfiguredFeature(): JSX.Element {
   const history = useHistory();
@@ -86,7 +87,9 @@ export function ConfiguredFeature(): JSX.Element {
       <NamespacedKey
         registry="worldgen/configured_feature"
         onSelectLoad={handleVanillaSelect}
-      />
+      >
+        <JsonViewer data={() => buildDecorated(feature, decorators)} />
+      </NamespacedKey>
       <div className="form-group">
         <SelectSwitch
           name="feature"
@@ -108,11 +111,6 @@ export function ConfiguredFeature(): JSX.Element {
         />
       ))}
       <button>Save</button>
-      <code>
-        <pre>
-          {JSON.stringify(buildDecorated(feature, decorators), null, 2)}
-        </pre>
-      </code>
     </form>
   );
 }

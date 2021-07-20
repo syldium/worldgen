@@ -1,5 +1,8 @@
 @import 'theme.css';
+@import 'component/dialog.css';
 @import 'component/form.css';
+@import 'component/icon.css';
+@import 'component/jsonview.css';
 @import 'component/link.css';
 @import 'component/navbar.css';
 @import 'component/section.css';

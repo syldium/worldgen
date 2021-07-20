@@ -5,7 +5,9 @@
   --bg-color-input-hover: #f4f9ff;
   --bg-color-select-focus: #2684ff;
   --primary-color: #131618;
+  --secondary-color: #6c757d;
   --focus-color: #2380b9;
+  --shadow-color: #333;
   --border-color: #cccccc;
   --fieldset-color: #d3d7db;
   --select-label: #e6e6e6;
@@ -17,6 +19,7 @@
   --bg-color-input-hover: #343e49;
   --bg-color-select-focus: #1b3a5a;
   --primary-color: #dfdfdf;
+  --secondary-color: #99a5b1;
   --focus-color: #19618f;
   --border-color: transparent;
   --fieldset-color: #596169;

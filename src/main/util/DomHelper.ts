@@ -17,3 +17,15 @@ export function addReactKey<T extends Obj>(record: T): T & ReactKeyed {
   (record as T & ReactKeyed).__reactKey = nanoid();
   return record as T & ReactKeyed;
 }
+
+export function removeReactKeys(value: Obj): Obj {
+  return JSON.parse(
+    JSON.stringify(value, (key, value) =>
+      key === '__reactKey' ? undefined : value
+    )
+  );
+}
+
+export function voidReturn(fn: () => unknown): () => void {
+  return fn;
+}

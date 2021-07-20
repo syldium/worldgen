@@ -1,0 +1,82 @@
+.modal-wrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  background: rgba(0, 0, 0, 0.7);
+  animation: fadeIn 0.3s both;
+}
+dialog {
+  z-index: 10;
+  background-color: var(--bg-color-section);
+  color: var(--primary-color);
+  border: 0;
+  padding: 0;
+  border-radius: 4px;
+  max-height: 80%;
+  max-width: 100%;
+  overflow: auto;
+  animation: slideFromTop 0.3s both 0.1s;
+}
+
+dialog h3 {
+  margin-top: 0.5rem;
+}
+
+dialog form {
+  padding-bottom: 1rem;
+}
+
+.btn--close {
+  position: absolute;
+  cursor: pointer;
+  right: 16px;
+  top: 8px;
+  width: 32px;
+  height: 32px;
+  opacity: 0.3;
+  background-color: inherit;
+  padding: 0;
+  border: 0;
+}
+.btn--close:hover {
+  opacity: 1;
+}
+
+.btn--close:before,
+.btn--close:after {
+  position: absolute;
+  left: 15px;
+  content: ' ';
+  height: 33px;
+  width: 2px;
+  background-color: var(--secondary-color);
+  margin-top: -16px;
+}
+.btn--close:before {
+  transform: rotate(45deg);
+}
+.btn--close:after {
+  transform: rotate(-45deg);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes slideFromTop {
+  from {
+    transform: translateY(-10vh);
+  }
+  to {
+    transform: translateY(-5vh);
+  }
+}
