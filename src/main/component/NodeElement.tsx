@@ -37,6 +37,7 @@ import {
 } from './resource/BlockStateProvider';
 import { hexColorToInteger, intColorToHex } from '../util/ColorHelper';
 import { Button } from './ui/Button';
+import { ViewerElement } from './viewer/Viewers';
 
 interface ModelViewProps {
   model: ObjectOrNodeModel;
@@ -537,7 +538,7 @@ function ResourceInput({
     worldgen.isRegistered(node.registry)
   ) {
     const model = worldgen.worldgen[node.registry].model.node;
-    return (
+    const el = (
       <ModelView
         model={model}
         name={name}
@@ -545,6 +546,19 @@ function ResourceInput({
         onChange={handleChange}
       />
     );
+    const viewers = ViewerElement(
+      node.registry,
+      resource as Record<string, unknown>
+    );
+    if (viewers !== null) {
+      return (
+        <div className="grid-2">
+          {el}
+          {viewers}
+        </div>
+      );
+    }
+    return el;
   } else if (node.registry === 'block_state') {
     return (
       <BlockState

@@ -1,0 +1,30 @@
+.grid-2 {
+  display: grid;
+  grid-template-columns: 3fr 2fr;
+}
+canvas {
+  image-rendering: optimizeSpeed;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: -o-crisp-edges;
+  image-rendering: pixelated;
+  -ms-interpolation-mode: nearest-neighbor;
+}
+.biome-map {
+  background-color: var(--bg-color-nav) !important;
+  height: 512px;
+}
+.viewers {
+  position: sticky !important;
+  top: 10%;
+  left: 0;
+  height: max-content;
+}
+.leaflet-container .leaflet-control-mouseposition {
+  background-color: rgba(255, 255, 255, 0.8);
+  box-shadow: 0 0 5px #bbb;
+  padding: 0 5px;
+  margin: 0;
+  color: #333;
+  min-width: 72px;
+  text-align: center;
+}

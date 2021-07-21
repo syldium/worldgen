@@ -57,3 +57,8 @@ export function areConsecutiveIntegers(values: readonly string[]): boolean {
   }
   return i === values.length;
 }
+
+export function mod(a: number, b: number): number {
+  const remain = a % b;
+  return remain < 0 ? remain + b : remain;
+}

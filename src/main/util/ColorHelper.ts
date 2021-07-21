@@ -5,3 +5,10 @@ export function hexColorToInteger(color: string): number {
 export function intColorToHex(color: number): string {
   return '#' + (color & 0xffffff).toString(16).padStart(6, '0');
 }
+
+export function rgbToBgrCanvas(color: number): number {
+  const r = (color >> 16) & 0xff;
+  const g = (color >> 8) & 0xff;
+  const b = color & 0xff;
+  return (0xff << 24) | (b << 16) | (g << 8) | r;
+}

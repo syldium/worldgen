@@ -1,0 +1,102 @@
+import React, { useEffect, useRef } from 'react';
+import { BiomeSourceMapLayer } from '../../viewer/biome/BiomeSourceMapLayer';
+import 'leaflet/dist/leaflet.css';
+import { ViewableBiomeSource } from '../../viewer/biome/types';
+import {
+  Control,
+  ControlOptions,
+  CRS,
+  DomUtil,
+  LeafletMouseEvent,
+  Map,
+  map
+} from 'leaflet';
+import { voidReturn } from '../../util/DomHelper';
+import { debounce } from '../../util/debounce';
+import { ViewerProps } from './Viewers';
+
+type AskBiome = (
+  x: number,
+  z: number,
+  callback: (biome: string) => void
+) => void;
+class MousePosition extends Control {
+  private div?: HTMLElement;
+  private readonly askBiome: AskBiome;
+  private x = 0;
+  private z = 0;
+  private biome = '';
+
+  constructor(askBiome: AskBiome, options?: ControlOptions) {
+    super(options);
+    this.askBiome = debounce(askBiome);
+  }
+
+  onMove({ latlng }: LeafletMouseEvent): void {
+    this.x = Math.floor(latlng.lng * 256);
+    this.z = Math.floor(-latlng.lat * 256);
+    this.display();
+    this.askBiome(this.x, this.z, (biome) => this.display(biome));
+  }
+
+  display(biome?: string): void {
+    if (biome) {
+      if (biome === this.biome) {
+        return;
+      }
+      this.biome = biome;
+    }
+    this.div!.innerText = `${this.x} ${this.z}\n${this.biome}`;
+  }
+
+  onAdd(map: Map): HTMLElement {
+    this.div = DomUtil.create(
+      'div',
+      'custom-panel leaflet-bar leaflet-control-mouseposition'
+    );
+    map.on({
+      mousemove: this.onMove.bind(this)
+    });
+    return this.div;
+  }
+
+  onRemove(map: Map): void {
+    map.off('mousemove', this.onMove);
+  }
+}
+
+export interface BiomeSourceMapProps extends ViewerProps {
+  value: ViewableBiomeSource;
+}
+const BiomeSourceMap = React.memo(function BiomeSourceMap({
+  value
+}: BiomeSourceMapProps) {
+  const divRef = useRef<HTMLDivElement>(null);
+  const layerRef = useRef<BiomeSourceMapLayer>();
+
+  useEffect(() => {
+    if (divRef.current) {
+      const m = map(divRef.current, {
+        crs: CRS.Simple,
+        center: [0, 0],
+        zoom: 5,
+        maxZoom: 10
+      });
+      const l = new BiomeSourceMapLayer(3).addTo(m);
+      layerRef.current = l;
+      new MousePosition(l.getBiomeAt.bind(l)).addTo(m);
+      return voidReturn(() => m.remove());
+    }
+  }, []);
+
+  useEffect(() => {
+    if (layerRef.current) {
+      layerRef.current.setSettings(value);
+      layerRef.current.redraw();
+    }
+  }, [value]);
+
+  return <div className="biome-map" ref={divRef} />;
+});
+
+export default BiomeSourceMap;

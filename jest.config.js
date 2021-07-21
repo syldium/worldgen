@@ -4,7 +4,7 @@ module.exports = {
   transform: {
     "^.+\\.tsx?$": [
         "esbuild-jest",
-        { sourcemap: true }
+        { sourcemap: true, target: 'es2020' }
     ]
   },
   testEnvironment: "jsdom",

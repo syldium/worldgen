@@ -1,5 +1,6 @@
 @import 'theme.css';
 @import 'component/dialog.css';
+@import 'component/viewer.css';
 @import 'component/form.css';
 @import 'component/icon.css';
 @import 'component/jsonview.css';
