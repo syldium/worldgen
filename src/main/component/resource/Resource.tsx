@@ -12,6 +12,7 @@ import { useHistory, useParams } from 'react-router-dom';
 import { NamespacedKey } from '../NamespacedKey';
 import { Obj } from '../../util/DomHelper';
 import { JsonViewer } from '../ui/JsonViewer';
+import { Button } from '../ui/Button';
 
 interface ResourceFormProps {
   registryKey: WorldgenRegistryKey;
@@ -55,7 +56,7 @@ export function Resource({
         value={value as Obj}
         onChange={handleChange}
       />
-      <button>Save</button>
+      <Button>Save</Button>
     </form>
   );
 }

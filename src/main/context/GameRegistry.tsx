@@ -72,7 +72,7 @@ export function GameRegistryProvider({
   const [worldgen] = useState<WorldgenRegistryHolder>(
     () => new WorldgenRegistryHolder('1.17')
   );
-  const [namespace] = useState<string>(Math.random().toString());
+  const [defNamespace, setDefNamespace] = useState<string>(Math.random().toString());
 
   const blockTypes: Registry = useMemo(
     () => ({ options: Object.keys(blockStates).map(labelizeOption) }),
@@ -98,7 +98,12 @@ export function GameRegistryProvider({
           'worldgen/configured_surface_builder': surfaceBuilders
         },
         worldgen,
-        namespace
+        get namespace(): string {
+          return defNamespace;
+        },
+        set namespace(namespace: string) {
+          setDefNamespace(namespace);
+        }
       }}
     >
       {children}

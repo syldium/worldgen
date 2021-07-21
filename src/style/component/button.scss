@@ -1,0 +1,57 @@
+@import "../config.scss";
+
+%btn {
+  display: inline-block;
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+  user-select: none;
+  transition: 0.25s;
+  transition-property: box-shadow, background-color, color, border;
+  text-align: center;
+  vertical-align: middle;
+  white-space: nowrap;
+  text-decoration: none;
+  color: var(--primary-color);
+  border: none;
+  border-radius: 0;
+  background-color: var(--bg-color-btn);
+  font-family: inherit;
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.btn,
+.button,
+[type="button"],
+button {
+  @extend %btn;
+
+  &:focus {
+    -webkit-tap-highlight-color: transparent;
+  }
+}
+
+@each $theme in (light, dark) {
+  .#{$theme}-mode {
+    @each $name, $background-colors, $color, $border in $variants-list {
+      .btn--#{$name} {
+        @extend %btn;
+        $background-color: map-get($background-colors, #{$theme});
+        background-color: $background-color;
+        color: $color;
+        box-shadow: $border;
+
+        &:active,
+        &:focus,
+        &:hover {
+          outline: none;
+          @if ($theme == light) {
+            background-color: darken($background-color, 10%);
+          } @else {
+            background-color: darken($background-color, 4%);
+          }
+        }
+      }
+    }
+  }
+}

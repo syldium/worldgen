@@ -13,6 +13,7 @@ import Select from './ui/Select';
 import { Schema, WorldgenRegistryKey } from '../model/Registry';
 import { GameContext } from '../context/GameRegistry';
 import { useToggle } from '../hook/useToggle';
+import { Button } from './ui/Button';
 
 interface NamespacedKeyProps {
   children?: React.ReactNode;
@@ -183,9 +184,9 @@ export function NamespacedKey({
           style={{ opacity: 0, height: 0, position: 'absolute' }}
         />
         {mayReplaceVanilla && (
-          <button className="mlm" onClick={handleToggle}>
+          <Button className="mlm" onClick={handleToggle}>
             {replace ? 'Create a new one' : 'Replace vanilla'}
-          </button>
+          </Button>
         )}
         {replace && (
           <>

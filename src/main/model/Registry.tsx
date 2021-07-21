@@ -129,4 +129,30 @@ export class WorldgenRegistryHolder {
   isRegistered(key: RegistryKey): key is WorldgenRegistryKey {
     return key in this.worldgen;
   }
+
+  register(
+    registryKey: WorldgenRegistryKey,
+    namespacedKey: string,
+    schema: Record<string, unknown>
+  ): void {
+    this.worldgen[registryKey].register(namespacedKey, schema);
+  }
+}
+
+export const WorldgenNames: Record<WorldgenRegistryKey, string> = {
+  dimension_type: 'dimension type',
+  dimension: 'dimension',
+  'worldgen/biome': 'biome',
+  'worldgen/biome_source': 'biome source',
+  'worldgen/chunk_generator': 'chunk generator',
+  'worldgen/configured_carver': 'configured carver',
+  'worldgen/configured_decorator': 'configured decorator',
+  'worldgen/configured_feature': 'configured feature',
+  'worldgen/configured_structure_feature': 'configured structure feature',
+  'worldgen/configured_surface_builder': 'configured surface builder',
+  'worldgen/noise_settings': 'noise settings',
+  'worldgen/processor_list': 'processor list'
+};
+export function isWorldgenRegistry(key: string): key is WorldgenRegistryKey {
+  return key in WorldgenNames;
 }

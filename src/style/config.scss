@@ -1,0 +1,18 @@
+$variants-list: (
+  (primary, (
+    light: #0275d8,
+    dark: #09716a
+  ), #fff, none),
+  (info, (
+    light: #5bc0de,
+    dark: #097c99
+  ), var(--primary-color), none),
+  (warning, (
+    light: #f0ad4e,
+    dark: #d57411
+  ), #000, none),
+  (danger, (
+    light: #d9534f,
+    dark: #c14f51
+  ), #fff, none)
+);

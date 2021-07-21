@@ -3,12 +3,17 @@ import { match } from 'react-router';
 import { NavLink } from 'react-router-dom';
 import { LocationDescriptor, Pathname } from 'history';
 
-interface LinkProps {
+interface LinkProps extends React.RefAttributes<HTMLAnchorElement> {
   exact?: boolean;
   to: LocationDescriptor;
   children?: React.ReactNode;
 }
-export function Link({ exact, to, children }: LinkProps): JSX.Element {
+export function Link({
+  exact,
+  to,
+  children,
+  ...props
+}: LinkProps): JSX.Element {
   const isActive = useCallback(function (
     match: match,
     { pathname }: { pathname: Pathname }
@@ -26,7 +31,7 @@ export function Link({ exact, to, children }: LinkProps): JSX.Element {
 
   return (
     // @ts-ignore
-    <NavLink exact={exact} to={to} isActive={isActive}>
+    <NavLink exact={exact} to={to} isActive={isActive} {...props}>
       {children}
     </NavLink>
   );

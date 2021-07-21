@@ -16,6 +16,7 @@ import { SwitchNodeParams } from '../../model/node/SwitchNode';
 import { Obj } from '../../util/DomHelper';
 import { ConfiguredDecorator } from '../../data/1.17/ConfiguredDecorator';
 import { JsonViewer } from '../ui/JsonViewer';
+import { Button } from '../ui/Button';
 
 export function ConfiguredFeature(): JSX.Element {
   const history = useHistory();
@@ -110,7 +111,7 @@ export function ConfiguredFeature(): JSX.Element {
           isObject={true}
         />
       ))}
-      <button>Save</button>
+      <Button>Save</Button>
     </form>
   );
 }

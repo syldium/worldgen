@@ -4,3 +4,33 @@ fieldset {
 legend {
   width: 100%;
 }
+
+#create-form {
+  display: grid;
+  grid-template-columns: 5fr 3fr;
+  grid-column-gap: 32px;
+  padding: 2rem 4rem 3rem;
+  max-width: 1024px;
+}
+.models-list {
+  padding-left: 0;
+  list-style-type: none;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+  margin: auto;
+}
+.model-type {
+  text-align: center;
+  margin-bottom: 8px;
+}
+.model-type a {
+  display: block;
+  background-color: var(--bg-color-input);
+  padding: 8px;
+  border-radius: 8px;
+  width: 240px;
+}
+.form-control input {
+  width: 100%;
+}

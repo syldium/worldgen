@@ -36,6 +36,7 @@ import {
   StateProvider
 } from './resource/BlockStateProvider';
 import { hexColorToInteger, intColorToHex } from '../util/ColorHelper';
+import { Button } from './ui/Button';
 
 interface ModelViewProps {
   model: ObjectOrNodeModel;
@@ -293,7 +294,7 @@ function ListCrud({
   return (
     <fieldset>
       <legend>
-        {labelize(name)} <button onClick={create}>Add</button>
+        {labelize(name)} <Button onClick={create}>Add</Button>
       </legend>
       {elements.map((element, i) => (
         <NodeElement

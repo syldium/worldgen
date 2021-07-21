@@ -8,6 +8,7 @@ import { labelizeOption, stripDefaultNamespace } from '../../util/LabelHelper';
 import { GameContext } from '../../context/GameRegistry';
 import { useCrudProps } from '../../hook/useCrud';
 import { Obj } from '../../util/DomHelper';
+import { Button } from '../ui/Button';
 
 export interface StateProvider {
   type: string;
@@ -175,13 +176,13 @@ function WeightedStateProvider({
               }}
               className="mlm"
             />
-            <button className="mlm" onClick={(e) => remove(i, e)}>
+            <Button cat="danger" className="mlm" onClick={(e) => remove(i, e)}>
               Remove
-            </button>
+            </Button>
           </BlockState>
         );
       })}
-      <button onClick={create}>Add block</button>
+      <Button onClick={create}>Add block</Button>
     </div>
   );
 }

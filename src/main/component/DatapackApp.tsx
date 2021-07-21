@@ -5,6 +5,7 @@ import { Resource } from './resource/Resource';
 import { MainMenu } from './MainMenu';
 import { Link } from './ui/Link';
 import { ConfiguredFeature } from './resource/ConfiguredFeature';
+import { WorldgenNames, WorldgenRegistryKey } from '../model/Registry';
 
 export const DatapackApp = (): JSX.Element => (
   <div>
@@ -16,16 +17,16 @@ export const DatapackApp = (): JSX.Element => (
           </Link>
         </li>
         <li>
-          <Link to="/biome">Biome</Link>
+          <Link to="/worldgen/biome">Biome</Link>
         </li>
         <li>
-          <Link to="/feature">Feature</Link>
+          <Link to="/worldgen/configured_feature">Feature</Link>
         </li>
         <li>
           <Link to="/dimension">Dimension</Link>
         </li>
         <li>
-          <Link to="/dimension/type">Dimension Type</Link>
+          <Link to="/dimension_type">Dimension Type</Link>
         </li>
       </ul>
     </NavBar>
@@ -35,17 +36,15 @@ export const DatapackApp = (): JSX.Element => (
           <h2>Datapack</h2>
           <MainMenu />
         </Route>
-        <Route path="/biome/:id?">
-          <Resource registryKey="worldgen/biome" key={-1} />
-        </Route>
-        <Route path="/feature/:id?">
+        {(Object.keys(WorldgenNames) as WorldgenRegistryKey[])
+          .filter((key) => key !== 'worldgen/configured_feature')
+          .map((key) => (
+            <Route path={`/${key}/:id?`} key={key}>
+              <Resource registryKey={key} key={key} />
+            </Route>
+          ))}
+        <Route path="/worldgen/configured_feature/:id?">
           <ConfiguredFeature />
-        </Route>
-        <Route path="/dimension/type/:id?">
-          <Resource registryKey="dimension_type" key={0} />
-        </Route>
-        <Route path="/dimension/:id?">
-          <Resource registryKey="dimension" key={1} />
         </Route>
       </Switch>
     </div>
