@@ -21,13 +21,19 @@
 }
 
 .btn,
-.button,
-[type="button"],
 button {
   @extend %btn;
 
   &:focus {
     -webkit-tap-highlight-color: transparent;
+  }
+}
+
+.actions {
+  display: flex;
+
+  & .btn {
+    flex: 1;
   }
 }
 

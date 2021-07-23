@@ -6,10 +6,12 @@ legend {
 }
 
 #create-form {
+  padding: 2rem 4rem 3rem;
+}
+#create-form.is-create {
   display: grid;
   grid-template-columns: 5fr 3fr;
   grid-column-gap: 32px;
-  padding: 2rem 4rem 3rem;
   max-width: 1024px;
 }
 .models-list {

@@ -48,7 +48,7 @@ export interface Registry {
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface Schema {}
 export type RegistryEntries = { [identifier: string]: Schema };
-class WorldgenRegistry implements Registry {
+export class WorldgenRegistry implements Registry {
   readonly entries: RegistryEntries;
   readonly model: Model;
   readonly options: Option[];
@@ -65,6 +65,10 @@ class WorldgenRegistry implements Registry {
 
   register(namespacedKey: string, schema: Record<string, unknown>): void {
     this.entries[namespacedKey] = schema;
+    this.options.push({
+      label: '(Custom) ' + namespacedKey,
+      value: namespacedKey
+    });
   }
 }
 
@@ -77,7 +81,7 @@ export type BlockStateRegistry = {
 export const DEFAULT_BLOCK_STATE = { default: {}, properties: {} };
 
 export class WorldgenRegistryHolder {
-  worldgen: Record<WorldgenRegistryKey, WorldgenRegistry> = {
+  readonly worldgen: Record<WorldgenRegistryKey, WorldgenRegistry> = {
     dimension: new WorldgenRegistry(Dimension, Dimensions),
     dimension_type: new WorldgenRegistry(DimensionType, DimensionTypes),
     'worldgen/biome': new WorldgenRegistry(Biome, Biomes),
@@ -102,8 +106,9 @@ export class WorldgenRegistryHolder {
   readonly packFormat: number;
   vanillaZip?: JSZip;
 
-  constructor(version: GameVersion) {
-    this.packFormat = version === '1.17' ? 7 : 6;
+  constructor(version: GameVersion | number) {
+    this.packFormat =
+      typeof version === 'number' ? version : version === '1.17' ? 7 : 6;
   }
 
   async vanillaResource(
@@ -126,7 +131,13 @@ export class WorldgenRegistryHolder {
     return JSON.parse(await file.async('text'));
   }
 
-  isRegistered(key: RegistryKey): key is WorldgenRegistryKey {
+  hasValues(): boolean {
+    return Object.values(this.worldgen).some(
+      (registry) => Object.keys(registry.entries).length > 0
+    );
+  }
+
+  isRegistered(key: string): key is WorldgenRegistryKey {
     return key in this.worldgen;
   }
 
@@ -136,6 +147,34 @@ export class WorldgenRegistryHolder {
     schema: Record<string, unknown>
   ): void {
     this.worldgen[registryKey].register(namespacedKey, schema);
+  }
+
+  doesConflict(other: WorldgenRegistryHolder): number {
+    let counter = 0;
+    for (const [registryKey, registry] of this.entries) {
+      for (const resourceKey of Object.keys(registry.entries)) {
+        const entries = other.worldgen[registryKey].entries;
+        if (resourceKey in entries) {
+          counter += 1;
+        }
+      }
+    }
+    return counter;
+  }
+
+  merge(other: WorldgenRegistryHolder): void {
+    for (const [registryKey, registry] of this.entries) {
+      const o = other.worldgen[registryKey];
+      Object.assign(registry.entries, o.entries);
+      registry.options.push(...o.options);
+    }
+  }
+
+  get entries(): [WorldgenRegistryKey, WorldgenRegistry][] {
+    return Object.entries(this.worldgen) as [
+      WorldgenRegistryKey,
+      WorldgenRegistry
+    ][];
   }
 }
 

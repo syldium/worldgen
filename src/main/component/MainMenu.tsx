@@ -42,6 +42,13 @@ export function MainMenu(): JSX.Element {
     },
     [context, toggleAction]
   );
+  const handleLoad = useCallback(
+    function (zip: ZipAction) {
+      context.worldgen = zip.registry;
+      toggleAction(false);
+    },
+    [context, toggleAction]
+  );
 
   return (
     <>
@@ -52,7 +59,9 @@ export function MainMenu(): JSX.Element {
       {open && (
         <Modal isOpen={open} onClose={toggleAction}>
           <CreateForm
+            onCancel={toggleAction}
             onCreate={handleNewDatapack}
+            onLoad={handleLoad}
             onResourceCreate={handleNewResource}
           />
         </Modal>

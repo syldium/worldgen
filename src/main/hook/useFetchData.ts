@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useOptionsRegistry } from './useOptions';
-import { Registry } from '../model/Registry';
+import { Registry, WorldgenRegistry } from '../model/Registry';
 
 export const readJson = <S>(response: Response): Promise<S> => response.json();
 export const readText = (response: Response): Promise<string[]> =>
@@ -26,7 +26,12 @@ export function useFetchData<S>(
 export function useFetchRegistry(
   url: RequestInfo,
   reader: (response: Response) => Promise<string[]> = readJson,
+  custom?: WorldgenRegistry | null,
   labelize?: boolean
 ): Registry {
-  return useOptionsRegistry(useFetchData(url, [], undefined, reader), labelize);
+  return useOptionsRegistry(
+    useFetchData(url, [], undefined, reader),
+    custom?.options,
+    labelize
+  );
 }

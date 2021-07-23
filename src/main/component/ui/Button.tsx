@@ -9,5 +9,8 @@ export const Button = ({
   className,
   ...props
 }: ButtonProps): JSX.Element => (
-  <button className={`btn btn--${cat} ${className}`} {...props} />
+  <button
+    className={`btn btn--${cat}${className ? ' ' + className : ''}`}
+    {...props}
+  />
 );

@@ -1,30 +1,110 @@
-import React, { FormEvent, useCallback } from 'react';
+import React, {
+  DragEvent,
+  FormEvent,
+  useState,
+  ChangeEvent,
+  useContext
+} from 'react';
 import { useLowercaseInput } from '../../hook/useLowercaseInput';
 import { WorldgenNames, WorldgenRegistryKey } from '../../model/Registry';
 import { Button } from '../ui/Button';
+import { ZipAction } from '../../context/ZipAction';
+import { useToggle } from '../../hook/useToggle';
+import { GameContext } from '../../context/GameRegistry';
+import { MergeForm } from './MergeForm';
 
 interface CreateFormProps {
+  onCancel: () => void;
   onCreate: (namespace: string) => void;
+  onLoad: (zip: ZipAction) => void;
   onResourceCreate: (registryKey: WorldgenRegistryKey) => void;
 }
 
-export const CreateForm = ({
+export function CreateForm({
+  onCancel,
   onCreate,
+  onLoad,
   onResourceCreate
-}: CreateFormProps): JSX.Element => (
-  <div id="create-form">
-    <NewResource onClick={onResourceCreate} />
-    <DefNamespaceForm onDefine={onCreate} />
-  </div>
-);
+}: CreateFormProps): JSX.Element {
+  const [isMerge, toggleMerge] = useToggle();
+  return (
+    <div id="create-form" className={isMerge ? 'is-merge' : 'is-create'}>
+      {!isMerge && <NewResource onClick={onResourceCreate} />}
+      <CreateDatapackForm
+        onCancel={onCancel}
+        onCreate={onCreate}
+        onLoad={onLoad}
+        toggleMerge={toggleMerge}
+      />
+    </div>
+  );
+}
+
+interface CreateDatapackFormProps {
+  onCancel: () => void;
+  onCreate: (namespace: string) => void;
+  onLoad: (zip: ZipAction) => void;
+  toggleMerge: (merge: boolean) => void;
+}
+function CreateDatapackForm({
+  onCancel,
+  onCreate,
+  onLoad,
+  toggleMerge
+}: CreateDatapackFormProps): JSX.Element {
+  const { worldgen } = useContext(GameContext);
+  const [zip, setZip] = useState<ZipAction | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  const handleFile = function (
+    event: DragEvent<HTMLDivElement> | ChangeEvent<HTMLInputElement>
+  ) {
+    event.preventDefault();
+    event.stopPropagation();
+    const file = ((event as DragEvent).dataTransfer || event.target)
+      .files[0] as File;
+    ZipAction.read(file)
+      .then((action) => {
+        if (worldgen.hasValues()) {
+          setZip(action);
+          toggleMerge(true);
+        } else {
+          onLoad(action);
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+        setError(error instanceof Error ? error.message : error);
+      });
+  };
+  if (zip !== null) {
+    return <MergeForm onCancel={onCancel} onLoad={onLoad} zip={zip} />;
+  }
+  return (
+    <DefNamespaceForm onDefine={onCreate} error={error}>
+      <input
+        type="file"
+        name="load-existing-zip"
+        id="load-existing-zip"
+        accept=".zip"
+        onChange={handleFile}
+      />
+      <label htmlFor="load-existing-zip" className="btn--info">
+        Use existing datapack
+      </label>
+    </DefNamespaceForm>
+  );
+}
 
 interface DefNamespaceFormProps {
   children?: React.ReactNode;
+  error?: string | null;
   namespace?: string;
   onDefine: (namespace: string) => void;
 }
 function DefNamespaceForm({
-  children = 'Create',
+  children,
+  error,
   namespace,
   onDefine
 }: DefNamespaceFormProps): JSX.Element {
@@ -62,7 +142,11 @@ function DefNamespaceForm({
             final, you can edit the vanilla dimensions in the following menus.
           </small>
         </p>
-        <Button>{children}</Button>
+        <div className="actions">
+          <Button>Create</Button>
+          {children}
+        </div>
+        {error !== null && <div className="alert--danger">{error}</div>}
       </form>
     </div>
   );

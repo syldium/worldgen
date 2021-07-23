@@ -7,7 +7,10 @@ import { defaultNamespace, labelizeOption } from '../util/LabelHelper';
 export function useOptions(key: RegistryKey, onlyDefault = false): Option[] {
   const context = useContext(GameContext);
   const registry = context.registries[key];
-  return registry ? registry.options : [];
+  const options = registry ? registry.options : [];
+  return onlyDefault
+    ? options.filter((o) => !registry.options.includes(o))
+    : options;
 }
 
 export function useOptionsArray(
@@ -25,16 +28,17 @@ export function useOptionsArray(
 
 export function useOptionsRegistry(
   values: readonly string[],
+  custom?: readonly Option[],
   labelize = true
 ): Registry {
-  return useMemo(
-    () => ({
-      options: values.map((value) =>
-        labelize
-          ? labelizeOption(value)
-          : { label: value, value: defaultNamespace(value) }
-      )
-    }),
-    [labelize, values]
-  );
+  return useMemo(() => {
+    const options = values.map((value) =>
+      labelize
+        ? labelizeOption(value)
+        : { label: value, value: defaultNamespace(value) }
+    );
+    return {
+      options: custom ? custom.concat(options) : options
+    };
+  }, [custom, labelize, values]);
 }

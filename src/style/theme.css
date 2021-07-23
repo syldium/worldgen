@@ -3,6 +3,7 @@
   --bg-color-nav: #bbe3ff;
   --bg-color-input: var(--bg-color-section);
   --bg-color-input-hover: #f4f9ff;
+  --bg-color-btn: #e7e9ed;
   --bg-color-select-focus: #2684ff;
   --primary-color: #131618;
   --secondary-color: #6c757d;
@@ -17,6 +18,7 @@
   --bg-color-nav: #1b2938;
   --bg-color-input: #35404b;
   --bg-color-input-hover: #343e49;
+  --bg-color-btn: #424242;
   --bg-color-select-focus: #1b3a5a;
   --primary-color: #dfdfdf;
   --secondary-color: #99a5b1;
