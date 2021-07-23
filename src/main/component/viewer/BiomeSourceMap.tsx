@@ -1,4 +1,10 @@
-import React, { useEffect, useRef } from 'react';
+import React, {
+  ChangeEvent,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef
+} from 'react';
 import { BiomeSourceMapLayer } from '../../viewer/biome/BiomeSourceMapLayer';
 import 'leaflet/dist/leaflet.css';
 import { ViewableBiomeSource } from '../../viewer/biome/types';
@@ -14,6 +20,11 @@ import {
 import { voidReturn } from '../../util/DomHelper';
 import { debounce } from '../../util/debounce';
 import { ViewerProps } from './Viewers';
+import { useBiomeColors } from '../../hook/useBiomeColors';
+import {
+  bgrCanvasToHexColor,
+  hexColorToBgrCanvas
+} from '../../util/ColorHelper';
 
 type AskBiome = (
   x: number,
@@ -73,6 +84,7 @@ const BiomeSourceMap = React.memo(function BiomeSourceMap({
 }: BiomeSourceMapProps) {
   const divRef = useRef<HTMLDivElement>(null);
   const layerRef = useRef<BiomeSourceMapLayer>();
+  const [colors, setColor] = useBiomeColors(value);
 
   useEffect(() => {
     if (divRef.current) {
@@ -91,12 +103,53 @@ const BiomeSourceMap = React.memo(function BiomeSourceMap({
 
   useEffect(() => {
     if (layerRef.current) {
-      layerRef.current.setSettings(value);
+      layerRef.current.setSettings(value, colors);
       layerRef.current.redraw();
     }
-  }, [value]);
+  }, [colors, value]);
 
-  return <div className="biome-map" ref={divRef} />;
+  return (
+    <div className="biome-map">
+      <div ref={divRef} />
+      <ul>
+        {Object.entries(colors).map(([biomeKey, color]) => (
+          <BiomeColor
+            key={biomeKey}
+            biome={biomeKey}
+            bgr={color}
+            onChange={setColor}
+          />
+        ))}
+      </ul>
+    </div>
+  );
 });
+
+interface BiomeColorProps {
+  biome: string;
+  bgr: number;
+  onChange: (biome: string, bgr: number) => void;
+}
+function BiomeColor({ biome, bgr, onChange }: BiomeColorProps) {
+  const debounced = useMemo(() => debounce(onChange, 500), [onChange]);
+
+  const id = 'color-' + biome;
+  const handleChange = useCallback(
+    (event: ChangeEvent<HTMLInputElement>) =>
+      debounced(biome, hexColorToBgrCanvas(event.target.value)),
+    [biome, debounced]
+  );
+  return (
+    <li>
+      <input
+        type="color"
+        value={bgrCanvasToHexColor(bgr)}
+        onChange={handleChange}
+        id={id}
+      />
+      <label htmlFor={id}>{biome}</label>
+    </li>
+  );
+}
 
 export default BiomeSourceMap;

@@ -9,7 +9,6 @@ import {
   SettingsMessage
 } from './MultiNoiseMapWorker';
 import { BiomeParameters, ViewableBiomeSource } from './types';
-import VanillaBiomeColors from 'biome-colors';
 import { stripDefaultNamespace } from '../../util/LabelHelper';
 
 interface IQueueItem<D extends boolean> {
@@ -77,7 +76,7 @@ export class BiomeSourceMapLayer extends GridLayer {
   }
 
   setSettings(settings: ViewableBiomeSource, colors: BiomeColors = {}): void {
-    this.colors = Object.assign(colors, VanillaBiomeColors);
+    this.colors = colors;
     this.free = [];
     this.workers.forEach((worker, workerId) =>
       worker.postMessage({

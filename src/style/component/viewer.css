@@ -9,7 +9,7 @@ canvas {
   image-rendering: pixelated;
   -ms-interpolation-mode: nearest-neighbor;
 }
-.biome-map {
+.leaflet-container {
   background-color: var(--bg-color-nav) !important;
   height: 512px;
 }
