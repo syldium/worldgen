@@ -17,12 +17,14 @@ import { Obj } from '../../util/DomHelper';
 import { ConfiguredDecorator } from '../../data/1.17/ConfiguredDecorator';
 import { JsonViewer } from '../ui/JsonViewer';
 import { Button } from '../ui/Button';
+import { Schema, WorldgenRegistryKey } from '../../model/Registry';
 
 export function ConfiguredFeature(): JSX.Element {
   const history = useHistory();
   const { id } = useParams<{ id: 'resource' }>();
-  const registry =
-    useContext(GameContext).worldgen.worldgen['worldgen/configured_feature'];
+  const { worldgen } = useContext(GameContext);
+  const registryKey: WorldgenRegistryKey = 'worldgen/configured_feature';
+  const registry = worldgen.worldgen[registryKey];
   const entry = registry.entries[id] as Configured;
 
   const [_decorators, _feature] = useMemo(
@@ -38,21 +40,32 @@ export function ConfiguredFeature(): JSX.Element {
   const decorators = dispatchDecorators.elements;
 
   const featureModel = registry.model.node as SwitchNodeParams;
+  const handlePreset = useCallback(
+    function (preset: Obj | Schema) {
+      const [decorators, feature] = findDecorators(preset as Configured & Obj);
+      setFeature(feature);
+      dispatchDecorators.replace(decorators);
+    },
+    [dispatchDecorators]
+  );
   const handleFeatureTypeChange = useCallback(
     function (type: string) {
       const preset = featureModel.preset[type];
+      const immediate = { config: {}, type };
       if (preset) {
-        const [decorators, feature] = findDecorators(
-          preset as Configured & Obj
-        );
-        setFeature(feature);
-        dispatchDecorators.replace(decorators);
+        if (typeof preset === 'string') {
+          worldgen
+            .vanillaResource(registryKey, preset, immediate, handlePreset)
+            .then(handlePreset);
+        } else {
+          handlePreset(preset);
+        }
       } else {
         console.warn(`No preset has been found for ${type}.`);
-        setFeature({ config: {}, type });
+        setFeature(immediate);
       }
     },
-    [dispatchDecorators, featureModel.preset]
+    [featureModel.preset, handlePreset, worldgen]
   );
 
   const handleDecoratorChange = useCallback(

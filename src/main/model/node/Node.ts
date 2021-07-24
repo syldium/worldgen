@@ -59,7 +59,12 @@ export function providePreset(node: ModelNode): DataType {
   } else if (type === 'int' || type === 'float') {
     return 0;
   } else if (node.type === 'switch') {
-    return { ...Object.values(node.preset)[0] };
+    for (const val of Object.values(node.preset)) {
+      if (typeof val === 'object') {
+        return val;
+      }
+    }
+    return { [node.typeField]: Object.keys(node.values)[0] };
   } else if (node.type === 'list') {
     return [];
   }

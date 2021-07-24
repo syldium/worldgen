@@ -11,14 +11,14 @@ type AnyKeyExcept<S extends string> = {
 } & { [k in S]?: never };
 type ModelType = Exclude<ObjectOrNodeModel, ObjectNodeParams>;
 type PresetType<T extends string | number | symbol, S extends string> = {
-  [K in T]: AnyKeyExcept<S>;
+  [K in T]: AnyKeyExcept<S> | string;
 };
 
 export interface SwitchNodeParams extends NodeBase<'switch'> {
   values: Record<string, ModelType>;
   config: string | null;
   typeField: string;
-  preset: { [type in string]: Record<string, unknown> };
+  preset: { [type in string]: string | Record<string, unknown> };
 }
 
 function isTyped(value: unknown): value is Record<string, unknown> {
@@ -43,13 +43,16 @@ export const SwitchNode = <
   typeField = 'type' as S
 ): SwitchNodeParams => {
   Object.entries(preset).forEach(([key, value]) => {
-    if (!Object.prototype.hasOwnProperty.call(value, typeField)) {
+    if (typeof value !== 'object') {
+      return;
+    }
+    if (!(typeField in value)) {
       (value as Record<string, unknown>)[typeField] = defaultNamespace(key);
     }
   });
   return {
     values,
-    preset: preset as Record<string, Record<string, unknown>>,
+    preset: preset as Record<string, string | Record<string, unknown>>,
     config,
     typeField,
     type: 'switch',

@@ -113,9 +113,14 @@ export class WorldgenRegistryHolder {
 
   async vanillaResource(
     registry: WorldgenRegistryKey,
-    namespacedKey: string
+    namespacedKey: string,
+    immediateSchema?: Schema,
+    immediate?: (schema: Schema) => void
   ): Promise<Schema> {
     if (!this.vanillaZip) {
+      if (immediateSchema && immediate) {
+        immediate(immediateSchema);
+      }
       this.vanillaZip = await loadVanillaZip();
     }
     const path =

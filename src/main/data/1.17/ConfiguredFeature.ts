@@ -9,11 +9,27 @@ import { BoolNode } from '../../model/node/BoolNode';
 import { EnumNode } from '../../model/node/EnumNode';
 import { SwitchNode } from '../../model/node/SwitchNode';
 import { VerticalSurface } from './WorldgenStep';
-import FeatureDefaults, { DECORATED_TREE } from './ConfiguredFeatureDefault';
+import {
+  DECORATED_FILL_LAYER,
+  DECORATED_NO_BONEMEAL_FLOWER,
+  DECORATED_TREE
+} from './ConfiguredFeatureDefault';
 import { BlockPlacer } from './BlockPlacer';
+
+const BasaltColumnsConfig: ObjectModel = {
+  reach: IntProvider(0, 3),
+  height: IntProvider(1, 10)
+};
 
 const BlockPileConfig: ObjectModel = {
   state_provider: ResourceNode('block_state_provider')
+};
+
+const DeltaConfig: ObjectModel = {
+  contents: ResourceNode('block_state'),
+  rim: ResourceNode('block_state'),
+  size: IntProvider(0, 16),
+  rim_size: IntProvider(0, 16)
 };
 
 const DiskConfig: ObjectModel = {
@@ -41,6 +57,25 @@ const DripstoneClusterConfig: ObjectModel = {
     max: 64
   }),
   max_distance_from_center_affecting_height_bias: IntNode({ min: 1, max: 64 })
+};
+
+const BlockPos = ListNode(IntNode(), 3);
+const EndGatewayConfig: ObjectModel = {
+  exact: BoolNode(),
+  exit: Opt(BlockPos)
+};
+
+const EndSpikeConfig: ObjectModel = {
+  crystal_beam_target: Opt(BlockPos),
+  crystal_invulnerable: BoolNode(false),
+  spikes: ListNode(
+    ObjectNode({
+      centerX: IntNode({ default: 0 }),
+      centerZ: IntNode({ default: 0 }),
+      height: IntNode({ default: 0 }),
+      guarded: BoolNode(false)
+    })
+  )
 };
 
 const FossilConfig: ObjectModel = {
@@ -99,7 +134,7 @@ const GlowLichenConfig: ObjectModel = {
 };
 
 const GrowingPlantConfig: ObjectModel = {
-  //height_distribution: ListNode(UniformDistributionNode(), true), // TODO IntProvider
+  height_distribution: ListNode(IntProvider(), -1,true),
   direction: EnumNode([
     'down',
     'up',
@@ -111,6 +146,14 @@ const GrowingPlantConfig: ObjectModel = {
   body_provider: ResourceNode('block_state_provider'),
   head_provider: ResourceNode('block_state_provider'),
   allow_water: BoolNode()
+};
+
+const HugeFungusConfig: ObjectModel = {
+  valid_base_block: ResourceNode('block_state'),
+  stem_state: ResourceNode('block_state'),
+  hat_state: ResourceNode('block_state'),
+  decor_state: ResourceNode('block_state'),
+  planted: BoolNode(false)
 };
 
 const HugeMushroomConfig: ObjectModel = {
@@ -185,6 +228,11 @@ const OreConfig: ObjectModel = {
   targets: ListNode(ObjectNode(ReplaceTarget)),
   size: IntNode({ min: 0, max: 64 }),
   discard_chance_on_air_exposure: FloatNode({ min: 0, max: 1 })
+};
+
+const RandomBooleanSelector: ObjectModel = {
+  feature_true: ResourceNode('worldgen/configured_feature'),
+  feature_false: ResourceNode('worldgen/configured_feature')
 };
 
 const RandomPatchConfig: ObjectModel = {
@@ -411,16 +459,22 @@ export const ConfiguredFeature: Model = {
   node: SwitchNode(
     {
       bamboo: Probability,
+      basalt_columns: BasaltColumnsConfig,
       basalt_pillar: {},
       block_pile: BlockPileConfig,
       blue_ice: {},
       bonus_chest: {},
       chorus_plant: {},
+      coral_claw: {},
       coral_mushroom: {},
       coral_tree: {},
+      delta_feature: DeltaConfig,
       desert_well: {},
       disk: DiskConfig,
       dripstone_cluster: DripstoneClusterConfig,
+      end_gateway: EndGatewayConfig,
+      end_island: {},
+      end_spike: EndSpikeConfig,
       flower: RandomPatchConfig,
       forest_rock: StateConfig,
       fossil: FossilConfig,
@@ -430,6 +484,7 @@ export const ConfiguredFeature: Model = {
       glowstone_blob: {},
       growing_plant: GrowingPlantConfig,
       huge_brown_mushroom: HugeMushroomConfig,
+      huge_fungus: HugeFungusConfig,
       huge_red_mushroom: HugeMushroomConfig,
       iceberg: StateConfig,
       ice_patch: DiskConfig,
@@ -443,6 +498,7 @@ export const ConfiguredFeature: Model = {
       no_bonemeal_flower: RandomPatchConfig,
       no_op: {},
       ore: OreConfig,
+      random_boolean_selector: RandomBooleanSelector,
       random_patch: RandomPatchConfig,
       random_selector: RandomConfig,
       replace_single_block: ReplaceSingleBlockConfig,
@@ -463,7 +519,69 @@ export const ConfiguredFeature: Model = {
       waterlogged_vegetation_patch: VegetationPatchConfig,
       weeping_vines: {}
     },
-    FeatureDefaults
+    {
+      bamboo: 'bamboo',
+      basalt_columns: 'small_basalt_columns',
+      basalt_pillar: 'basalt_pillar',
+      block_pile: 'pile_hay',
+      blue_ice: 'blue_ice',
+      bonus_chest: 'bonus_chest',
+      chorus_plant: 'chorus_plant',
+      coral_claw: {},
+      coral_mushroom: {},
+      coral_tree: {},
+      delta_feature: 'delta',
+      desert_well: 'desert_well',
+      disk: 'disk_clay',
+      dripstone_cluster: 'dripstone_cluster',
+      end_gateway: 'end_gateway',
+      end_island: 'end_island',
+      end_spike: 'end_spike',
+      fill_layer: DECORATED_FILL_LAYER,
+      flower: 'flower_plain',
+      forest_rock: 'forest_rock',
+      fossil: 'fossil',
+      freeze_top_layer: 'freeze_top_layer',
+      geode: 'amethyst_geode',
+      glow_lichen: 'glow_lichen',
+      growing_plant: 'cave_vine',
+      huge_brown_mushroom: 'huge_brown_mushroom',
+      huge_fungus: 'warped_fungi',
+      huge_red_mushroom: 'huge_red_mushroom',
+      ice_patch: 'ice_patch',
+      ice_spike: 'ice_spike',
+      iceberg: 'iceberg_blue',
+      kelp: 'kelp_cold',
+      lake: 'lake_water',
+      large_dripstone: 'large_dripstone',
+      monster_room: 'monster_room',
+      nether_forest_vegetation: 'nether_sprouts',
+      netherrack_replace_blobs: 'basalt_blobs',
+      // @ts-ignore
+      no_bonemeal_flower: DECORATED_NO_BONEMEAL_FLOWER,
+      no_op: {},
+      ore: 'ore_copper',
+      random_boolean_selector: 'mushroom_field_vegetation',
+      random_patch: 'patch_cactus',
+      random_selector: 'plain_vegetation',
+      replace_single_block: 'ore_emerald',
+      root_system: 'rooted_azalea_trees',
+      scattered_ore: 'prototype_ore_lapis_buried',
+      sea_pickle: 'sea_pickle',
+      seagrass: 'seagrass_simple',
+      simple_block: 'moss_vegetation',
+      simple_random_selector: 'forest_flower_vegetation',
+      small_dripstone: 'small_dripstone',
+      spring_feature: 'spring_water',
+      tree: 'trees_badlands',
+      twisting_vines: 'twisting_vines',
+      underwater_magma: 'prototype_underwater_magma',
+      vegetation_patch: 'moss_patch',
+      vines: 'vines',
+      void_start_platform: 'void_start_platform',
+      waterlogged_vegetation_patch: 'clay_pool_with_dripleaves',
+      weeping_vines: 'weeping_vines'
+    }
   ),
   preset: () => DECORATED_TREE
 };

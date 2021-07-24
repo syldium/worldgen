@@ -648,6 +648,9 @@ export function SelectSwitch({
         onTypeChange(strippedType);
       } else {
         const p = node.preset[strippedType];
+        if (typeof p === 'string') {
+          throw Error('Unsupported vanilla resource loading!');
+        }
         interOnChange(
           p ? { ...(val[name] as Obj), ...p } : { [node.typeField]: type }
         );
