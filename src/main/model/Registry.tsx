@@ -15,6 +15,7 @@ import { Biome, Biomes } from '../data/1.17/Biome';
 import JSZip from 'jszip';
 import { stripDefaultNamespace } from '../util/LabelHelper';
 import { loadVanillaZip } from '../util/FetchHelper';
+import { ConfiguredCarver } from '../data/1.17/ConfiguredCarver';
 
 export type GameRegistryKey =
   | 'block'
@@ -90,7 +91,7 @@ export class WorldgenRegistryHolder {
       ChunkGenerator,
       ChunkGenerators
     ),
-    'worldgen/configured_carver': new WorldgenRegistry(DimensionType),
+    'worldgen/configured_carver': new WorldgenRegistry(ConfiguredCarver),
     'worldgen/configured_decorator': new WorldgenRegistry(ConfiguredDecorator),
     'worldgen/configured_feature': new WorldgenRegistry(ConfiguredFeature),
     'worldgen/configured_structure_feature': new WorldgenRegistry(

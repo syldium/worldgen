@@ -38,6 +38,7 @@ import {
 import { hexColorToInteger, intColorToHex } from '../util/ColorHelper';
 import { Button } from './ui/Button';
 import { ViewerElement } from './viewer/Viewers';
+import { MapNodeParams } from '../model/node/MapNode';
 
 interface ModelViewProps {
   model: ObjectOrNodeModel;
@@ -139,6 +140,8 @@ function findNodeElement(
       return ResourceSelectInput;
     case 'list':
       return ListValues;
+    case 'map':
+      return MapInput;
     case 'object':
       return ObjectInput;
     case 'optional':
@@ -307,6 +310,51 @@ function ListCrud({
         />
       ))}
     </fieldset>
+  );
+}
+
+function MapInput({ name, node, value, onChange }: NodeProps<MapNodeParams>) {
+  const map = value[name] as Record<string, unknown>;
+  const entries = useMemo(() => Object.entries(map), [map]);
+  const handleKeyChange = useCallback(
+    function (value: Record<string, string>) {
+      const newMap = {};
+      const [oldKey, newKey] = Object.entries(value)[0];
+      delete Object.assign(newMap, map, { [newKey]: map[oldKey] })[oldKey];
+      onChange({ [name]: newMap });
+    },
+    [map, name, onChange]
+  );
+  const handleValueChange = useCallback(
+    (value: Record<string, unknown>) =>
+      onChange({ [name]: { ...map, ...value } }),
+    [map, name, onChange]
+  );
+  return (
+    <>
+      {entries.map(([key]) => {
+        return (
+          <fieldset key={key}>
+            <legend>
+              <ResourceSelectInput
+                name={key}
+                node={node.key}
+                value={{ [key]: key }}
+                onChange={
+                  handleKeyChange as (value: Record<string, unknown>) => void
+                }
+              />
+            </legend>
+            <NodeElement
+              name={key}
+              node={node.value}
+              value={map}
+              onChange={handleValueChange}
+            />
+          </fieldset>
+        );
+      })}
+    </>
   );
 }
 

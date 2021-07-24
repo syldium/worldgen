@@ -8,6 +8,7 @@ import { IdentifierNodeParams } from './ResourceNode';
 import { ObjectOrNodeModel } from '../Model';
 import { ListNodeParams } from './ListNode';
 import { DataType } from '../../hook/useCrud';
+import { MapNodeParams } from './MapNode';
 
 export type NodeType =
   | 'bool'
@@ -18,6 +19,7 @@ export type NodeType =
   | 'identifier'
   | 'int'
   | 'list'
+  | 'map'
   | 'object'
   | 'optional'
   | 'resource'
@@ -41,6 +43,7 @@ export type ModelNode =
   | EnumNodeParams
   | IdentifierNodeParams
   | ListNodeParams<unknown>
+  | MapNodeParams
   | NumberNodeParams
   | ObjectNodeParams
   | OptionalNodeParams
