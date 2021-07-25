@@ -36,3 +36,9 @@ legend {
 .form-control input {
   width: 100%;
 }
+
+.inbl {
+  display: inline-block;
+  vertical-align: middle !important;
+  min-width: 100px;
+}

@@ -41,6 +41,7 @@ import { ViewerElement } from './viewer/Viewers';
 import { MapNodeParams } from '../model/node/MapNode';
 
 interface ModelViewProps {
+  children?: React.ReactNode;
   model: ObjectOrNodeModel;
   name: string;
   value: Record<string, unknown>;
@@ -49,6 +50,7 @@ interface ModelViewProps {
 }
 
 export function ModelView({
+  children,
   model,
   name,
   value,
@@ -63,7 +65,9 @@ export function ModelView({
         value={value}
         onChange={onChange}
         isObject={isObject}
-      />
+      >
+        {children}
+      </NodeElement>
     );
   } else {
     return (
@@ -84,6 +88,7 @@ export function ModelView({
 }
 
 interface NodeElementProps {
+  children?: React.ReactNode;
   name: string;
   node: ModelNode;
   value: Record<string, unknown>;
@@ -92,6 +97,7 @@ interface NodeElementProps {
 }
 
 function _NodeElement({
+  children,
   name,
   node,
   value,
@@ -115,7 +121,9 @@ function _NodeElement({
         value={value}
         onChange={onChange}
         isObject={isObject}
-      />
+      >
+        {children}
+      </El>
     </NodeErrorBoundary>
   );
 }
@@ -156,6 +164,7 @@ function findNodeElement(
 }
 
 interface NodeProps<T extends NodeBase<NodeType>> {
+  children?: React.ReactNode;
   name: string;
   node: T;
   value: Record<string, unknown>;
@@ -223,6 +232,7 @@ function ColorInput({
 }
 
 function EitherInput({
+  children,
   name,
   node,
   value,
@@ -239,7 +249,9 @@ function EitherInput({
         value={value}
         onChange={onChange}
         isObject={isObject}
-      />
+      >
+        {children}
+      </ModelView>
     </fieldset>
   );
 }
@@ -295,13 +307,18 @@ function ListCrud({
     },
     [update]
   );
+  const El: React.FunctionComponent<NodeProps<ModelNode>> = node.weighted
+    ? WeightedValue
+    : NodeElement;
   return (
     <fieldset>
       <legend>
-        {labelize(name)} <Button onClick={create}>Add</Button>
+        {labelize(name)}
+        {node.fixed < 0 || node.fixed > elements.length}{' '}
+        <Button onClick={create}>Add</Button>
       </legend>
       {elements.map((element, i) => (
-        <NodeElement
+        <El
           key={i}
           name={i.toString()}
           node={node.of}
@@ -310,6 +327,41 @@ function ListCrud({
         />
       ))}
     </fieldset>
+  );
+}
+
+function WeightedValue({ name, node, value, onChange }: NodeProps<ModelNode>) {
+  const weightId = useId(null, name);
+  const val = value[name] as Obj;
+  const weight = (val.weight as number) ?? 1;
+  const handleDataChange = useCallback(
+    (value: Obj) => onChange({ [name]: { ...value, weight } }),
+    [name, onChange, weight]
+  );
+  const handleWeightChange = useCallback(
+    function (event: ChangeEvent<HTMLInputElement>) {
+      onChange({
+        [name]: { data: val.data, weight: parseInt(event.target.value) }
+      });
+    },
+    [name, onChange, val.data]
+  );
+  return (
+    <NodeElement
+      name="data"
+      node={node}
+      value={val}
+      onChange={handleDataChange}
+      isObject={true}
+    >
+      <label htmlFor={weightId}>Weight</label>:{' '}
+      <input
+        type="number"
+        id={weightId}
+        value={weight}
+        onChange={handleWeightChange}
+      />
+    </NodeElement>
   );
 }
 
@@ -638,6 +690,7 @@ interface SelectSwitchProps extends NodeProps<SwitchNodeParams> {
   onTypeChange?: (type: string) => void;
 }
 export function SelectSwitch({
+  children,
   name,
   node,
   value,
@@ -721,6 +774,7 @@ export function SelectSwitch({
           value={selected}
           onChange={handleTypeChange}
         />
+        {children}
       </legend>
       {schema && (
         <ModelView
