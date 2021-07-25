@@ -24,7 +24,7 @@ export type GameRegistryKey =
   | 'entity_type'
   | 'sound_event'
   | 'structure'
-  | 'tag/blocks';
+  | 'tags/blocks';
 
 export type WorldgenRegistryKey =
   | 'dimension'

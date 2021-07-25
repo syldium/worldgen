@@ -94,8 +94,8 @@ const GeodeConfig: ObjectModel = {
     middle_layer_provider: ResourceNode('block_state_provider'),
     outer_layer_provider: ResourceNode('block_state_provider'),
     inner_placements: ListNode(ResourceNode('block_state')),
-    cannot_replace: IdentifierNode('tag/blocks'),
-    invalid_blocks: IdentifierNode('tag/blocks')
+    cannot_replace: IdentifierNode('tags/blocks'),
+    invalid_blocks: IdentifierNode('tags/blocks')
   }),
   layers: ObjectNode({
     filling: FloatNode({ min: 0.01, max: 50, default: 1.7 }),
@@ -134,7 +134,7 @@ const GlowLichenConfig: ObjectModel = {
 };
 
 const GrowingPlantConfig: ObjectModel = {
-  height_distribution: ListNode(IntProvider(), -1,true),
+  height_distribution: ListNode(IntProvider(), -1, true),
   direction: EnumNode([
     'down',
     'up',
@@ -190,7 +190,7 @@ const BlockPredicate = SwitchNode(
       block_state: ResourceNode('block_state')
     },
     tag_match: {
-      tag: IdentifierNode('tag/blocks')
+      tag: IdentifierNode('tags/blocks')
     },
     random_block_match: {
       block: ResourceNode('block'),
@@ -263,7 +263,7 @@ const RootSystemConfig: ObjectModel = {
   feature: ResourceNode('worldgen/configured_feature'),
   required_vertical_space_for_tree: IntNode({ min: 1, max: 64 }),
   root_radius: IntNode({ min: 1, max: 64 }),
-  root_replaceable: IdentifierNode('tag/blocks'),
+  root_replaceable: IdentifierNode('tags/blocks'),
   root_state_provider: ResourceNode('block_state_provider'),
   root_placement_attempts: IntNode({ min: 1, max: 256 }),
   root_column_max_height: IntNode({ min: 1, max: 4096 }),
@@ -429,7 +429,7 @@ const TreeConfig: ObjectModel = {
 };
 
 const VegetationPatchConfig: ObjectModel = {
-  replaceable: IdentifierNode('tag/blocks'),
+  replaceable: IdentifierNode('tags/blocks'),
   ground_state: ResourceNode('block_state_provider'),
   vegetation_feature: ResourceNode('worldgen/configured_feature'),
   surface: VerticalSurface,

@@ -29,7 +29,7 @@ export const DimensionType: Model = DefaultedModel(
     has_raids: BoolNode(),
     has_ceiling: BoolNode(),
     coordinate_scale: FloatNode({ min: 0.00001, max: 30000000 }),
-    infiniburn: IdentifierNode('tag/blocks')
+    infiniburn: IdentifierNode('tags/blocks')
   },
   () => ({
     ambient_light: 0,

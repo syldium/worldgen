@@ -98,11 +98,7 @@ export function GameRegistryProvider({
           entity_type: entityTypes,
           sound_event: soundEvents,
           structure: structures,
-          'tag/blocks': blockTags,
-          'worldgen/configured_carver': carvers,
-          'worldgen/configured_feature': features,
-          'worldgen/configured_structure_feature': structuresFeatures,
-          'worldgen/configured_surface_builder': surfaceBuilders
+          'tags/blocks': blockTags
         },
         get worldgen(): WorldgenRegistryHolder {
           return holder;
