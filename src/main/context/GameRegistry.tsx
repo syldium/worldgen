@@ -11,7 +11,8 @@ import {
   readJson,
   readText,
   useFetchData,
-  useFetchRegistry
+  useFetchRegistry,
+  useWorldgenFetchRegistry
 } from '../hook/useFetchData';
 import useLocalStorageState from 'use-local-storage-state';
 
@@ -41,39 +42,41 @@ export function GameRegistryProvider({
   const [holder, setHolder] = useState<WorldgenRegistryHolder>(
     () => new WorldgenRegistryHolder('1.17')
   );
-  const gen = holder.worldgen;
   const blockStates = useFetchData<BlockStateRegistry>(
     `${github}reports/blocks/simplified/data.min.json`,
     {},
     states
   );
-  const carvers = useFetchRegistry(
+  useWorldgenFetchRegistry(
     '/values/1.17/configured_carvers.json',
-    readJson,
-    gen['worldgen/configured_carver']
+    'worldgen/configured_carver',
+    holder,
+    readJson
   );
   const entityTypes = useFetchRegistry(registryUrl('entity_type'), readText);
-  const features = useFetchRegistry(
+  useWorldgenFetchRegistry(
     '/values/1.17/configured_features.json',
-    readJson,
-    gen['worldgen/configured_feature']
+    'worldgen/configured_feature',
+    holder,
+    readJson
   );
   const soundEvents = useFetchRegistry(registryUrl('sound_event'), readText);
-  const structuresFeatures = useFetchRegistry(
+  useWorldgenFetchRegistry(
     registryUrl('structure_feature'),
-    readText,
-    gen['worldgen/configured_structure_feature']
+    'worldgen/configured_structure_feature',
+    holder,
+    readText
   );
   const structures = useFetchRegistry(
     '/values/1.17/structures.json',
     readJson,
-    null,
     false
   );
-  const surfaceBuilders = useFetchRegistry(
+  useWorldgenFetchRegistry(
     '/values/1.17/configured_surface_builders.json',
-    readJson,
-    gen['worldgen/configured_surface_builder']
+    'worldgen/configured_surface_builder',
+    holder,
+    readJson
   );
   const blockTags = useFetchRegistry(
     `${github}data/minecraft/tags/blocks/data.values.txt`,
@@ -81,10 +84,10 @@ export function GameRegistryProvider({
   );
   const [defNamespace, setDefNamespace] = useLocalStorageState<string>('demo');
 
-  const blockTypes: Registry = useMemo(
-    () => ({ options: Object.keys(blockStates).map(labelizeOption) }),
-    [blockStates]
-  );
+  const blockTypes: Registry = useMemo(() => {
+    const options = Object.keys(blockStates).map(labelizeOption);
+    return { options, vanilla: options };
+  }, [blockStates]);
 
   return (
     <GameContext.Provider
@@ -94,7 +97,7 @@ export function GameRegistryProvider({
           ...holder.worldgen,
           block: blockTypes,
           block_state: blockTypes,
-          block_state_provider: { options: [] },
+          block_state_provider: { options: [], vanilla: [] },
           entity_type: entityTypes,
           sound_event: soundEvents,
           structure: structures,

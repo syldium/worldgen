@@ -44,6 +44,7 @@ export type RegistryKey = GameRegistryKey | WorldgenRegistryKey;
 
 export interface Registry {
   options: Option[];
+  vanilla: Option[];
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
@@ -52,15 +53,17 @@ export type RegistryEntries = { [identifier: string]: Schema };
 export class WorldgenRegistry implements Registry {
   readonly entries: RegistryEntries;
   readonly model: Model;
-  readonly options: Option[];
+  options: Option[];
+  vanilla: Option[];
 
   constructor(
     model: Model,
-    options: Option[] = [],
+    vanilla: Option[] = [],
     entries: RegistryEntries = {}
   ) {
     this.model = model;
-    this.options = options;
+    this.options = [...vanilla];
+    this.vanilla = vanilla;
     this.entries = entries;
   }
 
@@ -143,6 +146,20 @@ export class WorldgenRegistryHolder {
     );
   }
 
+  findNamespace(): string | undefined {
+    for (const registry of Object.values(this.worldgen)) {
+      for (const resourceKey of Object.keys(registry.entries)) {
+        const sepIndex = resourceKey.indexOf(':');
+        if (sepIndex >= 0) {
+          const namespace = resourceKey.substr(0, sepIndex);
+          if (namespace !== 'minecraft') {
+            return namespace;
+          }
+        }
+      }
+    }
+  }
+
   isRegistered(key: string): key is WorldgenRegistryKey {
     return key in this.worldgen;
   }
@@ -172,7 +189,9 @@ export class WorldgenRegistryHolder {
     for (const [registryKey, registry] of this.entries) {
       const o = other.worldgen[registryKey];
       Object.assign(registry.entries, o.entries);
-      registry.options.push(...o.options);
+      const set = new Set(registry.options);
+      o.options.forEach(set.add, set);
+      registry.options = Array.from(set);
     }
   }
 
