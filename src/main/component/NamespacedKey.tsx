@@ -10,7 +10,7 @@ import React, {
 } from 'react';
 import { useOptions } from '../hook/useOptions';
 import Select from './ui/Select';
-import { Schema, WorldgenRegistryKey } from '../model/Registry';
+import { Schema, WorldgenNames, WorldgenRegistryKey } from '../model/Registry';
 import { GameContext } from '../context/GameRegistry';
 import { useToggle } from '../hook/useToggle';
 import { Button } from './ui/Button';
@@ -117,6 +117,20 @@ export function NamespacedKey({
     [defaultNamespace, key]
   );
 
+  const handleFillToggle = useCallback(
+    function (event: ChangeEvent<HTMLInputElement>) {
+      if (event.target.checked && mayFill && onSelectLoad) {
+        context.worldgen
+          .vanillaResource(registry, key)
+          .then(onSelectLoad)
+          .then(setMayFill)
+          .catch(console.error);
+      }
+      toggleFill(event);
+    },
+    [context, key, mayFill, onSelectLoad, registry, setMayFill, toggleFill]
+  );
+
   // Hidden input value - set to empty when nothing is selected (keeps the key from text mode)
   const hiddenInputValue = useMemo<string>(
     function () {
@@ -144,6 +158,7 @@ export function NamespacedKey({
     <>
       <h3>
         {value ? 'Edit ' : 'Create new '}
+        {WorldgenNames[registry]}
         {children}
       </h3>
       <div className="form-group">
@@ -195,7 +210,7 @@ export function NamespacedKey({
               className="checkbox mls"
               id="fill-values"
               checked={fill}
-              onChange={toggleFill}
+              onChange={handleFillToggle}
             />{' '}
             Fill with values
           </>
