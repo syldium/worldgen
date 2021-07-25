@@ -1,4 +1,5 @@
 import { Option } from '../component/ui/Select';
+import { isNumericChar } from "./MathHelper";
 
 /**
  * Create a name from a key.
@@ -8,21 +9,45 @@ import { Option } from '../component/ui/Select';
 export function labelize(namespacedKey: string): string {
   const key = stripDefaultNamespace(namespacedKey);
 
-  let uppercase = true;
+  let uppercase = true; // If the next character should be capitalized
+  let separator = false; // If the last character requires the next one to have a separator before it
+  let group = false; // If a group of characters has been started
   let builder = '';
   for (let i = 0; i < key.length; i++) {
     let char = key[i];
     if (char === '_') {
-      builder += ' ';
-    } else if (char === ':') {
-      builder += ': ';
+      separator = true;
+    } else if (char === ':' || char === '/') {
+      builder += char;
+      separator = true;
+      group = char === '/';
       uppercase = true;
-    } else if (!uppercase && char === char.toUpperCase()) {
-      builder += ' ' + char.toLowerCase();
+    } else if (isNumericChar(key, i)) {
+      if (!group) {
+        // Start a new group of numbers by adding a space before
+        builder += ' ';
+        group = true;
+      }
+      builder += char;
+      separator = false;
+      uppercase = false;
     } else {
       if (uppercase) {
         char = char.toUpperCase();
         uppercase = false;
+      } else if (char === char.toUpperCase()) {
+        // May be a camelcase string
+        const lowercase = char.toLowerCase();
+        if (lowercase !== char) {
+          // Definitely a camelcase string, a special character would be the same regardless of case
+          char = lowercase;
+          separator = true;
+        }
+      }
+      if (separator !== group) {
+        builder += ' ';
+        separator = false;
+        group = false;
       }
       builder += char;
     }

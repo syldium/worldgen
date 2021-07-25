@@ -40,6 +40,11 @@ export function isNumeric(value: string): boolean {
   return !isNaN(parseInt(value));
 }
 
+export function isNumericChar(value: string, index: number): boolean {
+  const code = value.charCodeAt(index);
+  return code > 47 && code < 58;
+}
+
 /**
  * Tests if it is a sequence of consecutive integers.
  *

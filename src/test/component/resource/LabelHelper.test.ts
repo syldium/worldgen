@@ -21,6 +21,26 @@ describe('label helper', () => {
     expect(labelize('worldgenTool')).toBe('Worldgen tool');
   });
 
+  it('should handle numbers', () => {
+    expect(labelize('numbers123')).toBe('Numbers 123');
+    expect(labelize('test5pos9')).toBe('Test 5 pos 9');
+    expect(labelize('tool_5')).toBe('Tool 5');
+    expect(labelize('cube:9th')).toBe('Cube: 9 th');
+    expect(labelize('square:cube0th')).toBe('Square: Cube 0 th');
+    expect(labelize('folder/6')).toBe('Folder/6');
+  });
+
+  it('should handle folders', () => {
+    expect(labelize('folder/resource')).toBe('Folder/Resource');
+    expect(labelize('folder/sub/resource')).toBe('Folder/Sub/Resource');
+    expect(labelize('folder.resource')).toBe('Folder.resource');
+  });
+
+  it('should keep the other characters', () => {
+    expect(labelize('some.file')).toBe('Some.file');
+    expect(labelize('-other')).toBe('-other');
+  });
+
   it('should be valid namespaced keys', () => {
     expect(isValidNamespacedKey('namespace:key')).toBeTruthy();
     expect(isValidNamespacedKey('block')).toBeTruthy();
