@@ -16,6 +16,7 @@ import JSZip from 'jszip';
 import { stripDefaultNamespace } from '../util/LabelHelper';
 import { loadVanillaZip } from '../util/FetchHelper';
 import { ConfiguredCarver } from '../data/1.17/ConfiguredCarver';
+import { ConfiguredSurfaceBuilder } from '../data/1.17/ConfiguredSurfaceBuilder';
 
 export type GameRegistryKey =
   | 'block'
@@ -100,7 +101,9 @@ export class WorldgenRegistryHolder {
     'worldgen/configured_structure_feature': new WorldgenRegistry(
       DimensionType
     ),
-    'worldgen/configured_surface_builder': new WorldgenRegistry(DimensionType),
+    'worldgen/configured_surface_builder': new WorldgenRegistry(
+      ConfiguredSurfaceBuilder
+    ),
     'worldgen/noise_settings': new WorldgenRegistry(
       NoiseSettings,
       NoiseSettingsOptions
