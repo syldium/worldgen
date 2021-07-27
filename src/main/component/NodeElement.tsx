@@ -493,7 +493,11 @@ function OptionalInput({
   const isPresent = value[name] != null;
   return (
     <div className="form-group">
-      <label htmlFor={id}>{labelize(name)}</label> :
+      {!isPresent && (
+        <div>
+          <label htmlFor={id}>{labelize(name)}</label> :
+        </div>
+      )}
       {isPresent && (
         <NodeElement
           name={name}
@@ -504,6 +508,7 @@ function OptionalInput({
       )}
       <input
         type="checkbox"
+        className="checkbox"
         id={id}
         checked={isPresent}
         onChange={handleCheckboxChange}
