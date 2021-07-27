@@ -12,14 +12,20 @@ export function useOptions(key: RegistryKey, onlyDefault = false): Option[] {
 
 export function useOptionsArray(
   values: readonly string[],
+  labelize = true,
   filter?: (value: string) => boolean
 ): Option[] {
   return useMemo(
     function () {
       const filtered = filter ? values.filter(filter) : values;
-      return filtered.map(labelizeOption);
+      return filtered.map((value) => {
+        if (labelize) {
+          return labelizeOption(value);
+        }
+        return { label: value, value };
+      });
     },
-    [values, filter]
+    [filter, values, labelize]
   );
 }
 

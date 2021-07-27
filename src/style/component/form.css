@@ -36,6 +36,27 @@ legend {
 .form-control input {
   width: 100%;
 }
+.form-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+  align-items: center;
+}
+.form-group {
+  margin-top: 1rem;
+}
+legend {
+  display: inline;
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+legend div {
+  font-weight: normal;
+  font-size: 1.05rem;
+}
+.flex {
+  display: flex;
+}
 
 .inbl {
   display: inline-block;

@@ -1,66 +1,90 @@
 import React, { useCallback, useContext, useMemo } from 'react';
 import { BlockState, BlockStateValue } from './BlockState';
-import { BlockStateRegistry } from '../../model/Registry';
+import { BlockStateRegistry, DEFAULT_BLOCK_STATE } from '../../model/Registry';
 import { useOptionsArray } from '../../hook/useOptions';
 import Select, { Option } from '../ui/Select';
 import { ValueType } from 'react-select';
-import { labelizeOption, stripDefaultNamespace } from '../../util/LabelHelper';
+import {
+  labelize,
+  labelizeOption,
+  stripDefaultNamespace
+} from '../../util/LabelHelper';
 import { GameContext } from '../../context/GameRegistry';
 import { useCrudProps } from '../../hook/useCrud';
 import { Obj } from '../../util/DomHelper';
 import { Button } from '../ui/Button';
+import { NodeElement } from '../NodeElement';
+import { IntProvider } from '../../data/1.17/NumberProvider';
+import {
+  findBlockTypes,
+  findIntProviderFromProperties,
+  RandomizedIntStateProvider,
+  WeightedStateEntry
+} from '../../viewer/block/StateProvider';
+import { Typed } from '../../model/node/SwitchNode';
 
 export interface StateProvider {
   type: string;
   state?: BlockStateValue;
-  entries?: readonly WeightedEntry[];
+  entries?: readonly WeightedStateEntry[];
 }
-const providers = [
+const providers1_16 = [
   'forest_flower_provider',
   'plain_flower_provider',
   'simple_state_provider',
   'rotated_block_provider',
   'weighted_state_provider'
 ];
+const providers1_17 = providers1_16.concat('randomized_int_state_provider');
+
 interface BlockStateProviderProps {
   name: string;
   value?: StateProvider;
-  filter?: (option: string) => boolean;
   blocks?: BlockStateRegistry;
+  blockPlacerType?: string;
   onChange: (provider: Record<string, StateProvider>) => void;
 }
 export function BlockStateProvider({
   name,
-  filter,
   blocks,
+  //blockPlacerType = 'simple_block_placer',
   value = {
     type: 'simple_state_provider',
-    state: { Name: 'minecraft:stone', Properties: {} }
+    state: { Name: 'minecraft:stone' }
   },
   onChange
 }: BlockStateProviderProps): JSX.Element {
-  const options = useOptionsArray(providers, filter);
+  const context = useContext(GameContext);
+  const hasRandomizedInt = context.worldgen.packFormat === 7;
+  const options = useOptionsArray(
+    hasRandomizedInt ? providers1_17 : providers1_16
+  );
 
   const handleTypeChange = useCallback(
     function (option: ValueType<Option, false>) {
       if (option) {
-        onChange({ [name]: { ...value, type: option.value } });
+        const common = ['simple_state_provider', 'rotated_block_provider'];
+        let val: StateProvider;
+        if (common.includes(value.type) && common.includes(option.value)) {
+          val = { ...value, type: option.value };
+        } else {
+          val = { type: option.value };
+        }
+        onChange({ [name]: val });
       }
     },
     [onChange, name, value]
   );
 
   const handleSimpleStateChange = useCallback(
-    function (state: Record<string, BlockStateValue>) {
-      onChange({ [name]: { ...value, ...state } });
-    },
+    (state: Record<string, BlockStateValue>) =>
+      onChange({ [name]: { ...value, ...state } }),
     [onChange, name, value]
   );
 
   const handleWeightedStateChange = useCallback(
-    function (entries: readonly WeightedEntry[]) {
-      onChange({ [name]: { ...value, entries } });
-    },
+    (entries: readonly WeightedStateEntry[]) =>
+      onChange({ [name]: { ...value, entries } }),
     [onChange, name, value]
   );
 
@@ -68,7 +92,7 @@ export function BlockStateProvider({
     ? stripDefaultNamespace(value.type)
     : 'simple_state_provider';
 
-  const defaultBlocks = useContext(GameContext).blockStates;
+  const defaultBlocks = context.blockStates;
   blocks = (blocks || defaultBlocks) as BlockStateRegistry;
   const filteredBlocks = useMemo(
     function () {
@@ -91,7 +115,8 @@ export function BlockStateProvider({
   );
 
   return (
-    <div>
+    <fieldset>
+      <legend>{labelize(name)}</legend>
       <label>Provider type</label>
       <Select
         options={options}
@@ -108,44 +133,51 @@ export function BlockStateProvider({
         />
       )}
       {providerType === 'weighted_state_provider' && (
-        <WeightedStateProvider
+        <WeightedProvider
           entries={value.entries}
           options={filteredBlocks}
           onChange={handleWeightedStateChange}
+          registry={blocks}
         />
       )}
-    </div>
+      {providerType === 'randomized_int_state_provider' && (
+        <RandomizedIntProvider
+          name={name}
+          onChange={onChange}
+          registry={blocks}
+          value={value as RandomizedIntStateProvider & Typed}
+        />
+      )}
+    </fieldset>
   );
 }
 
-interface WeightedEntry {
-  weight?: number;
-  data: BlockStateValue;
-}
-interface WeightedStateProviderProps {
-  entries?: readonly WeightedEntry[];
+interface WeightedProviderProps {
+  entries?: readonly WeightedStateEntry[];
+  onChange: (entries: readonly WeightedStateEntry[]) => void;
   options: Option[];
-  onChange: (entries: readonly WeightedEntry[]) => void;
+  registry: BlockStateRegistry;
 }
-function WeightedStateProvider({
+function WeightedProvider({
   entries = [],
+  onChange,
   options,
-  onChange
-}: WeightedStateProviderProps) {
+  registry
+}: WeightedProviderProps) {
   const { elements, create, update, remove } = useCrudProps<
-    WeightedEntry & Obj
-  >(onChange, entries as (Obj & WeightedEntry)[], function (blocks) {
+    WeightedStateEntry & Obj
+  >(onChange, entries as (Obj & WeightedStateEntry)[], function (blocks) {
     // Get the first non taken block name
-    return {
-      data: {
-        Name: (
-          options.find((o) => !blocks.some((b) => b.data.Name === o.value)) || {
-            value: 'minecraft:stone'
-          }
-        ).value,
-        Properties: {}
+    const Name = (
+      options.find((o) => !blocks.some((b) => b.data.Name === o.value)) || {
+        value: 'minecraft:stone'
       }
-    };
+    ).value;
+    const Properties = (registry[Name] || DEFAULT_BLOCK_STATE).default;
+    const data: BlockStateValue = Object.keys(Properties).length
+      ? { Name, Properties }
+      : { Name };
+    return { data, weight: 1 };
   });
 
   return (
@@ -166,16 +198,18 @@ function WeightedStateProvider({
               update({ ...block, data: state[i] }, i);
             }}
           >
-            Weight:{' '}
-            <input
-              type="number"
-              value={typeof block.weight === 'number' ? block.weight : 1}
-              min="1"
-              onChange={(event) => {
-                update({ ...block, weight: parseInt(event.target.value) }, i);
-              }}
-              className="mlm"
-            />
+            <div className="mls">
+              Weight:{' '}
+              <input
+                type="number"
+                value={block.weight}
+                min={0}
+                size={3}
+                onChange={(event) => {
+                  update({ ...block, weight: parseInt(event.target.value) }, i);
+                }}
+              />
+            </div>
             <Button cat="danger" className="mlm" onClick={(e) => remove(i, e)}>
               Remove
             </Button>
@@ -184,5 +218,82 @@ function WeightedStateProvider({
       })}
       <Button onClick={create}>Add block</Button>
     </div>
+  );
+}
+
+interface RandomizedIntProviderProps {
+  name: string;
+  onChange: (provider: Record<string, StateProvider>) => void;
+  registry: BlockStateRegistry;
+  value: RandomizedIntStateProvider & Typed;
+}
+function RandomizedIntProvider({
+  name,
+  registry,
+  value,
+  onChange
+}: RandomizedIntProviderProps) {
+  const handleSourceChange = useCallback(
+    (source: Record<string, StateProvider>) =>
+      onChange({ [name]: { ...value, ...source } }),
+    [name, onChange, value]
+  );
+  const handleValuesChange = useCallback(
+    (values: Record<string, unknown>) =>
+      onChange({ [name]: { ...value, ...values } }),
+    [name, onChange, value]
+  );
+  const handlePropertyChange = useCallback(
+    (option) =>
+      onChange({
+        [name]: { ...value, property: option.value } as StateProvider
+      }),
+    [name, onChange, value]
+  );
+  const properties = useMemo(
+    function () {
+      try {
+        return value.source
+          ? findIntProviderFromProperties(findBlockTypes(value.source), registry)
+          : {};
+      } catch (e) {
+        return {};
+      }
+    },
+    [registry, value.source]
+  );
+  const intProvider = useMemo(
+    () => properties[value.property] || IntProvider(),
+    [properties, value.property]
+  );
+  const options = useOptionsArray(Object.keys(properties), false);
+
+  return (
+    <>
+      <BlockStateProvider
+        name="source"
+        value={value.source}
+        onChange={handleSourceChange}
+      />
+      <div className="form-row">
+        <div className="flex">
+          <NodeElement
+            name="values"
+            node={intProvider}
+            value={value as unknown as Obj}
+            onChange={handleValuesChange}
+            isObject={true}
+          />
+        </div>
+        <div style={{ width: '150px' }}>
+          Property:{' '}
+          <Select
+            options={options}
+            value={options.find((o) => o.value === value.property) || null}
+            onChange={handlePropertyChange}
+          />
+        </div>
+      </div>
+    </>
   );
 }
