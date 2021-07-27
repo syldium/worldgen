@@ -7,15 +7,16 @@ import {
 } from '../model/Registry';
 import { isValidNamespace, isValidValue } from '../util/LabelHelper';
 
+type ReadResult<T> = { [path: string]: T };
 export class ZipAction {
-  readonly errors: Error[];
+  readonly errors: ReadResult<Error>;
   readonly registry: WorldgenRegistryHolder;
   private readonly zip: JSZip;
 
   private constructor(
     registry: WorldgenRegistryHolder,
     zip: JSZip,
-    errors: Error[] = []
+    errors: ReadResult<Error> = {}
   ) {
     this.errors = errors;
     this.registry = registry;
@@ -57,10 +58,7 @@ export class ZipAction {
       JSZip.loadAsync(file)
         .then((zip) => {
           extractDatapack(zip)
-            .then(([holder, results]) => {
-              const errors = results.filter(
-                (result) => result instanceof Error
-              ) as Error[];
+            .then(([holder, errors]) => {
               resolve(new ZipAction(holder, zip, errors));
             })
             .catch(reject);
@@ -94,7 +92,7 @@ interface McMeta {
 }
 async function extractDatapack(
   zip: JSZip
-): Promise<[WorldgenRegistryHolder, (Schema | Error)[]]> {
+): Promise<[WorldgenRegistryHolder, ReadResult<Error>]> {
   const pack = zip.file('pack.mcmeta');
   if (pack === null) {
     throw Error('Invalid datapack: no pack.mcmeta');
@@ -112,6 +110,7 @@ async function extractDatapack(
 
   const holder = new WorldgenRegistryHolder(mcmeta.pack.pack_format);
   const promises: Promise<Schema>[] = [];
+  const paths: string[] = [];
   zip.forEach(function (path: string, entry: JSZipObject) {
     if (entry.dir) {
       return;
@@ -122,8 +121,20 @@ async function extractDatapack(
     }
 
     promises.push(parseFile(holder, entry, ...match));
+    paths.push(entry.name);
   });
-  return [holder, await Promise.allSettled(promises)];
+
+  return [
+    holder,
+    await Promise.allSettled(promises).then((results) =>
+      results.reduce((errors, result, index) => {
+        if (result.status === 'rejected') {
+          errors[paths[index]] = result.reason;
+        }
+        return errors;
+      }, {} as ReadResult<Error>)
+    )
+  ];
 }
 
 async function parseFile(
