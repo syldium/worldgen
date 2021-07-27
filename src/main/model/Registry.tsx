@@ -13,7 +13,7 @@ import { ConfiguredDecorator } from '../data/1.17/ConfiguredDecorator';
 import { GameVersion } from '../context/GameVersion';
 import { Biome, Biomes } from '../data/1.17/Biome';
 import JSZip from 'jszip';
-import { stripDefaultNamespace } from '../util/LabelHelper';
+import { customOption, stripDefaultNamespace } from '../util/LabelHelper';
 import { loadVanillaZip } from '../util/FetchHelper';
 import { ConfiguredCarver } from '../data/1.17/ConfiguredCarver';
 import { ConfiguredSurfaceBuilder } from '../data/1.17/ConfiguredSurfaceBuilder';
@@ -68,12 +68,55 @@ export class WorldgenRegistry implements Registry {
     this.entries = entries;
   }
 
-  register(namespacedKey: string, schema: Record<string, unknown>): void {
+  register(namespacedKey: string, schema: Record<string, unknown>): string {
+    const alreadyExists = namespacedKey in this.entries;
     this.entries[namespacedKey] = schema;
-    this.options.push({
-      label: '(Custom) ' + namespacedKey,
-      value: namespacedKey
-    });
+    if (!alreadyExists) {
+      const options = this.options;
+      const index = options.findIndex((o) => o.value === namespacedKey);
+      const option = customOption(namespacedKey);
+      if (index < 0) {
+        options.push(option);
+      } else {
+        options[index] = option;
+      }
+    }
+    return namespacedKey;
+  }
+
+  remove(namespacedKey: string): void {
+    const exists = namespacedKey in this.entries;
+    if (exists) {
+      delete this.entries[namespacedKey];
+      const options = this.options.filter((o) => o.value !== namespacedKey);
+      const vanilla = this.vanilla.find((o) => o.value === namespacedKey);
+      if (vanilla) {
+        options.push(vanilla);
+      }
+      this.options = options;
+    }
+  }
+
+  merge(other: WorldgenRegistry): void {
+    for (const key of Object.keys(other.entries)) {
+      if (!(key in this.entries)) {
+        this.options.push(customOption(key));
+      }
+    }
+    Object.assign(this.entries, other.entries);
+  }
+
+  withVanilla(current: WorldgenRegistry): this {
+    const vanilla = this.vanilla;
+    for (const option of current.vanilla) {
+      if (!vanilla.some((existing) => existing.value === option.value)) {
+        vanilla.push(option);
+        if (!(option.value in this.entries)) {
+          this.options.push(option);
+        }
+      }
+    }
+    return this;
   }
 }
 
@@ -143,6 +186,13 @@ export class WorldgenRegistryHolder {
     return JSON.parse(await file.async('text'));
   }
 
+  withVanilla(current: WorldgenRegistryHolder): this {
+    for (const [key, registry] of this.entries) {
+      registry.withVanilla(current.worldgen[key]);
+    }
+    return this;
+  }
+
   hasValues(): boolean {
     return Object.values(this.worldgen).some(
       (registry) => Object.keys(registry.entries).length > 0
@@ -189,12 +239,8 @@ export class WorldgenRegistryHolder {
   }
 
   merge(other: WorldgenRegistryHolder): void {
-    for (const [registryKey, registry] of this.entries) {
-      const o = other.worldgen[registryKey];
-      Object.assign(registry.entries, o.entries);
-      const set = new Set(registry.options);
-      o.options.forEach(set.add, set);
-      registry.options = Array.from(set);
+    for (const [key, registry] of this.entries) {
+      registry.merge(other.worldgen[key]);
     }
   }
 
@@ -214,7 +260,7 @@ export const WorldgenNames: Record<WorldgenRegistryKey, string> = {
   'worldgen/chunk_generator': 'chunk generator',
   'worldgen/configured_carver': 'configured carver',
   'worldgen/configured_decorator': 'configured decorator',
-  'worldgen/configured_feature': 'configured feature',
+  'worldgen/configured_feature': 'configured block',
   'worldgen/configured_structure_feature': 'configured structure feature',
   'worldgen/configured_surface_builder': 'configured surface builder',
   'worldgen/noise_settings': 'noise settings',

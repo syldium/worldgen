@@ -18,11 +18,12 @@ import { ConfiguredDecorator } from '../../data/1.17/ConfiguredDecorator';
 import { JsonViewer } from '../ui/JsonViewer';
 import { Button } from '../ui/Button';
 import { Schema, WorldgenRegistryKey } from '../../model/Registry';
+import { defaultNamespace } from '../../util/LabelHelper';
 
 export function ConfiguredFeature(): JSX.Element {
   const history = useHistory();
   const { id } = useParams<{ id: 'resource' }>();
-  const { worldgen } = useContext(GameContext);
+  const { namespace, worldgen } = useContext(GameContext);
   const registryKey: WorldgenRegistryKey = 'worldgen/configured_feature';
   const registry = worldgen.worldgen[registryKey];
   const entry = registry.entries[id] as Configured;
@@ -90,10 +91,11 @@ export function ConfiguredFeature(): JSX.Element {
       e.preventDefault();
       const key = (document.querySelector('[name=key]') as HTMLInputElement)
         .value;
-      registry.register(key, buildDecorated(feature, decorators));
+      const decorated = buildDecorated(feature, decorators);
+      registry.register(defaultNamespace(key, namespace), decorated);
       history.push('/');
     },
-    [decorators, feature, history, registry]
+    [decorators, feature, history, namespace, registry]
   );
 
   return (

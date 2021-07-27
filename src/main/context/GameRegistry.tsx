@@ -107,7 +107,7 @@ export function GameRegistryProvider({
           return holder;
         },
         set worldgen(holder: WorldgenRegistryHolder) {
-          setHolder(holder);
+          setHolder((current) => holder.withVanilla(current));
         },
         get namespace(): string {
           return defNamespace || 'unset';

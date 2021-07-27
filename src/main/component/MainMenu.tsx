@@ -45,6 +45,7 @@ export function MainMenu(): JSX.Element {
   const handleLoad = useCallback(
     function (zip: ZipAction) {
       context.worldgen = zip.registry;
+      context.namespace = zip.registry.findNamespace() || 'unset';
       toggleAction(false);
     },
     [context, toggleAction]

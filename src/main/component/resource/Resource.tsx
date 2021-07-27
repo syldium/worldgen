@@ -13,6 +13,7 @@ import { NamespacedKey } from '../NamespacedKey';
 import { Obj } from '../../util/DomHelper';
 import { JsonViewer } from '../ui/JsonViewer';
 import { Button } from '../ui/Button';
+import { defaultNamespace } from '../../util/LabelHelper';
 
 interface ResourceFormProps {
   registryKey: WorldgenRegistryKey;
@@ -24,7 +25,8 @@ export function Resource({
 }: ResourceFormProps): JSX.Element {
   const history = useHistory();
   const { id } = useParams<{ id: 'resource' }>();
-  const registry = useContext(GameContext).worldgen.worldgen[registryKey];
+  const context = useContext(GameContext);
+  const registry = context.worldgen.worldgen[registryKey];
   const [value, setValue] = useState<Schema>(
     registry.entries[id] || registry.model.preset('1.17')
   );
@@ -38,10 +40,13 @@ export function Resource({
       e.preventDefault();
       const key = (document.querySelector('[name=key]') as HTMLInputElement)
         .value;
-      registry.register(key, value as Obj & Schema);
+      registry.register(
+        defaultNamespace(key, context.namespace),
+        value as Obj & Schema
+      );
       history.push('/');
     },
-    [history, registry, value]
+    [context.namespace, history, registry, value]
   );
 
   return (

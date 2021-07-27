@@ -1,5 +1,5 @@
 import { Option } from '../component/ui/Select';
-import { isNumericChar } from "./MathHelper";
+import { isNumericChar } from './MathHelper';
 
 /**
  * Create a name from a key.
@@ -59,6 +59,13 @@ export function labelizeOption(namespacedKey: string): Option {
   return {
     label: labelize(namespacedKey),
     value: defaultNamespace(namespacedKey)
+  };
+}
+
+export function customOption(namespacedKey: string): Option {
+  return {
+    label: '(Custom) ' + namespacedKey,
+    value: namespacedKey
   };
 }
 
