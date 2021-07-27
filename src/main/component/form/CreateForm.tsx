@@ -12,6 +12,7 @@ import { ZipAction } from '../../context/ZipAction';
 import { useToggle } from '../../hook/useToggle';
 import { GameContext } from '../../context/GameRegistry';
 import { MergeForm } from './MergeForm';
+import { toast } from 'react-hot-toast';
 
 interface CreateFormProps {
   onCancel: () => void;
@@ -63,8 +64,19 @@ function CreateDatapackForm({
     event.stopPropagation();
     const file = ((event as DragEvent).dataTransfer || event.target)
       .files[0] as File;
+    const id = toast.loading('Loading datapack');
     ZipAction.read(file)
       .then((action) => {
+        const length = Object.keys(action.errors).length;
+        if (length) {
+          console.error(action.errors);
+          toast.error(
+            `Failed to read ${length} file${length > 1 ? 's' : ''}!`,
+            { id }
+          );
+        } else {
+          toast.success('Datapack imported', { id });
+        }
         if (worldgen.hasValues()) {
           setZip(action);
           toggleMerge(true);
@@ -73,6 +85,7 @@ function CreateDatapackForm({
         }
       })
       .catch((error) => {
+        toast.error('Invalid datapack!', { id });
         console.error(error);
         setError(error instanceof Error ? error.message : error);
       });

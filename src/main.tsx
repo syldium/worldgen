@@ -5,6 +5,7 @@ import './style/spacers.scss';
 import { DatapackApp } from './main/component/DatapackApp';
 import { GameRegistryProvider } from './main/context/GameRegistry';
 import { BrowserRouter } from 'react-router-dom';
+import { Toaster } from 'react-hot-toast';
 
 ReactDOM.render(
   <React.StrictMode>
@@ -13,6 +14,7 @@ ReactDOM.render(
         <DatapackApp />
       </GameRegistryProvider>
     </BrowserRouter>
+    <Toaster />
   </React.StrictMode>,
   document.getElementById('root')
 );

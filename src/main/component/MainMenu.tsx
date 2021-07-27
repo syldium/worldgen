@@ -9,6 +9,8 @@ import { Modal } from './ui/Modal';
 import { CreateForm } from './form/CreateForm';
 import { useHistory } from 'react-router-dom';
 import { Button } from './ui/Button';
+import { catchToast } from '../util/ErrorHelper';
+import { toast } from 'react-hot-toast';
 
 export function MainMenu(): JSX.Element {
   const context = useContext(GameContext);
@@ -22,9 +24,13 @@ export function MainMenu(): JSX.Element {
   const history = useHistory();
   const handleGenerateClick = useCallback(
     function () {
+      const id = toast.loading('Generating datapack');
       ZipAction.create(worldgen)
         .generate()
-        .then((blob) => saveAs(blob, 'generated_datapack.zip'));
+        .catch(catchToast(id))
+        .then((blob) => saveAs(blob, 'generated_datapack.zip'))
+        .catch(catchToast(id))
+        .then(() => toast.success('Download ready!', { id }));
     },
     [worldgen]
   );
