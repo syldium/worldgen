@@ -2,6 +2,7 @@ import React, { useCallback } from 'react';
 import { match } from 'react-router';
 import { NavLink } from 'react-router-dom';
 import { LocationDescriptor, Pathname } from 'history';
+import { isValidNamespacedKey } from '../../util/LabelHelper';
 
 interface LinkProps extends React.RefAttributes<HTMLAnchorElement> {
   exact?: boolean;
@@ -25,7 +26,7 @@ export function Link({
       return true;
     }
     const additionalInfo = pathname.substring(match.path.length);
-    return additionalInfo === '' || !isNaN(parseInt(additionalInfo));
+    return additionalInfo === '' || isValidNamespacedKey(additionalInfo);
   },
   []);
 

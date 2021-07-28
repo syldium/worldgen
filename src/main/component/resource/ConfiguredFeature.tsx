@@ -1,11 +1,4 @@
-import { useHistory, useParams } from 'react-router-dom';
-import React, {
-  FormEvent,
-  useCallback,
-  useContext,
-  useMemo,
-  useState
-} from 'react';
+import React, { useCallback, useContext, useMemo, useState } from 'react';
 import { GameContext } from '../../context/GameRegistry';
 import { Configured } from '../../model/Model';
 import { buildDecorated, findDecorators } from '../../util/FeatureHelper';
@@ -18,22 +11,19 @@ import { ConfiguredDecorator } from '../../data/1.17/ConfiguredDecorator';
 import { JsonViewer } from '../ui/JsonViewer';
 import { Button } from '../ui/Button';
 import { Schema, WorldgenRegistryKey } from '../../model/Registry';
-import { defaultNamespace } from '../../util/LabelHelper';
+import { useRegistry } from '../../hook/useRegistry';
+import { useResourceSubmit } from '../../hook/useResourceSubmit';
 
 export function ConfiguredFeature(): JSX.Element {
-  const history = useHistory();
-  const { id } = useParams<{ id: 'resource' }>();
-  const { namespace, worldgen } = useContext(GameContext);
+  const { worldgen } = useContext(GameContext);
   const registryKey: WorldgenRegistryKey = 'worldgen/configured_feature';
-  const registry = worldgen.worldgen[registryKey];
-  const entry = registry.entries[id] as Configured;
+  const [registry, previousKey, initial] = useRegistry<Configured & Obj>(
+    registryKey
+  );
 
   const [_decorators, _feature] = useMemo(
-    () =>
-      findDecorators(
-        (entry || registry.model.preset('1.17')) as Configured & Obj
-      ),
-    [entry, registry.model]
+    () => findDecorators(initial),
+    [initial]
   );
 
   const [feature, setFeature] = useState<Configured & Obj>(_feature);
@@ -85,23 +75,15 @@ export function ConfiguredFeature(): JSX.Element {
     },
     [dispatchDecorators]
   );
-
-  const handleSubmit = useCallback(
-    function (e: FormEvent<HTMLFormElement>) {
-      e.preventDefault();
-      const key = (document.querySelector('[name=key]') as HTMLInputElement)
-        .value;
-      const decorated = buildDecorated(feature, decorators);
-      registry.register(defaultNamespace(key, namespace), decorated);
-      history.push('/');
-    },
-    [decorators, feature, history, namespace, registry]
+  const handleSubmit = useResourceSubmit(registryKey, previousKey, () =>
+    buildDecorated(feature, decorators)
   );
 
   return (
     <form onSubmit={handleSubmit}>
       <NamespacedKey
-        registry="worldgen/configured_feature"
+        registry={registryKey}
+        value={previousKey}
         onSelectLoad={handleVanillaSelect}
       >
         <JsonViewer data={() => buildDecorated(feature, decorators)} />

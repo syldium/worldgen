@@ -68,8 +68,8 @@ export class WorldgenRegistry implements Registry {
     this.entries = entries;
   }
 
-  register(namespacedKey: string, schema: Record<string, unknown>): string {
-    const alreadyExists = namespacedKey in this.entries;
+  register(namespacedKey: string, schema: Schema): Schema {
+    const alreadyExists = this.entries[namespacedKey];
     this.entries[namespacedKey] = schema;
     if (!alreadyExists) {
       const options = this.options;
@@ -81,11 +81,11 @@ export class WorldgenRegistry implements Registry {
         options[index] = option;
       }
     }
-    return namespacedKey;
+    return alreadyExists;
   }
 
-  remove(namespacedKey: string): void {
-    const exists = namespacedKey in this.entries;
+  remove(namespacedKey: string): Schema {
+    const exists = this.entries[namespacedKey];
     if (exists) {
       delete this.entries[namespacedKey];
       const options = this.options.filter((o) => o.value !== namespacedKey);
@@ -95,6 +95,7 @@ export class WorldgenRegistry implements Registry {
       }
       this.options = options;
     }
+    return exists;
   }
 
   merge(other: WorldgenRegistry): void {

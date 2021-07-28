@@ -33,7 +33,6 @@ export const DatapackApp = (): JSX.Element => (
     <div className="content">
       <Switch>
         <Route exact path="/">
-          <h2>Datapack</h2>
           <MainMenu />
         </Route>
         {(Object.keys(WorldgenNames) as WorldgenRegistryKey[])

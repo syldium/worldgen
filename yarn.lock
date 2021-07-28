@@ -700,6 +700,13 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
+"@pastable/use-force-update@^0.0.3":
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/@pastable/use-force-update/-/use-force-update-0.0.3.tgz#90e819342bbb6c912fc4b939a4cf9a4c5fd77353"
+  integrity sha512-8Aossy/5pvR3hgkf/jRB45/scny1wMoqjEPiw9PrftwjQMPY374sM4gn5yuSKoMKn1Pxf2HFRenSJCv8+FTzPw==
+  dependencies:
+    react "^17.0.2"
+
 "@react-hook/passive-layout-effect@^1.2.0":
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/@react-hook/passive-layout-effect/-/passive-layout-effect-1.2.1.tgz#c06dac2d011f36d61259aa1c6df4f0d5e28bc55e"

@@ -1,0 +1,30 @@
+.stats {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.stats .card {
+  margin: 0.5rem;
+}
+
+.stats ul {
+  list-style-type: none;
+  white-space: nowrap;
+  padding: 0;
+}
+
+.card {
+  border: 1px solid rgba(0, 0, 0, 0.125);
+  min-height: 150px;
+  min-width: 290px;
+  margin-bottom: 1rem;
+}
+
+.card h5 {
+  padding: 0.5rem 1rem;
+  background-color: var(--bg-color-nav);
+  flex-grow: 0;
+  font-size: 1.05rem;
+  font-weight: 500;
+  margin: 0;
+}

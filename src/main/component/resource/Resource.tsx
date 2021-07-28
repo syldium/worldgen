@@ -1,19 +1,12 @@
-import React, {
-  FormEvent,
-  ReactNode,
-  useCallback,
-  useContext,
-  useState
-} from 'react';
+import React, { ReactNode, useCallback, useState } from 'react';
 import { ModelView } from '../NodeElement';
-import { GameContext } from '../../context/GameRegistry';
 import { Schema, WorldgenRegistryKey } from '../../model/Registry';
-import { useHistory, useParams } from 'react-router-dom';
 import { NamespacedKey } from '../NamespacedKey';
 import { Obj } from '../../util/DomHelper';
 import { JsonViewer } from '../ui/JsonViewer';
 import { Button } from '../ui/Button';
-import { defaultNamespace } from '../../util/LabelHelper';
+import { useRegistry } from '../../hook/useRegistry';
+import { useResourceSubmit } from '../../hook/useResourceSubmit';
 
 interface ResourceFormProps {
   registryKey: WorldgenRegistryKey;
@@ -23,35 +16,22 @@ export function Resource({
   registryKey,
   children
 }: ResourceFormProps): JSX.Element {
-  const history = useHistory();
-  const { id } = useParams<{ id: 'resource' }>();
-  const context = useContext(GameContext);
-  const registry = context.worldgen.worldgen[registryKey];
-  const [value, setValue] = useState<Schema>(
-    registry.entries[id] || registry.model.preset('1.17')
-  );
+  const [registry, previousKey, initial] = useRegistry(registryKey);
 
-  const handleChange = useCallback(function (value: Obj) {
-    setValue((val) => ({ ...val, ...value }));
-  }, []);
-
-  const handleSubmit = useCallback(
-    function (e: FormEvent<HTMLFormElement>) {
-      e.preventDefault();
-      const key = (document.querySelector('[name=key]') as HTMLInputElement)
-        .value;
-      registry.register(
-        defaultNamespace(key, context.namespace),
-        value as Obj & Schema
-      );
-      history.push('/');
-    },
-    [context.namespace, history, registry, value]
+  const [value, setValue] = useState<Schema>(initial);
+  const handleChange = useCallback(
+    (value: Obj) => setValue((val) => ({ ...val, ...value })),
+    []
   );
+  const handleSubmit = useResourceSubmit(registryKey, previousKey, value);
 
   return (
     <form onSubmit={handleSubmit}>
-      <NamespacedKey registry={registryKey} onSelectLoad={setValue}>
+      <NamespacedKey
+        registry={registryKey}
+        value={previousKey}
+        onSelectLoad={setValue}
+      >
         {children}
         <JsonViewer data={value} />
       </NamespacedKey>

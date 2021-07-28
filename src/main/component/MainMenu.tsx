@@ -1,9 +1,9 @@
 import React, { useCallback, useContext } from 'react';
 import { GameContext } from '../context/GameRegistry';
-import { RegistryEntries, WorldgenRegistryKey } from '../model/Registry';
+import { WorldgenNames, WorldgenRegistryKey } from '../model/Registry';
 import { ZipAction } from '../context/ZipAction';
 import { saveAs } from 'file-saver';
-import { PlusCircle } from 'react-feather';
+import { Download, PlusCircle } from 'react-feather';
 import { useToggle } from '../hook/useToggle';
 import { Modal } from './ui/Modal';
 import { CreateForm } from './form/CreateForm';
@@ -11,15 +11,12 @@ import { useHistory } from 'react-router-dom';
 import { Button } from './ui/Button';
 import { catchToast } from '../util/ErrorHelper';
 import { toast } from 'react-hot-toast';
+import { ResourceList } from './resource/ResourceList';
 
 export function MainMenu(): JSX.Element {
   const context = useContext(GameContext);
   const { worldgen } = context;
   const [open, toggleAction] = useToggle(false);
-  const registryEntries: Record<string, RegistryEntries> = {};
-  for (const [registryKey, { entries }] of Object.entries(worldgen.worldgen)) {
-    registryEntries[registryKey] = entries;
-  }
 
   const history = useHistory();
   const handleGenerateClick = useCallback(
@@ -58,11 +55,21 @@ export function MainMenu(): JSX.Element {
   );
 
   return (
-    <>
-      <Button onClick={handleGenerateClick}>Generate</Button>
-      <button onClick={toggleAction}>
-        <PlusCircle />
-      </button>
+    <div className="stats">
+      <div className="flex full-width">
+        <h2>
+          Datapack <code>{context.namespace}</code>
+        </h2>
+        <div className="actions mlm">
+          <Button onClick={handleGenerateClick}>
+            Generate <Download />
+          </Button>
+          <button onClick={toggleAction}>
+            Create
+            <PlusCircle />
+          </button>
+        </div>
+      </div>
       {open && (
         <Modal isOpen={open} onClose={toggleAction}>
           <CreateForm
@@ -73,9 +80,9 @@ export function MainMenu(): JSX.Element {
           />
         </Modal>
       )}
-      <code>
-        <pre>{JSON.stringify(registryEntries, null, 2)}</pre>
-      </code>
-    </>
+      {(Object.keys(WorldgenNames) as WorldgenRegistryKey[]).map((key) => (
+        <ResourceList registryKey={key} key={key} />
+      ))}
+    </div>
   );
 }
