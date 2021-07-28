@@ -1,6 +1,7 @@
 import JSZip, { JSZipObject } from 'jszip';
 import {
   isWorldgenRegistry,
+  RegistryKey,
   Schema,
   WorldgenRegistryHolder,
   WorldgenRegistryKey
@@ -69,17 +70,18 @@ export class ZipAction {
 
   generate(): Promise<Blob> {
     Object.entries(this.registry.worldgen).forEach(([registryKey, registry]) =>
-      this.writeRegistry(registryKey, registry.entries)
+      this.writeRegistry(registryKey as RegistryKey, registry.entries)
     );
     return this.zip.generateAsync({ type: 'blob' });
   }
 
-  private writeRegistry(registryKey: string, entries: Record<string, Schema>) {
+  private writeRegistry(
+    registryKey: RegistryKey,
+    entries: Record<string, Schema>
+  ) {
     for (const [namespacedKey, schema] of Object.entries(entries)) {
-      const [namespace, filename] = namespacedKey.split(':');
-      this.zip
-        .folder(`data/${namespace}/${registryKey}`)
-        ?.file(filename + '.json', JSON.stringify(schema, null, 2));
+      const [folder, filename] = resourcePath(registryKey, namespacedKey);
+      this.zip.folder(folder)?.file(filename, JSON.stringify(schema, null, 2));
     }
   }
 }
@@ -149,6 +151,14 @@ async function parseFile(
     holder.register(registry, namespace + ':' + key, schema);
     return schema;
   });
+}
+
+export function resourcePath(
+  registryKey: RegistryKey,
+  resourceKey: string
+): [string, string] {
+  const [namespace, filename] = resourceKey.split(':');
+  return [`data/${namespace}/${registryKey}`, `${filename}.json`];
 }
 
 export function findNamespacedKeyAndRegistry(

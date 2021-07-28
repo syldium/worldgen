@@ -48,6 +48,8 @@ export interface Registry {
   vanilla: Option[];
 }
 
+export type PostLoadCallback<S = Schema> = (schema: S) => void;
+
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface Schema {}
 export type RegistryEntries = { [identifier: string]: Schema };
@@ -221,7 +223,7 @@ export class WorldgenRegistryHolder {
   register(
     registryKey: WorldgenRegistryKey,
     namespacedKey: string,
-    schema: Record<string, unknown>
+    schema: Schema
   ): void {
     this.worldgen[registryKey].register(namespacedKey, schema);
   }
@@ -261,7 +263,7 @@ export const WorldgenNames: Record<WorldgenRegistryKey, string> = {
   'worldgen/chunk_generator': 'chunk generator',
   'worldgen/configured_carver': 'configured carver',
   'worldgen/configured_decorator': 'configured decorator',
-  'worldgen/configured_feature': 'configured block',
+  'worldgen/configured_feature': 'configured feature',
   'worldgen/configured_structure_feature': 'configured structure feature',
   'worldgen/configured_surface_builder': 'configured surface builder',
   'worldgen/noise_settings': 'noise settings',

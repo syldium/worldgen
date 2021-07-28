@@ -1,9 +1,10 @@
-import React, { ReactNode, useMemo } from 'react';
+import React, { ReactNode, useEffect, useMemo } from 'react';
 import {
   BlockStateRegistry,
   Registry,
   WorldgenRegistryHolder,
-  RegistryKey
+  RegistryKey,
+  Schema
 } from '../model/Registry';
 import { createContext, useState } from 'react';
 import { labelizeOption } from '../util/LabelHelper';
@@ -15,6 +16,8 @@ import {
   useWorldgenFetchRegistry
 } from '../hook/useFetchData';
 import useLocalStorageState from 'use-local-storage-state';
+import { clear, entries, setMany } from 'idb-keyval';
+import { findNamespacedKeyAndRegistry, resourcePath } from './ZipAction';
 
 interface GameRegistry {
   blockStates: BlockStateRegistry;
@@ -89,6 +92,19 @@ export function GameRegistryProvider({
     return { options, vanilla: options };
   }, [blockStates]);
 
+  useEffect(() => {
+    entries<string, Schema>().then((entries) => {
+      console.time('indexeddb');
+      entries.forEach(([path, schema]) => {
+        const match = findNamespacedKeyAndRegistry(path);
+        if (match) {
+          holder.register(match[2], match[0] + ':' + match[1], schema);
+        }
+      });
+      console.timeEnd('indexeddb');
+    });
+  }, [holder]);
+
   return (
     <GameContext.Provider
       value={{
@@ -107,7 +123,21 @@ export function GameRegistryProvider({
           return holder;
         },
         set worldgen(holder: WorldgenRegistryHolder) {
-          setHolder((current) => holder.withVanilla(current));
+          clear().then(() => {
+            setHolder((current) => holder.withVanilla(current));
+            const entries: [string, Schema][] = [];
+            for (const [registryKey, registry] of holder.entries) {
+              entries.push(
+                // @ts-ignore
+                ...Object.entries(registry.entries).map(([key, schema]) => [
+                  resourcePath(registryKey, key).join('/'),
+                  schema
+                ])
+              );
+            }
+            //console.log(entries)
+            setMany(entries).then((r) => console.log(r));
+          });
         },
         get namespace(): string {
           return defNamespace || 'unset';

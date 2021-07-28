@@ -14,6 +14,7 @@
     "@delangle/use-modal": "^1.9.27",
     "@pastable/use-force-update": "^0.0.3",
     "file-saver": "^2.0.5",
+    "idb-keyval": "^5.0.6",
     "json-view-for-react": "^2.0.1",
     "jszip": "^3.6.0",
     "leaflet": "^1.7.1",

@@ -16,7 +16,7 @@ export function Resource({
   registryKey,
   children
 }: ResourceFormProps): JSX.Element {
-  const [registry, previousKey, initial] = useRegistry(registryKey);
+  const [registry, previousKey, initial, postLoad] = useRegistry(registryKey);
 
   const [value, setValue] = useState<Schema>(initial);
   const handleChange = useCallback(
@@ -24,6 +24,7 @@ export function Resource({
     []
   );
   const handleSubmit = useResourceSubmit(registryKey, previousKey, value);
+  postLoad(setValue);
 
   return (
     <form onSubmit={handleSubmit}>

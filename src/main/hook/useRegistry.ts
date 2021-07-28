@@ -1,15 +1,23 @@
-import { useContext, useMemo } from 'react';
+import { useContext, useEffect, useMemo, useRef } from 'react';
 import type {
+  PostLoadCallback,
   Schema,
   WorldgenRegistry,
   WorldgenRegistryKey
 } from '../model/Registry';
 import { GameContext } from '../context/GameRegistry';
 import { useParams } from 'react-router-dom';
+import { resourcePath } from '../context/ZipAction';
+import { get } from 'idb-keyval';
 
 export function useRegistry<S extends Schema>(
   registryKey: WorldgenRegistryKey
-): [WorldgenRegistry, string | undefined, S] {
+): [
+  WorldgenRegistry,
+  string | undefined,
+  S,
+  (callback: PostLoadCallback<S>) => void
+] {
   const { id } = useParams<{ id: 'resource' }>();
 
   const { worldgen } = useContext(GameContext);
@@ -21,5 +29,30 @@ export function useRegistry<S extends Schema>(
     [entry, registry.model]
   );
 
-  return [registry, id, initial as S];
+  const postLoad = useRef<PostLoadCallback<S>>();
+  const customLoaded = useRef<boolean>(false);
+  useEffect(() => {
+    if (!entry && id) {
+      const callback: PostLoadCallback = (resource: Schema) =>
+        postLoad.current && postLoad.current(resource as S);
+      if (id.startsWith('minecraft:')) {
+        worldgen
+          .vanillaResource(registryKey, id)
+          .then((schema) => !customLoaded.current && callback(schema));
+      }
+      get(resourcePath(registryKey, id).join('/')).then((schema) => {
+        if (schema) {
+          callback(schema);
+          customLoaded.current = true;
+        }
+      });
+    }
+  }, [entry, id, registry, registryKey, worldgen]);
+
+  return [
+    registry,
+    id,
+    initial as S,
+    (callback: PostLoadCallback<S>) => (postLoad.current = callback)
+  ];
 }

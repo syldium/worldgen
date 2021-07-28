@@ -17,9 +17,9 @@ import { useResourceSubmit } from '../../hook/useResourceSubmit';
 export function ConfiguredFeature(): JSX.Element {
   const { worldgen } = useContext(GameContext);
   const registryKey: WorldgenRegistryKey = 'worldgen/configured_feature';
-  const [registry, previousKey, initial] = useRegistry<Configured & Obj>(
-    registryKey
-  );
+  const [registry, previousKey, initial, postLoad] = useRegistry<
+    Configured & Obj
+  >(registryKey);
 
   const [_decorators, _feature] = useMemo(
     () => findDecorators(initial),
@@ -39,6 +39,7 @@ export function ConfiguredFeature(): JSX.Element {
     },
     [dispatchDecorators]
   );
+  postLoad(handlePreset);
   const handleFeatureTypeChange = useCallback(
     function (type: string) {
       const preset = featureModel.preset[type];
