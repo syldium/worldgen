@@ -17,7 +17,7 @@ export function useBiomeColors(
     const key = stripDefaultNamespace(biome);
     if (!(key in colors)) {
       const color = VanillaBiomeColors[key];
-      colors[key] = color || hashCode(key);
+      colors[key] = color || hashCode(key) | (0xff << 24);
     }
   }
   return [
