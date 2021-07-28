@@ -14,6 +14,15 @@ legend {
   grid-column-gap: 32px;
   max-width: 1024px;
 }
+@media screen and (max-width: 1024px) {
+  #create-form {
+    display: block !important;
+    padding: 1rem 0.75rem;
+  }
+  #new-datapack {
+    border-top: 2px solid var(--fieldset-color);
+  }
+}
 .models-list {
   padding-left: 0;
   list-style-type: none;
@@ -56,6 +65,10 @@ legend div {
 }
 .flex {
   display: flex;
+  align-items: center;
+}
+.full-width {
+  width: 100%;
 }
 
 .inbl {
