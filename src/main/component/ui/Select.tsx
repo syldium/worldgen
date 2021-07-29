@@ -1,9 +1,14 @@
 import React from 'react';
-import ReactSelect from 'react-select';
+import ReactSelect, {
+  createFilter,
+  MenuListComponentProps
+} from 'react-select';
 import ReactSelectCreatable from 'react-select/creatable';
 import { Props } from 'react-select';
 import { StylesConfig } from 'react-select/src/styles';
 import { GroupTypeBase, OptionTypeBase } from 'react-select/src/types';
+import { FixedSizeList } from 'react-window';
+import type { SelectComponentsConfig } from 'react-select/src/components';
 
 export interface Option {
   label: string;
@@ -82,6 +87,45 @@ const styles_: StylesConfig<Option, boolean> = {
   })
 };
 
+function MenuList<
+  OptionType extends OptionTypeBase,
+  IsMulti extends boolean,
+  GroupType extends GroupTypeBase<OptionType> = GroupTypeBase<OptionType>
+>({
+  options,
+  children,
+  maxHeight,
+  getValue
+}: MenuListComponentProps<OptionType, IsMulti, GroupType>): JSX.Element | null {
+  if (!children || !Array.isArray(children)) return null;
+
+  const height = 40;
+  const selectedValues = getValue();
+  const initialOffset = selectedValues[0]
+    ? options.indexOf(selectedValues[0]) * height
+    : 0;
+
+  return (
+    <FixedSizeList
+      width=""
+      itemSize={height}
+      height={maxHeight}
+      itemCount={children.length}
+      initialScrollOffset={initialOffset}
+    >
+      {({ index, style }) => (
+        <div className="option-wrapper" style={style}>
+          {children[index]}
+        </div>
+      )}
+    </FixedSizeList>
+  );
+}
+
+const filter = createFilter({ ignoreAccents: false });
+export const selectComponents: SelectComponentsConfig<Option, boolean> = {
+  MenuList
+};
 const Select = <
   OptionType extends OptionTypeBase = Option,
   IsMulti extends boolean = false,
@@ -90,7 +134,12 @@ const Select = <
   props: Props<OptionType, IsMulti, GroupType>
 ): JSX.Element => (
   // @ts-ignore
-  <ReactSelect styles={styles_} {...props} />
+  <ReactSelect
+    components={selectComponents}
+    styles={styles_}
+    filterOption={filter}
+    {...props}
+  />
 );
 
 export const CreatableSelect = <
@@ -100,7 +149,12 @@ export const CreatableSelect = <
   props: Props<OptionType, IsMulti>
 ): JSX.Element => (
   // @ts-ignore
-  <ReactSelectCreatable styles={styles_} {...props} />
+  <ReactSelectCreatable
+    components={selectComponents}
+    styles={styles_}
+    filterOption={filter}
+    {...props}
+  />
 );
 
-export default Select;
+export default React.memo(Select) as typeof Select;
