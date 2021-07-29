@@ -19,3 +19,19 @@
   margin-top: 0.75rem;
   margin-bottom: 0.75rem;
 }
+
+@media screen and (max-width: 768px) {
+  .navbar {
+    padding: 0;
+  }
+  .tabs ul {
+    padding-left: 0.5rem;
+    margin: 0;
+  }
+  .navbar li:not(:first-child) {
+    display: none;
+  }
+  .github {
+    margin: 0;
+  }
+}

@@ -64,10 +64,10 @@ export function MainMenu(): JSX.Element {
           <Button onClick={handleGenerateClick}>
             Generate <Download />
           </Button>
-          <button onClick={toggleAction}>
+          <Button cat="secondary" onClick={toggleAction}>
             Create
             <PlusCircle />
-          </button>
+          </Button>
         </div>
       </div>
       {open && (
