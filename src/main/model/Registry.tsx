@@ -17,6 +17,7 @@ import { customOption, stripDefaultNamespace } from '../util/LabelHelper';
 import { loadVanillaZip } from '../util/FetchHelper';
 import { ConfiguredCarver } from '../data/1.17/ConfiguredCarver';
 import { ConfiguredSurfaceBuilder } from '../data/1.17/ConfiguredSurfaceBuilder';
+import { ProcessorList } from '../data/1.17/StructureProcessor';
 
 export type GameRegistryKey =
   | 'block'
@@ -154,7 +155,7 @@ export class WorldgenRegistryHolder {
       NoiseSettings,
       NoiseSettingsOptions
     ),
-    'worldgen/processor_list': new WorldgenRegistry(DimensionType)
+    'worldgen/processor_list': new WorldgenRegistry(ProcessorList)
   };
   readonly packFormat: number;
   vanillaZip?: JSZip;
@@ -182,7 +183,7 @@ export class WorldgenRegistryHolder {
     if (file === null) {
       return Promise.reject(
         new Error(
-          `Unable to find the associated vanilla file (tested ${file}).`
+          `Unable to find the associated vanilla file (tested ${path}).`
         )
       );
     }

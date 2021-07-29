@@ -63,9 +63,15 @@ export function GameRegistryProvider({
     holder,
     readJson
   );
+  useWorldgenFetchRegistry(
+    '/values/1.17/processor_list.json',
+    'worldgen/processor_list',
+    holder,
+    readJson
+  );
   const soundEvents = useFetchRegistry(registryUrl('sound_event'), readText);
   useWorldgenFetchRegistry(
-    registryUrl('structure_feature'),
+    registryUrl('worldgen/structure_feature'),
     'worldgen/configured_structure_feature',
     holder,
     readText

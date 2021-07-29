@@ -467,6 +467,7 @@ function ObjectInput({
           node={node}
           value={objectValue}
           onChange={handleChange}
+          isObject={true}
         />
       ))}
     </fieldset>
