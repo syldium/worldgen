@@ -70,6 +70,9 @@ input:invalid {
   display: flex;
   align-items: center;
 }
+.number-input input {
+  -moz-appearance: textfield;
+}
 .number-wrapper {
   border-radius: 2px;
   border: 1px solid var(--border-color);
@@ -98,4 +101,9 @@ input:invalid {
 }
 .btn-minus:before {
   content: '\25BC';
+}
+::-webkit-inner-spin-button,
+::-webkit-outer-spin-button {
+  appearance: none;
+  margin: 0;
 }

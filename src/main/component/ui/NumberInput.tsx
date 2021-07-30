@@ -34,11 +34,6 @@ export function NumberInput({
     const number = parseFloat(input.value);
     if (isNaN(number)) {
       input.setCustomValidity('Not a number');
-    } else if (step >= 1 && !Number.isInteger(number)) {
-      input.setCustomValidity('Not an integer');
-    } else if (number > max || number < min) {
-      input.setCustomValidity(`Not in range [${min}, ${max}]`);
-      onChange(number);
     } else {
       input.setCustomValidity('');
       onChange(number);
@@ -47,7 +42,7 @@ export function NumberInput({
   const handleStep = function (up: boolean) {
     let number = value + (up ? step : -step);
     if (step < 1) {
-      number = parseFloat(value.toPrecision(5));
+      number = parseFloat(number.toPrecision(5));
     }
     if (number > max) {
       if (!up) {
@@ -95,7 +90,10 @@ export function NumberInput({
     <div className="number-input">
       <div className="number-wrapper">
         <input
-          autoComplete="off"
+          type="number"
+          min={min}
+          max={max}
+          step={step < 1 ? 'any' : step}
           size={size}
           value={value}
           onChange={handleChange}
