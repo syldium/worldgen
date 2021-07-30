@@ -35,7 +35,7 @@ export const EnumNode = <
       node.values.some((option) => option.value === value)
   };
   if (def) {
-    const key = defaultNamespace(def);
+    const key = namespace ? defaultNamespace(def) : def;
     node.default = node.values.find((option) => option.value === key);
   }
   return node;

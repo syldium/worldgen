@@ -60,7 +60,7 @@ export const Biome: Model = {
     ] as const),
     precipitation: EnumNode(['none', 'rain', 'snow'] as const),
     temperature: FloatNode(),
-    temperature_modifier: Opt(EnumNode(['none', 'frozen'] as const)),
+    temperature_modifier: EnumNode(['none', 'frozen'] as const, 'none'),
     surface_builder: IdentifierNode('worldgen/configured_surface_builder'),
     carvers: ObjectNode({
       air: ListNode(ResourceNode('worldgen/configured_carver')),
@@ -73,6 +73,7 @@ export const Biome: Model = {
       max: 0.9999999,
       default: 0.1
     }),
+    player_spawn_friendly: BoolNode(false),
     spawners: ObjectNode({
       monster: Spawners,
       creature: Spawners,
@@ -82,8 +83,7 @@ export const Biome: Model = {
       water_ambient: Spawners,
       misc: Spawners
     }),
-    spawn_costs: ListNode(SpawnCost),
-    player_spawn_friendly: BoolNode(false)
+    spawn_costs: ListNode(SpawnCost)
   },
   preset: () => ({
     scale: 0.05,
