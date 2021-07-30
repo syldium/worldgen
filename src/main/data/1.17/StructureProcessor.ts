@@ -129,7 +129,7 @@ const StructureProcessor = SwitchNode(
     rule: CarrotRuleProcessor
   },
   null,
-  'processor_type',
+  'processor_type'
 );
 
 const ProcessorListNode = ListNode(StructureProcessor);

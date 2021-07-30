@@ -1,6 +1,9 @@
 import { GameVersion } from '../context/GameVersion';
-import { isNode, ModelNode } from './node/Node';
+import { isNode, ModelNode, NodeType } from './node/Node';
 import { Typed } from './node/SwitchNode';
+import { ColorNodeParams, NumberNodeParams } from './node/IntNode';
+import { BoolNodeParams } from './node/BoolNode';
+import { OptionalNodeParams } from './node/ObjectNode';
 
 export interface Configured extends Typed {
   config: unknown;
@@ -33,5 +36,23 @@ export function isValidModel(
   }
   return Object.entries(model).every(([name, node]) =>
     node.isValid((value as Record<string, unknown>)[name])
+  );
+}
+const inline: ReadonlySet<NodeType> = new Set<NodeType>([
+  'bool',
+  'color',
+  'int',
+  'float'
+]);
+export function mayInline(
+  model: ModelNode
+): model is
+  | BoolNodeParams
+  | ColorNodeParams
+  | NumberNodeParams
+  | OptionalNodeParams {
+  return (
+    inline.has(model.type) ||
+    (model.type === 'optional' && inline.has(model.node.type))
   );
 }

@@ -1,5 +1,8 @@
 fieldset {
   border: 1px solid var(--fieldset-color);
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
+  padding: 0.5rem 1.5rem 1.5rem;
 }
 legend {
   width: 100%;
@@ -69,6 +72,43 @@ legend div {
 }
 .full-width {
   width: 100%;
+}
+.header {
+  display: flex;
+  align-items: center;
+}
+.datapack-actions {
+  margin-left: 1rem;
+}
+@media screen and (max-width: 768px) {
+  .header {
+    display: block;
+  }
+  .datapack-actions {
+    margin: auto auto 2rem;
+  }
+}
+.content {
+  margin: 0.5rem 1rem;
+}
+.content {
+  width: calc(100% - 40px);
+  max-width: 1280px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 12px 24px 24px;
+  min-height: 100vh;
+}
+.node-list {
+  margin-bottom: 1.5rem;
+}
+.toggle-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  padding: 1.25rem 1.25rem 0.75rem;
+  box-shadow: inset 0 -2px 0 0 var(--fieldset-color);
+  font-weight: 500;
 }
 
 .inbl {

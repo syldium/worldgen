@@ -180,8 +180,8 @@ function BlockStateProperty({
     [onChange, property]
   );
   const handleNumberChange = useCallback(
-    function (event: ChangeEvent<HTMLInputElement>) {
-      onChange(property, event.target.value);
+    function (value: number) {
+      onChange(property, value.toString());
     },
     [onChange, property]
   );
@@ -200,9 +200,9 @@ function BlockStateProperty({
     return (
       <NumberInput
         name={property}
-        value={state}
-        min={values[0]}
-        max={values[values.length - 1]}
+        value={parseInt(state || '0')}
+        min={parseInt(values[0])}
+        max={parseInt(values[values.length - 1])}
         onChange={handleNumberChange}
       />
     );

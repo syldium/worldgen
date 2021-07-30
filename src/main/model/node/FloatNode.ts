@@ -11,7 +11,7 @@ export const FloatNode = (
 ): NumberNodeParams => {
   const min = config?.min ?? FLOAT_MIN_VALUE;
   const max = config?.max ?? FLOAT_MAX_VALUE;
-  const step = config?.step ?? 0;
+  const step = config?.step ?? 0.1;
   return {
     preset: config?.preset ?? 0,
     min,

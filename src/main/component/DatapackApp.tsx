@@ -25,9 +25,6 @@ export const DatapackApp = (): JSX.Element => (
         <li>
           <Link to="/dimension">Dimension</Link>
         </li>
-        <li>
-          <Link to="/dimension_type">Dimension Type</Link>
-        </li>
       </ul>
     </NavBar>
     <div className="content">

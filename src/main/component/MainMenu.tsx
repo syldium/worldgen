@@ -1,6 +1,10 @@
 import React, { useCallback, useContext } from 'react';
 import { GameContext } from '../context/GameRegistry';
-import { WorldgenNames, WorldgenRegistryKey } from '../model/Registry';
+import {
+  WorldgenNames,
+  WorldgenRegistryHolder,
+  WorldgenRegistryKey
+} from '../model/Registry';
 import { ZipAction } from '../context/ZipAction';
 import { saveAs } from 'file-saver';
 import { Download, PlusCircle } from 'react-feather';
@@ -41,6 +45,7 @@ export function MainMenu(): JSX.Element {
   const handleNewDatapack = useCallback(
     function (namespace: string) {
       context.namespace = namespace;
+      context.worldgen = new WorldgenRegistryHolder('1.17');
       toggleAction(false);
     },
     [context, toggleAction]
@@ -56,11 +61,11 @@ export function MainMenu(): JSX.Element {
 
   return (
     <div className="stats">
-      <div className="flex full-width">
+      <div className="header full-width">
         <h2>
           Datapack <code>{context.namespace}</code>
         </h2>
-        <div className="actions mlm">
+        <div className="datapack-actions">
           <Button onClick={handleGenerateClick}>
             Generate <Download />
           </Button>

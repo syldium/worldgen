@@ -50,20 +50,23 @@ describe('StateProvider', function () {
     };
     expect(
       JSON.stringify(
-        findIntProviderFromProperties(['test:testing', 'test:something', 'test:now'], {
-          'test:testing': {
-            properties: { ...stringProperty, ...intProperty },
-            default: {}
-          },
-          'test:something': {
-            properties: { ...intProperty },
-            default: {}
-          },
-          'test:now': {
-            properties: { ...int2Property, ...intProperty },
-            default: {}
+        findIntProviderFromProperties(
+          ['test:testing', 'test:something', 'test:now'],
+          {
+            'test:testing': {
+              properties: { ...stringProperty, ...intProperty },
+              default: {}
+            },
+            'test:something': {
+              properties: { ...intProperty },
+              default: {}
+            },
+            'test:now': {
+              properties: { ...int2Property, ...intProperty },
+              default: {}
+            }
           }
-        })
+        )
       )
     ).toBe(
       JSON.stringify({

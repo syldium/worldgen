@@ -120,7 +120,7 @@ export function BlockStateProvider({
       <label>Provider type</label>
       <Select
         options={options}
-        value={options.find((o) => o.value === value.type)}
+        value={options.find((o) => o.value === value.type) || null}
         onChange={handleTypeChange}
       />
       {(providerType === 'simple_state_provider' ||
@@ -254,7 +254,10 @@ function RandomizedIntProvider({
     function () {
       try {
         return value.source
-          ? findIntProviderFromProperties(findBlockTypes(value.source), registry)
+          ? findIntProviderFromProperties(
+              findBlockTypes(value.source),
+              registry
+            )
           : {};
       } catch (e) {
         return {};

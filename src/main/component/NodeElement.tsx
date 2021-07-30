@@ -26,7 +26,7 @@ import { useOptions } from '../hook/useOptions';
 import { SwitchNodeParams } from '../model/node/SwitchNode';
 import { BlockState, BlockStateValue } from './resource/BlockState';
 import { EitherNodeParams } from '../model/node/EitherNode';
-import { ObjectOrNodeModel } from '../model/Model';
+import { mayInline, ObjectOrNodeModel } from '../model/Model';
 import { GameContext } from '../context/GameRegistry';
 import { ListNodeParams } from '../model/node/ListNode';
 import { DataType, useCrudProps } from '../hook/useCrud';
@@ -39,6 +39,8 @@ import { hexColorToInteger, intColorToHex } from '../util/ColorHelper';
 import { Button } from './ui/Button';
 import { ViewerElement } from './viewer/Viewers';
 import { MapNodeParams } from '../model/node/MapNode';
+import { useToggle } from '../hook/useToggle';
+import { NumberInput } from './ui/NumberInput';
 
 interface ModelViewProps {
   children?: React.ReactNode;
@@ -69,22 +71,60 @@ export function ModelView({
         {children}
       </NodeElement>
     );
-  } else {
-    return (
-      <fieldset>
-        {Object.entries(model).map(([name, node]) => (
-          <NodeElement
-            key={name}
-            node={node}
-            name={name}
-            value={value}
-            isObject={true}
-            onChange={onChange}
-          />
-        ))}
-      </fieldset>
+  }
+  return <ObjectView obj={model} value={value} onChange={onChange} />;
+}
+
+interface ObjectViewProps {
+  obj: Record<string, ModelNode>;
+  value: Record<string, unknown>;
+  onChange: (value: Record<string, unknown>) => void;
+}
+function ObjectView({ obj, value, onChange }: ObjectViewProps) {
+  const nodes: React.ReactElement[] = [];
+  let inline: React.ReactElement[] = [];
+  for (const [name, node] of Object.entries(obj)) {
+    const el = (
+      <NodeElement
+        key={name}
+        node={node}
+        name={name}
+        value={value}
+        isObject={true}
+        onChange={onChange}
+      />
+    );
+    const isShort = mayInline(node);
+    if ((!isShort && inline.length) || inline.length > 3) {
+      nodes.push(
+        inline.length > 1 ? (
+          <div className="form-row" key={inline[0]!.key}>
+            {inline}
+          </div>
+        ) : (
+          inline[0]
+        )
+      );
+      inline = [];
+    }
+    if (isShort) {
+      inline.push(el);
+    } else {
+      nodes.push(el);
+    }
+  }
+  if (inline.length) {
+    nodes.push(
+      inline.length > 1 ? (
+        <div className="form-row" key={inline[0]!.key}>
+          {inline}
+        </div>
+      ) : (
+        inline[0]
+      )
     );
   }
+  return <>{nodes}</>;
 }
 
 interface NodeElementProps {
@@ -139,7 +179,7 @@ function findNodeElement(
       return ColorInput;
     case 'int':
     case 'float':
-      return NumberInput;
+      return NumberNodeInput;
     case 'either':
       return EitherInput;
     case 'enum':
@@ -262,10 +302,11 @@ function ListValues({
   value,
   onChange
 }: NodeProps<ListNodeParams<ModelNode>>) {
+  const absent = !(name in value);
   if (
     (node.of.type === 'resource' || node.of.type === 'identifier') &&
-    Array.isArray(value[name]) &&
-    isStringArray(value[name] as unknown[]) &&
+    (absent || Array.isArray(value[name])) &&
+    (absent || isStringArray(value[name] as unknown[])) &&
     node.of.registry !== 'block_state'
   ) {
     return (
@@ -300,6 +341,9 @@ function ListCrud({
     list,
     initial
   );
+  const [visible, setVisible] = useToggle(
+    elements.length < 3 || name === 'features'
+  );
   const handleChange = useCallback(
     function (values: Record<string, unknown>) {
       const index = parseInt(Object.keys(values)[0]);
@@ -311,22 +355,32 @@ function ListCrud({
     ? WeightedValue
     : NodeElement;
   return (
-    <fieldset>
-      <legend>
+    <div className="node-list">
+      <div className="toggle-label">
         {labelize(name)}
-        {node.fixed < 0 || node.fixed > elements.length}{' '}
-        <Button onClick={create}>Add</Button>
-      </legend>
-      {elements.map((element, i) => (
-        <El
-          key={i}
-          name={i.toString()}
-          node={node.of}
-          value={list as Record<number, unknown>}
-          onChange={handleChange}
-        />
-      ))}
-    </fieldset>
+        {' (' + elements.length + ')'}
+        <div className="btn-group">
+          {(node.fixed < 0 || node.fixed > elements.length) && (
+            <Button onClick={create}>Add</Button>
+          )}
+          {elements.length > 0 && (
+            <Button cat="secondary" onClick={setVisible}>
+              {visible ? 'Less' : 'More'}...
+            </Button>
+          )}
+        </div>
+      </div>
+      {visible &&
+        elements.map((element, i) => (
+          <El
+            key={i}
+            name={i.toString()}
+            node={node.of}
+            value={list as Record<number, unknown>}
+            onChange={handleChange}
+          />
+        ))}
+    </div>
   );
 }
 
@@ -410,7 +464,7 @@ function MapInput({ name, node, value, onChange }: NodeProps<MapNodeParams>) {
   );
 }
 
-function NumberInput({
+function NumberNodeInput({
   name,
   node,
   value,
@@ -418,26 +472,25 @@ function NumberInput({
 }: NodeProps<NumberNodeParams>) {
   const id = useId(null, name);
   const handleChange = useCallback(
-    (event: ChangeEvent<HTMLInputElement>) =>
-      onChange({ [name]: parseFloat(event.target.value) }),
+    (value: number) => onChange({ [name]: value }),
     [name, onChange]
   );
-  const step = node.step > 0.1 ? node.step : 'any';
   const numberValue: number =
     typeof value[name] === 'number'
       ? (value[name] as number)
       : node.default || 0;
 
   return (
-    <div className="form-group">
-      <label htmlFor={id}>{labelize(name)}</label> :
-      <input
+    <div className="form-group flex">
+      <div>
+        <label htmlFor={id}>{labelize(name)}</label> :
+      </div>
+      <NumberInput
         id={id}
-        type="number"
         min={node.min}
         max={node.max}
         value={numberValue}
-        step={step}
+        step={node.step}
         onChange={handleChange}
       />
     </div>
@@ -457,19 +510,24 @@ function ObjectInput({
     },
     [name, onChange, objectValue]
   );
-
+  const view = (
+    <ObjectView
+      obj={node.records}
+      value={objectValue}
+      onChange={handleChange}
+    />
+  );
+  if (Array.isArray(value)) {
+    return view;
+  }
   return (
     <fieldset>
-      {Object.entries(node.records).map(([name, node]) => (
-        <NodeElement
-          key={name}
-          name={name}
-          node={node}
-          value={objectValue}
-          onChange={handleChange}
-          isObject={true}
-        />
-      ))}
+      <legend>{labelize(name)}</legend>
+      <ObjectView
+        obj={node.records}
+        value={objectValue}
+        onChange={handleChange}
+      />
     </fieldset>
   );
 }
@@ -493,7 +551,7 @@ function OptionalInput({
   );
   const isPresent = value[name] != null;
   return (
-    <div className="form-group">
+    <div className={isPresent ? 'flex' : 'form-group flex'}>
       {!isPresent && (
         <div>
           <label htmlFor={id}>{labelize(name)}</label> :
@@ -544,7 +602,7 @@ function SelectInput({
   );
   return (
     <div className="form-group">
-      <label htmlFor={id}>{labelize(name)}</label> :
+      <label htmlFor={id}>{labelize(name)}</label>
       <Select
         options={node.values}
         value={selectedOption}
@@ -579,7 +637,7 @@ function ResourceSelectInput({
   );
   return (
     <div className="form-group">
-      <label htmlFor={id}>{labelize(name)}</label> :
+      <label htmlFor={id}>{labelize(name)}</label>
       <Select
         options={options}
         value={selected}
@@ -596,6 +654,7 @@ function ResourceSelectMultipleInput({
   value,
   onChange
 }: NodeProps<IdentifierNodeParams>) {
+  const id = useId(null, name);
   const options = useOptions(node.registry);
   const selected: Option[] = useMemo(
     function () {
@@ -615,12 +674,18 @@ function ResourceSelectMultipleInput({
     [name, onChange]
   );
   return (
-    <Select
-      options={options}
-      value={selected}
-      onChange={handleChange}
-      isMulti={true}
-    />
+    <>
+      {isNaN(name as unknown as number) && (
+        <label htmlFor={id}>{labelize(name)}</label>
+      )}
+      <Select
+        options={options}
+        value={selected}
+        onChange={handleChange}
+        inputId={id}
+        isMulti={true}
+      />
+    </>
   );
 }
 

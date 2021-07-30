@@ -155,7 +155,7 @@ export function NamespacedKey({
   );
 
   return (
-    <>
+    <div className="namespaced-key">
       <h3>
         {value ? 'Edit ' : 'Create new '}
         {WorldgenNames[registry]}
@@ -216,6 +216,6 @@ export function NamespacedKey({
           </>
         )}
       </div>
-    </>
+    </div>
   );
 }
