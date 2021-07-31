@@ -34,7 +34,7 @@ const DeltaConfig: ObjectModel = {
 
 const DiskConfig: ObjectModel = {
   state: ResourceNode('block_state'),
-  radius: IntNode({ min: 0, max: 8 }),
+  radius: IntProvider(0, 8),
   half_height: IntNode({ min: 0, max: 4 }),
   targets: ListNode(ResourceNode('block_state'))
 };
