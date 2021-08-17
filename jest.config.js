@@ -1,3 +1,4 @@
+/** @type import('@jest/types/build/Config').InitialOptions */
 module.exports = {
   roots: ["<rootDir>/src"],
   testMatch: ["<rootDir>/src/test/**/*.ts(x)?"],

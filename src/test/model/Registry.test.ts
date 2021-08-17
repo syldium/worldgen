@@ -76,7 +76,7 @@ describe('Registry', function () {
     const original = new WorldgenRegistry(emptyModel, vanilla());
     const target = new WorldgenRegistry(emptyModel, [key2].map(labelizeOption));
     target.register(key, schema);
-    target.withVanilla(original);
+    target.withVanilla(original.vanilla);
     expect(target.vanilla.sort(sort)).toEqual(vanilla().sort(sort));
     expect(target.options).toEqual([
       labelizeOption(key2),

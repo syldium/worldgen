@@ -11,9 +11,9 @@ import { labelizeOption } from '../util/LabelHelper';
 import {
   readJson,
   readText,
+  RegistryData,
   useFetchData,
-  useFetchRegistry,
-  useWorldgenFetchRegistry
+  useRegistryFetch
 } from '../hook/useFetchData';
 import useLocalStorageState from 'use-local-storage-state';
 import { clear, entries, setMany } from 'idb-keyval';
@@ -33,11 +33,23 @@ const github =
   'https://raw.githubusercontent.com/Arcensoth/mcdata/master/processed/';
 const registryUrl = (registry: string) =>
   `${github}reports/registries/${registry}/data.values.txt`;
+const valuesUrl = (registry: string) => `/values/1.17/${registry}.json`;
 
 interface ProviderProps {
   children?: ReactNode;
   states?: BlockStateRegistry;
 }
+
+const res = (
+  url: string,
+  reader: (response: Response) => Promise<string[]>,
+  label = true
+): RegistryData => ({ url, reader, label });
+const json = (url: string, label?: boolean): RegistryData =>
+  res(url, readJson, label);
+const text = (url: string, label?: boolean): RegistryData =>
+  res(url, readText, label);
+
 export function GameRegistryProvider({
   children,
   states
@@ -50,46 +62,25 @@ export function GameRegistryProvider({
     {},
     states
   );
-  useWorldgenFetchRegistry(
-    '/values/1.17/configured_carvers.json',
-    'worldgen/configured_carver',
-    holder,
-    readJson
-  );
-  const entityTypes = useFetchRegistry(registryUrl('entity_type'), readText);
-  useWorldgenFetchRegistry(
-    '/values/1.17/configured_features.json',
-    'worldgen/configured_feature',
-    holder,
-    readJson
-  );
-  useWorldgenFetchRegistry(
-    '/values/1.17/processor_list.json',
-    'worldgen/processor_list',
-    holder,
-    readJson
-  );
-  const soundEvents = useFetchRegistry(registryUrl('sound_event'), readText);
-  useWorldgenFetchRegistry(
-    registryUrl('worldgen/structure_feature'),
-    'worldgen/configured_structure_feature',
-    holder,
-    readText
-  );
-  const structures = useFetchRegistry(
-    '/values/1.17/structures.json',
-    readJson,
-    false
-  );
-  useWorldgenFetchRegistry(
-    '/values/1.17/configured_surface_builders.json',
-    'worldgen/configured_surface_builder',
-    holder,
-    readJson
-  );
-  const blockTags = useFetchRegistry(
-    `${github}data/minecraft/tags/blocks/data.values.txt`,
-    readText
+  const registries = useRegistryFetch(
+    {
+      entity_type: text(registryUrl('entity_type')),
+      sound_event: text(registryUrl('sound_event')),
+      structure: json('/values/1.17/structures.json', false),
+      'tags/blocks': text(
+        `${github}data/minecraft/tags/blocks/data.values.txt`
+      ),
+      'worldgen/configured_carver': json(valuesUrl('configured_carvers')),
+      'worldgen/configured_feature': json(valuesUrl('configured_features')),
+      'worldgen/configured_structure_feature': text(
+        registryUrl('worldgen/structure_feature')
+      ),
+      'worldgen/configured_surface_builder': json(
+        valuesUrl('configured_surface_builders')
+      ),
+      'worldgen/processor_list': json(valuesUrl('processor_list'))
+    },
+    holder
   );
   const [defNamespace, setDefNamespace] = useLocalStorageState<string>('demo');
 
@@ -99,6 +90,9 @@ export function GameRegistryProvider({
   }, [blockStates]);
 
   useEffect(() => {
+    if (!window.indexedDB) {
+      return;
+    }
     entries<string, Schema>().then((entries) => {
       console.time('indexeddb');
       entries.forEach(([path, schema]) => {
@@ -116,14 +110,11 @@ export function GameRegistryProvider({
       value={{
         blockStates,
         registries: {
+          ...registries,
           ...holder.worldgen,
           block: blockTypes,
           block_state: blockTypes,
-          block_state_provider: { options: [], vanilla: [] },
-          entity_type: entityTypes,
-          sound_event: soundEvents,
-          structure: structures,
-          'tags/blocks': blockTags
+          block_state_provider: { options: [], vanilla: [] }
         },
         get worldgen(): WorldgenRegistryHolder {
           return holder;

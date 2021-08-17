@@ -110,15 +110,38 @@ export class WorldgenRegistry implements Registry {
     Object.assign(this.entries, other.entries);
   }
 
-  withVanilla(current: WorldgenRegistry): this {
+  withVanilla(current: readonly Option[]): this {
     const vanilla = this.vanilla;
-    for (const option of current.vanilla) {
-      if (!vanilla.some((existing) => existing.value === option.value)) {
-        vanilla.push(option);
-        if (!(option.value in this.entries)) {
-          this.options.push(option);
-        }
+    const empty = !vanilla.length;
+    if (empty) {
+      // Use the array directly without having to check for duplicates
+      this.vanilla = [...current];
+      if (!this.options.length) {
+        // Are the custom options also empty?
+        this.options = [...current];
+        return this;
       }
+    }
+
+    let edited = false; // If the options array has been modified
+    for (const option of current) {
+      let pushOption = true;
+      if (
+        !empty &&
+        (pushOption = !vanilla.some(
+          (existing) => existing.value === option.value
+        ))
+      ) {
+        vanilla.push(option);
+      }
+      if (pushOption && !(option.value in this.entries)) {
+        this.options.push(option);
+        edited = true;
+      }
+    }
+    if (edited) {
+      // Recreate the array to re-render
+      this.options = [...this.options];
     }
     return this;
   }
@@ -192,7 +215,7 @@ export class WorldgenRegistryHolder {
 
   withVanilla(current: WorldgenRegistryHolder): this {
     for (const [key, registry] of this.entries) {
-      registry.withVanilla(current.worldgen[key]);
+      registry.withVanilla(current.worldgen[key].vanilla);
     }
     return this;
   }
