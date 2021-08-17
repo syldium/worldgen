@@ -78,6 +78,11 @@ const EndSpikeConfig: ObjectModel = {
   )
 };
 
+const FillLayerConfig: ObjectModel = {
+  height: IntNode({ min: 0, max: 4064 }),
+  state: ResourceNode('block_state')
+};
+
 const FossilConfig: ObjectModel = {
   fossil_structures: ListNode(IdentifierNode('structure')),
   overlay_structures: ListNode(IdentifierNode('structure')),
@@ -475,6 +480,7 @@ export const ConfiguredFeature: Model = {
       end_gateway: EndGatewayConfig,
       end_island: {},
       end_spike: EndSpikeConfig,
+      fill_layer: FillLayerConfig,
       flower: RandomPatchConfig,
       forest_rock: StateConfig,
       fossil: FossilConfig,
