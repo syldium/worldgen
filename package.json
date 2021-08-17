@@ -1,4 +1,5 @@
 {
+  "name": "worldgen",
   "version": "0.0.0",
   "scripts": {
     "analyze": "source-map-explorer 'dist/assets/*.js'",
