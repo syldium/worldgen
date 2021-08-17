@@ -5,7 +5,7 @@ import React, {
   useEffect,
   ChangeEventHandler
 } from 'react';
-import {INT_MAX_VALUE, INT_MIN_VALUE} from "../../util/MathHelper";
+import { INT_MAX_VALUE, INT_MIN_VALUE } from '../../util/MathHelper';
 
 const STEP_INTERVAL = 150;
 const STEP_DELAY = 300;
