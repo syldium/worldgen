@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite'
 import reactRefresh from '@vitejs/plugin-react-refresh'
 import createBiomeColors from "./src/main/data/rollup-plugin-biome";
+import visualizer from 'rollup-plugin-visualizer'
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -8,5 +9,13 @@ export default defineConfig({
     //sourcemap: true,
     target: 'es2020'
   },
-  plugins: [reactRefresh(), createBiomeColors()]
+  plugins: [
+    reactRefresh(),
+    createBiomeColors(),
+    {
+      ...visualizer(),
+      apply: "build",
+      enforce: "post",
+    }
+  ]
 })
