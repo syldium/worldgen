@@ -19,12 +19,15 @@ export function addReactKey<T extends Obj>(record: T): T & ReactKeyed {
 }
 
 export function removeReactKeys(value: Obj): Obj {
-  return JSON.parse(
-    JSON.stringify(value, (key, value) =>
-      key === '__reactKey' ? undefined : value
-    )
-  );
+  return JSON.parse(JSON.stringify(value, removeReactKeyReplacer));
 }
+
+export const removeReactKeyReplacer = <K extends string, V>(
+  key: K,
+  value: V
+): K extends '__reactKey' ? undefined : V =>
+  // @ts-ignore
+  key === '__reactKey' ? undefined : value;
 
 export function voidReturn(fn: () => unknown): () => void {
   return fn;

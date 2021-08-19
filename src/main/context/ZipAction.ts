@@ -7,6 +7,7 @@ import {
   WorldgenRegistryKey
 } from '../model/Registry';
 import { isValidNamespace, isValidValue } from '../util/LabelHelper';
+import { removeReactKeyReplacer } from '../util/DomHelper';
 
 type ReadResult<T> = { [path: string]: T };
 export class ZipAction {
@@ -81,7 +82,9 @@ export class ZipAction {
   ) {
     for (const [namespacedKey, schema] of Object.entries(entries)) {
       const [folder, filename] = resourcePath(registryKey, namespacedKey);
-      this.zip.folder(folder)?.file(filename, JSON.stringify(schema, null, 2));
+      this.zip
+        .folder(folder)
+        ?.file(filename, JSON.stringify(schema, removeReactKeyReplacer, 2));
     }
   }
 }
