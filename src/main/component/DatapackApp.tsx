@@ -6,6 +6,7 @@ import { MainMenu } from './MainMenu';
 import { Link } from './ui/Link';
 import { ConfiguredFeature } from './resource/ConfiguredFeature';
 import { WorldgenNames, WorldgenRegistryKey } from '../model/Registry';
+import { NoRouteMatch } from './ui/NoRouteMatch';
 
 export const DatapackApp = (): JSX.Element => (
   <div>
@@ -41,6 +42,9 @@ export const DatapackApp = (): JSX.Element => (
           ))}
         <Route path="/worldgen/configured_feature/:id?">
           <ConfiguredFeature />
+        </Route>
+        <Route path="*">
+          <NoRouteMatch />
         </Route>
       </Switch>
     </div>
