@@ -12,12 +12,12 @@ import { ConfiguredFeature } from '../data/1.17/ConfiguredFeature';
 import { ConfiguredDecorator } from '../data/1.17/ConfiguredDecorator';
 import { GameVersion } from '../context/GameVersion';
 import { Biome, Biomes } from '../data/1.17/Biome';
-import JSZip from 'jszip';
 import { customOption, stripDefaultNamespace } from '../util/LabelHelper';
 import { loadVanillaZip } from '../util/FetchHelper';
 import { ConfiguredCarver } from '../data/1.17/ConfiguredCarver';
 import { ConfiguredSurfaceBuilder } from '../data/1.17/ConfiguredSurfaceBuilder';
 import { ProcessorList } from '../data/1.17/StructureProcessor';
+import { strFromU8, Unzipped } from 'fflate';
 
 export type GameRegistryKey =
   | 'block'
@@ -181,7 +181,7 @@ export class WorldgenRegistryHolder {
     'worldgen/processor_list': new WorldgenRegistry(ProcessorList)
   };
   readonly packFormat: number;
-  vanillaZip?: JSZip;
+  vanillaZip?: Unzipped;
 
   constructor(version: GameVersion | number) {
     this.packFormat =
@@ -202,15 +202,15 @@ export class WorldgenRegistryHolder {
     }
     const path =
       registry + '/' + stripDefaultNamespace(namespacedKey) + '.json';
-    const file = this.vanillaZip.file(path);
-    if (file === null) {
+    const file = this.vanillaZip[path];
+    if (!file) {
       return Promise.reject(
         new Error(
           `Unable to find the associated vanilla file (tested ${path}).`
         )
       );
     }
-    return JSON.parse(await file.async('text'));
+    return JSON.parse(strFromU8(file));
   }
 
   withVanilla(current: WorldgenRegistryHolder): this {

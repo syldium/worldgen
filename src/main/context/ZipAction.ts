@@ -1,4 +1,3 @@
-import JSZip, { JSZipObject } from 'jszip';
 import {
   isWorldgenRegistry,
   RegistryKey,
@@ -8,16 +7,17 @@ import {
 } from '../model/Registry';
 import { isValidNamespace, isValidValue } from '../util/LabelHelper';
 import { removeReactKeyReplacer } from '../util/DomHelper';
+import { strFromU8, strToU8, Unzipped, unzipSync, zipSync } from 'fflate';
 
 type ReadResult<T> = { [path: string]: T };
 export class ZipAction {
   readonly errors: ReadResult<Error>;
   readonly registry: WorldgenRegistryHolder;
-  private readonly zip: JSZip;
+  private readonly zip: Unzipped;
 
   private constructor(
     registry: WorldgenRegistryHolder,
-    zip: JSZip,
+    zip: Unzipped,
     errors: ReadResult<Error> = {}
   ) {
     this.errors = errors;
@@ -26,10 +26,8 @@ export class ZipAction {
   }
 
   static create(registry: WorldgenRegistryHolder): ZipAction {
-    return new ZipAction(
-      registry,
-      new JSZip().file(
-        'pack.mcmeta',
+    return new ZipAction(registry, {
+      'pack.mcmeta': strToU8(
         JSON.stringify(
           {
             pack: {
@@ -41,7 +39,7 @@ export class ZipAction {
           2
         )
       )
-    );
+    });
   }
 
   static async read(file: File): Promise<ZipAction> {
@@ -57,23 +55,24 @@ export class ZipAction {
         reject(new Error(`File is not a .zip. Got: ${file.type}`));
       }
 
-      JSZip.loadAsync(file)
-        .then((zip) => {
-          extractDatapack(zip)
-            .then(([holder, errors]) => {
-              resolve(new ZipAction(holder, zip, errors));
-            })
-            .catch(reject);
-        })
-        .catch(reject);
+      const reader = new FileReader();
+      reader.onload = () => {
+        const zip = unzipSync(new Uint8Array(reader.result as ArrayBuffer));
+        extractDatapack(zip)
+          .then(([holder, errors]) => {
+            resolve(new ZipAction(holder, zip, errors));
+          })
+          .catch(reject);
+      };
+      reader.readAsArrayBuffer(file);
     });
   }
 
-  generate(): Promise<Blob> {
+  async generate(): Promise<Blob> {
     Object.entries(this.registry.worldgen).forEach(([registryKey, registry]) =>
       this.writeRegistry(registryKey as RegistryKey, registry.entries)
     );
-    return this.zip.generateAsync({ type: 'blob' });
+    return new Blob([zipSync(this.zip)]);
   }
 
   private writeRegistry(
@@ -81,10 +80,10 @@ export class ZipAction {
     entries: Record<string, Schema>
   ) {
     for (const [namespacedKey, schema] of Object.entries(entries)) {
-      const [folder, filename] = resourcePath(registryKey, namespacedKey);
-      this.zip
-        .folder(folder)
-        ?.file(filename, JSON.stringify(schema, removeReactKeyReplacer, 2));
+      const path = resourcePath(registryKey, namespacedKey).join('/');
+      this.zip[path] = strToU8(
+        JSON.stringify(schema, removeReactKeyReplacer, 2)
+      );
     }
   }
 }
@@ -96,16 +95,16 @@ interface McMeta {
   };
 }
 async function extractDatapack(
-  zip: JSZip
+  zip: Unzipped
 ): Promise<[WorldgenRegistryHolder, ReadResult<Error>]> {
-  const pack = zip.file('pack.mcmeta');
-  if (pack === null) {
+  const pack = zip['pack.mcmeta'];
+  if (!pack) {
     throw Error('Invalid datapack: no pack.mcmeta');
   }
 
   let mcmeta;
   try {
-    mcmeta = JSON.parse(await pack.async('text')) as Partial<McMeta>;
+    mcmeta = JSON.parse(strFromU8(pack)) as Partial<McMeta>;
   } catch (e) {
     throw Error(`Error reading pack.mcmeta file: ${e.message}`);
   }
@@ -116,17 +115,14 @@ async function extractDatapack(
   const holder = new WorldgenRegistryHolder(mcmeta.pack.pack_format);
   const promises: Promise<Schema>[] = [];
   const paths: string[] = [];
-  zip.forEach(function (path: string, entry: JSZipObject) {
-    if (entry.dir) {
-      return;
-    }
-    const match = findNamespacedKeyAndRegistry(entry.name);
+  Object.entries(zip).forEach(function ([path, entry]) {
+    const match = findNamespacedKeyAndRegistry(path);
     if (!match) {
       return;
     }
 
     promises.push(parseFile(holder, entry, ...match));
-    paths.push(entry.name);
+    paths.push(path);
   });
 
   return [
@@ -144,16 +140,15 @@ async function extractDatapack(
 
 async function parseFile(
   holder: WorldgenRegistryHolder,
-  entry: JSZipObject,
+  entry: Uint8Array,
   namespace: string,
   key: string,
   registry: WorldgenRegistryKey
 ): Promise<Schema> {
-  return entry.async('text').then((content) => {
-    const schema = JSON.parse(content) as Record<string, unknown>;
-    holder.register(registry, namespace + ':' + key, schema);
-    return schema;
-  });
+  const content = strFromU8(entry);
+  const schema = JSON.parse(content) as Record<string, unknown>;
+  holder.register(registry, namespace + ':' + key, schema);
+  return schema;
 }
 
 export function resourcePath(
