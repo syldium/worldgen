@@ -2,9 +2,9 @@ import { WorldgenNames, WorldgenRegistryKey } from '../../model/Registry';
 import React, { MouseEvent, useContext } from 'react';
 import { GameContext } from '../../context/GameRegistry';
 import { stripDefaultNamespace } from '../../util/LabelHelper';
-import { Link } from '../ui/Link';
 import { Trash } from 'react-feather';
 import { useForceUpdate } from '@pastable/use-force-update';
+import { Link } from 'react-router-dom';
 
 interface ResourceListProps {
   registryKey: WorldgenRegistryKey;
