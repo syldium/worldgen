@@ -1,6 +1,6 @@
-import { WorldgenRegistryKey } from '../../model/Registry';
 import React, { Suspense } from 'react';
 import { stripDefaultNamespace } from '../../util/LabelHelper';
+import type { WorldgenRegistryKey } from '../../model/RegistryKey';
 
 export interface ViewerProps {
   value: any;

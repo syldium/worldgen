@@ -5,8 +5,9 @@ import { Resource } from './resource/Resource';
 import { MainMenu } from './MainMenu';
 import { Link } from './ui/Link';
 import { ConfiguredFeature } from './resource/ConfiguredFeature';
-import { WorldgenNames, WorldgenRegistryKey } from '../model/Registry';
+import { WorldgenNames } from '../model/Registry';
 import { NoRouteMatch } from './ui/NoRouteMatch';
+import type { WorldgenRegistryKey } from '../model/RegistryKey';
 
 export const DatapackApp = (): JSX.Element => (
   <div>

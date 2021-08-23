@@ -2,13 +2,13 @@ import { useContext, useEffect, useMemo, useRef } from 'react';
 import type {
   PostLoadCallback,
   Schema,
-  WorldgenRegistry,
-  WorldgenRegistryKey
+  WorldgenRegistry
 } from '../model/Registry';
 import { GameContext } from '../context/GameRegistry';
 import { useParams } from 'react-router-dom';
-import { resourcePath } from '../context/ZipAction';
 import { get } from 'idb-keyval';
+import { resourcePath } from '../util/PathHelper';
+import type { WorldgenRegistryKey } from '../model/RegistryKey';
 
 export function useRegistry<S extends Schema>(
   registryKey: WorldgenRegistryKey
@@ -40,7 +40,7 @@ export function useRegistry<S extends Schema>(
           .vanillaResource(registryKey, id)
           .then((schema) => !customLoaded.current && callback(schema));
       }
-      get(resourcePath(registryKey, id).join('/')).then((schema) => {
+      get(resourcePath(registryKey, id)).then((schema) => {
         if (schema) {
           callback(schema);
           customLoaded.current = true;

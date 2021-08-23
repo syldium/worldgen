@@ -10,10 +10,11 @@ import React, {
 } from 'react';
 import { useOptions } from '../hook/useOptions';
 import Select from './ui/Select';
-import { Schema, WorldgenNames, WorldgenRegistryKey } from '../model/Registry';
+import { Schema, WorldgenNames } from '../model/Registry';
 import { GameContext } from '../context/GameRegistry';
 import { useToggle } from '../hook/useToggle';
 import { Button } from './ui/Button';
+import type { WorldgenRegistryKey } from '../model/RegistryKey';
 
 interface NamespacedKeyProps {
   children?: React.ReactNode;

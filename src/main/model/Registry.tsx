@@ -18,31 +18,7 @@ import { ConfiguredCarver } from '../data/1.17/ConfiguredCarver';
 import { ConfiguredSurfaceBuilder } from '../data/1.17/ConfiguredSurfaceBuilder';
 import { ProcessorList } from '../data/1.17/StructureProcessor';
 import { strFromU8, Unzipped } from 'fflate';
-
-export type GameRegistryKey =
-  | 'block'
-  | 'block_state'
-  | 'block_state_provider'
-  | 'entity_type'
-  | 'sound_event'
-  | 'structure'
-  | 'tags/blocks';
-
-export type WorldgenRegistryKey =
-  | 'dimension'
-  | 'dimension_type'
-  | 'worldgen/biome'
-  | 'worldgen/biome_source'
-  | 'worldgen/chunk_generator'
-  | 'worldgen/configured_carver'
-  | 'worldgen/configured_decorator'
-  | 'worldgen/configured_feature'
-  | 'worldgen/configured_structure_feature'
-  | 'worldgen/configured_surface_builder'
-  | 'worldgen/noise_settings'
-  | 'worldgen/processor_list';
-
-export type RegistryKey = GameRegistryKey | WorldgenRegistryKey;
+import type { WorldgenRegistryKey } from './RegistryKey';
 
 export interface Registry {
   options: Option[];

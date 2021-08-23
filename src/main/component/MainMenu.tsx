@@ -1,10 +1,6 @@
 import React, { useCallback, useContext } from 'react';
 import { GameContext } from '../context/GameRegistry';
-import {
-  WorldgenNames,
-  WorldgenRegistryHolder,
-  WorldgenRegistryKey
-} from '../model/Registry';
+import { WorldgenNames, WorldgenRegistryHolder } from '../model/Registry';
 import { ZipAction } from '../context/ZipAction';
 import { saveAs } from 'file-saver';
 import { Download, PlusCircle } from 'react-feather';
@@ -16,6 +12,7 @@ import { Button } from './ui/Button';
 import { catchToast } from '../util/ErrorHelper';
 import { toast } from 'react-hot-toast';
 import { ResourceList } from './resource/ResourceList';
+import type { WorldgenRegistryKey } from '../model/RegistryKey';
 
 export function MainMenu(): JSX.Element {
   const context = useContext(GameContext);
@@ -46,14 +43,15 @@ export function MainMenu(): JSX.Element {
     function (namespace: string) {
       context.namespace = namespace;
       context.worldgen = new WorldgenRegistryHolder('1.17');
+      ZipAction.clearWorker();
       toggleAction(false);
     },
     [context, toggleAction]
   );
   const handleLoad = useCallback(
     function (zip: ZipAction) {
-      context.worldgen = zip.registry;
-      context.namespace = zip.registry.findNamespace() || 'unset';
+      context.worldgen = zip.registries;
+      context.namespace = zip.registries.findNamespace() || 'unset';
       toggleAction(false);
     },
     [context, toggleAction]

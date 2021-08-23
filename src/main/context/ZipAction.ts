@@ -1,47 +1,49 @@
-import {
-  isWorldgenRegistry,
-  RegistryKey,
-  Schema,
-  WorldgenRegistryHolder,
-  WorldgenRegistryKey
-} from '../model/Registry';
-import { isValidNamespace, isValidValue } from '../util/LabelHelper';
-import { removeReactKeyReplacer } from '../util/DomHelper';
-import { strFromU8, strToU8, Unzipped, unzipSync, zipSync } from 'fflate';
+import { WorldgenRegistryHolder } from '../model/Registry';
+import ZipWorker from './ZipWorker?worker';
+import type {
+  ExtractDoneMessage,
+  RawRegistries,
+  UnzipDoneMessage,
+  ZipDoneMessage,
+  ZipWorkerboundMessage
+} from './ZipWorker';
+import type { Unzipped } from 'fflate';
+import type { WorldgenRegistryKey } from '../model/RegistryKey';
 
-type ReadResult<T> = { [path: string]: T };
+const worker = new ZipWorker();
+export type ReadResult<T> = { [path: string]: T };
 export class ZipAction {
-  readonly errors: ReadResult<Error>;
-  readonly registry: WorldgenRegistryHolder;
-  private readonly zip: Unzipped;
+  /**
+   * The number of files that could not be read.
+   */
+  readonly errors: number;
 
-  private constructor(
-    registry: WorldgenRegistryHolder,
-    zip: Unzipped,
-    errors: ReadResult<Error> = {}
-  ) {
+  /**
+   * The registries associated with the datapack.
+   */
+  readonly registries: WorldgenRegistryHolder;
+
+  private constructor(registries: WorldgenRegistryHolder, errors = 0) {
     this.errors = errors;
-    this.registry = registry;
-    this.zip = zip;
+    this.registries = registries;
   }
 
-  static create(registry: WorldgenRegistryHolder): ZipAction {
-    return new ZipAction(registry, {
-      'pack.mcmeta': strToU8(
-        JSON.stringify(
-          {
-            pack: {
-              pack_format: registry.packFormat,
-              description: 'Custom biome'
-            }
-          } as McMeta,
-          null,
-          2
-        )
-      )
-    });
+  /**
+   * Prepare to create a new .zip file.
+   *
+   * @param registries The worldgen registries
+   */
+  static create(registries: WorldgenRegistryHolder): ZipAction {
+    return new ZipAction(registries);
   }
 
+  /**
+   * Read the file for compatible resources.
+   *
+   * The assets will be kept by the worker to be restored if a new .zip file is created.
+   *
+   * @param file The file to read
+   */
   static async read(file: File): Promise<ZipAction> {
     return new Promise((resolve, reject) => {
       if (
@@ -57,140 +59,77 @@ export class ZipAction {
 
       const reader = new FileReader();
       reader.onload = () => {
-        const zip = unzipSync(new Uint8Array(reader.result as ArrayBuffer));
-        extractDatapack(zip)
-          .then(([holder, errors]) => {
-            resolve(new ZipAction(holder, zip, errors));
-          })
-          .catch(reject);
+        const buffer = reader.result as ArrayBuffer;
+        worker.onmessage = ({ data }: MessageEvent<ExtractDoneMessage>) => {
+          const holder = new WorldgenRegistryHolder(7);
+          for (const [registryKey, entries] of Object.entries(data[0])) {
+            const registry =
+              holder.worldgen[registryKey as WorldgenRegistryKey];
+            for (const entry of Object.entries(entries)) {
+              registry.register(...entry);
+            }
+          }
+          resolve(new ZipAction(holder, data[1]));
+        };
+        worker.onerror = ({ message }: ErrorEvent) => reject(message);
+        worker.postMessage(
+          { buffer, action: 'extract' } as ZipWorkerboundMessage,
+          [buffer]
+        );
       };
       reader.readAsArrayBuffer(file);
     });
   }
 
-  async generate(): Promise<Blob> {
-    Object.entries(this.registry.worldgen).forEach(([registryKey, registry]) =>
-      this.writeRegistry(registryKey as RegistryKey, registry.entries)
-    );
-    return new Blob([zipSync(this.zip)]);
+  /**
+   * Removes assets from the memory of the worker.
+   */
+  static clearWorker(): void {
+    worker.postMessage({ action: 'clear' } as ZipWorkerboundMessage);
   }
 
-  private writeRegistry(
-    registryKey: RegistryKey,
-    entries: Record<string, Schema>
-  ) {
-    for (const [namespacedKey, schema] of Object.entries(entries)) {
-      const path = resourcePath(registryKey, namespacedKey).join('/');
-      this.zip[path] = strToU8(
-        JSON.stringify(schema, removeReactKeyReplacer, 2)
-      );
-    }
+  static unzip(buffer: ArrayBuffer): Promise<Unzipped> {
+    const promise = new Promise<Unzipped>((resolve, reject) => {
+      worker.onmessage = ({ data }: MessageEvent<UnzipDoneMessage>) =>
+        resolve(data);
+      worker.onerror = ({ message }: ErrorEvent) => reject(message);
+    });
+    worker.postMessage({ buffer, action: 'unzip' } as ZipWorkerboundMessage, [
+      buffer
+    ]);
+    return promise;
+  }
+
+  async generate(): Promise<Blob> {
+    const registries: RawRegistries = {};
+    Object.entries(this.registries.worldgen).forEach(
+      ([registryKey, registry]) => {
+        registries[registryKey as WorldgenRegistryKey] = registry.entries;
+      }
+    );
+    const promise = new Promise<Blob>((resolve, reject) => {
+      worker.onmessage = ({ data }: MessageEvent<ZipDoneMessage>) =>
+        resolve(new Blob([data]));
+      worker.onerror = ({ message }: ErrorEvent) => reject(message);
+    });
+    worker.postMessage({
+      packMeta: {
+        pack: {
+          pack_format: this.registries.packFormat,
+          description: 'Custom biome'
+        }
+      },
+      registries,
+      action: 'zip'
+    } as ZipWorkerboundMessage);
+    return promise;
   }
 }
+export default ZipAction;
 
-interface McMeta {
+export interface McMeta {
   pack: {
     description: string;
     pack_format: number;
   };
-}
-async function extractDatapack(
-  zip: Unzipped
-): Promise<[WorldgenRegistryHolder, ReadResult<Error>]> {
-  const pack = zip['pack.mcmeta'];
-  if (!pack) {
-    throw Error('Invalid datapack: no pack.mcmeta');
-  }
-
-  let mcmeta;
-  try {
-    mcmeta = JSON.parse(strFromU8(pack)) as Partial<McMeta>;
-  } catch (e) {
-    throw Error(`Error reading pack.mcmeta file: ${e.message}`);
-  }
-  if (!mcmeta.pack || typeof mcmeta.pack.pack_format !== 'number') {
-    throw Error('No pack format found in pack.mcmeta.');
-  }
-
-  const holder = new WorldgenRegistryHolder(mcmeta.pack.pack_format);
-  const promises: Promise<Schema>[] = [];
-  const paths: string[] = [];
-  Object.entries(zip).forEach(function ([path, entry]) {
-    const match = findNamespacedKeyAndRegistry(path);
-    if (!match) {
-      return;
-    }
-
-    promises.push(parseFile(holder, entry, ...match));
-    paths.push(path);
-  });
-
-  return [
-    holder,
-    await Promise.allSettled(promises).then((results) =>
-      results.reduce((errors, result, index) => {
-        if (result.status === 'rejected') {
-          errors[paths[index]] = result.reason;
-        }
-        return errors;
-      }, {} as ReadResult<Error>)
-    )
-  ];
-}
-
-async function parseFile(
-  holder: WorldgenRegistryHolder,
-  entry: Uint8Array,
-  namespace: string,
-  key: string,
-  registry: WorldgenRegistryKey
-): Promise<Schema> {
-  const content = strFromU8(entry);
-  const schema = JSON.parse(content) as Record<string, unknown>;
-  holder.register(registry, namespace + ':' + key, schema);
-  return schema;
-}
-
-export function resourcePath(
-  registryKey: RegistryKey,
-  resourceKey: string
-): [string, string] {
-  const [namespace, filename] = resourceKey.split(':');
-  return [`data/${namespace}/${registryKey}`, `${filename}.json`];
-}
-
-export function findNamespacedKeyAndRegistry(
-  path: string
-): [string, string, WorldgenRegistryKey] | null {
-  const filenames = path.split('/');
-  if (filenames.length < 4 || filenames[0] !== 'data') {
-    return null;
-  }
-  if (!isValidNamespace(filenames[1])) {
-    return null;
-  }
-
-  let registry: WorldgenRegistryKey | null = null;
-  let subRegistry: string | null = null;
-  if (isWorldgenRegistry(filenames[2])) {
-    registry = filenames[2];
-  } else {
-    subRegistry = filenames[2] + '/' + filenames[3];
-    if (isWorldgenRegistry(subRegistry)) {
-      registry = subRegistry;
-    }
-  }
-  if (!registry) {
-    return null;
-  }
-
-  let key = filenames.slice(subRegistry ? 4 : 3).join('/');
-  if (!key.endsWith('.json')) {
-    return null;
-  }
-  key = key.substr(0, key.length - '.json'.length);
-  if (!isValidValue(key)) {
-    return null;
-  }
-  return [filenames[1], key, registry];
 }

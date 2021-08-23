@@ -1,6 +1,6 @@
-import { findNamespacedKeyAndRegistry } from '../../main/context/ZipAction';
+import { findNamespacedKeyAndRegistry } from '../../main/util/PathHelper';
 
-describe('ZipAction', function () {
+describe('PathHelper', function () {
   it('should find the namespaced key and the registry', () => {
     expect(
       findNamespacedKeyAndRegistry('data/minecraft/dimension/use_tp.json')

@@ -15,11 +15,11 @@ export function MergeForm({
   zip
 }: MergeFormProps): JSX.Element {
   const { worldgen } = useContext(GameContext);
-  const conflicts = worldgen.doesConflict(zip.registry);
+  const conflicts = worldgen.doesConflict(zip.registries);
   const load = function (event: MouseEvent<HTMLButtonElement>, merge: boolean) {
     event.preventDefault();
     if (merge) {
-      zip.registry.merge(worldgen);
+      zip.registries.merge(worldgen);
     }
     onLoad(zip);
   };

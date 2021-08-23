@@ -1,6 +1,6 @@
 import { isValidNamespacedKey } from '../../util/LabelHelper';
-import { NodeBase } from './Node';
-import { RegistryKey } from '../Registry';
+import type { NodeBase } from './Node';
+import type { RegistryKey } from '../RegistryKey';
 
 export interface IdentifierNodeParams
   extends NodeBase<'identifier' | 'resource'> {

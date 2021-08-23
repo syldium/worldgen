@@ -3,7 +3,6 @@ import {
   BlockStateRegistry,
   Registry,
   WorldgenRegistryHolder,
-  RegistryKey,
   Schema
 } from '../model/Registry';
 import { createContext, useState } from 'react';
@@ -17,7 +16,8 @@ import {
 } from '../hook/useFetchData';
 import useLocalStorageState from 'use-local-storage-state';
 import { clear, entries, setMany } from 'idb-keyval';
-import { findNamespacedKeyAndRegistry, resourcePath } from './ZipAction';
+import { findNamespacedKeyAndRegistry, resourcePath } from '../util/PathHelper';
+import type { RegistryKey } from '../model/RegistryKey';
 
 interface GameRegistry {
   blockStates: BlockStateRegistry;
@@ -127,7 +127,7 @@ export function GameRegistryProvider({
               entries.push(
                 // @ts-ignore
                 ...Object.entries(registry.entries).map(([key, schema]) => [
-                  resourcePath(registryKey, key).join('/'),
+                  resourcePath(registryKey, key),
                   schema
                 ])
               );

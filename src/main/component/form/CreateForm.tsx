@@ -6,13 +6,14 @@ import React, {
   useContext
 } from 'react';
 import { useLowercaseInput } from '../../hook/useLowercaseInput';
-import { WorldgenNames, WorldgenRegistryKey } from '../../model/Registry';
+import { WorldgenNames } from '../../model/Registry';
 import { Button } from '../ui/Button';
 import { ZipAction } from '../../context/ZipAction';
 import { useToggle } from '../../hook/useToggle';
 import { GameContext } from '../../context/GameRegistry';
 import { MergeForm } from './MergeForm';
 import { toast } from 'react-hot-toast';
+import type { WorldgenRegistryKey } from '../../model/RegistryKey';
 
 interface CreateFormProps {
   onCancel: () => void;
@@ -67,9 +68,8 @@ function CreateDatapackForm({
     const id = toast.loading('Loading datapack');
     ZipAction.read(file)
       .then((action) => {
-        const length = Object.keys(action.errors).length;
+        const length = action.errors;
         if (length) {
-          console.error(action.errors);
           toast.error(
             `Failed to read ${length} file${length > 1 ? 's' : ''}!`,
             { id }

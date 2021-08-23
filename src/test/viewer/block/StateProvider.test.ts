@@ -3,6 +3,8 @@ import {
   findIntProviderFromProperties
 } from '../../../main/viewer/block/StateProvider';
 import { IntProvider } from '../../../main/data/1.17/NumberProvider';
+import { EitherNodeParams } from '../../../main/model/node/EitherNode';
+import { NumberNodeParams } from '../../../main/model/node/IntNode';
 
 describe('StateProvider', function () {
   it('should find a block type', () => {
@@ -48,30 +50,30 @@ describe('StateProvider', function () {
     const stringProperty = {
       string: ['a', 'b', 'c']
     };
-    expect(
-      JSON.stringify(
-        findIntProviderFromProperties(
-          ['test:testing', 'test:something', 'test:now'],
-          {
-            'test:testing': {
-              properties: { ...stringProperty, ...intProperty },
-              default: {}
-            },
-            'test:something': {
-              properties: { ...intProperty },
-              default: {}
-            },
-            'test:now': {
-              properties: { ...int2Property, ...intProperty },
-              default: {}
-            }
-          }
-        )
-      )
-    ).toBe(
-      JSON.stringify({
-        int: IntProvider(2, 5)
-      })
+    const providers = findIntProviderFromProperties(
+      ['test:testing', 'test:something', 'test:now'],
+      {
+        'test:testing': {
+          properties: { ...stringProperty, ...intProperty },
+          default: {}
+        },
+        'test:something': {
+          properties: { ...intProperty },
+          default: {}
+        },
+        'test:now': {
+          properties: { ...int2Property, ...intProperty },
+          default: {}
+        }
+      }
     );
+    expect(Object.keys(providers)).toEqual(['int']);
+    for (const key of Object.keys(IntProvider(2, 5))) {
+      expect(providers.int).toHaveProperty(key);
+    }
+    const valueNode = (providers.int as EitherNodeParams)
+      .nodes[0] as NumberNodeParams;
+    expect(valueNode.min).toBe(2);
+    expect(valueNode.max).toBe(5);
   });
 });

@@ -1,11 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
-import type {
-  Registry,
-  RegistryKey,
-  WorldgenRegistryHolder
-} from '../model/Registry';
 import { defaultNamespace, labelizeOption } from '../util/LabelHelper';
 import type { Option } from '../component/ui/Select';
+import type { Registry, WorldgenRegistryHolder } from '../model/Registry';
+import type { RegistryKey } from '../model/RegistryKey';
 
 export const readJson = <S>(response: Response): Promise<S> => response.json();
 export const readText = (response: Response): Promise<string[]> =>
