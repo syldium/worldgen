@@ -102,5 +102,3 @@ function extractDatapack(unzipped: Unzipped): [RawRegistries, number] {
   }
   return [registries, failures];
 }
-
-console.log('hi');

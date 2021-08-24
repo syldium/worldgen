@@ -132,8 +132,7 @@ export function GameRegistryProvider({
                 ])
               );
             }
-            //console.log(entries)
-            setMany(entries).then((r) => console.log(r));
+            setMany(entries);
           });
         },
         get namespace(): string {
