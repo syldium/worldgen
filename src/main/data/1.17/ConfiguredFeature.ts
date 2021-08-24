@@ -25,6 +25,10 @@ const BlockPileConfig: ObjectModel = {
   state_provider: ResourceNode('block_state_provider')
 };
 
+const DecoratedConfig: ObjectModel = {
+  feature: IdentifierNode('worldgen/configured_feature')
+};
+
 const DeltaConfig: ObjectModel = {
   contents: ResourceNode('block_state'),
   rim: ResourceNode('block_state'),
@@ -473,6 +477,7 @@ export const ConfiguredFeature: Model = {
       coral_claw: {},
       coral_mushroom: {},
       coral_tree: {},
+      decorated: DecoratedConfig,
       delta_feature: DeltaConfig,
       desert_well: {},
       disk: DiskConfig,

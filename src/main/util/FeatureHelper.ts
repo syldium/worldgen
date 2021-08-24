@@ -1,13 +1,13 @@
-import { Configured } from '../model/Model';
-import { Obj } from './DomHelper';
+import type { Configured } from '../model/Model';
+import type { Obj } from './DomHelper';
 
 type Decorator = Configured & Obj;
 type Feature = Configured & Obj;
 
-interface DecoratedFeature extends Feature {
+export interface DecoratedFeature extends Feature {
   config: {
     decorator: Decorator;
-    feature: Feature;
+    feature: Feature | string;
   };
 }
 
@@ -18,8 +18,12 @@ export function findDecorators(
   let feature = configuredFeature;
 
   while (feature && isDecoratedFeature(feature)) {
-    decorators.push(feature.config.decorator);
-    feature = feature.config.feature;
+    const config = feature.config;
+    decorators.push(config.decorator);
+    if (typeof config.feature === 'string') {
+      return [decorators, feature];
+    }
+    feature = config.feature;
   }
 
   return [decorators, feature];
