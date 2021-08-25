@@ -3,6 +3,7 @@ import React, { useContext, useState } from 'react';
 import { Button } from '../ui/Button';
 import { DataContext } from '../context/DataContext';
 import { NavBar } from '../ui/Menu';
+import { OutdatedAlert } from "../ui/OutdatedAlert";
 import { readZip } from '../utils/zip';
 
 export function DatapackForm({ nav = true, onCreate }) {
@@ -59,9 +60,7 @@ export function DatapackForm({ nav = true, onCreate }) {
                 </div>
                 <div className="mtm">
                     {error !== null && <div className="alert--danger">{error}</div>}
-                    <p className="alert--warning">
-                        This generator is currently built for 1.16.5.
-                    </p>
+                    <OutdatedAlert />
                 </div>
             </div>
         </form>

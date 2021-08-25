@@ -15,6 +15,7 @@ import { DimensionTypeForm } from './dimension/DimensionType';
 import { Modal } from '../ui/Modal';
 import { NavBar } from '../ui/Menu';
 import { NoiseSettings } from './noise/NoiseSettings';
+import { OutdatedAlert } from "../ui/OutdatedAlert";
 import { ProcessorList } from './processor/ProcessorList';
 import { SurfaceBuilder } from './surface/SurfaceBuilder';
 import { buildZip } from '../utils/zip';
@@ -114,20 +115,31 @@ function Main({namespace, onSave, setPage}) {
       });
     }, []);
 
-    return <div className="stats">
-        <StatsTitle type="feature" namespace={namespace} onClick={setPage} onDelete={onSave}>configured feature</StatsTitle>
-        <StatsTitle type="biome" namespace={namespace} onClick={setPage} onDelete={onSave}>custom biome</StatsTitle>
-        <StatsTitle type="surface" namespace={namespace} onClick={setPage} onDelete={onSave}>configured surface builder</StatsTitle>
-        
-        <StatsTitle type="dimension" namespace={namespace} onClick={setPage} onDelete={onSave}>custom dimension</StatsTitle>
-        <StatsTitle type="noise" namespace={namespace} onClick={setPage} onDelete={onSave}>custom noise</StatsTitle>
-        <StatsTitle type="dimension_type" namespace={namespace} onClick={setPage} onDelete={onSave} invisible={true}>custom dimension type</StatsTitle>
-        
-        <StatsTitle type="processor" namespace={namespace} onClick={setPage} onDelete={onSave}>custom processor list</StatsTitle>
-        <StatsTitle type="carver" namespace={namespace} onClick={setPage} onDelete={onSave} invisible={true}>custom carver</StatsTitle>
-        <div>
+    return <>
+        <div className="stats">
+            <StatsTitle type="feature" namespace={namespace} onClick={setPage} onDelete={onSave}>configured
+                feature</StatsTitle>
+            <StatsTitle type="biome" namespace={namespace} onClick={setPage} onDelete={onSave}>custom
+                biome</StatsTitle>
+            <StatsTitle type="surface" namespace={namespace} onClick={setPage} onDelete={onSave}>configured surface
+                builder</StatsTitle>
+
+            <StatsTitle type="dimension" namespace={namespace} onClick={setPage} onDelete={onSave}>custom
+                dimension</StatsTitle>
+            <StatsTitle type="noise" namespace={namespace} onClick={setPage} onDelete={onSave}>custom
+                noise</StatsTitle>
+            <StatsTitle type="dimension_type" namespace={namespace} onClick={setPage} onDelete={onSave}
+                        invisible={true}>custom dimension type</StatsTitle>
+
+            <StatsTitle type="processor" namespace={namespace} onClick={setPage} onDelete={onSave}>custom processor
+                list</StatsTitle>
+            <StatsTitle type="carver" namespace={namespace} onClick={setPage} onDelete={onSave} invisible={true}>custom
+                carver</StatsTitle>
+            <div>
+            </div>
         </div>
-    </div>
+        <OutdatedAlert/>
+    </>
 }
 
 function StatsTitle({ children, type, invisible = false, namespace }) {
