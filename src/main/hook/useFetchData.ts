@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { RefObject, useEffect, useRef, useState } from 'react';
 import { defaultNamespace, labelizeOption } from '../util/LabelHelper';
 import type { Option } from '../component/ui/Select';
 import type { Registry, WorldgenRegistryHolder } from '../model/Registry';
@@ -29,7 +29,10 @@ export function useFetchData<S>(
 
 export function useRegistryFetch<
   T extends { [key in RegistryKey]?: RegistryData }
->(registries: T, holder: WorldgenRegistryHolder): Record<keyof T, Registry> {
+>(
+  registries: T,
+  holder: WorldgenRegistryHolder
+): [Record<keyof T, Registry>, RefObject<boolean>] {
   const [values, setValues] = useState<Record<keyof T, Registry>>(() => {
     const empty: Registry = { options: [], vanilla: [] };
     const initial = {} as Record<keyof T, Registry>;
@@ -88,7 +91,7 @@ export function useRegistryFetch<
     [holder, registries]
   );
 
-  return values;
+  return [values, done];
 }
 
 export interface RegistryData {

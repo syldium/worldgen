@@ -17,7 +17,8 @@ import {
 import useLocalStorageState from 'use-local-storage-state';
 import { clear, entries, setMany } from 'idb-keyval';
 import { findNamespacedKeyAndRegistry, resourcePath } from '../util/PathHelper';
-import type { RegistryKey } from '../model/RegistryKey';
+import { useForceUpdate } from '@pastable/use-force-update';
+import type { RegistryKey, WorldgenRegistryKey } from '../model/RegistryKey';
 
 interface GameRegistry {
   blockStates: BlockStateRegistry;
@@ -54,6 +55,7 @@ export function GameRegistryProvider({
   children,
   states
 }: ProviderProps): JSX.Element {
+  const forceUpdate = useForceUpdate();
   const [holder, setHolder] = useState<WorldgenRegistryHolder>(
     () => new WorldgenRegistryHolder('1.17')
   );
@@ -62,7 +64,7 @@ export function GameRegistryProvider({
     {},
     states
   );
-  const registries = useRegistryFetch(
+  const [registries, fetched] = useRegistryFetch(
     {
       entity_type: text(registryUrl('entity_type')),
       sound_event: text(registryUrl('sound_event')),
@@ -95,15 +97,21 @@ export function GameRegistryProvider({
     }
     entries<string, Schema>().then((entries) => {
       console.time('indexeddb');
+      const edited = new Set<WorldgenRegistryKey>();
       entries.forEach(([path, schema]) => {
         const match = findNamespacedKeyAndRegistry(path);
         if (match) {
+          edited.add(match[2]);
           holder.register(match[2], match[0] + ':' + match[1], schema);
         }
       });
       console.timeEnd('indexeddb');
+      holder.copyOptions(edited);
+      if (edited.size && fetched.current) {
+        forceUpdate();
+      }
     });
-  }, [holder]);
+  }, [fetched, forceUpdate, holder]);
 
   return (
     <GameContext.Provider

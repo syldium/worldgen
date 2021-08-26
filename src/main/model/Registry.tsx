@@ -47,7 +47,7 @@ export class WorldgenRegistry implements Registry {
     this.entries = entries;
   }
 
-  register(namespacedKey: string, schema: Schema): Schema {
+  register(namespacedKey: string, schema: Schema): Schema | undefined {
     const alreadyExists = this.entries[namespacedKey];
     this.entries[namespacedKey] = schema;
     if (!alreadyExists) {
@@ -224,8 +224,8 @@ export class WorldgenRegistryHolder {
     registryKey: WorldgenRegistryKey,
     namespacedKey: string,
     schema: Schema
-  ): void {
-    this.worldgen[registryKey].register(namespacedKey, schema);
+  ): Schema | undefined {
+    return this.worldgen[registryKey].register(namespacedKey, schema);
   }
 
   doesConflict(other: WorldgenRegistryHolder): number {
@@ -244,6 +244,12 @@ export class WorldgenRegistryHolder {
   merge(other: WorldgenRegistryHolder): void {
     for (const [key, registry] of this.entries) {
       registry.merge(other.worldgen[key]);
+    }
+  }
+
+  copyOptions(registryKeys: Iterable<WorldgenRegistryKey>): void {
+    for (const key of registryKeys) {
+      this.worldgen[key].options = [...this.worldgen[key].options];
     }
   }
 
@@ -269,6 +275,3 @@ export const WorldgenNames: Record<WorldgenRegistryKey, string> = {
   'worldgen/noise_settings': 'noise settings',
   'worldgen/processor_list': 'processor list'
 };
-export function isWorldgenRegistry(key: string): key is WorldgenRegistryKey {
-  return key in WorldgenNames;
-}
