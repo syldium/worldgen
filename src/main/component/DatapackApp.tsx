@@ -35,7 +35,11 @@ export const DatapackApp = (): JSX.Element => (
           <MainMenu />
         </Route>
         {(Object.keys(WorldgenNames) as WorldgenRegistryKey[])
-          .filter((key) => key !== 'worldgen/configured_feature')
+          .filter(
+            (key) =>
+              key !== 'worldgen/configured_feature' &&
+              key !== 'worldgen/configured_structure_feature'
+          )
           .map((key) => (
             <Route path={`/${key}/:id?`} key={key}>
               <Resource registryKey={key} key={key} />
