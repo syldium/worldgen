@@ -174,7 +174,11 @@ const NewResource = ({ onClick }: NewResourceProps): JSX.Element => (
     <h3>Create a new resource</h3>
     <ul className="models-list">
       {(Object.keys(WorldgenNames) as WorldgenRegistryKey[])
-        .filter((key) => key !== 'worldgen/configured_decorator')
+        .filter(
+          (key) =>
+            key !== 'worldgen/configured_decorator' &&
+            key !== 'worldgen/configured_structure_feature'
+        )
         .map((key) => (
           <li key={key} className="model-type">
             <a
