@@ -39,12 +39,12 @@ export const BiomeSource: Model = {
         biome: IdentifierNode('worldgen/biome')
       },
       multi_noise: {
+        seed: LongNode(),
+        biomes: ListNode(BiomeNoiseParameters),
         humidity_noise: NoiseParameters,
         altitude_noise: NoiseParameters,
         weirdness_noise: NoiseParameters,
-        temperature_noise: NoiseParameters,
-        seed: LongNode(),
-        biomes: ListNode(BiomeNoiseParameters)
+        temperature_noise: NoiseParameters
       },
       vanilla_layered: {
         legacy_biome_init_layer: BoolNode(false),

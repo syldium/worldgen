@@ -41,6 +41,7 @@ import { ViewerElement } from './viewer/Viewers';
 import { MapNodeParams } from '../model/node/MapNode';
 import { useToggle } from '../hook/useToggle';
 import { NumberInput } from './ui/NumberInput';
+import { Labelized } from './ui/Labelized';
 
 interface ModelViewProps {
   children?: React.ReactNode;
@@ -229,8 +230,7 @@ function CheckboxInput({
       ? (value[name] as boolean)
       : node.default || false;
   return (
-    <div className="form-group">
-      <label htmlFor={id}>{labelize(name)}</label> :
+    <Labelized className="form-group" id={id} name={name}>
       <input
         type="checkbox"
         className="checkbox"
@@ -238,7 +238,7 @@ function CheckboxInput({
         checked={booleanValue}
         onChange={handleChange}
       />
-    </div>
+    </Labelized>
   );
 }
 
@@ -259,15 +259,14 @@ function ColorInput({
       ? (value[name] as number)
       : node.default || 0;
   return (
-    <div className="form-group">
-      <label htmlFor={id}>{labelize(name)}</label> :
+    <Labelized className="form-group" id={id} name={name}>
       <input
         id={id}
         type="color"
         value={intColorToHex(colorValue)}
         onChange={handleChange}
       />
-    </div>
+    </Labelized>
   );
 }
 
@@ -370,16 +369,18 @@ function ListCrud({
           )}
         </div>
       </div>
-      {visible &&
-        elements.map((element, i) => (
-          <El
-            key={i}
-            name={i.toString()}
-            node={node.of}
-            value={list as Record<number, unknown>}
-            onChange={handleChange}
-          />
-        ))}
+      <div className={mayInline(node.of) ? ' form-row' : ''}>
+        {visible &&
+          elements.map((element, i) => (
+            <El
+              key={i}
+              name={i.toString()}
+              node={node.of}
+              value={list as Record<number, unknown>}
+              onChange={handleChange}
+            />
+          ))}
+      </div>
     </div>
   );
 }
@@ -481,10 +482,7 @@ function NumberNodeInput({
       : node.default || 0;
 
   return (
-    <div className="form-group flex">
-      <div>
-        <label htmlFor={id}>{labelize(name)}</label> :
-      </div>
+    <Labelized className="form-group flex" id={id} name={name}>
       <NumberInput
         id={id}
         min={node.min}
@@ -493,7 +491,7 @@ function NumberNodeInput({
         step={node.step}
         onChange={handleChange}
       />
-    </div>
+    </Labelized>
   );
 }
 
@@ -601,15 +599,14 @@ function SelectInput({
     [node.default, node.values, stringValue]
   );
   return (
-    <div className="form-group">
-      <label htmlFor={id}>{labelize(name)}</label>
+    <Labelized className="form-group" id={id} name={name}>
       <Select
         options={node.values}
         value={selectedOption}
         onChange={handleChange}
         inputId={id}
       />
-    </div>
+    </Labelized>
   );
 }
 
@@ -636,15 +633,14 @@ function ResourceSelectInput({
     [options, stringValue]
   );
   return (
-    <div className="form-group">
-      <label htmlFor={id}>{labelize(name)}</label>
+    <Labelized className="form-group" id={id} name={name}>
       <Select
         options={options}
         value={selected}
         onChange={handleChange}
         inputId={id}
       />
-    </div>
+    </Labelized>
   );
 }
 
@@ -674,10 +670,7 @@ function ResourceSelectMultipleInput({
     [name, onChange]
   );
   return (
-    <>
-      {isNaN(name as unknown as number) && (
-        <label htmlFor={id}>{labelize(name)}</label>
-      )}
+    <Labelized id={id} name={name}>
       <Select
         options={options}
         value={selected}
@@ -685,7 +678,7 @@ function ResourceSelectMultipleInput({
         inputId={id}
         isMulti={true}
       />
-    </>
+    </Labelized>
   );
 }
 
