@@ -46,6 +46,7 @@ form > [type='submit']:last-child {
   transition: background-color 0.15s;
   appearance: none;
   border-radius: 4px;
+  cursor: pointer;
 }
 
 .checkbox:checked {
@@ -54,6 +55,10 @@ form > [type='submit']:last-child {
   background-position: center;
   background-repeat: no-repeat;
   background-color: var(--shadow-color, var(--bg-color-input-hover));
+}
+
+.inline-select {
+  min-width: 100px;
 }
 
 input[type='file'] {

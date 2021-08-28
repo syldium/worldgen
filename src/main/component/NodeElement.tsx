@@ -552,7 +552,7 @@ function OptionalInput({
     <div className={isPresent ? 'flex' : 'form-group flex'}>
       {!isPresent && (
         <div>
-          <label htmlFor={id}>{labelize(name)}</label> :
+          <label htmlFor={id}>{labelize(name)}</label>:
         </div>
       )}
       {isPresent && (
@@ -563,13 +563,16 @@ function OptionalInput({
           onChange={onChange}
         />
       )}
-      <input
-        type="checkbox"
-        className="checkbox"
-        id={id}
-        checked={isPresent}
-        onChange={handleCheckboxChange}
-      />
+      <div className={isPresent ? 'form-group' : ''}>
+        <input
+          type="checkbox"
+          className="checkbox"
+          id={id}
+          checked={isPresent}
+          title={isPresent ? 'Remove the value' : 'Set a value'}
+          onChange={handleCheckboxChange}
+        />
+      </div>
     </div>
   );
 }

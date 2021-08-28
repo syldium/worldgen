@@ -16,8 +16,8 @@ export function Labelized({
   if (isNaN(name as unknown as number)) {
     return (
       <div className={className}>
-        <div>
-          <label htmlFor={id}>{labelize(name)}</label> :
+        <div className="inline">
+          <label htmlFor={id}>{labelize(name)}</label>:&nbsp;
         </div>
         {children}
       </div>

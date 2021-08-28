@@ -107,8 +107,10 @@ legend div {
   font-weight: 500;
 }
 
+.inline {
+  display: inline;
+}
 .inbl {
   display: inline-block;
   vertical-align: middle !important;
-  min-width: 100px;
 }

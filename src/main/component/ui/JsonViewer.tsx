@@ -20,7 +20,9 @@ export function JsonViewer({ data }: JsonViewerProps): JSX.Element {
 
   return (
     <>
-      <i className="mls"><Code onClick={toggleModal} /></i>
+      <i className="mls">
+        <Code onClick={toggleModal} />
+      </i>
       {open && (
         <Modal isOpen={open} onClose={closeModal}>
           <JsonView obj={obj()} />

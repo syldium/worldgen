@@ -136,7 +136,7 @@ function BlockStateProperties({
     <div className="form-group form-row">
       {Object.entries(properties).map(([property, values]) => {
         return (
-          <div key={property}>
+          <div className="flex" key={property}>
             <label>{property}</label> :
             <BlockStateProperty
               property={property}
@@ -214,7 +214,7 @@ function BlockStateProperty({
     }));
     const value = options.find((o) => o.value === state) || options[0];
     return (
-      <div className="inbl">
+      <div className="inline-select">
         <Select
           options={options}
           value={value}
