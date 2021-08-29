@@ -7,7 +7,10 @@ import { NamespacedKey } from '../NamespacedKey';
 import { SelectSwitch } from '../NodeElement';
 import { SwitchNodeParams } from '../../model/node/SwitchNode';
 import { Obj } from '../../util/DomHelper';
-import { ConfiguredDecorator } from '../../data/1.17/ConfiguredDecorator';
+import {
+  ConfiguredDecorator,
+  CountDecoratorConfig
+} from '../../data/1.17/ConfiguredDecorator';
 import { JsonViewer } from '../ui/JsonViewer';
 import { Button } from '../ui/Button';
 import { useRegistry } from '../../hook/useRegistry';
@@ -28,7 +31,9 @@ export function ConfiguredFeature(): JSX.Element {
   );
 
   const [feature, setFeature] = useState<Configured & Obj>(_feature);
-  const dispatchDecorators = useCrud<Configured & Obj>(_decorators);
+  const dispatchDecorators = useCrud<Configured & Obj>(_decorators, () => ({
+    ...(CountDecoratorConfig as Configured & Obj)
+  }));
   const decorators = dispatchDecorators.elements;
 
   const featureModel = registry.model.node as SwitchNodeParams;
