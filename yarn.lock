@@ -2,13 +2,6 @@
 # yarn lockfile v1
 
 
-"@accessible/use-id@^1.1.2":
-  version "1.1.2"
-  resolved "https://registry.yarnpkg.com/@accessible/use-id/-/use-id-1.1.2.tgz#6aa72fe65e0fca3e8532d2dde36c1408b2734199"
-  integrity sha512-0JcdE3a9WuR0hf8EfvoDDcKROOYEklSh9HN8nEQuAuyRQ7FrVYKDOz966nUiknzT4wy7MD4IkbdhkC4LqLhwHA==
-  dependencies:
-    "@react-hook/passive-layout-effect" "^1.2.0"
-
 "@babel/code-frame@7.12.11":
   version "7.12.11"
   resolved "https://registry.yarnpkg.com/@babel/code-frame/-/code-frame-7.12.11.tgz#f4ad435aa263db935b8f10f2c552d23fb716a63f"
@@ -706,11 +699,6 @@
   integrity sha512-8Aossy/5pvR3hgkf/jRB45/scny1wMoqjEPiw9PrftwjQMPY374sM4gn5yuSKoMKn1Pxf2HFRenSJCv8+FTzPw==
   dependencies:
     react "^17.0.2"
-
-"@react-hook/passive-layout-effect@^1.2.0":
-  version "1.2.1"
-  resolved "https://registry.yarnpkg.com/@react-hook/passive-layout-effect/-/passive-layout-effect-1.2.1.tgz#c06dac2d011f36d61259aa1c6df4f0d5e28bc55e"
-  integrity sha512-IwEphTD75liO8g+6taS+4oqz+nnroocNfWVHWz7j+N+ZO2vYrc6PV1q7GQhuahL0IOR7JccFTsFKQ/mb6iZWAg==
 
 "@rollup/pluginutils@^4.1.1":
   version "4.1.1"

@@ -11,7 +11,6 @@
     "test": "jest"
   },
   "dependencies": {
-    "@accessible/use-id": "^1.1.2",
     "@delangle/use-modal": "^1.9.27",
     "@pastable/use-force-update": "^0.0.3",
     "fflate": "^0.7.1",

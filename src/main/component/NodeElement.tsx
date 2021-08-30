@@ -14,7 +14,7 @@ import {
   labelizeOption,
   stripDefaultNamespace
 } from '../util/LabelHelper';
-import useId from '@accessible/use-id';
+import { useId } from '../hook/useId';
 import { NodeErrorBoundary } from './ui/ErrorBoundary';
 import { EnumNodeParams } from '../model/node/EnumNode';
 import { ValueType } from 'react-select';
@@ -219,7 +219,7 @@ function CheckboxInput({
   value,
   onChange
 }: NodeProps<BoolNodeParams>) {
-  const id = useId(null, name);
+  const id = useId(name);
   const handleChange = useCallback(
     (event: ChangeEvent<HTMLInputElement>) =>
       onChange({ [name]: event.target.checked }),
@@ -248,7 +248,7 @@ function ColorInput({
   value,
   onChange
 }: NodeProps<ColorNodeParams>) {
-  const id = useId(null, name);
+  const id = useId(name);
   const handleChange = useCallback(
     (event: ChangeEvent<HTMLInputElement>) =>
       onChange({ [name]: hexColorToInteger(event.target.value) }),
@@ -386,7 +386,7 @@ function ListCrud({
 }
 
 function WeightedValue({ name, node, value, onChange }: NodeProps<ModelNode>) {
-  const weightId = useId(null, name);
+  const weightId = useId(name);
   const val = value[name] as Obj;
   const weight = (val.weight as number) ?? 1;
   const handleDataChange = useCallback(
@@ -471,7 +471,7 @@ function NumberNodeInput({
   value,
   onChange
 }: NodeProps<NumberNodeParams>) {
-  const id = useId(null, name);
+  const id = useId(name);
   const handleChange = useCallback(
     (value: number) => onChange({ [name]: value }),
     [name, onChange]
@@ -536,7 +536,7 @@ function OptionalInput({
   value,
   onChange
 }: NodeProps<OptionalNodeParams>) {
-  const id = useId(null, name);
+  const id = useId(name);
   const handleCheckboxChange = useCallback(
     function (event: ChangeEvent<HTMLInputElement>) {
       if (event.target.checked) {
@@ -583,7 +583,7 @@ function SelectInput({
   value,
   onChange
 }: NodeProps<EnumNodeParams>) {
-  const id = useId(null, name);
+  const id = useId(name);
   const handleChange = useCallback(
     function (option: ValueType<Option, false>): void {
       if (option?.value) {
@@ -619,7 +619,7 @@ function ResourceSelectInput({
   value,
   onChange
 }: NodeProps<IdentifierNodeParams>) {
-  const id = useId(null, name);
+  const id = useId(name);
   const handleChange = useCallback(
     function (option: ValueType<Option, false>): void {
       if (option?.value) {
@@ -653,7 +653,7 @@ function ResourceSelectMultipleInput({
   value,
   onChange
 }: NodeProps<IdentifierNodeParams>) {
-  const id = useId(null, name);
+  const id = useId(name);
   const options = useOptions(node.registry);
   const selected: Option[] = useMemo(
     function () {
