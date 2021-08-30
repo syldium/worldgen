@@ -86,6 +86,21 @@ export function NumberInput({
 
   useEffect(() => onStopStep, []);
 
+  const stepValue = step < 1 ? 'any' : step;
+
+  if (import.meta.env.SSR) {
+    return (
+      <input
+        type="number"
+        defaultValue={value}
+        min={min}
+        max={max}
+        step={stepValue}
+        size={size}
+      />
+    );
+  }
+
   return (
     <div className="number-input">
       <div className="number-wrapper">
@@ -93,7 +108,7 @@ export function NumberInput({
           type="number"
           min={min}
           max={max}
-          step={step < 1 ? 'any' : step}
+          step={stepValue}
           size={size}
           value={value}
           onChange={handleChange}

@@ -83,9 +83,10 @@ export function MainMenu(): JSX.Element {
           />
         </Modal>
       )}
-      {(Object.keys(WorldgenNames) as WorldgenRegistryKey[]).map((key) => (
-        <ResourceList registryKey={key} key={key} />
-      ))}
+      {!import.meta.env.SSR &&
+        (Object.keys(WorldgenNames) as WorldgenRegistryKey[]).map((key) => (
+          <ResourceList registryKey={key} key={key} />
+        ))}
     </div>
   );
 }

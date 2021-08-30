@@ -11,24 +11,30 @@ interface Viewer {
   predicate: (value: Record<string, any>) => boolean;
   component: React.LazyExoticComponent<React.NamedExoticComponent<ViewerProps>>;
 }
-const BiomeSourceMap: Viewer = {
-  key: 'BiomeSourceMap',
-  predicate: (value) => {
-    if (typeof value.type !== 'string') {
-      return false;
-    }
-    const type = stripDefaultNamespace(value.type);
-    return (
-      (type === 'multi_noise' || type === 'checkerboard') &&
-      Array.isArray(value.biomes) &&
-      value.biomes.length > 0
-    );
-  },
-  component: React.lazy(() => import('./BiomeSourceMap'))
-};
-const Viewers: Partial<Record<WorldgenRegistryKey, ReadonlyArray<Viewer>>> = {
-  'worldgen/biome_source': [BiomeSourceMap]
-};
+
+let Viewers: Partial<Record<WorldgenRegistryKey, ReadonlyArray<Viewer>>>;
+if (!import.meta.env.SSR) {
+  const BiomeSourceMap: Viewer = {
+    key: 'BiomeSourceMap',
+    predicate: (value) => {
+      if (typeof value.type !== 'string') {
+        return false;
+      }
+      const type = stripDefaultNamespace(value.type);
+      return (
+        (type === 'multi_noise' || type === 'checkerboard') &&
+        Array.isArray(value.biomes) &&
+        value.biomes.length > 0
+      );
+    },
+    component: React.lazy(() => import('./BiomeSourceMap'))
+  };
+  Viewers = {
+    'worldgen/biome_source': [BiomeSourceMap]
+  };
+} else {
+  Viewers = {};
+}
 export default Viewers;
 
 export function ViewerElement(

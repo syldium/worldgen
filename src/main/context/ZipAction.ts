@@ -10,7 +10,7 @@ import type {
 import type { Unzipped } from 'fflate';
 import type { WorldgenRegistryKey } from '../model/RegistryKey';
 
-const worker = new ZipWorker();
+const worker = import.meta.env.SSR ? ({} as Worker) : new ZipWorker();
 export type ReadResult<T> = { [path: string]: T };
 export class ZipAction {
   /**

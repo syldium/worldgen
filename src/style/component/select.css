@@ -1,0 +1,25 @@
+select {
+  appearance: none;
+  height: 38px;
+  width: 100%;
+  font-size: inherit;
+  color: var(--primary-color);
+  background-color: var(--bg-color-input);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  padding: 2px 6px;
+  background-image: linear-gradient(45deg, transparent 50%, gray 50%),
+    linear-gradient(135deg, gray 50%, transparent 50%),
+    linear-gradient(to right, #ccc, #ccc);
+  background-position: calc(100% - 18px) 1em, calc(100% - 13px) 1em,
+    calc(100% - 2.25em) 0.5em;
+  background-size: 5px 5px, 5px 5px, 1px 1.25em;
+  background-repeat: no-repeat;
+}
+
+select:hover {
+  background-color: var(--bg-color-input-hover);
+}
+select:focus {
+  box-shadow: 0 0 0 1px var(--focus-color);
+}

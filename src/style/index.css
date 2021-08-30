@@ -8,6 +8,8 @@
 @import 'component/jsonview.css';
 @import 'component/link.css';
 @import 'component/navbar.css';
+@import 'component/noscript.css';
 @import 'component/section.css';
+@import 'component/select.css';
 @import 'component/tab.css';
 @import 'component/toggle.css';
