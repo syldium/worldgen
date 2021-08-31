@@ -1,6 +1,5 @@
 import React from 'react';
-import { render } from '@testing-library/react';
-import selectEvent from 'react-select-event';
+import { fireEvent, render } from '@testing-library/react';
 import { BlockState } from '../../../main/component/resource/BlockState';
 import { GameRegistryProvider } from '../../../main/context/GameRegistry';
 import {
@@ -40,10 +39,9 @@ describe('block state form', function () {
     );
 
     expect(getByTestId('form')).toHaveFormValues({ block: 'minecraft:air' });
-    await selectEvent.select(
-      container.querySelector('#block') as HTMLInputElement,
-      'Mod: Double block'
-    );
+    fireEvent.change(container.querySelector('#block') as HTMLSelectElement, {
+      target: { value: 'mod:double_block' }
+    });
     expect(changeCallback).toHaveBeenCalledWith({
       block: {
         Name: 'mod:double_block',

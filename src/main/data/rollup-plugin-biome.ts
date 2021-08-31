@@ -32,7 +32,7 @@ export default function createBiomeColors(): Plugin {
           map: { mappings: '' }
         };
       } catch (err) {
-        this.warn({ message: err.message, id });
+        this.warn({ message: (err as Error).message, id });
         return null;
       }
     }

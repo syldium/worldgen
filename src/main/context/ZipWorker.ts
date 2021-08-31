@@ -65,7 +65,7 @@ function extractDatapack(unzipped: Unzipped): [RawRegistries, number] {
   try {
     mcmeta = JSON.parse(strFromU8(packMeta)) as Partial<McMeta>;
   } catch (e) {
-    throw Error(`Error reading pack.mcmeta file: ${e.message}`);
+    throw Error(`Error reading pack.mcmeta file: ${(e as Error).message}`);
   }
   if (!mcmeta.pack || typeof mcmeta.pack.pack_format !== 'number') {
     throw Error('No pack format found in pack.mcmeta.');
@@ -89,7 +89,7 @@ function extractDatapack(unzipped: Unzipped): [RawRegistries, number] {
         }
         registries[registryKey]![`${match[0]}:${match[1]}`] = content;
       } catch (err) {
-        errors[path] = err;
+        errors[path] = err as Error;
       }
     } else {
       assets[path] = entry;
