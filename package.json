@@ -1,6 +1,6 @@
 {
   "name": "worldgen",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "scripts": {
     "analyze": "source-map-explorer 'dist/assets/*.js'",
     "dev": "vite",
@@ -18,7 +18,7 @@
     "@pastable/use-force-update": "^0.0.3",
     "fflate": "^0.7.1",
     "file-saver": "^2.0.5",
-    "idb-keyval": "^5.0.6",
+    "idb-keyval": "^6.0.1",
     "json-view-for-react": "^2.0.1",
     "leaflet": "^1.7.1",
     "nanoid": "^3.1.23",
@@ -61,5 +61,8 @@
     "sass": "^1.35.2",
     "typescript": "^4.3.4",
     "vite": "^2.3.7"
+  },
+  "resolutions": {
+    "set-value": "^4.1.0"
   }
 }
