@@ -80,11 +80,13 @@ interface ObjectViewProps {
   obj: Record<string, ModelNode>;
   value: Record<string, unknown>;
   onChange: (value: Record<string, unknown>) => void;
+  children?: React.ReactNode;
 }
-function ObjectView({ obj, value, onChange }: ObjectViewProps) {
+function ObjectView({ obj, value, onChange, children }: ObjectViewProps) {
   const nodes: React.ReactElement[] = [];
   let inline: React.ReactElement[] = [];
   for (const [name, node] of Object.entries(obj)) {
+    const isShort = mayInline(node);
     const el = (
       <NodeElement
         key={name}
@@ -93,9 +95,13 @@ function ObjectView({ obj, value, onChange }: ObjectViewProps) {
         value={value}
         isObject={true}
         onChange={onChange}
-      />
+      >
+        {!isShort && children}
+      </NodeElement>
     );
-    const isShort = mayInline(node);
+    if (!isShort && children) {
+      children = undefined;
+    }
     if ((!isShort && inline.length) || inline.length > 3) {
       nodes.push(
         inline.length > 1 ? (
@@ -335,7 +341,7 @@ function ListCrud({
     () => providePreset(node.of),
     [node.of]
   );
-  const { elements, create, update } = useCrudProps<DataType>(
+  const { elements, create, update, remove } = useCrudProps<DataType>(
     handleValuesChange,
     list,
     initial
@@ -378,7 +384,11 @@ function ListCrud({
               node={node.of}
               value={list as Record<number, unknown>}
               onChange={handleChange}
-            />
+            >
+              <Button cat="danger" onClick={(e) => remove(i, e)}>
+                Remove
+              </Button>
+            </El>
           ))}
       </div>
     </div>
@@ -499,6 +509,7 @@ function ObjectInput({
   name,
   node,
   value,
+  children,
   onChange
 }: NodeProps<ObjectNodeParams>) {
   const objectValue = value[name] as Record<string, unknown>;
@@ -509,11 +520,9 @@ function ObjectInput({
     [name, onChange, objectValue]
   );
   const view = (
-    <ObjectView
-      obj={node.records}
-      value={objectValue}
-      onChange={handleChange}
-    />
+    <ObjectView obj={node.records} value={objectValue} onChange={handleChange}>
+      {children}
+    </ObjectView>
   );
   if (Array.isArray(value)) {
     return view;
@@ -525,7 +534,9 @@ function ObjectInput({
         obj={node.records}
         value={objectValue}
         onChange={handleChange}
-      />
+      >
+        {children}
+      </ObjectView>
     </fieldset>
   );
 }
@@ -617,7 +628,8 @@ function ResourceSelectInput({
   name,
   node,
   value,
-  onChange
+  onChange,
+  children
 }: NodeProps<IdentifierNodeParams>) {
   const id = useId(name);
   const handleChange = useCallback(
@@ -637,12 +649,17 @@ function ResourceSelectInput({
   );
   return (
     <Labelized className="form-group" id={id} name={name}>
-      <Select
-        options={options}
-        value={selected}
-        onChange={handleChange}
-        inputId={id}
-      />
+      <div className="flex">
+        <div className="full-width">
+          <Select
+            options={options}
+            value={selected}
+            onChange={handleChange}
+            inputId={id}
+          />
+        </div>{' '}
+        {children}
+      </div>
     </Labelized>
   );
 }
@@ -835,12 +852,14 @@ export function SelectSwitch({
 
   return (
     <fieldset>
-      <legend>
-        <Select
-          options={options}
-          value={selected}
-          onChange={handleTypeChange}
-        />
+      <legend className="flex">
+        <div className="full-width">
+          <Select
+            options={options}
+            value={selected}
+            onChange={handleTypeChange}
+          />
+        </div>
         {children}
       </legend>
       {schema && (

@@ -104,17 +104,30 @@ export function ConfiguredFeature(): JSX.Element {
           onTypeChange={handleFeatureTypeChange}
         />
       </div>
-      <button onClick={dispatchDecorators.create}>Add decorator</button>
-      {decorators.map((decorator, i) => (
-        <SelectSwitch
-          name={i.toString()}
-          node={ConfiguredDecorator.node as SwitchNodeParams}
-          value={decorators as Record<number, Obj>}
-          onChange={handleDecoratorChange}
-          key={decorator.__reactKey}
-          isObject={true}
-        />
-      ))}
+      <fieldset>
+        <legend>
+          Decorators wrapper{' '}
+          <Button onClick={dispatchDecorators.create}>Add decorator</Button>
+        </legend>
+        {decorators.map((decorator, i) => (
+          <SelectSwitch
+            name={i.toString()}
+            node={ConfiguredDecorator.node as SwitchNodeParams}
+            value={decorators as Record<number, Obj>}
+            onChange={handleDecoratorChange}
+            key={decorator.__reactKey}
+            isObject={true}
+          >
+            <Button
+              cat="danger"
+              className="mlm"
+              onClick={(e) => dispatchDecorators.remove(i, e)}
+            >
+              Remove
+            </Button>
+          </SelectSwitch>
+        ))}
+      </fieldset>
       <Button>Save</Button>
     </form>
   );
