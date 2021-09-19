@@ -53,23 +53,51 @@ export function isNode(model: ObjectOrNodeModel): model is ModelNode {
   return 'type' in model;
 }
 
+function createPreset(node: Record<string, ModelNode>) {
+  return Object.fromEntries(
+    Object.entries(node)
+      .filter((r) => r[1].type !== 'optional')
+      .map(([name, p]) => [name, providePreset(p)])
+  );
+}
 export function providePreset(node: ModelNode): DataType {
-  const { type } = node;
   if (typeof node.default !== 'undefined') {
     return node.default as DataType;
-  } else if (type === 'object') {
-    return {};
-  } else if (type === 'int' || type === 'float') {
-    return 0;
-  } else if (node.type === 'switch') {
-    for (const val of Object.values(node.preset)) {
-      if (typeof val === 'object') {
-        return val;
-      }
-    }
-    return { [node.typeField]: Object.keys(node.values)[0] };
-  } else if (node.type === 'list') {
-    return [];
   }
-  return type === 'bool' ? false : '';
+  switch (node.type) {
+    case 'bool':
+      return false;
+    case 'enum':
+      return node.values.length ? node.values[0].value : '';
+    case 'color':
+    case 'int':
+    case 'float':
+      return 0;
+    case 'list':
+      return [];
+    case 'map':
+      return {};
+    case 'object':
+      return createPreset(node.records);
+    case 'optional':
+      return providePreset(node.node);
+    case 'switch': {
+      for (const val of Object.values(node.preset)) {
+        if (typeof val === 'object') {
+          return val;
+        }
+      }
+      const type = Object.keys(node.values)[0];
+      const nodes = node.values[type];
+      const preset = isNode(nodes) ? providePreset(nodes) : createPreset(nodes);
+      if (node.config) {
+        return { [node.typeField]: type, [node.config]: preset };
+      } else if (typeof preset === 'object') {
+        return { [node.typeField]: type, ...preset };
+      }
+      return { [node.typeField]: type };
+    }
+    default:
+      return '';
+  }
 }
