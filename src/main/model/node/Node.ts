@@ -50,7 +50,7 @@ export type ModelNode =
   | SwitchNodeParams;
 
 export function isNode(model: ObjectOrNodeModel): model is ModelNode {
-  return 'type' in model;
+  return 'type' in model && typeof model.type === 'string';
 }
 
 function createPreset(node: Record<string, ModelNode>) {
