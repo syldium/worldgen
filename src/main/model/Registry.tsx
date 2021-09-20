@@ -10,7 +10,11 @@ import {
 import { Dimension, Dimensions } from '../data/1.17/Dimension';
 import { ConfiguredFeature } from '../data/1.17/ConfiguredFeature';
 import { ConfiguredDecorator } from '../data/1.17/ConfiguredDecorator';
-import { GameVersion } from '../context/GameVersion';
+import {
+  GameVersion,
+  PackFormatNumber,
+  PackFormatString
+} from '../context/GameVersion';
 import { Biome, Biomes } from '../data/1.17/Biome';
 import { customOption, stripDefaultNamespace } from '../util/LabelHelper';
 import { loadVanillaZip } from '../util/FetchHelper';
@@ -157,11 +161,14 @@ export class WorldgenRegistryHolder {
     'worldgen/processor_list': new WorldgenRegistry(ProcessorList)
   };
   readonly packFormat: number;
+  readonly gameVersion: GameVersion;
   vanillaZip?: Unzipped;
 
-  constructor(version: GameVersion | number) {
+  constructor(version: GameVersion | keyof typeof PackFormatNumber) {
     this.packFormat =
-      typeof version === 'number' ? version : version === '1.17' ? 7 : 6;
+      typeof version === 'number' ? version : PackFormatString[version];
+    this.gameVersion =
+      typeof version === 'number' ? PackFormatNumber[version] : version;
   }
 
   async vanillaResource(
@@ -174,7 +181,7 @@ export class WorldgenRegistryHolder {
       if (immediateSchema && immediate) {
         immediate(immediateSchema);
       }
-      this.vanillaZip = await loadVanillaZip();
+      this.vanillaZip = await loadVanillaZip(this.gameVersion);
     }
     const path =
       registry + '/' + stripDefaultNamespace(namespacedKey) + '.json';
