@@ -706,7 +706,8 @@ function ResourceInput({
   name,
   node,
   value,
-  onChange
+  onChange,
+  children
 }: NodeProps<IdentifierNodeParams>) {
   const { worldgen } = useContext(GameContext);
   const resource = value[name];
@@ -728,7 +729,9 @@ function ResourceInput({
         name={name}
         value={resource as Record<string, unknown>}
         onChange={handleChange}
-      />
+      >
+        {children}
+      </ModelView>
     );
     const viewers = ViewerElement(
       node.registry,
@@ -749,7 +752,9 @@ function ResourceInput({
         name={name}
         value={value[name] as BlockStateValue}
         onChange={onChange}
-      />
+      >
+        {children}
+      </BlockState>
     );
   } else if (node.registry === 'block_state_provider') {
     return (
@@ -766,7 +771,9 @@ function ResourceInput({
       node={node}
       value={value}
       onChange={onChange}
-    />
+    >
+      {children}
+    </ResourceSelectInput>
   );
 }
 

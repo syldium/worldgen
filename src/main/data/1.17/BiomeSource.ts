@@ -8,14 +8,14 @@ import { BoolNode } from '../../model/node/BoolNode';
 import { Model } from '../../model/Model';
 
 const BiomeNoiseParameters = ObjectNode({
+  biome: ResourceNode('worldgen/biome'),
   parameters: ObjectNode({
     altitude: FloatNode({ min: -2, max: 2 }),
     weirdness: FloatNode({ min: -2, max: 2 }),
     temperature: FloatNode({ min: -2, max: 2 }),
     humidity: FloatNode({ min: -2, max: 2 }),
     offset: FloatNode({ min: 0, max: 1 })
-  }),
-  biome: ResourceNode('worldgen/biome')
+  })
 });
 
 const NoiseParameters = ObjectNode({
