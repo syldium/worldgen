@@ -13,7 +13,7 @@ import { GameContext } from '../../context/GameRegistry';
 import { useCrudProps } from '../../hook/useCrud';
 import { Obj } from '../../util/DomHelper';
 import { Button } from '../ui/Button';
-import { NodeElement } from '../NodeElement';
+import { ModelView, NodeElement } from '../NodeElement';
 import { IntProvider } from '../../data/1.17/NumberProvider';
 import {
   findBlockTypes,
@@ -22,6 +22,10 @@ import {
   WeightedStateEntry
 } from '../../viewer/block/StateProvider';
 import { Typed } from '../../model/node/SwitchNode';
+import {
+  SeededBlockStateProviderPresets,
+  SeededBlockStateProviders
+} from '../../data/1.18/BlockStateProvider';
 
 export interface StateProvider {
   type: string;
@@ -36,6 +40,15 @@ const providers1_16 = [
   'weighted_state_provider'
 ];
 const providers1_17 = providers1_16.concat('randomized_int_state_provider');
+const providers1_18 = [
+  'dual_noise_2d_provider',
+  'noise_2d_cutoff_provider',
+  'noise_2d_provider',
+  'randomized_int_state_provider',
+  'rotated_block_provider',
+  'simple_state_provider',
+  'weighted_state_provider'
+];
 
 interface BlockStateProviderProps {
   name: string;
@@ -55,18 +68,23 @@ export function BlockStateProvider({
   onChange
 }: BlockStateProviderProps): JSX.Element {
   const context = useContext(GameContext);
-  const hasRandomizedInt = context.worldgen.packFormat === 7;
+  const format = context.worldgen.packFormat;
   const options = useOptionsArray(
-    hasRandomizedInt ? providers1_17 : providers1_16
+    format === 8 ? providers1_18 : format === 7 ? providers1_17 : providers1_16
   );
 
   const handleTypeChange = useCallback(
     function (option: ValueType<Option, false>) {
       if (option) {
+        const type = stripDefaultNamespace(option.value);
         const common = ['simple_state_provider', 'rotated_block_provider'];
         let val: StateProvider;
-        if (common.includes(value.type) && common.includes(option.value)) {
+        if (common.includes(value.type) && common.includes(type)) {
           val = { ...value, type: option.value };
+        } else if (SeededBlockStateProviderPresets[type]) {
+          val = {
+            ...SeededBlockStateProviderPresets[type]
+          } as unknown as StateProvider;
         } else {
           val = { type: option.value };
         }
@@ -91,6 +109,7 @@ export function BlockStateProvider({
   const providerType = value?.type
     ? stripDefaultNamespace(value.type)
     : 'simple_state_provider';
+  const node = SeededBlockStateProviders[providerType];
 
   const defaultBlocks = context.blockStates;
   blocks = (blocks || defaultBlocks) as BlockStateRegistry;
@@ -146,6 +165,16 @@ export function BlockStateProvider({
           onChange={onChange}
           registry={blocks}
           value={value as RandomizedIntStateProvider & Typed}
+        />
+      )}
+      {node && (
+        <ModelView
+          name={name}
+          model={node}
+          // @ts-ignore
+          value={value}
+          // @ts-ignore
+          onChange={onChange}
         />
       )}
     </fieldset>

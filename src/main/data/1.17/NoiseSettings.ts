@@ -55,23 +55,26 @@ const StructuresConfig = ObjectNode({
     StructureConfig
   )
 });
+
+export const NoiseParameters = {
+  structures: StructuresConfig,
+  noise: NoiseConfig,
+  default_block: ResourceNode('block_state'),
+  default_fluid: ResourceNode('block_state'),
+  bedrock_roof_position: IntNode(),
+  bedrock_floor_position: IntNode(),
+  sea_level: IntNode(),
+  min_surface_level: IntNode(),
+  disable_mob_generation: BoolNode(),
+  aquifers_enabled: BoolNode(),
+  noise_caves_enabled: BoolNode(),
+  deepslate_enabled: BoolNode(),
+  ore_veins_enabled: BoolNode(),
+  noodle_caves_enabled: BoolNode()
+};
+
 export const NoiseSettings: Model = {
-  node: {
-    structures: StructuresConfig,
-    noise: NoiseConfig,
-    default_block: ResourceNode('block_state'),
-    default_fluid: ResourceNode('block_state'),
-    bedrock_roof_position: IntNode(),
-    bedrock_floor_position: IntNode(),
-    sea_level: IntNode(),
-    min_surface_level: IntNode(),
-    disable_mob_generation: BoolNode(),
-    aquifers_enabled: BoolNode(),
-    noise_caves_enabled: BoolNode(),
-    deepslate_enabled: BoolNode(),
-    ore_veins_enabled: BoolNode(),
-    noodle_caves_enabled: BoolNode()
-  },
+  node: NoiseParameters,
   preset: () => ({
     aquifers_enabled: true,
     noise_caves_enabled: true,

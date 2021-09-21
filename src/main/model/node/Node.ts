@@ -42,7 +42,7 @@ export type ModelNode =
   | EitherNodeParams
   | EnumNodeParams
   | IdentifierNodeParams
-  | ListNodeParams<unknown>
+  | ListNodeParams
   | MapNodeParams
   | NumberNodeParams
   | ObjectNodeParams
@@ -67,6 +67,10 @@ export function providePreset(node: ModelNode): DataType {
   switch (node.type) {
     case 'bool':
       return false;
+    case 'either': {
+      const nodes = node.nodes[0];
+      return isNode(nodes) ? providePreset(nodes) : createPreset(nodes);
+    }
     case 'enum':
       return node.values.length ? node.values[0].value : '';
     case 'color':
@@ -74,7 +78,9 @@ export function providePreset(node: ModelNode): DataType {
     case 'float':
       return 0;
     case 'list':
-      return [];
+      return node.fixed === -1
+        ? []
+        : new Array(node.fixed).fill(providePreset(node.of));
     case 'map':
       return {};
     case 'object':

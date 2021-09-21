@@ -1,12 +1,13 @@
-import { NodeBase, NodeType } from './Node';
+import type { ModelNode, NodeBase } from './Node';
 
-export interface ListNodeParams<T> extends NodeBase<'list'> {
+export interface ListNodeParams<T extends ModelNode = ModelNode>
+  extends NodeBase<'list'> {
   of: T;
   fixed: number;
   weighted: boolean;
 }
 
-export const ListNode = <T extends NodeBase<U>, U extends NodeType>(
+export const ListNode = <T extends ModelNode = ModelNode>(
   of: T,
   fixedSize = -1,
   weighted = false
@@ -16,6 +17,7 @@ export const ListNode = <T extends NodeBase<U>, U extends NodeType>(
     fixed: fixedSize,
     weighted: weighted,
     type: 'list',
-    isValid: Array.isArray
+    isValid: (value) =>
+      Array.isArray(value) && (fixedSize === -1 || value.length === fixedSize)
   };
 };

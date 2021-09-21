@@ -24,7 +24,8 @@ if (!import.meta.env.SSR) {
       return (
         (type === 'multi_noise' || type === 'checkerboard') &&
         Array.isArray(value.biomes) &&
-        value.biomes.length > 0
+        value.biomes.length > 0 &&
+        'seed' in value
       );
     },
     component: React.lazy(() => import('./BiomeSourceMap'))

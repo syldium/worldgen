@@ -18,6 +18,14 @@ export interface WeightedStateEntry {
 interface SimpleStateProvider {
   state: BlockStateValue;
 }
+interface Noise2dStateProvider {
+  states: BlockStateValue[];
+}
+interface Noise2dCutoffStateProvider {
+  default_state: BlockStateValue;
+  low_states: BlockStateValue[];
+  high_states: BlockStateValue[];
+}
 interface WeightedStateProvider {
   entries: WeightedStateEntry[];
 }
@@ -29,6 +37,8 @@ export interface RandomizedIntStateProvider {
 export type StateProvider = Partial<SimpleStateProvider> &
   Partial<WeightedStateProvider> &
   Partial<RandomizedIntStateProvider> &
+  Partial<Noise2dStateProvider> &
+  Partial<Noise2dCutoffStateProvider> &
   Typed;
 
 export function findBlockTypes(provider: StateProvider): string[] {
@@ -65,6 +75,15 @@ export function findBlockTypes(provider: StateProvider): string[] {
         'cornflower',
         'lily_of_the_valley'
       ];
+    case 'noise_2d_provider':
+    case 'dual_noise_2d_provider':
+      return provider.states!.map((entry) => entry.Name);
+    case 'noise_2d_cutoff_provider':
+      return [
+        provider.default_state!,
+        ...provider.low_states!,
+        ...provider.high_states!
+      ].map((entry) => entry.Name);
     case 'randomized_int_state_provider':
       return findBlockTypes(provider.source!);
     default:

@@ -6,17 +6,14 @@ import { ChunkGenerator } from './ChunkGenerator';
 
 const dimensions = ['overworld', 'the_nether', 'the_end'] as const;
 
-const preset = {
-  generator: ChunkGenerator.preset('1.17')
-};
 export const Dimension: Model = {
   node: {
     type: ResourceNode('dimension_type'),
     generator: ResourceNode('worldgen/chunk_generator')
   },
-  preset: () => ({
+  preset: (version) => ({
     type: 'minecraft:overworld',
-    generator: preset.generator
+    generator: ChunkGenerator.preset(version)
   })
 };
 

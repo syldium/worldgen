@@ -7,7 +7,11 @@ import { SwitchNode } from '../../model/node/SwitchNode';
 import { ListNode } from '../../model/node/ListNode';
 import { Option } from '../../component/ui/Select';
 import { labelizeOption } from '../../util/LabelHelper';
-import { BiomeSource, VANILLA_LAYERED_BIOME_SOURCE } from './BiomeSource';
+import {
+  BiomeSource,
+  FIXED_BIOME_SOURCE,
+  VANILLA_LAYERED_BIOME_SOURCE
+} from './BiomeSource';
 
 const FlatBlockLayer = ObjectNode({
   block: IdentifierNode('block'),
@@ -64,8 +68,9 @@ export const ChunkGenerator: Model = {
     },
     null
   ),
-  preset: () => ({
-    biome_source: VANILLA_LAYERED_BIOME_SOURCE,
+  preset: (version) => ({
+    biome_source:
+      version === '1.18' ? FIXED_BIOME_SOURCE : VANILLA_LAYERED_BIOME_SOURCE,
     seed: generatorSeed,
     settings: 'minecraft:overworld',
     type: 'minecraft:noise'

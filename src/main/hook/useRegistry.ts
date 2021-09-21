@@ -25,8 +25,8 @@ export function useRegistry<S extends Schema>(
   const entry = registry.entries[id];
 
   const initial = useMemo(
-    () => entry || registry.model.preset('1.17'),
-    [entry, registry.model]
+    () => entry || registry.model.preset(worldgen.gameVersion),
+    [entry, registry.model, worldgen.gameVersion]
   );
 
   const postLoad = useRef<PostLoadCallback<S>>();

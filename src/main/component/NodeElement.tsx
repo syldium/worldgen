@@ -306,7 +306,7 @@ function ListValues({
   node,
   value,
   onChange
-}: NodeProps<ListNodeParams<ModelNode>>) {
+}: NodeProps<ListNodeParams>) {
   const absent = !(name in value);
   if (
     (node.of.type === 'resource' || node.of.type === 'identifier') &&
@@ -326,12 +326,7 @@ function ListValues({
   return <ListCrud name={name} node={node} value={value} onChange={onChange} />;
 }
 
-function ListCrud({
-  name,
-  node,
-  value,
-  onChange
-}: NodeProps<ListNodeParams<ModelNode>>) {
+function ListCrud({ name, node, value, onChange }: NodeProps<ListNodeParams>) {
   const handleValuesChange = useCallback(
     (values) => onChange({ [name]: values }),
     [name, onChange]

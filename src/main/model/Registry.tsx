@@ -1,28 +1,16 @@
 import { Option } from '../component/ui/Select';
 import { Model } from './Model';
-import { DimensionType, DimensionTypes } from '../data/1.17/DimensionType';
-import { ChunkGenerator, ChunkGenerators } from '../data/1.17/ChunkGenerator';
-import { BiomeSource } from '../data/1.17/BiomeSource';
-import {
-  NoiseSettings,
-  NoiseSettingsOptions
-} from '../data/1.17/NoiseSettings';
-import { Dimension, Dimensions } from '../data/1.17/Dimension';
-import { ConfiguredFeature } from '../data/1.17/ConfiguredFeature';
-import { ConfiguredDecorator } from '../data/1.17/ConfiguredDecorator';
 import {
   GameVersion,
   PackFormatNumber,
   PackFormatString
 } from '../context/GameVersion';
-import { Biome, Biomes } from '../data/1.17/Biome';
 import { customOption, stripDefaultNamespace } from '../util/LabelHelper';
 import { loadVanillaZip } from '../util/FetchHelper';
-import { ConfiguredCarver } from '../data/1.17/ConfiguredCarver';
-import { ConfiguredSurfaceBuilder } from '../data/1.17/ConfiguredSurfaceBuilder';
-import { ProcessorList } from '../data/1.17/StructureProcessor';
 import { strFromU8, Unzipped } from 'fflate';
 import type { WorldgenRegistryKey } from './RegistryKey';
+import { Registries1_18 } from '../data/1.18/v1_18';
+import { Registries1_17 } from '../data/1.17/v1_17';
 
 export interface Registry {
   options: Option[];
@@ -135,31 +123,10 @@ export type BlockStateRegistry = {
 };
 export const DEFAULT_BLOCK_STATE = { default: {}, properties: {} };
 
+export type RegistryInfo = [Model, Option[]] | [Model];
+export type WorldgenRegistriesType = Record<WorldgenRegistryKey, RegistryInfo>;
 export class WorldgenRegistryHolder {
-  readonly worldgen: Record<WorldgenRegistryKey, WorldgenRegistry> = {
-    dimension: new WorldgenRegistry(Dimension, Dimensions),
-    dimension_type: new WorldgenRegistry(DimensionType, DimensionTypes),
-    'worldgen/biome': new WorldgenRegistry(Biome, Biomes),
-    'worldgen/biome_source': new WorldgenRegistry(BiomeSource),
-    'worldgen/chunk_generator': new WorldgenRegistry(
-      ChunkGenerator,
-      ChunkGenerators
-    ),
-    'worldgen/configured_carver': new WorldgenRegistry(ConfiguredCarver),
-    'worldgen/configured_decorator': new WorldgenRegistry(ConfiguredDecorator),
-    'worldgen/configured_feature': new WorldgenRegistry(ConfiguredFeature),
-    'worldgen/configured_structure_feature': new WorldgenRegistry(
-      DimensionType
-    ),
-    'worldgen/configured_surface_builder': new WorldgenRegistry(
-      ConfiguredSurfaceBuilder
-    ),
-    'worldgen/noise_settings': new WorldgenRegistry(
-      NoiseSettings,
-      NoiseSettingsOptions
-    ),
-    'worldgen/processor_list': new WorldgenRegistry(ProcessorList)
-  };
+  readonly worldgen: Record<WorldgenRegistryKey, WorldgenRegistry>;
   readonly packFormat: number;
   readonly gameVersion: GameVersion;
   vanillaZip?: Unzipped;
@@ -169,6 +136,32 @@ export class WorldgenRegistryHolder {
       typeof version === 'number' ? version : PackFormatString[version];
     this.gameVersion =
       typeof version === 'number' ? PackFormatNumber[version] : version;
+    const provider = this.packFormat === 8 ? Registries1_18 : Registries1_17;
+    this.worldgen = Object.fromEntries(
+      Object.entries(provider).map(([key, registry]) => [
+        key,
+        // @ts-ignore
+        new WorldgenRegistry(...registry)
+      ])
+    ) as Record<WorldgenRegistryKey, WorldgenRegistry>;
+  }
+
+  async resource(
+    registry: WorldgenRegistryKey,
+    namespacedKey: string,
+    immediateSchema?: Schema,
+    immediate?: (schema: Schema) => void
+  ): Promise<Schema> {
+    const entry = this.worldgen[registry].entries[namespacedKey];
+    if (entry) {
+      return entry;
+    }
+    return this.vanillaResource(
+      registry,
+      namespacedKey,
+      immediateSchema,
+      immediate
+    );
   }
 
   async vanillaResource(

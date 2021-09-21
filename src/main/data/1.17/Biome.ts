@@ -5,7 +5,7 @@ import { EnumNode } from '../../model/node/EnumNode';
 import { DoubleNode, FloatNode } from '../../model/node/FloatNode';
 import { ListNode } from '../../model/node/ListNode';
 import { BoolNode } from '../../model/node/BoolNode';
-import { Model } from '../../model/Model';
+import { Model, ObjectModel } from '../../model/Model';
 import { labelizeOption } from '../../util/LabelHelper';
 import { Option } from '../../component/ui/Select';
 
@@ -18,7 +18,7 @@ const BiomeEffects = ObjectNode({
   grass_color: Opt(ColorNode())
 });
 
-const Spawners = ListNode(
+export const Spawners = ListNode(
   ObjectNode({
     type: IdentifierNode('entity_type'),
     weight: IntNode({ min: 0 }),
@@ -32,59 +32,61 @@ const SpawnCost = ObjectNode({
   charge: DoubleNode({ min: 0 })
 });
 
+export const BiomeSettings: ObjectModel = {
+  depth: FloatNode(),
+  scale: FloatNode(),
+  downfall: FloatNode(),
+  effects: BiomeEffects,
+  category: EnumNode([
+    'none',
+    'taiga',
+    'extreme_hills',
+    'jungle',
+    'mesa',
+    'plains',
+    'savanna',
+    'icy',
+    'the_end',
+    'beach',
+    'forest',
+    'ocean',
+    'desert',
+    'river',
+    'swamp',
+    'mushroom',
+    'nether',
+    'underground'
+  ] as const),
+  precipitation: EnumNode(['none', 'rain', 'snow'] as const),
+  temperature: FloatNode(),
+  temperature_modifier: EnumNode(['none', 'frozen'] as const, 'none'),
+  surface_builder: IdentifierNode('worldgen/configured_surface_builder'),
+  carvers: ObjectNode({
+    air: ListNode(ResourceNode('worldgen/configured_carver')),
+    liquid: ListNode(ResourceNode('worldgen/configured_carver'))
+  }),
+  features: ListNode(ListNode(ResourceNode('worldgen/configured_feature'))),
+  starts: ListNode(IdentifierNode('worldgen/configured_structure_feature')),
+  creature_spawn_probability: FloatNode({
+    min: 0,
+    max: 0.9999999,
+    default: 0.1
+  }),
+  player_spawn_friendly: BoolNode(false),
+  spawners: ObjectNode({
+    monster: Spawners,
+    creature: Spawners,
+    ambient: Spawners,
+    underground_water_creature: Spawners,
+    water_creature: Spawners,
+    water_ambient: Spawners,
+    misc: Spawners
+  }),
+  spawn_costs: ListNode(SpawnCost)
+};
+
 export const Biome: Model = {
-  node: {
-    depth: FloatNode(),
-    scale: FloatNode(),
-    downfall: FloatNode(),
-    effects: BiomeEffects,
-    category: EnumNode([
-      'none',
-      'taiga',
-      'extreme_hills',
-      'jungle',
-      'mesa',
-      'plains',
-      'savanna',
-      'icy',
-      'the_end',
-      'beach',
-      'forest',
-      'ocean',
-      'desert',
-      'river',
-      'swamp',
-      'mushroom',
-      'nether',
-      'underground'
-    ] as const),
-    precipitation: EnumNode(['none', 'rain', 'snow'] as const),
-    temperature: FloatNode(),
-    temperature_modifier: EnumNode(['none', 'frozen'] as const, 'none'),
-    surface_builder: IdentifierNode('worldgen/configured_surface_builder'),
-    carvers: ObjectNode({
-      air: ListNode(ResourceNode('worldgen/configured_carver')),
-      liquid: ListNode(ResourceNode('worldgen/configured_carver'))
-    }),
-    features: ListNode(ListNode(ResourceNode('worldgen/configured_feature'))),
-    starts: ListNode(IdentifierNode('worldgen/configured_structure_feature')),
-    creature_spawn_probability: FloatNode({
-      min: 0,
-      max: 0.9999999,
-      default: 0.1
-    }),
-    player_spawn_friendly: BoolNode(false),
-    spawners: ObjectNode({
-      monster: Spawners,
-      creature: Spawners,
-      ambient: Spawners,
-      underground_water_creature: Spawners,
-      water_creature: Spawners,
-      water_ambient: Spawners,
-      misc: Spawners
-    }),
-    spawn_costs: ListNode(SpawnCost)
-  },
+  node: BiomeSettings,
   preset: () => ({
     scale: 0.05,
     effects: {

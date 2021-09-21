@@ -26,7 +26,7 @@ const types = [
   'nope'
 ] as const;
 
-export const ConfiguredSurfaceBuilder: Model = {
+export const createSurfaceBuilderModel = (types: readonly string[]): Model => ({
   node: forEveryType(types, config),
   preset: () => ({
     config: {
@@ -45,4 +45,6 @@ export const ConfiguredSurfaceBuilder: Model = {
     },
     type: 'minecraft:default'
   })
-};
+});
+
+export const ConfiguredSurfaceBuilder = createSurfaceBuilderModel(types);

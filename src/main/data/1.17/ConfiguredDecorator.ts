@@ -145,31 +145,33 @@ const DecoratorDefaults = {
   }
 };
 
+export const DecoratorsSwitch = SwitchNode(
+  {
+    carving_mask: CarvingMaskConfig,
+    cave_surface: CaveSurfaceConfig,
+    chance: ChanceConfig,
+    count: CountConfig,
+    count_extra: CountExtraConfig,
+    count_multilayer: CountConfig,
+    count_noise: CountNoiseConfig,
+    count_noise_biased: CountNoiseBiasedConfig,
+    dark_oak_tree: {},
+    decorated: DecoratedConfig,
+    end_gateway: {},
+    heightmap: HeightmapConfig,
+    heightmap_spread_double: HeightmapConfig,
+    water_depth_threshold: WaterDepthThresholdConfig,
+    iceberg: {},
+    lava_lake: ChanceConfig,
+    nope: {},
+    range: RangeConfig,
+    spread_32_above: {},
+    square: {}
+  },
+  DecoratorDefaults
+);
+
 export const ConfiguredDecorator: Model = {
-  node: SwitchNode(
-    {
-      carving_mask: CarvingMaskConfig,
-      cave_surface: CaveSurfaceConfig,
-      chance: ChanceConfig,
-      count: CountConfig,
-      count_extra: CountExtraConfig,
-      count_multilayer: CountConfig,
-      count_noise: CountNoiseConfig,
-      count_noise_biased: CountNoiseBiasedConfig,
-      dark_oak_tree: {},
-      decorated: DecoratedConfig,
-      end_gateway: {},
-      heightmap: HeightmapConfig,
-      heightmap_spread_double: HeightmapConfig,
-      water_depth_threshold: WaterDepthThresholdConfig,
-      iceberg: {},
-      lava_lake: ChanceConfig,
-      nope: {},
-      range: RangeConfig,
-      spread_32_above: {},
-      square: {}
-    },
-    DecoratorDefaults
-  ),
+  node: DecoratorsSwitch,
   preset: () => ({})
 };
