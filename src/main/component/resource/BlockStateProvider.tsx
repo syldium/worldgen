@@ -41,9 +41,9 @@ const providers1_16 = [
 ];
 const providers1_17 = providers1_16.concat('randomized_int_state_provider');
 const providers1_18 = [
-  'dual_noise_2d_provider',
-  'noise_2d_cutoff_provider',
-  'noise_2d_provider',
+  'dual_noise_provider',
+  'noise_threshold_provider',
+  'noise_provider',
   'randomized_int_state_provider',
   'rotated_block_provider',
   'simple_state_provider',

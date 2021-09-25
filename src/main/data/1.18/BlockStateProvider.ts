@@ -14,12 +14,12 @@ const seeded: ObjectModel = {
   noise: NoiseValues,
   scale: FloatNode({ min: 0, max: 1 })
 };
-const noise2D: ObjectModel = {
+const noise: ObjectModel = {
   ...seeded,
   states: BlockStateList
 };
-const dualNoise2D: ObjectModel = {
-  ...noise2D,
+const dualNoise: ObjectModel = {
+  ...noise,
   variety: RangeInterval(
     IntNode({ min: 1, max: 64 }),
     'min_inclusive',
@@ -28,7 +28,7 @@ const dualNoise2D: ObjectModel = {
   slow_noise: NoiseValues,
   slow_scale: FloatNode({ min: 0 })
 };
-const noise2DCutoff: ObjectModel = {
+const noiseThreshold: ObjectModel = {
   ...seeded,
   threshold: FloatNode({ min: -1, max: 1 }),
   high_chance: FloatNode({ min: 0, max: 1 }),
@@ -38,9 +38,9 @@ const noise2DCutoff: ObjectModel = {
 };
 
 export const SeededBlockStateProviders: Record<string, ObjectModel> = {
-  noise_2d_provider: noise2D,
-  dual_noise_2d_provider: dualNoise2D,
-  noise_2d_cutoff_provider: noise2DCutoff
+  noise_provider: noise,
+  dual_noise_provider: dualNoise,
+  noise_threshold_provider: noiseThreshold
 };
 
 export const SeededBlockStateProviderPresets: Record<

@@ -7,10 +7,7 @@ import { NamespacedKey } from '../NamespacedKey';
 import { SelectSwitch } from '../NodeElement';
 import { SwitchNodeParams } from '../../model/node/SwitchNode';
 import { Obj } from '../../util/DomHelper';
-import {
-  ConfiguredDecorator,
-  CountDecoratorConfig
-} from '../../data/1.17/ConfiguredDecorator';
+import { CountDecoratorConfig } from '../../data/1.17/ConfiguredDecorator';
 import { JsonViewer } from '../ui/JsonViewer';
 import { Button } from '../ui/Button';
 import { useRegistry } from '../../hook/useRegistry';
@@ -30,6 +27,8 @@ export function ConfiguredFeature(): JSX.Element {
     [initial]
   );
 
+  const decoratorNode =
+    worldgen.worldgen['worldgen/configured_decorator'].model.node;
   const [feature, setFeature] = useState<Configured & Obj>(_feature);
   const dispatchDecorators = useCrud<Configured & Obj>(_decorators, () => ({
     ...(CountDecoratorConfig as Configured & Obj)
@@ -112,7 +111,7 @@ export function ConfiguredFeature(): JSX.Element {
         {decorators.map((decorator, i) => (
           <SelectSwitch
             name={i.toString()}
-            node={ConfiguredDecorator.node as SwitchNodeParams}
+            node={decoratorNode as SwitchNodeParams}
             value={decorators as Record<number, Obj>}
             onChange={handleDecoratorChange}
             key={decorator.__reactKey}

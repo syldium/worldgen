@@ -75,10 +75,10 @@ export function findBlockTypes(provider: StateProvider): string[] {
         'cornflower',
         'lily_of_the_valley'
       ];
-    case 'noise_2d_provider':
-    case 'dual_noise_2d_provider':
+    case 'noise_provider':
+    case 'dual_noise_provider':
       return provider.states!.map((entry) => entry.Name);
-    case 'noise_2d_cutoff_provider':
+    case 'noise_threshold_provider':
       return [
         provider.default_state!,
         ...provider.low_states!,

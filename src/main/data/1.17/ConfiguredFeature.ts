@@ -63,7 +63,7 @@ const DripstoneClusterConfig: ObjectModel = {
   max_distance_from_center_affecting_height_bias: IntNode({ min: 1, max: 64 })
 };
 
-const BlockPos = ListNode(IntNode(), 3);
+export const BlockPos = ListNode(IntNode(), 3);
 const EndGatewayConfig: ObjectModel = {
   exact: BoolNode(),
   exit: Opt(BlockPos)
@@ -320,7 +320,7 @@ const FoliagePlacerBaseConfig: ObjectModel = {
   offset: IntProvider(0, 16)
 };
 
-const TreeConfig: ObjectModel = {
+export const TreeConfig: ObjectModel = {
   trunk_provider: ResourceNode('block_state_provider'),
   foliage_provider: ResourceNode('block_state_provider'),
   sapling_provider: ResourceNode('block_state_provider'),
