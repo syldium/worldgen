@@ -1,4 +1,3 @@
-import React from 'react';
 import { NavBar } from './ui/NavBar';
 import { Route, Switch } from 'react-router-dom';
 import { Resource } from './resource/Resource';

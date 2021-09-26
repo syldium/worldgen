@@ -1,4 +1,3 @@
-import React from 'react';
 import { fireEvent, render } from '@testing-library/react';
 import { BlockState } from '../../../main/component/resource/BlockState';
 import { GameRegistryProvider } from '../../../main/context/GameRegistry';

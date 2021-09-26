@@ -1,13 +1,4 @@
-import React, {
-  ChangeEvent,
-  CSSProperties,
-  KeyboardEvent,
-  useCallback,
-  useContext,
-  useMemo,
-  useRef,
-  useState
-} from 'react';
+import { useCallback, useContext, useMemo, useRef, useState } from 'react';
 import { useOptions } from '../hook/useOptions';
 import Select from './ui/Select';
 import { Schema, WorldgenNames } from '../model/Registry';
@@ -15,9 +6,15 @@ import { GameContext } from '../context/GameRegistry';
 import { useToggle } from '../hook/useToggle';
 import { Button } from './ui/Button';
 import type { WorldgenRegistryKey } from '../model/RegistryKey';
+import type {
+  ChangeEvent,
+  CSSProperties,
+  KeyboardEvent,
+  ReactNode
+} from 'react';
 
 interface NamespacedKeyProps {
-  children?: React.ReactNode;
+  children?: ReactNode;
   defaultReplace?: boolean;
   example?: string;
   registry: WorldgenRegistryKey;

@@ -1,10 +1,4 @@
-import React, {
-  DragEvent,
-  FormEvent,
-  useState,
-  ChangeEvent,
-  useContext
-} from 'react';
+import { useState, useContext } from 'react';
 import { useLowercaseInput } from '../../hook/useLowercaseInput';
 import { WorldgenNames } from '../../model/Registry';
 import { Button } from '../ui/Button';
@@ -14,6 +8,7 @@ import { GameContext } from '../../context/GameRegistry';
 import { MergeForm } from './MergeForm';
 import { toast } from 'react-hot-toast';
 import type { WorldgenRegistryKey } from '../../model/RegistryKey';
+import type { ChangeEvent, DragEvent, FormEvent, ReactNode } from 'react';
 
 interface CreateFormProps {
   onCancel: () => void;
@@ -110,7 +105,7 @@ function CreateDatapackForm({
 }
 
 interface DefNamespaceFormProps {
-  children?: React.ReactNode;
+  children?: ReactNode;
   error?: string | null;
   namespace?: string;
   onDefine: (namespace: string) => void;

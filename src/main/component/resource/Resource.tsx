@@ -1,4 +1,4 @@
-import React, { ReactNode, useCallback, useState } from 'react';
+import { ReactNode, useCallback, useState } from 'react';
 import { ModelView } from '../NodeElement';
 import { NamespacedKey } from '../NamespacedKey';
 import { Obj } from '../../util/DomHelper';

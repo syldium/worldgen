@@ -1,11 +1,11 @@
-import React from 'react';
 import { labelize } from '../../util/LabelHelper';
+import type { ReactElement } from 'react';
 
 interface LabelizedProps {
   className?: string;
   id: string | undefined;
   name: string;
-  children: React.ReactElement;
+  children: ReactElement;
 }
 export function Labelized({
   className,

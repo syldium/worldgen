@@ -1,4 +1,4 @@
-import React from 'react';
+import { StrictMode } from 'react';
 import ReactDOM from 'react-dom';
 import './style/index.css';
 import './style/spacers.scss';
@@ -8,13 +8,13 @@ import { BrowserRouter } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 
 ReactDOM.render(
-  <React.StrictMode>
+  <StrictMode>
     <BrowserRouter basename={import.meta.env.BASE_URL}>
       <GameRegistryProvider>
         <DatapackApp />
       </GameRegistryProvider>
     </BrowserRouter>
     <Toaster />
-  </React.StrictMode>,
+  </StrictMode>,
   document.getElementById('root')
 );

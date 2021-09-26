@@ -1,4 +1,4 @@
-import React, { useCallback, useContext } from 'react';
+import { useCallback, useContext } from 'react';
 import { GameContext } from '../context/GameRegistry';
 import { WorldgenNames, WorldgenRegistryHolder } from '../model/Registry';
 import { ZipAction } from '../context/ZipAction';

@@ -1,4 +1,5 @@
-import React, {
+import {
+  memo,
   ChangeEvent,
   useCallback,
   useEffect,
@@ -79,7 +80,7 @@ class MousePosition extends Control {
 export interface BiomeSourceMapProps extends ViewerProps {
   value: ViewableBiomeSource;
 }
-const BiomeSourceMap = React.memo(function BiomeSourceMap({
+const BiomeSourceMap = memo(function BiomeSourceMap({
   value
 }: BiomeSourceMapProps) {
   const divRef = useRef<HTMLDivElement>(null);

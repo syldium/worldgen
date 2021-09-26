@@ -1,4 +1,4 @@
-import React from 'react';
+import { memo } from 'react';
 import ReactSelect, {
   createFilter,
   MenuListComponentProps
@@ -158,4 +158,4 @@ const CreatableSelect = <
   />
 );
 
-export default React.memo(Select) as typeof Select;
+export default memo(Select) as typeof Select;

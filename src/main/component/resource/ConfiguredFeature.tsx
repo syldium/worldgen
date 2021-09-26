@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useMemo, useState } from 'react';
+import { useCallback, useContext, useMemo, useState } from 'react';
 import { GameContext } from '../../context/GameRegistry';
 import { Configured } from '../../model/Model';
 import { buildDecorated, findDecorators } from '../../util/FeatureHelper';

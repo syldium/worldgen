@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useMemo } from 'react';
+import { useCallback, useContext, useMemo } from 'react';
 import { BlockState, BlockStateValue } from './BlockState';
 import { BlockStateRegistry, DEFAULT_BLOCK_STATE } from '../../model/Registry';
 import { useOptionsArray } from '../../hook/useOptions';

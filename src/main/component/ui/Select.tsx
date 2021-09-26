@@ -1,4 +1,4 @@
-import React, { ChangeEvent, Suspense } from 'react';
+import { lazy, ChangeEvent, Suspense } from 'react';
 import type { GroupTypeBase, OptionTypeBase } from 'react-select/src/types';
 import type { Props, ValueType } from 'react-select';
 import type { ActionMeta } from 'react-select/src/types';
@@ -10,9 +10,7 @@ export interface Option {
   value: string;
 }
 
-const LoadableSelect = React.lazy(
-  () => import('./LoadableSelect')
-) as typeof Select;
+const LoadableSelect = lazy(() => import('./LoadableSelect')) as typeof Select;
 
 export function Select<
   OptionType extends OptionTypeBase = Option,
