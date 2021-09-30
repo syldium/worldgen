@@ -17,7 +17,6 @@ import {
 import { useId } from '../hook/useId';
 import { NodeErrorBoundary } from './ui/ErrorBoundary';
 import { EnumNodeParams } from '../model/node/EnumNode';
-import { ValueType } from 'react-select';
 import Select, { Option } from './ui/Select';
 import { BoolNodeParams } from '../model/node/BoolNode';
 import { ObjectNodeParams, OptionalNodeParams } from '../model/node/ObjectNode';
@@ -42,6 +41,7 @@ import { MapNodeParams } from '../model/node/MapNode';
 import { useToggle } from '../hook/useToggle';
 import { NumberInput } from './ui/NumberInput';
 import { Labelized } from './ui/Labelized';
+import type { OnChangeValue } from 'react-select';
 
 interface ModelViewProps {
   children?: React.ReactNode;
@@ -591,7 +591,7 @@ function SelectInput({
 }: NodeProps<EnumNodeParams>) {
   const id = useId(name);
   const handleChange = useCallback(
-    function (option: ValueType<Option, false>): void {
+    function (option: OnChangeValue<Option, false>): void {
       if (option?.value) {
         onChange({ [name]: option.value });
       }
@@ -628,7 +628,7 @@ function ResourceSelectInput({
 }: NodeProps<IdentifierNodeParams>) {
   const id = useId(name);
   const handleChange = useCallback(
-    function (option: ValueType<Option, false>): void {
+    function (option: OnChangeValue<Option, false>): void {
       if (option?.value) {
         onChange({ [name]: option.value });
       }
@@ -677,7 +677,7 @@ function ResourceSelectMultipleInput({
     [name, options, value]
   );
   const handleChange = useCallback(
-    function (options: ValueType<Option, true>): void {
+    function (options: OnChangeValue<Option, true>): void {
       onChange({
         [name]: options === null ? [] : options.map((option) => option.value)
       });

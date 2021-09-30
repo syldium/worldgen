@@ -3,7 +3,6 @@ import { BlockState, BlockStateValue } from './BlockState';
 import { BlockStateRegistry, DEFAULT_BLOCK_STATE } from '../../model/Registry';
 import { useOptionsArray } from '../../hook/useOptions';
 import Select, { Option } from '../ui/Select';
-import { ValueType } from 'react-select';
 import {
   labelize,
   labelizeOption,
@@ -26,6 +25,7 @@ import {
   SeededBlockStateProviderPresets,
   SeededBlockStateProviders
 } from '../../data/1.18/BlockStateProvider';
+import type { OnChangeValue } from 'react-select';
 
 export interface StateProvider {
   type: string;
@@ -74,7 +74,7 @@ export function BlockStateProvider({
   );
 
   const handleTypeChange = useCallback(
-    function (option: ValueType<Option, false>) {
+    function (option: OnChangeValue<Option, false>) {
       if (option) {
         const type = stripDefaultNamespace(option.value);
         const common = ['simple_state_provider', 'rotated_block_provider'];

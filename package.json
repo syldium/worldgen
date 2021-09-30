@@ -27,7 +27,7 @@
     "react-feather": "^2.0.9",
     "react-hot-toast": "^2.0.0",
     "react-router-dom": "^5.2.0",
-    "react-select": "^4.3.1",
+    "react-select": "^5.0.0",
     "react-window": "^1.8.6",
     "use-local-storage-state": "^11.0.0"
   },
@@ -39,14 +39,13 @@
     "@types/react": "^17.0.11",
     "@types/react-dom": "^17.0.8",
     "@types/react-router-dom": "^5.1.7",
-    "@types/react-select": "^4.0.16",
     "@types/react-window": "^1.8.5",
     "@typescript-eslint/eslint-plugin": "^4.28.0",
     "@typescript-eslint/parser": "^4.28.0",
     "@vitejs/plugin-react": "^1.0.1",
     "chalk": "^4.1.2",
     "dotenv": "^10.0.0",
-    "esbuild": "^0.12.9",
+    "esbuild": "^0.13.3",
     "esbuild-jest": "^0.5.0",
     "eslint": "^7.29.0",
     "eslint-config-prettier": "^8.3.0",
@@ -59,7 +58,7 @@
     "react-select-event": "^5.3.0",
     "rollup-plugin-visualizer": "^5.5.2",
     "sass": "^1.35.2",
-    "typescript": "^4.3.4",
+    "typescript": "~4.4.3",
     "vite": "^2.3.7"
   },
   "resolutions": {

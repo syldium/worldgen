@@ -1,17 +1,15 @@
 import React from 'react';
-import ReactSelect, {
-  createFilter,
-  MenuListComponentProps
-} from 'react-select';
+import ReactSelect, { createFilter } from 'react-select';
 import ReactSelectCreatable, { CreatableProps } from 'react-select/creatable';
-import { Props } from 'react-select';
 import { StylesConfig } from 'react-select/src/styles';
-import { GroupTypeBase, OptionTypeBase } from 'react-select/src/types';
 import { FixedSizeList } from 'react-window';
 import type { SelectComponentsConfig } from 'react-select/src/components';
 import type { Option } from './Select';
+import type { Props } from 'react-select/base';
+import type { GroupBase } from 'react-select/src/types';
+import type { MenuProps } from 'react-select/src/components/Menu';
 
-const styles_: StylesConfig<Option, boolean> = {
+const styles_: StylesConfig<Option> = {
   control: (styles) => ({
     ...styles,
     backgroundColor: 'var(--bg-color-input)',
@@ -84,15 +82,17 @@ const styles_: StylesConfig<Option, boolean> = {
 };
 
 function MenuList<
-  OptionType extends OptionTypeBase,
-  IsMulti extends boolean,
-  GroupType extends GroupTypeBase<OptionType> = GroupTypeBase<OptionType>
+  OptionType,
+  IsMulti extends boolean = false,
+  GroupType extends GroupBase<OptionType> = GroupBase<OptionType>
 >({
   options,
   children,
   maxHeight,
   getValue
-}: MenuListComponentProps<OptionType, IsMulti, GroupType>): JSX.Element | null {
+}: MenuProps<OptionType, IsMulti, GroupType> & {
+  maxHeight?: number;
+}): JSX.Element | null {
   if (!children || !Array.isArray(children)) return null;
 
   const height = 40;
@@ -105,7 +105,7 @@ function MenuList<
     <FixedSizeList
       width=""
       itemSize={height}
-      height={maxHeight}
+      height={maxHeight!}
       itemCount={children.length}
       initialScrollOffset={initialOffset}
     >
@@ -119,40 +119,53 @@ function MenuList<
 }
 
 const filter = createFilter({ ignoreAccents: false });
-export const selectComponents: SelectComponentsConfig<Option, boolean> = {
+export const selectComponents = {
   MenuList
 };
 const Select = <
-  OptionType extends OptionTypeBase = Option,
+  OptionType extends Option,
   IsMulti extends boolean = false,
-  GroupType extends GroupTypeBase<OptionType> = GroupTypeBase<OptionType>
+  GroupType extends GroupBase<OptionType> = GroupBase<OptionType>
 >(
-  props: Props<OptionType, IsMulti, GroupType>
+  props: Props<OptionType, IsMulti, GroupType> & { creatable?: true }
 ): JSX.Element => {
   if (props.creatable) {
     return <CreatableSelect {...props} />;
   }
   return (
-    // @ts-ignore
     <ReactSelect
-      components={selectComponents}
-      styles={styles_}
-      filterOption={filter}
       {...props}
+      components={
+        selectComponents as unknown as SelectComponentsConfig<
+          OptionType,
+          IsMulti,
+          GroupType
+        >
+      }
+      styles={
+        styles_ as unknown as StylesConfig<OptionType, IsMulti, GroupType>
+      }
+      filterOption={filter}
     />
   );
 };
 
 const CreatableSelect = <
-  OptionType extends OptionTypeBase,
-  IsMulti extends boolean = false
+  OptionType extends Option,
+  IsMulti extends boolean = false,
+  Group extends GroupBase<OptionType> = GroupBase<OptionType>
 >(
-  props: CreatableProps<OptionType, IsMulti>
+  props: CreatableProps<OptionType, IsMulti, Group>
 ): JSX.Element => (
-  // @ts-ignore
   <ReactSelectCreatable
-    components={selectComponents}
-    styles={styles_}
+    components={
+      selectComponents as unknown as SelectComponentsConfig<
+        OptionType,
+        IsMulti,
+        Group
+      >
+    }
+    styles={styles_ as unknown as StylesConfig<OptionType, IsMulti, Group>}
     filterOption={filter}
     {...props}
   />

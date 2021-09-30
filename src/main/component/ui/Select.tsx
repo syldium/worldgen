@@ -1,6 +1,5 @@
 import React, { ChangeEvent, Suspense } from 'react';
-import type { GroupTypeBase, OptionTypeBase } from 'react-select/src/types';
-import type { Props, ValueType } from 'react-select';
+import type { GroupBase, OnChangeValue, Props } from 'react-select';
 import type { ActionMeta } from 'react-select/src/types';
 import type { CreatableProps } from 'react-select/creatable';
 import type ReactSelect from 'react-select';
@@ -10,15 +9,25 @@ export interface Option {
   value: string;
 }
 
+export interface SelectProps<
+  OptionType extends Option,
+  IsMulti extends boolean = false,
+  GroupType extends GroupBase<OptionType> = GroupBase<OptionType>
+> extends Props<OptionType, IsMulti, GroupType> {
+  options: readonly OptionType[];
+}
+
 const LoadableSelect = React.lazy(
   () => import('./LoadableSelect')
 ) as typeof Select;
 
 export function Select<
-  OptionType extends OptionTypeBase = Option,
+  OptionType extends Option,
   IsMulti extends boolean = false,
-  GroupType extends GroupTypeBase<OptionType> = GroupTypeBase<OptionType>
->(props: Props<OptionType, IsMulti, GroupType>): JSX.Element {
+  GroupType extends GroupBase<OptionType> = GroupBase<OptionType>
+>(
+  props: SelectProps<OptionType, IsMulti, GroupType> & { creatable?: true }
+): JSX.Element {
   if (!import.meta.env || import.meta.env.SSR) {
     return HtmlSelect(props);
   }
@@ -30,9 +39,9 @@ export function Select<
 }
 
 function HtmlSelect<
-  OptionType extends OptionTypeBase = Option,
+  OptionType extends Option,
   IsMulti extends boolean = false,
-  GroupType extends GroupTypeBase<OptionType> = GroupTypeBase<OptionType>
+  GroupType extends GroupBase<OptionType> = GroupBase<OptionType>
 >({
   inputId,
   isMulti,
@@ -40,7 +49,7 @@ function HtmlSelect<
   options,
   value,
   onChange
-}: Props<OptionType, IsMulti, GroupType>): JSX.Element {
+}: SelectProps<OptionType, IsMulti, GroupType>): JSX.Element {
   const handleChange = (e: ChangeEvent<HTMLSelectElement>) => {
     const actionPlaceholder = {} as ActionMeta<OptionType>;
     if (isMulti) {
@@ -50,12 +59,12 @@ function HtmlSelect<
           .map((o) => ({
             label: o.label,
             value: o.value
-          })) as unknown as ValueType<OptionType, IsMulti>,
+          })) as unknown as OnChangeValue<OptionType, IsMulti>,
         actionPlaceholder
       );
     } else {
       onChange!(
-        options!.find((o) => o.value === e.target.value) as ValueType<
+        options!.find((o) => o.value === e.target.value) as OnChangeValue<
           OptionType,
           IsMulti
         >,
@@ -84,10 +93,12 @@ function HtmlSelect<
 }
 
 export const CreatableSelect = <
-  OptionType extends OptionTypeBase = Option,
-  IsMulti extends boolean = false
+  OptionType extends Option,
+  IsMulti extends boolean = false,
+  Group extends GroupBase<OptionType> = GroupBase<OptionType>
 >(
-  props: CreatableProps<OptionType, IsMulti> & Props<OptionType, IsMulti>
+  props: CreatableProps<OptionType, IsMulti, Group> &
+    SelectProps<OptionType, IsMulti>
 ): JSX.Element => <Select creatable={true} {...props} />;
 
 export default Select as unknown as typeof ReactSelect;
