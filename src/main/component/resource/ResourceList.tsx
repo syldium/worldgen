@@ -5,6 +5,8 @@ import { stripDefaultNamespace } from '../../util/LabelHelper';
 import { Trash } from 'react-feather';
 import { useForceUpdate } from '@pastable/use-force-update';
 import { Link } from 'react-router-dom';
+import { del } from 'idb-keyval';
+import { resourcePath } from '../../util/PathHelper';
 import type { WorldgenRegistryKey } from '../../model/RegistryKey';
 
 interface ResourceListProps {
@@ -21,7 +23,7 @@ export function ResourceList({ registryKey }: ResourceListProps): JSX.Element {
     e.preventDefault();
     if (window.confirm('Do you really want to remove this resource?')) {
       registry.remove(key);
-      forceUpdate();
+      del(resourcePath(registryKey, key)).then(forceUpdate);
     }
   };
 
