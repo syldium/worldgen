@@ -76,15 +76,13 @@ export const NoiseParameters = {
 export const NoiseSettings: Model = {
   node: NoiseParameters,
   preset: () => ({
-    aquifers_enabled: true,
-    noise_caves_enabled: true,
-    deepslate_enabled: true,
-    bedrock_floor_position: 0,
-    sea_level: 63,
+    noise_caves_enabled: false,
+    deepslate_enabled: false,
+    ore_veins_enabled: false,
+    noodle_caves_enabled: false,
+    min_surface_level: 0,
     disable_mob_generation: false,
-    default_block: {
-      Name: 'minecraft:stone'
-    },
+    aquifers_enabled: false,
     default_fluid: {
       Properties: {
         level: '0'
@@ -92,6 +90,8 @@ export const NoiseSettings: Model = {
       Name: 'minecraft:water'
     },
     bedrock_roof_position: -2147483648,
+    bedrock_floor_position: 0,
+    sea_level: 63,
     structures: {
       stronghold: {
         distance: 32,
@@ -99,95 +99,95 @@ export const NoiseSettings: Model = {
         count: 128
       },
       structures: {
-        'minecraft:ocean_ruin': {
-          spacing: 20,
-          separation: 8,
-          salt: 14357621
-        },
-        'minecraft:endcity': {
-          spacing: 20,
-          separation: 11,
-          salt: 10387313
-        },
-        'minecraft:jungle_pyramid': {
+        'minecraft:pillager_outpost': {
           spacing: 32,
           separation: 8,
-          salt: 14357619
-        },
-        'minecraft:bastion_remnant': {
-          spacing: 27,
-          separation: 4,
-          salt: 30084232
-        },
-        'minecraft:fortress': {
-          spacing: 27,
-          separation: 4,
-          salt: 30084232
-        },
-        'minecraft:mansion': {
-          spacing: 80,
-          separation: 20,
-          salt: 10387319
-        },
-        'minecraft:stronghold': {
-          spacing: 1,
-          separation: 0,
-          salt: 0
-        },
-        'minecraft:buried_treasure': {
-          spacing: 1,
-          separation: 0,
-          salt: 0
+          salt: 165745296
         },
         'minecraft:village': {
           spacing: 32,
           separation: 8,
           salt: 10387312
         },
-        'minecraft:monument': {
-          spacing: 32,
-          separation: 5,
-          salt: 10387313
-        },
-        'minecraft:ruined_portal': {
-          spacing: 40,
-          separation: 15,
-          salt: 34222645
-        },
-        'minecraft:swamp_hut': {
-          spacing: 32,
-          separation: 8,
-          salt: 14357620
-        },
-        'minecraft:nether_fossil': {
-          spacing: 2,
-          separation: 1,
-          salt: 14357921
-        },
-        'minecraft:shipwreck': {
-          spacing: 24,
+        'minecraft:fortress': {
+          spacing: 27,
           separation: 4,
-          salt: 165745295
-        },
-        'minecraft:mineshaft': {
-          spacing: 1,
-          separation: 0,
-          salt: 0
-        },
-        'minecraft:pillager_outpost': {
-          spacing: 32,
-          separation: 8,
-          salt: 165745296
+          salt: 30084232
         },
         'minecraft:desert_pyramid': {
           spacing: 32,
           separation: 8,
           salt: 14357617
         },
+        'minecraft:bastion_remnant': {
+          spacing: 27,
+          separation: 4,
+          salt: 30084232
+        },
+        'minecraft:stronghold': {
+          spacing: 1,
+          separation: 0,
+          salt: 0
+        },
+        'minecraft:monument': {
+          spacing: 32,
+          separation: 5,
+          salt: 10387313
+        },
+        'minecraft:swamp_hut': {
+          spacing: 32,
+          separation: 8,
+          salt: 14357620
+        },
+        'minecraft:endcity': {
+          spacing: 20,
+          separation: 11,
+          salt: 10387313
+        },
+        'minecraft:mineshaft': {
+          spacing: 1,
+          separation: 0,
+          salt: 0
+        },
         'minecraft:igloo': {
           spacing: 32,
           separation: 8,
           salt: 14357618
+        },
+        'minecraft:mansion': {
+          spacing: 80,
+          separation: 20,
+          salt: 10387319
+        },
+        'minecraft:buried_treasure': {
+          spacing: 1,
+          separation: 0,
+          salt: 0
+        },
+        'minecraft:ocean_ruin': {
+          spacing: 20,
+          separation: 8,
+          salt: 14357621
+        },
+        'minecraft:jungle_pyramid': {
+          spacing: 32,
+          separation: 8,
+          salt: 14357619
+        },
+        'minecraft:ruined_portal': {
+          spacing: 40,
+          separation: 15,
+          salt: 34222645
+        },
+        'minecraft:shipwreck': {
+          spacing: 24,
+          separation: 4,
+          salt: 165745295
+        },
+        'minecraft:nether_fossil': {
+          spacing: 2,
+          separation: 1,
+          salt: 14357921
         }
       }
     },
@@ -208,14 +208,17 @@ export const NoiseSettings: Model = {
         offset: 0
       },
       size_horizontal: 1,
-      min_y: -64,
-      height: 384,
+      min_y: 0,
+      height: 256,
       sampling: {
         xz_scale: 0.9999999814507745,
         y_scale: 0.9999999814507745,
         xz_factor: 80.0,
         y_factor: 160.0
       }
+    },
+    default_block: {
+      Name: 'minecraft:stone'
     }
   })
 };
