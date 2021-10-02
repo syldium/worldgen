@@ -34,6 +34,7 @@ import {
   BlockStateProvider,
   StateProvider
 } from './resource/BlockStateProvider';
+import { ParticuleEffect } from './resource/ParticuleEffect';
 import { hexColorToInteger, intColorToHex } from '../util/ColorHelper';
 import { Button } from './ui/Button';
 import { ViewerElement } from './viewer/Viewers';
@@ -546,12 +547,12 @@ function OptionalInput({
   const handleCheckboxChange = useCallback(
     function (event: ChangeEvent<HTMLInputElement>) {
       if (event.target.checked) {
-        onChange({ [name]: 0 });
+        onChange({ [name]: providePreset(node.node) });
       } else {
         onChange({ [name]: undefined });
       }
     },
-    [name, onChange]
+    [name, node.node, onChange]
   );
   const isPresent = value[name] != null;
   return (
@@ -757,6 +758,14 @@ function ResourceInput({
         name={name}
         value={value[name] as StateProvider}
         onChange={onChange}
+      />
+    );
+  } else if (node.registry === 'biome_particle') {
+    return (
+      <ParticuleEffect
+        particle={value[name] as Record<string, any>}
+        onChange={onChange}
+        name={name}
       />
     );
   }

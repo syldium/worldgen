@@ -5,8 +5,10 @@ export interface ObjectNodeParams extends NodeBase<'object'> {
 }
 
 export const ObjectNode = (
-  records: Record<string, ModelNode>
+  records: Record<string, ModelNode>,
+  def?: Record<string, unknown>
 ): ObjectNodeParams => ({
+  default: def,
   records,
   type: 'object',
   isValid: (value: unknown) => {

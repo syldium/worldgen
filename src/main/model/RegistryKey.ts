@@ -1,8 +1,10 @@
 export type GameRegistryKey =
+  | 'biome_particle'
   | 'block'
   | 'block_state'
   | 'block_state_provider'
   | 'entity_type'
+  | 'particle_type'
   | 'sound_event'
   | 'structure'
   | 'tags/blocks';

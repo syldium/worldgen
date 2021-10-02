@@ -64,10 +64,12 @@ export function GameRegistryProvider({
     {},
     states
   );
+  const emptyRegistry: Registry = { options: [], vanilla: [] };
   const [registries, fetched] = useRegistryFetch(
     {
       entity_type: text(registryUrl('entity_type')),
-      sound_event: text(registryUrl('sound_event')),
+      particle_type: text(registryUrl('particle_type')),
+      sound_event: text(registryUrl('sound_event'), false),
       structure: json('/values/1.17/structures.json', false),
       'tags/blocks': text(
         `${github}data/minecraft/tags/blocks/data.values.txt`
@@ -120,9 +122,10 @@ export function GameRegistryProvider({
         registries: {
           ...registries,
           ...holder.worldgen,
+          biome_particle: emptyRegistry,
           block: blockTypes,
           block_state: blockTypes,
-          block_state_provider: { options: [], vanilla: [] }
+          block_state_provider: emptyRegistry
         },
         get worldgen(): WorldgenRegistryHolder {
           return holder;

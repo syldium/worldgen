@@ -15,7 +15,64 @@ const BiomeEffects = ObjectNode({
   water_fog_color: ColorNode(0x050533),
   sky_color: ColorNode(0x78a7ff),
   foliage_color: Opt(ColorNode()),
-  grass_color: Opt(ColorNode())
+  grass_color: Opt(ColorNode()),
+  grass_color_modifier: EnumNode(
+    ['none', 'dark_forest', 'swamp'] as const,
+    'none'
+  ),
+  particle: Opt(
+    ResourceNode('biome_particle', {
+      options: {
+        type: 'minecraft:crimson_spore'
+      },
+      probability: 0.025
+    })
+  ),
+  ambient_sound: Opt(IdentifierNode('sound_event')),
+  mood_sound: Opt(
+    ObjectNode(
+      {
+        sound: IdentifierNode('sound_event'),
+        tick_delay: IntNode(),
+        block_search_extent: IntNode(),
+        offset: DoubleNode()
+      },
+      {
+        sound: 'minecraft:ambient.crimson_forest.mood',
+        tick_delay: 6000,
+        block_search_extent: 8,
+        offset: 2
+      }
+    )
+  ),
+  additions_sound: Opt(
+    ObjectNode(
+      {
+        sound: IdentifierNode('sound_event'),
+        tick_chance: DoubleNode()
+      },
+      {
+        sound: 'minecraft:ambient.crimson_forest.additions',
+        tick_chance: 0.0111
+      }
+    )
+  ),
+  music: Opt(
+    ObjectNode(
+      {
+        sound: IdentifierNode('sound_event'),
+        min_delay: IntNode(),
+        max_delay: IntNode(),
+        replace_current_music: BoolNode()
+      },
+      {
+        sound: 'minecraft:music.nether.crimson_forest',
+        min_delay: 12000,
+        max_delay: 24000,
+        replace_current_music: false
+      }
+    )
+  )
 });
 
 export const Spawners = ListNode(

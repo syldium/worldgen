@@ -18,8 +18,12 @@ export const IdentifierNode = (key: RegistryKey): IdentifierNodeParams => {
 
 const isResource = (val: unknown) =>
   (val !== null && typeof val === 'object') || isIdentifier(val);
-export const ResourceNode = (key: RegistryKey): IdentifierNodeParams => {
+export const ResourceNode = (
+  key: RegistryKey,
+  def?: string | Record<string, unknown>
+): IdentifierNodeParams => {
   return {
+    default: def,
     registry: key,
     type: 'resource',
     isValid: isResource
