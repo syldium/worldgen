@@ -5,7 +5,7 @@ import type {
   WorldgenRegistry
 } from '../model/Registry';
 import { GameContext } from '../context/GameRegistry';
-import { useParams } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 import { get } from 'idb-keyval';
 import { resourcePath } from '../util/PathHelper';
 import type { WorldgenRegistryKey } from '../model/RegistryKey';
@@ -18,7 +18,12 @@ export function useRegistry<S extends Schema>(
   S,
   (callback: PostLoadCallback<S>) => void
 ] {
-  const { id } = useParams<{ id: 'resource' }>();
+  let { id } = useParams<{ id: string }>();
+  const path = useLocation().pathname;
+  const index = path.indexOf(registryKey) + registryKey.length + 1;
+  if (index < path.length) {
+    id = path.substr(index);
+  }
 
   const { worldgen } = useContext(GameContext);
   const registry = worldgen.worldgen[registryKey];
