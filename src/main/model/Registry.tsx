@@ -11,6 +11,7 @@ import { strFromU8, Unzipped } from 'fflate';
 import type { WorldgenRegistryKey } from './RegistryKey';
 import { Registries1_18 } from '../data/1.18/v1_18';
 import { Registries1_17 } from '../data/1.17/v1_17';
+import type { DependencyGraph } from './graph/DependencyGraph';
 
 export interface Registry {
   options: Option[];
@@ -129,6 +130,7 @@ export class WorldgenRegistryHolder {
   readonly worldgen: Record<WorldgenRegistryKey, WorldgenRegistry>;
   readonly packFormat: number;
   readonly gameVersion: GameVersion;
+  graph: DependencyGraph = {};
   vanillaZip?: Unzipped;
 
   constructor(version: GameVersion | keyof typeof PackFormatNumber) {

@@ -7,6 +7,7 @@ import { useForceUpdate } from '@pastable/use-force-update';
 import { Link } from 'react-router-dom';
 import { del } from 'idb-keyval';
 import { resourcePath } from '../../util/PathHelper';
+import { removeDependency } from '../../model/graph/DependencyGraph';
 import type { WorldgenRegistryKey } from '../../model/RegistryKey';
 
 interface ResourceListProps {
@@ -21,7 +22,33 @@ export function ResourceList({ registryKey }: ResourceListProps): JSX.Element {
 
   const handleRemove = function (e: MouseEvent<HTMLElement>, key: string) {
     e.preventDefault();
-    if (window.confirm('Do you really want to remove this resource?')) {
+    const dependant =
+      registryKey in worldgen.graph ? worldgen.graph[registryKey]![key] : null;
+    const dependantSize = dependant
+      ? Object.values(dependant).reduce((acc, keys) => acc + keys.size, 0)
+      : 0;
+    const dependantText = dependant
+      ? `\n${dependantSize} file${dependantSize > 1 ? 's' : ''} depend${
+          dependantSize === 1 ? 's' : ''
+        } on it.`
+      : '';
+    const text = 'Do you really want to remove this resource?' + dependantText;
+    if (window.confirm(text)) {
+      const leadsToNull = removeDependency(worldgen, registryKey, key);
+      if (
+        Object.keys(leadsToNull).length !== 0 &&
+        window.confirm(
+          'Would you like to delete recursively the now invalid resources?\nReferences found: ' +
+            Object.values(leadsToNull)
+              .reduce((acc, keys) => {
+                acc.push(...keys);
+                return acc;
+              }, [] as string[])
+              .join(', ')
+        )
+      ) {
+        console.warn('Not implemented'); // TODO
+      }
       registry.remove(key);
       del(resourcePath(registryKey, key)).then(forceUpdate);
     }

@@ -18,6 +18,7 @@ import useLocalStorageState from 'use-local-storage-state';
 import { clear, entries, setMany } from 'idb-keyval';
 import { findNamespacedKeyAndRegistry, resourcePath } from '../util/PathHelper';
 import { useForceUpdate } from '@pastable/use-force-update';
+import { analyzeDependencies } from '../model/graph/DependencyGraph';
 import type { RegistryKey, WorldgenRegistryKey } from '../model/RegistryKey';
 
 interface GameRegistry {
@@ -110,6 +111,7 @@ export function GameRegistryProvider({
       console.timeEnd('indexeddb');
       holder.copyOptions(edited);
       if (edited.size && fetched.current) {
+        holder.graph = analyzeDependencies(holder);
         forceUpdate();
       }
     });
@@ -143,6 +145,7 @@ export function GameRegistryProvider({
                 ])
               );
             }
+            holder.graph = analyzeDependencies(holder);
             setMany(entries);
           });
         },
