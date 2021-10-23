@@ -9,6 +9,9 @@ interface LinkProps extends React.RefAttributes<HTMLAnchorElement> {
   to: LocationDescriptor;
   children?: React.ReactNode;
 }
+
+const onClick = (event: React.MouseEvent<HTMLAnchorElement>) =>
+  (event.target as HTMLAnchorElement).blur();
 export function Link({
   exact,
   to,
@@ -31,8 +34,14 @@ export function Link({
   []);
 
   return (
-    // @ts-ignore
-    <NavLink exact={exact} to={to} isActive={isActive} {...props}>
+    <NavLink
+      exact={exact}
+      to={to}
+      // @ts-ignore
+      isActive={isActive}
+      onClick={onClick}
+      {...props}
+    >
       {children}
     </NavLink>
   );
