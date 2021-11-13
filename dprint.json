@@ -1,0 +1,25 @@
+{
+  "incremental": true,
+  "typescript": {
+    "lineWidth": 80,
+    "indentWidth": 2,
+    "trailingCommas": "never",
+    "quoteStyle": "preferSingle",
+    "jsx.quoteStyle": "preferDouble",
+    "commentLine.forceSpaceAfterSlashes": false,
+    "functionExpression.spaceBeforeParentheses": true,
+    "operatorPosition": "sameLine"
+  },
+  "json": {
+  },
+  "includes": ["**/*.{ts,tsx,js,jsx,cjs,mjs,json}"],
+  "excludes": [
+    "**/node_modules",
+    "**/*-lock.json",
+    "**/dist"
+  ],
+  "plugins": [
+    "https://plugins.dprint.dev/typescript-0.59.2.wasm",
+    "https://plugins.dprint.dev/json-0.13.2.wasm"
+  ]
+}

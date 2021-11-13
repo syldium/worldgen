@@ -1,15 +1,15 @@
 import { Model, ObjectModel } from '../../model/Model';
-import { Heightmap } from '../1.17/WorldgenStep';
 import { IntNode } from '../../model/node/IntNode';
+import { ListNode } from '../../model/node/ListNode';
+import { ResourceNode } from '../../model/node/ResourceNode';
+import { SwitchNode } from '../../model/node/SwitchNode';
 import { INT_MAX_VALUE, INT_MIN_VALUE } from '../../util/MathHelper';
 import {
   ConfiguredDecorator as Decorator1_17,
   DecoratorsSwitch
 } from '../1.17/ConfiguredDecorator';
-import { SwitchNode } from '../../model/node/SwitchNode';
-import { ListNode } from '../../model/node/ListNode';
-import { ResourceNode } from '../../model/node/ResourceNode';
 import { BlockPos } from '../1.17/ConfiguredFeature';
+import { Heightmap } from '../1.17/WorldgenStep';
 
 const BlockFilterConfig: ObjectModel = {
   allowed: ListNode(ResourceNode('block')),

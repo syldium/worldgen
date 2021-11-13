@@ -1,6 +1,6 @@
 // @ts-ignore
-import MapWorker from './MultiNoiseMapWorker?worker';
 import { Coords, DoneCallback, GridLayer } from 'leaflet';
+import { stripDefaultNamespace } from '../../util/LabelHelper';
 import {
   BiomeColors,
   BiomeMessage,
@@ -8,21 +8,21 @@ import {
   RenderMessage,
   SettingsMessage
 } from './MultiNoiseMapWorker';
+import MapWorker from './MultiNoiseMapWorker?worker';
 import { BiomeParameters, ViewableBiomeSource } from './types';
-import { stripDefaultNamespace } from '../../util/LabelHelper';
 
 interface IQueueItem<D extends boolean> {
   multiple: D; // The item type
   id: string; // An id used for BiomeSourceMapLayer#messages
 }
 interface BiomeQueueItem
-  extends Omit<BiomeMessage, 'workerId'>,
-    IQueueItem<false> {
+  extends Omit<BiomeMessage, 'workerId'>, IQueueItem<false>
+{
   done: (biome: string) => void;
 }
 interface CanvasQueueItem
-  extends Omit<RenderMessage, 'workerId'>,
-    IQueueItem<true> {
+  extends Omit<RenderMessage, 'workerId'>, IQueueItem<true>
+{
   canvas: HTMLCanvasElement; // The canvas with a 2d context
   done: DoneCallback;
 }

@@ -1,12 +1,8 @@
+import { useForceUpdate } from '@pastable/use-force-update';
+import { clear, entries, setMany } from 'idb-keyval';
 import React, { ReactNode, useEffect, useMemo } from 'react';
-import {
-  BlockStateRegistry,
-  Registry,
-  WorldgenRegistryHolder,
-  Schema
-} from '../model/Registry';
 import { createContext, useState } from 'react';
-import { labelizeOption } from '../util/LabelHelper';
+import useLocalStorageState from 'use-local-storage-state';
 import {
   readJson,
   readText,
@@ -14,11 +10,15 @@ import {
   useFetchData,
   useRegistryFetch
 } from '../hook/useFetchData';
-import useLocalStorageState from 'use-local-storage-state';
-import { clear, entries, setMany } from 'idb-keyval';
-import { findNamespacedKeyAndRegistry, resourcePath } from '../util/PathHelper';
-import { useForceUpdate } from '@pastable/use-force-update';
+import {
+  BlockStateRegistry,
+  Registry,
+  Schema,
+  WorldgenRegistryHolder
+} from '../model/Registry';
 import type { RegistryKey, WorldgenRegistryKey } from '../model/RegistryKey';
+import { labelizeOption } from '../util/LabelHelper';
+import { findNamespacedKeyAndRegistry, resourcePath } from '../util/PathHelper';
 
 interface GameRegistry {
   blockStates: BlockStateRegistry;

@@ -1,19 +1,19 @@
 import React, { ChangeEvent, useCallback, useContext } from 'react';
 import { GameContext } from '../../context/GameRegistry';
-import { Select } from '../ui/Select';
-import {
-  defaultNamespace,
-  stripDefaultNamespace
-} from '../../util/LabelHelper';
-import { BlockState, BlockStateValue } from './BlockState';
+import { useId } from '../../hook/useId';
 import {
   ColorTuple,
   hexColorToRgbTuple,
   rgbTupleToHex
 } from '../../util/ColorHelper';
-import { NumberInput } from '../ui/NumberInput';
+import {
+  defaultNamespace,
+  stripDefaultNamespace
+} from '../../util/LabelHelper';
 import { Labelized } from '../ui/Labelized';
-import { useId } from '../../hook/useId';
+import { NumberInput } from '../ui/NumberInput';
+import { Select } from '../ui/Select';
+import { BlockState, BlockStateValue } from './BlockState';
 
 interface ParticuleEffectProps {
   name: string;
@@ -30,9 +30,9 @@ export function ParticuleEffect({
   const options = context.registries.particle_type.options;
 
   const data = particle.options || def;
-  const type = data.type
-    ? defaultNamespace(data.type)
-    : 'minecraft:crimson_spore';
+  const type = data.type ?
+    defaultNamespace(data.type) :
+    'minecraft:crimson_spore';
 
   const handleTypeChange = useCallback(
     function (option) {
@@ -125,8 +125,7 @@ export function ParticuleEffect({
         step={0.005}
         value={particle as Record<'probability', number>}
         onChange={(probability) =>
-          onChange({ [name]: { options: data, ...probability } })
-        }
+          onChange({ [name]: { options: data, ...probability } })}
       />
     </div>
   );
@@ -152,8 +151,7 @@ function ValueInput<T extends string>({
         value={value[name]}
         step={step}
         onChange={(value) =>
-          onChange({ [name]: value } as { [key in T]: number })
-        }
+          onChange({ [name]: value } as { [key in T]: number })}
       />
     </Labelized>
   );
@@ -179,11 +177,9 @@ function ColorVectorInput<T extends string>({
       <input
         type="color"
         id={id}
-        value={
-          Array.isArray(color) && color.length === 3
-            ? rgbTupleToHex(color)
-            : '#ff0000'
-        }
+        value={Array.isArray(color) && color.length === 3 ?
+          rgbTupleToHex(color) :
+          '#ff0000'}
         onChange={handleChange}
       />
     </Labelized>

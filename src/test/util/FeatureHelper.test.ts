@@ -1,10 +1,10 @@
+import type { Configured } from '../../main/model/Model';
+import type { Obj } from '../../main/util/DomHelper';
 import {
   buildDecorated,
   DecoratedFeature,
   findDecorators
 } from '../../main/util/FeatureHelper';
-import type { Configured } from '../../main/model/Model';
-import type { Obj } from '../../main/util/DomHelper';
 
 type Feature = Configured & Obj;
 describe('FeatureHelper', function () {

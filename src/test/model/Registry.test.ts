@@ -1,6 +1,6 @@
-import { WorldgenRegistry } from '../../main/model/Registry';
-import type { Model } from '../../main/model/Model';
 import type { Option } from '../../main/component/ui/Select';
+import type { Model } from '../../main/model/Model';
+import { WorldgenRegistry } from '../../main/model/Registry';
 import { customOption, labelizeOption } from '../../main/util/LabelHelper';
 
 const emptyModel: Model = {

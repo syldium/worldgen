@@ -1,7 +1,7 @@
-import { ConfiguredFeature as ConfiguredFeature1_17 } from '../1.17/ConfiguredFeature';
 import { Model } from '../../model/Model';
 import type { SwitchNodeParams } from '../../model/node/SwitchNode';
 import { SwitchNode } from '../../model/node/SwitchNode';
+import { ConfiguredFeature as ConfiguredFeature1_17 } from '../1.17/ConfiguredFeature';
 
 const features1_17 = ConfiguredFeature1_17.node as SwitchNodeParams;
 // @ts-ignore

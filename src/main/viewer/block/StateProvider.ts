@@ -1,14 +1,14 @@
+import type { BlockStateValue } from '../../component/resource/BlockState';
+import { IntProvider } from '../../data/1.17/NumberProvider';
+import { DataType } from '../../hook/useCrud';
+import { ModelNode } from '../../model/node/Node';
+import { Typed } from '../../model/node/SwitchNode';
+import { BlockStateRegistry } from '../../model/Registry';
 import {
   defaultNamespace,
   stripDefaultNamespace
 } from '../../util/LabelHelper';
-import type { BlockStateValue } from '../../component/resource/BlockState';
-import { DataType } from '../../hook/useCrud';
-import { Typed } from '../../model/node/SwitchNode';
-import { BlockStateRegistry } from '../../model/Registry';
-import { ModelNode } from '../../model/node/Node';
 import { areConsecutiveIntegers } from '../../util/MathHelper';
-import { IntProvider } from '../../data/1.17/NumberProvider';
 
 export interface WeightedStateEntry {
   weight: number;
@@ -34,12 +34,13 @@ export interface RandomizedIntStateProvider {
   source: StateProvider;
   values: DataType; // IntProvider
 }
-export type StateProvider = Partial<SimpleStateProvider> &
-  Partial<WeightedStateProvider> &
-  Partial<RandomizedIntStateProvider> &
-  Partial<Noise2dStateProvider> &
-  Partial<Noise2dCutoffStateProvider> &
-  Typed;
+export type StateProvider =
+  & Partial<SimpleStateProvider>
+  & Partial<WeightedStateProvider>
+  & Partial<RandomizedIntStateProvider>
+  & Partial<Noise2dStateProvider>
+  & Partial<Noise2dCutoffStateProvider>
+  & Typed;
 
 export function findBlockTypes(provider: StateProvider): string[] {
   switch (stripDefaultNamespace(provider.type)) {

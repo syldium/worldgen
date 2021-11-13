@@ -1,12 +1,12 @@
-import {
-  BiomeParameters,
-  BiomeNoiseParameters,
-  MultiNoiseSettings,
-  CheckerboardBiomeSourceSettings
-} from './types';
-import { Random } from '../random/Random';
 import { mod } from '../../util/MathHelper';
+import { Random } from '../random/Random';
 import { DoublePerlinSampler } from './PerlinSampler';
+import {
+  BiomeNoiseParameters,
+  BiomeParameters,
+  CheckerboardBiomeSourceSettings,
+  MultiNoiseSettings
+} from './types';
 
 export interface BiomeSource {
   getBiomeAt(x: number, y: number, z: number): string;

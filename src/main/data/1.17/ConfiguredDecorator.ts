@@ -1,11 +1,11 @@
-import { IntProvider } from './NumberProvider';
 import { Model, ObjectModel } from '../../model/Model';
-import { IntNode } from '../../model/node/IntNode';
+import { EnumNode } from '../../model/node/EnumNode';
 import { FloatNode } from '../../model/node/FloatNode';
+import { IntNode } from '../../model/node/IntNode';
 import { ResourceNode } from '../../model/node/ResourceNode';
 import { SwitchNode } from '../../model/node/SwitchNode';
-import { EnumNode } from '../../model/node/EnumNode';
 import { HeightProvider } from './HeightProvider';
+import { IntProvider } from './NumberProvider';
 import { Heightmap, VerticalSurface } from './WorldgenStep';
 
 const CarvingMaskConfig: ObjectModel = {

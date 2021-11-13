@@ -8,13 +8,13 @@ import React, {
   useRef,
   useState
 } from 'react';
-import { useOptions } from '../hook/useOptions';
-import Select from './ui/Select';
-import { Schema, WorldgenNames } from '../model/Registry';
 import { GameContext } from '../context/GameRegistry';
+import { useOptions } from '../hook/useOptions';
 import { useToggle } from '../hook/useToggle';
-import { Button } from './ui/Button';
+import { Schema, WorldgenNames } from '../model/Registry';
 import type { WorldgenRegistryKey } from '../model/RegistryKey';
+import { Button } from './ui/Button';
+import Select from './ui/Select';
 
 interface NamespacedKeyProps {
   children?: React.ReactNode;
@@ -104,8 +104,7 @@ export function NamespacedKey({
         );
       }
     }
-  },
-  []);
+  }, []);
 
   // Displayed input value - trim namespace if default
   const inputValue = useMemo<string>(

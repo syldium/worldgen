@@ -10,7 +10,8 @@ export const loadVanillaZip = async function (
   } else if (version === '1.16') {
     ref = '80fb4b8418ff3ff5724f4a0438bb422f58960bd9';
   }
-  const url = `https://raw.githubusercontent.com/slicedlime/examples/${ref}/vanilla_worldgen.zip`;
+  const url =
+    `https://raw.githubusercontent.com/slicedlime/examples/${ref}/vanilla_worldgen.zip`;
   return fetch(url)
     .then((response) => response.arrayBuffer())
     .then((buffer) =>

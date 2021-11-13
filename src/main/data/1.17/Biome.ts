@@ -1,13 +1,13 @@
-import { ObjectNode, Opt } from '../../model/node/ObjectNode';
-import { IdentifierNode, ResourceNode } from '../../model/node/ResourceNode';
-import { ColorNode, IntNode } from '../../model/node/IntNode';
+import { Option } from '../../component/ui/Select';
+import { Model, ObjectModel } from '../../model/Model';
+import { BoolNode } from '../../model/node/BoolNode';
 import { EnumNode } from '../../model/node/EnumNode';
 import { DoubleNode, FloatNode } from '../../model/node/FloatNode';
+import { ColorNode, IntNode } from '../../model/node/IntNode';
 import { ListNode } from '../../model/node/ListNode';
-import { BoolNode } from '../../model/node/BoolNode';
-import { Model, ObjectModel } from '../../model/Model';
+import { ObjectNode, Opt } from '../../model/node/ObjectNode';
+import { IdentifierNode, ResourceNode } from '../../model/node/ResourceNode';
 import { labelizeOption } from '../../util/LabelHelper';
-import { Option } from '../../component/ui/Select';
 
 const BiomeEffects = ObjectNode({
   fog_color: ColorNode(0xc0d8ff),
@@ -94,26 +94,28 @@ export const BiomeSettings: ObjectModel = {
   scale: FloatNode(),
   downfall: FloatNode(),
   effects: BiomeEffects,
-  category: EnumNode([
-    'none',
-    'taiga',
-    'extreme_hills',
-    'jungle',
-    'mesa',
-    'plains',
-    'savanna',
-    'icy',
-    'the_end',
-    'beach',
-    'forest',
-    'ocean',
-    'desert',
-    'river',
-    'swamp',
-    'mushroom',
-    'nether',
-    'underground'
-  ] as const),
+  category: EnumNode(
+    [
+      'none',
+      'taiga',
+      'extreme_hills',
+      'jungle',
+      'mesa',
+      'plains',
+      'savanna',
+      'icy',
+      'the_end',
+      'beach',
+      'forest',
+      'ocean',
+      'desert',
+      'river',
+      'swamp',
+      'mushroom',
+      'nether',
+      'underground'
+    ] as const
+  ),
   precipitation: EnumNode(['none', 'rain', 'snow'] as const),
   temperature: FloatNode(),
   temperature_modifier: EnumNode(['none', 'frozen'] as const, 'none'),

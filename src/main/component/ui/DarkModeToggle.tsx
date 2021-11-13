@@ -1,6 +1,6 @@
 import React from 'react';
-import { Toggle } from './Toggle';
 import { useDarkMode } from '../../hook/useDarkMode';
+import { Toggle } from './Toggle';
 
 export function DarkModeToggle(): JSX.Element {
   const darkMode = useDarkMode();

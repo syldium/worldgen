@@ -1,6 +1,6 @@
+import useModal from '@delangle/use-modal';
 import React, { MouseEvent, useEffect, useMemo } from 'react';
 import { createPortal } from 'react-dom';
-import useModal from '@delangle/use-modal';
 import { voidReturn } from '../../util/DomHelper';
 
 interface ModalProps {

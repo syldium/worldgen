@@ -1,4 +1,3 @@
-import { NodeBase } from './Node';
 import {
   INT_MAX_VALUE,
   INT_MIN_VALUE,
@@ -6,6 +5,7 @@ import {
   LONG_MAX_VALUE,
   LONG_MIN_VALUE
 } from '../../util/MathHelper';
+import { NodeBase } from './Node';
 
 export interface NumberNodeParams extends NodeBase<'int' | 'float'> {
   /** A preset value for the generator */
@@ -39,9 +39,9 @@ export const IntNode = (
     default: def,
     type: 'int',
     isValid: (value: unknown) =>
-      value == null
-        ? typeof def === 'number'
-        : Number.isInteger(value) && isInRange(value as number, min, max, step)
+      value == null ?
+        typeof def === 'number' :
+        Number.isInteger(value) && isInRange(value as number, min, max, step)
   };
 };
 

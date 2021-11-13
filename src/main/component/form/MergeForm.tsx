@@ -1,8 +1,8 @@
-import React, { useContext, MouseEvent } from 'react';
-import { Button } from '../ui/Button';
+import React, { MouseEvent, useContext } from 'react';
 import { AlertTriangle, FolderMinus, GitMerge } from 'react-feather';
-import { ZipAction } from '../../context/ZipAction';
 import { GameContext } from '../../context/GameRegistry';
+import { ZipAction } from '../../context/ZipAction';
+import { Button } from '../ui/Button';
 
 interface MergeFormProps {
   onCancel: () => void;
@@ -34,8 +34,8 @@ export function MergeForm({
       <p>Your workplace currently has data. What should be done with it?</p>
       {conflicts > 0 && (
         <p className="alert--warning">
-          <AlertTriangle /> There are {conflicts} file conflicts, the merge may
-          create an invalid datapack!
+          <AlertTriangle /> There are {conflicts}{' '}
+          file conflicts, the merge may create an invalid datapack!
         </p>
       )}
       <div className="actions">

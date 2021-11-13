@@ -1,9 +1,9 @@
-import { ViewableBiomeSource } from '../viewer/biome/types';
-import { useState } from 'react';
-import { BiomeColors } from '../viewer/biome/MultiNoiseMapWorker';
-import { stripDefaultNamespace } from '../util/LabelHelper';
-import { hashCode } from '../util/hashCode';
 import VanillaBiomeColors from 'biome-colors';
+import { useState } from 'react';
+import { hashCode } from '../util/hashCode';
+import { stripDefaultNamespace } from '../util/LabelHelper';
+import { BiomeColors } from '../viewer/biome/MultiNoiseMapWorker';
+import { ViewableBiomeSource } from '../viewer/biome/types';
 
 export function useBiomeColors(
   source: ViewableBiomeSource

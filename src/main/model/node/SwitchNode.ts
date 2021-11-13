@@ -2,8 +2,8 @@ import {
   defaultNamespace,
   stripDefaultNamespace
 } from '../../util/LabelHelper';
-import { NodeBase } from './Node';
 import { ObjectOrNodeModel } from '../Model';
+import { NodeBase } from './Node';
 import { ObjectNodeParams } from './ObjectNode';
 
 type AnyKeyExcept<S extends string> = {

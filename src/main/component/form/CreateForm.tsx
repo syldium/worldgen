@@ -1,19 +1,19 @@
 import React, {
+  ChangeEvent,
   DragEvent,
   FormEvent,
-  useState,
-  ChangeEvent,
-  useContext
+  useContext,
+  useState
 } from 'react';
-import { useLowercaseInput } from '../../hook/useLowercaseInput';
-import { WorldgenNames } from '../../model/Registry';
-import { Button } from '../ui/Button';
-import { ZipAction } from '../../context/ZipAction';
-import { useToggle } from '../../hook/useToggle';
-import { GameContext } from '../../context/GameRegistry';
-import { MergeForm } from './MergeForm';
 import { toast } from 'react-hot-toast';
+import { GameContext } from '../../context/GameRegistry';
+import { ZipAction } from '../../context/ZipAction';
+import { useLowercaseInput } from '../../hook/useLowercaseInput';
+import { useToggle } from '../../hook/useToggle';
+import { WorldgenNames } from '../../model/Registry';
 import type { WorldgenRegistryKey } from '../../model/RegistryKey';
+import { Button } from '../ui/Button';
+import { MergeForm } from './MergeForm';
 
 interface CreateFormProps {
   onCancel: () => void;
@@ -151,8 +151,9 @@ function DefNamespaceForm({
           <small id="namespaceHelp" className="form-text text-muted">
             This differentiates the datapack from the vanilla functions.
             Namespaces and identifiers may only contain lowercase letters,
-            numbers and <code>._-</code> characters. This namespace is not
-            final, you can edit the vanilla dimensions in the following menus.
+            numbers and <code>._-</code>{' '}
+            characters. This namespace is not final, you can edit the vanilla
+            dimensions in the following menus.
           </small>
         </p>
         <div className="actions">

@@ -1,12 +1,12 @@
 import { Model, ObjectModel } from '../../model/Model';
-import { ObjectNode, Opt } from '../../model/node/ObjectNode';
-import { ResourceNode } from '../../model/node/ResourceNode';
 import { BoolNode } from '../../model/node/BoolNode';
-import { SwitchNode } from '../../model/node/SwitchNode';
-import { FloatProvider } from './NumberProvider';
 import { FloatNode, Probability } from '../../model/node/FloatNode';
 import { IntNode } from '../../model/node/IntNode';
+import { ObjectNode, Opt } from '../../model/node/ObjectNode';
+import { ResourceNode } from '../../model/node/ResourceNode';
+import { SwitchNode } from '../../model/node/SwitchNode';
 import { HeightProvider, YOffset } from './HeightProvider';
+import { FloatProvider } from './NumberProvider';
 
 const CarverDebugConfig = ObjectNode({
   debug_mode: BoolNode(false),

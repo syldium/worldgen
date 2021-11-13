@@ -1,12 +1,12 @@
-import { ObjectNode, Opt } from '../../model/node/ObjectNode';
+import { Option } from '../../component/ui/Select';
+import { Model } from '../../model/Model';
+import { BoolNode } from '../../model/node/BoolNode';
 import { FloatNode } from '../../model/node/FloatNode';
 import { IntNode } from '../../model/node/IntNode';
-import { BoolNode } from '../../model/node/BoolNode';
-import { IdentifierNode, ResourceNode } from '../../model/node/ResourceNode';
-import { Model } from '../../model/Model';
-import { Option } from '../../component/ui/Select';
-import { labelizeOption } from '../../util/LabelHelper';
 import { MapNode } from '../../model/node/MapNode';
+import { ObjectNode, Opt } from '../../model/node/ObjectNode';
+import { IdentifierNode, ResourceNode } from '../../model/node/ResourceNode';
+import { labelizeOption } from '../../util/LabelHelper';
 
 const SamplingConfig = ObjectNode({
   xz_scale: FloatNode({ min: 0.001, max: 1000 }),

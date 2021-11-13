@@ -1,5 +1,5 @@
-import { IntNode } from '../../main/model/node/IntNode';
 import { BoolNode } from '../../main/model/node/BoolNode';
+import { IntNode } from '../../main/model/node/IntNode';
 import { SwitchNode } from '../../main/model/node/SwitchNode';
 
 describe('SwitchNode', function () {

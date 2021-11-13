@@ -1,6 +1,6 @@
-import { BiomeSettings as Biome1_17, Spawners } from '../1.17/Biome';
-import { ObjectNode, ObjectNodeParams } from '../../model/node/ObjectNode';
 import type { Model } from '../../model/Model';
+import { ObjectNode, ObjectNodeParams } from '../../model/node/ObjectNode';
+import { BiomeSettings as Biome1_17, Spawners } from '../1.17/Biome';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const { depth, scale, starts, ...v1_17 } = Biome1_17;

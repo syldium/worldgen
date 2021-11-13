@@ -1,5 +1,4 @@
-import { Dimension, Dimensions } from './Dimension';
-import { DimensionType, DimensionTypes } from './DimensionType';
+import type { WorldgenRegistriesType } from '../../model/Registry';
 import { Biome, Biomes } from './Biome';
 import { BiomeSource } from './BiomeSource';
 import { ChunkGenerator, ChunkGenerators } from './ChunkGenerator';
@@ -7,9 +6,10 @@ import { ConfiguredCarver } from './ConfiguredCarver';
 import { ConfiguredDecorator } from './ConfiguredDecorator';
 import { ConfiguredFeature } from './ConfiguredFeature';
 import { ConfiguredSurfaceBuilder } from './ConfiguredSurfaceBuilder';
+import { Dimension, Dimensions } from './Dimension';
+import { DimensionType, DimensionTypes } from './DimensionType';
 import { NoiseSettings, NoiseSettingsOptions } from './NoiseSettings';
 import { ProcessorList } from './StructureProcessor';
-import type { WorldgenRegistriesType } from '../../model/Registry';
 
 export const Registries1_17: WorldgenRegistriesType = {
   dimension: [Dimension, Dimensions],

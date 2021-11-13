@@ -1,13 +1,13 @@
 import React from 'react';
 import ReactSelect, { createFilter } from 'react-select';
-import ReactSelectCreatable, { CreatableProps } from 'react-select/creatable';
-import { StylesConfig } from 'react-select/src/styles';
-import { FixedSizeList } from 'react-window';
-import type { SelectComponentsConfig } from 'react-select/src/components';
-import type { Option } from './Select';
 import type { Props } from 'react-select/base';
-import type { GroupBase } from 'react-select/src/types';
+import ReactSelectCreatable, { CreatableProps } from 'react-select/creatable';
+import type { SelectComponentsConfig } from 'react-select/src/components';
 import type { MenuProps } from 'react-select/src/components/Menu';
+import { StylesConfig } from 'react-select/src/styles';
+import type { GroupBase } from 'react-select/src/types';
+import { FixedSizeList } from 'react-window';
+import type { Option } from './Select';
 
 const styles_: StylesConfig<Option> = {
   control: (styles) => ({
@@ -50,16 +50,16 @@ const styles_: StylesConfig<Option> = {
     ...styles,
     color: 'var(--primary-color)',
     cursor: 'pointer',
-    backgroundColor: isSelected
-      ? 'var(--bg-color-select-focus)'
-      : isFocused
-      ? 'var(--bg-color-input-hover)'
-      : undefined,
+    backgroundColor: isSelected ?
+      'var(--bg-color-select-focus)' :
+      isFocused ?
+      'var(--bg-color-input-hover)' :
+      undefined,
     ':active': {
       ...styles[':active'],
-      backgroundColor: isSelected
-        ? 'var(--bg-color-select-focus)'
-        : 'var(--bg-color-input-hover)'
+      backgroundColor: isSelected ?
+        'var(--bg-color-select-focus)' :
+        'var(--bg-color-input-hover)'
     }
   }),
   multiValue: (styles) => ({
@@ -97,9 +97,9 @@ function MenuList<
 
   const height = 40;
   const selectedValues = getValue();
-  const initialOffset = selectedValues[0]
-    ? options.indexOf(selectedValues[0]) * height
-    : 0;
+  const initialOffset = selectedValues[0] ?
+    options.indexOf(selectedValues[0]) * height :
+    0;
 
   return (
     <FixedSizeList
@@ -135,16 +135,16 @@ const Select = <
   return (
     <ReactSelect
       {...props}
-      components={
-        selectComponents as unknown as SelectComponentsConfig<
-          OptionType,
-          IsMulti,
-          GroupType
-        >
-      }
-      styles={
-        styles_ as unknown as StylesConfig<OptionType, IsMulti, GroupType>
-      }
+      components={selectComponents as unknown as SelectComponentsConfig<
+        OptionType,
+        IsMulti,
+        GroupType
+      >}
+      styles={styles_ as unknown as StylesConfig<
+        OptionType,
+        IsMulti,
+        GroupType
+      >}
       filterOption={filter}
     />
   );
@@ -158,13 +158,11 @@ const CreatableSelect = <
   props: CreatableProps<OptionType, IsMulti, Group>
 ): JSX.Element => (
   <ReactSelectCreatable
-    components={
-      selectComponents as unknown as SelectComponentsConfig<
-        OptionType,
-        IsMulti,
-        Group
-      >
-    }
+    components={selectComponents as unknown as SelectComponentsConfig<
+      OptionType,
+      IsMulti,
+      Group
+    >}
     styles={styles_ as unknown as StylesConfig<OptionType, IsMulti, Group>}
     filterOption={filter}
     {...props}

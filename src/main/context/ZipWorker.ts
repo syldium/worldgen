@@ -1,9 +1,9 @@
 import { strFromU8, strToU8, Unzipped, unzipSync, zipSync } from 'fflate';
+import type { Schema } from '../model/Registry';
+import type { WorldgenRegistryKey } from '../model/RegistryKey';
 import { removeReactKeyReplacer } from '../util/DomHelper';
 import { findNamespacedKeyAndRegistry, resourcePath } from '../util/PathHelper';
 import type { McMeta, ReadResult } from './ZipAction';
-import type { Schema } from '../model/Registry';
-import type { WorldgenRegistryKey } from '../model/RegistryKey';
 
 declare const self: DedicatedWorkerGlobalScope;
 

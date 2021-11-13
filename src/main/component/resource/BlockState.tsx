@@ -1,10 +1,10 @@
 import React, { ChangeEvent, useCallback, useContext } from 'react';
-import Select, { CreatableSelect, Option } from '../ui/Select';
-import { areConsecutiveIntegers } from '../../util/MathHelper';
-import { NumberInput } from '../ui/NumberInput';
-import { defaultNamespace, isValidNamespacedKey } from '../../util/LabelHelper';
 import { GameContext } from '../../context/GameRegistry';
 import { DEFAULT_BLOCK_STATE } from '../../model/Registry';
+import { defaultNamespace, isValidNamespacedKey } from '../../util/LabelHelper';
+import { areConsecutiveIntegers } from '../../util/MathHelper';
+import { NumberInput } from '../ui/NumberInput';
+import Select, { CreatableSelect, Option } from '../ui/Select';
 
 interface BlockStateProps {
   name: string;
@@ -84,8 +84,8 @@ export function BlockState({
   );
 
   const blockName = value ? defaultNamespace(value.Name) : null;
-  const selected: Option | null =
-    blocks.find((o) => o.value === blockName) || null;
+  const selected: Option | null = blocks.find((o) => o.value === blockName) ||
+    null;
 
   return (
     <div className="form-group">

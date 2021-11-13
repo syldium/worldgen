@@ -22,8 +22,8 @@ export class NodeErrorBoundary extends Component<
     if (this.state) {
       return (
         <p>
-          Error while rendering the <code>{this.props.name}</code> field! Check
-          the browser console for more details.
+          Error while rendering the <code>{this.props.name}</code>{' '}
+          field! Check the browser console for more details.
         </p>
       );
     }

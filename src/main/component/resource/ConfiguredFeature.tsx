@@ -1,19 +1,19 @@
 import React, { useCallback, useContext, useMemo, useState } from 'react';
 import { GameContext } from '../../context/GameRegistry';
-import { Configured } from '../../model/Model';
-import { buildDecorated, findDecorators } from '../../util/FeatureHelper';
-import { useCrud } from '../../hook/useCrud';
-import { NamespacedKey } from '../NamespacedKey';
-import { SelectSwitch } from '../NodeElement';
-import { SwitchNodeParams } from '../../model/node/SwitchNode';
-import { Obj } from '../../util/DomHelper';
 import { CountDecoratorConfig } from '../../data/1.17/ConfiguredDecorator';
-import { JsonViewer } from '../ui/JsonViewer';
-import { Button } from '../ui/Button';
+import { useCrud } from '../../hook/useCrud';
 import { useRegistry } from '../../hook/useRegistry';
 import { useResourceSubmit } from '../../hook/useResourceSubmit';
+import { Configured } from '../../model/Model';
+import { SwitchNodeParams } from '../../model/node/SwitchNode';
 import type { Schema } from '../../model/Registry';
 import type { WorldgenRegistryKey } from '../../model/RegistryKey';
+import { Obj } from '../../util/DomHelper';
+import { buildDecorated, findDecorators } from '../../util/FeatureHelper';
+import { NamespacedKey } from '../NamespacedKey';
+import { SelectSwitch } from '../NodeElement';
+import { Button } from '../ui/Button';
+import { JsonViewer } from '../ui/JsonViewer';
 
 export function ConfiguredFeature(): JSX.Element {
   const { worldgen } = useContext(GameContext);
@@ -81,8 +81,10 @@ export function ConfiguredFeature(): JSX.Element {
     },
     [dispatchDecorators]
   );
-  const handleSubmit = useResourceSubmit(registryKey, previousKey, () =>
-    buildDecorated(feature, decorators)
+  const handleSubmit = useResourceSubmit(
+    registryKey,
+    previousKey,
+    () => buildDecorated(feature, decorators)
   );
 
   return (

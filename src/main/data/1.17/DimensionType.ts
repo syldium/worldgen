@@ -1,11 +1,11 @@
-import { DefaultedModel, Model } from '../../model/Model';
-import { Opt } from '../../model/node/ObjectNode';
-import { FloatNode } from '../../model/node/FloatNode';
-import { BoolNode } from '../../model/node/BoolNode';
-import { IntNode, LongNode } from '../../model/node/IntNode';
-import { EnumNode } from '../../model/node/EnumNode';
-import { IdentifierNode } from '../../model/node/ResourceNode';
 import { Option } from '../../component/ui/Select';
+import { DefaultedModel, Model } from '../../model/Model';
+import { BoolNode } from '../../model/node/BoolNode';
+import { EnumNode } from '../../model/node/EnumNode';
+import { FloatNode } from '../../model/node/FloatNode';
+import { IntNode, LongNode } from '../../model/node/IntNode';
+import { Opt } from '../../model/node/ObjectNode';
+import { IdentifierNode } from '../../model/node/ResourceNode';
 import { labelizeOption } from '../../util/LabelHelper';
 
 export const DimensionType: Model = DefaultedModel(

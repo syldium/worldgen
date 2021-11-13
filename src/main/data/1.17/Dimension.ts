@@ -1,6 +1,6 @@
+import { Option } from '../../component/ui/Select';
 import { Model } from '../../model/Model';
 import { ResourceNode } from '../../model/node/ResourceNode';
-import { Option } from '../../component/ui/Select';
 import { labelizeOption } from '../../util/LabelHelper';
 import { ChunkGenerator } from './ChunkGenerator';
 

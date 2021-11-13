@@ -1,14 +1,14 @@
-import { SwitchNode } from '../../model/node/SwitchNode';
 import { Model, ObjectModel } from '../../model/Model';
-import { ListNode } from '../../model/node/ListNode';
-import { IdentifierNode, ResourceNode } from '../../model/node/ResourceNode';
-import { IntNode } from '../../model/node/IntNode';
-import { Heightmap } from './WorldgenStep';
-import { EnumNode, EnumNodeParams } from '../../model/node/EnumNode';
-import { ObjectNode } from '../../model/node/ObjectNode';
-import { FloatNode, Probability } from '../../model/node/FloatNode';
 import { EitherNode } from '../../model/node/EitherNode';
+import { EnumNode, EnumNodeParams } from '../../model/node/EnumNode';
+import { FloatNode, Probability } from '../../model/node/FloatNode';
+import { IntNode } from '../../model/node/IntNode';
+import { ListNode } from '../../model/node/ListNode';
+import { ObjectNode } from '../../model/node/ObjectNode';
+import { IdentifierNode, ResourceNode } from '../../model/node/ResourceNode';
+import { SwitchNode } from '../../model/node/SwitchNode';
 import { Axis } from '../Axis';
+import { Heightmap } from './WorldgenStep';
 
 const BlockAgeConfig: ObjectModel = {
   mossiness: FloatNode()

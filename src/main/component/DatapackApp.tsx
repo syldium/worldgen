@@ -1,13 +1,13 @@
 import React from 'react';
-import { NavBar } from './ui/NavBar';
 import { Route, Switch } from 'react-router-dom';
-import { Resource } from './resource/Resource';
-import { MainMenu } from './MainMenu';
-import { Link } from './ui/Link';
-import { ConfiguredFeature } from './resource/ConfiguredFeature';
 import { WorldgenNames } from '../model/Registry';
-import { NoRouteMatch } from './ui/NoRouteMatch';
 import type { WorldgenRegistryKey } from '../model/RegistryKey';
+import { MainMenu } from './MainMenu';
+import { ConfiguredFeature } from './resource/ConfiguredFeature';
+import { Resource } from './resource/Resource';
+import { Link } from './ui/Link';
+import { NavBar } from './ui/NavBar';
+import { NoRouteMatch } from './ui/NoRouteMatch';
 
 export const DatapackApp = (): JSX.Element => (
   <div>

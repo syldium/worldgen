@@ -1,7 +1,7 @@
-import { NoiseParameters as NoiseParameters1_17 } from '../1.17/NoiseSettings';
 import { Model, ObjectModel } from '../../model/Model';
 import { ObjectNode } from '../../model/node/ObjectNode';
 import { NoiseValues } from '../1.17/BiomeSource';
+import { NoiseParameters as NoiseParameters1_17 } from '../1.17/NoiseSettings';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const { min_surface_level, ...NoiseParameters } = {
