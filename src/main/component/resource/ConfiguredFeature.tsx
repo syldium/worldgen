@@ -15,12 +15,16 @@ import { useResourceSubmit } from '../../hook/useResourceSubmit';
 import type { Schema } from '../../model/Registry';
 import type { WorldgenRegistryKey } from '../../model/RegistryKey';
 
-export function ConfiguredFeature(): JSX.Element {
+interface ConfiguredFeatureProps {
+  id: string | undefined;
+}
+
+export function ConfiguredFeature({ id }: ConfiguredFeatureProps): JSX.Element {
   const { worldgen } = useContext(GameContext);
   const registryKey: WorldgenRegistryKey = 'worldgen/configured_feature';
   const [registry, previousKey, initial, postLoad] = useRegistry<
     Configured & Obj
-  >(registryKey);
+  >(registryKey, id);
 
   const [_decorators, _feature] = useMemo(
     () => findDecorators(initial),

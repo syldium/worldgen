@@ -1,6 +1,6 @@
 import React, { ChangeEvent, Suspense } from 'react';
 import type { GroupBase, OnChangeValue, Props } from 'react-select';
-import type { ActionMeta } from 'react-select/src/types';
+import type { ActionMeta } from 'react-select';
 import type { CreatableProps } from 'react-select/creatable';
 import type ReactSelect from 'react-select';
 

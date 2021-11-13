@@ -1,7 +1,7 @@
 import type { Schema } from '../model/Registry';
 import { FormEvent, useContext } from 'react';
 import { GameContext } from '../context/GameRegistry';
-import { useHistory } from 'react-router-dom';
+import { navigate } from '../util/UriHelper';
 import { defaultNamespace } from '../util/LabelHelper';
 import { del, set } from 'idb-keyval';
 import { resourcePath } from '../util/PathHelper';
@@ -17,7 +17,6 @@ export function useResourceSubmit(
 ): SubmitHandler {
   const { namespace, worldgen } = useContext(GameContext);
   const registry = worldgen.worldgen[registryKey];
-  const history = useHistory();
 
   return function (event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -32,6 +31,6 @@ export function useResourceSubmit(
       registry.remove(previousKey);
       del(resourcePath(registryKey, previousKey));
     }
-    history.push('/');
+    navigate('/');
   };
 }

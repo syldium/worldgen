@@ -1,10 +1,7 @@
 import React, { useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
 import { voidReturn } from '../../util/DomHelper';
 
 export function NoRouteMatch(): JSX.Element {
-  const location = useLocation();
-
   useEffect(() => {
     const robots = document.createElement('meta');
     robots.setAttribute('name', 'robots');

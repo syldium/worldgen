@@ -11,13 +11,18 @@ import type { WorldgenRegistryKey } from '../../model/RegistryKey';
 
 interface ResourceFormProps {
   registryKey: WorldgenRegistryKey;
+  id: string | undefined;
   children?: ReactNode;
 }
 export function Resource({
   registryKey,
+  id,
   children
 }: ResourceFormProps): JSX.Element {
-  const [registry, previousKey, initial, postLoad] = useRegistry(registryKey);
+  const [registry, previousKey, initial, postLoad] = useRegistry(
+    registryKey,
+    id
+  );
 
   const [value, setValue] = useState<Schema>(initial);
   const handleChange = useCallback(

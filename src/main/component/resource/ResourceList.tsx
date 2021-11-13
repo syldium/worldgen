@@ -4,7 +4,7 @@ import { GameContext } from '../../context/GameRegistry';
 import { stripDefaultNamespace } from '../../util/LabelHelper';
 import { Trash } from 'react-feather';
 import { useForceUpdate } from '@pastable/use-force-update';
-import { Link } from 'react-router-dom';
+import { Link } from '../ui/Link';
 import { del } from 'idb-keyval';
 import { resourcePath } from '../../util/PathHelper';
 import type { WorldgenRegistryKey } from '../../model/RegistryKey';
@@ -43,7 +43,7 @@ export function ResourceList({ registryKey }: ResourceListProps): JSX.Element {
                   <Trash />
                 </i>
               </a>
-              <Link to={`/${registryKey}/${key}`}>{name}</Link>
+              <Link href={`/${registryKey}/${key}`}>{name}</Link>
             </li>
           );
         })}

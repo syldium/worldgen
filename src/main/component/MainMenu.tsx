@@ -7,7 +7,7 @@ import { Download, PlusCircle } from 'react-feather';
 import { useToggle } from '../hook/useToggle';
 import { Modal } from './ui/Modal';
 import { CreateForm } from './form/CreateForm';
-import { useHistory } from 'react-router-dom';
+import { navigate } from '../util/UriHelper';
 import { Button } from './ui/Button';
 import { catchToast } from '../util/ErrorHelper';
 import { toast } from 'react-hot-toast';
@@ -19,7 +19,6 @@ export function MainMenu(): JSX.Element {
   const { worldgen } = context;
   const [open, toggleAction] = useToggle(false);
 
-  const history = useHistory();
   const handleGenerateClick = useCallback(
     function () {
       const id = toast.loading('Generating datapack');
@@ -34,10 +33,10 @@ export function MainMenu(): JSX.Element {
   );
   const handleNewResource = useCallback(
     function (key: WorldgenRegistryKey) {
-      history.push(`/${key}`);
+      navigate(`/${key}`);
       toggleAction(false);
     },
-    [history, toggleAction]
+    [toggleAction]
   );
   const handleNewDatapack = useCallback(
     function (namespace: string) {
