@@ -1,10 +1,11 @@
-import React, { MouseEvent, useEffect, useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { createPortal } from 'react-dom';
 import useModal from '@delangle/use-modal';
 import { voidReturn } from '../../util/DomHelper';
+import type { MouseEvent, ReactNode } from 'react';
 
 interface ModalProps {
-  children?: React.ReactNode;
+  children?: ReactNode;
   isOpen: boolean;
   onClose: (opened: MouseEvent<HTMLButtonElement> | boolean) => void;
 }

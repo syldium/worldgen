@@ -1,13 +1,10 @@
-import React from 'react';
+import { memo } from 'react';
 import ReactSelect, { createFilter } from 'react-select';
 import ReactSelectCreatable, { CreatableProps } from 'react-select/creatable';
-import { StylesConfig } from 'react-select/src/styles';
 import { FixedSizeList } from 'react-window';
-import type { SelectComponentsConfig } from 'react-select/src/components';
+import type { GroupBase, StylesConfig, SelectComponentsConfig, MenuProps } from 'react-select';
 import type { Option } from './Select';
 import type { Props } from 'react-select/base';
-import type { GroupBase } from 'react-select/src/types';
-import type { MenuProps } from 'react-select/src/components/Menu';
 
 const styles_: StylesConfig<Option> = {
   control: (styles) => ({
@@ -171,4 +168,4 @@ const CreatableSelect = <
   />
 );
 
-export default React.memo(Select) as typeof Select;
+export default memo(Select) as typeof Select;

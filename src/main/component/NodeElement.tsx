@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useCallback, useContext, useMemo } from 'react';
+import { memo, useCallback, useContext, useMemo } from 'react';
 import {
   isNode,
   ModelNode,
@@ -43,9 +43,15 @@ import { useToggle } from '../hook/useToggle';
 import { NumberInput } from './ui/NumberInput';
 import { Labelized } from './ui/Labelized';
 import type { OnChangeValue } from 'react-select';
+import type {
+  ChangeEvent,
+  FunctionComponent,
+  ReactElement,
+  ReactNode
+} from 'react';
 
 interface ModelViewProps {
-  children?: React.ReactNode;
+  children?: ReactNode;
   model: ObjectOrNodeModel;
   name: string;
   value: Record<string, unknown>;
@@ -81,11 +87,11 @@ interface ObjectViewProps {
   obj: Record<string, ModelNode>;
   value: Record<string, unknown>;
   onChange: (value: Record<string, unknown>) => void;
-  children?: React.ReactNode;
+  children?: ReactNode;
 }
 function ObjectView({ obj, value, onChange, children }: ObjectViewProps) {
-  const nodes: React.ReactElement[] = [];
-  let inline: React.ReactElement[] = [];
+  const nodes: ReactElement[] = [];
+  let inline: ReactElement[] = [];
   for (const [name, node] of Object.entries(obj)) {
     const isShort = mayInline(node);
     const el = (
@@ -136,7 +142,7 @@ function ObjectView({ obj, value, onChange, children }: ObjectViewProps) {
 }
 
 interface NodeElementProps {
-  children?: React.ReactNode;
+  children?: ReactNode;
   name: string;
   node: ModelNode;
   value: Record<string, unknown>;
@@ -175,11 +181,11 @@ function _NodeElement({
     </NodeErrorBoundary>
   );
 }
-export const NodeElement = React.memo(_NodeElement);
+export const NodeElement = memo(_NodeElement);
 
 function findNodeElement(
   node: ModelNode
-): null | React.FunctionComponent<NodeProps<any>> {
+): null | FunctionComponent<NodeProps<any>> {
   switch (node.type) {
     case 'bool':
       return CheckboxInput;
@@ -212,7 +218,7 @@ function findNodeElement(
 }
 
 interface NodeProps<T extends NodeBase<NodeType>> {
-  children?: React.ReactNode;
+  children?: ReactNode;
   name: string;
   node: T;
   value: Record<string, unknown>;
@@ -352,7 +358,7 @@ function ListCrud({ name, node, value, onChange }: NodeProps<ListNodeParams>) {
     },
     [update]
   );
-  const El: React.FunctionComponent<NodeProps<ModelNode>> = node.weighted
+  const El: FunctionComponent<NodeProps<ModelNode>> = node.weighted
     ? WeightedValue
     : NodeElement;
   return (

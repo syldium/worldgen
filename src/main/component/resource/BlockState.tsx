@@ -1,17 +1,18 @@
-import React, { ChangeEvent, useCallback, useContext } from 'react';
+import { useCallback, useContext } from 'react';
 import Select, { CreatableSelect, Option } from '../ui/Select';
 import { areConsecutiveIntegers } from '../../util/MathHelper';
 import { NumberInput } from '../ui/NumberInput';
 import { defaultNamespace, isValidNamespacedKey } from '../../util/LabelHelper';
 import { GameContext } from '../../context/GameRegistry';
 import { DEFAULT_BLOCK_STATE } from '../../model/Registry';
+import type { ChangeEvent, ReactNode } from 'react';
 
 interface BlockStateProps {
   name: string;
   options?: Option[];
   value?: BlockStateValue;
   onChange: (state: Record<string, BlockStateValue>) => void;
-  children?: React.ReactNode;
+  children?: ReactNode;
   inputId?: string;
 }
 

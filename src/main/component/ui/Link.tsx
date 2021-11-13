@@ -1,13 +1,14 @@
-import React, { useCallback } from 'react';
+import { useCallback } from 'react';
 import { match } from 'react-router';
 import { NavLink } from 'react-router-dom';
-import { LocationDescriptor, Pathname } from 'history';
 import { isValidNamespacedKey } from '../../util/LabelHelper';
+import type { LocationDescriptor, Pathname } from 'history';
+import type { RefAttributes, ReactNode } from 'react';
 
-interface LinkProps extends React.RefAttributes<HTMLAnchorElement> {
+interface LinkProps extends RefAttributes<HTMLAnchorElement> {
   exact?: boolean;
   to: LocationDescriptor;
-  children?: React.ReactNode;
+  children?: ReactNode;
 }
 
 const onClick = (event: React.MouseEvent<HTMLAnchorElement>) =>

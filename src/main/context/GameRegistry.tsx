@@ -1,4 +1,4 @@
-import React, { ReactNode, useEffect, useMemo } from 'react';
+import { ReactNode, useEffect, useMemo } from 'react';
 import {
   BlockStateRegistry,
   Registry,

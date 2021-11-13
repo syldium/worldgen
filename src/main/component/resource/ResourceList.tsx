@@ -1,5 +1,5 @@
 import { WorldgenNames } from '../../model/Registry';
-import React, { MouseEvent, useContext } from 'react';
+import { MouseEvent, useContext } from 'react';
 import { GameContext } from '../../context/GameRegistry';
 import { stripDefaultNamespace } from '../../util/LabelHelper';
 import { Trash } from 'react-feather';
