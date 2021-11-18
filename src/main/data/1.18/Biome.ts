@@ -3,7 +3,7 @@ import { ObjectNode, ObjectNodeParams } from '../../model/node/ObjectNode';
 import type { Model } from '../../model/Model';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const { depth, scale, starts, ...v1_17 } = Biome1_17;
+const { depth, scale, starts, player_spawn_friendly, ...v1_17 } = Biome1_17;
 
 export const Biome: Model = {
   node: {

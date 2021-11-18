@@ -25,7 +25,7 @@ export function useRegistry<S extends Schema>(
     id = path.substr(index);
   }
 
-  const { worldgen } = useContext(GameContext);
+  const worldgen = useContext(GameContext).worldgen!;
   const registry = worldgen.worldgen[registryKey];
   const entry = registry.entries[id];
 

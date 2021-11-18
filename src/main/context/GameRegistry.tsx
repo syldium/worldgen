@@ -19,11 +19,12 @@ import { clear, entries, setMany } from 'idb-keyval';
 import { findNamespacedKeyAndRegistry, resourcePath } from '../util/PathHelper';
 import { useForceUpdate } from '@pastable/use-force-update';
 import type { RegistryKey, WorldgenRegistryKey } from '../model/RegistryKey';
+import { GameVersion } from './GameVersion';
 
 interface GameRegistry {
   blockStates: BlockStateRegistry;
   registries: Record<RegistryKey, Registry>;
-  worldgen: WorldgenRegistryHolder;
+  worldgen?: WorldgenRegistryHolder;
   namespace: string;
 }
 
@@ -50,15 +51,25 @@ const json = (url: string, label?: boolean): RegistryData =>
   res(url, readJson, label);
 const text = (url: string, label?: boolean): RegistryData =>
   res(url, readText, label);
+const defaultVersion: GameVersion = '1.17';
 
 export function GameRegistryProvider({
   children,
   states
 }: ProviderProps): JSX.Element {
   const forceUpdate = useForceUpdate();
-  const [holder, setHolder] = useState<WorldgenRegistryHolder>(
-    () => new WorldgenRegistryHolder('1.17')
+  const [version, setVersion] = useLocalStorageState<GameVersion>(
+    'game-version',
+    defaultVersion
   );
+  const [holder, setHolder] = useState<WorldgenRegistryHolder | undefined>(
+    version === defaultVersion ? WorldgenRegistryHolder.def() : undefined
+  );
+  useEffect(() => {
+    if (version !== defaultVersion) {
+      WorldgenRegistryHolder.create(version).then(setHolder);
+    }
+  }, [version]);
   const blockStates = useFetchData<BlockStateRegistry>(
     `${github}reports/blocks/simplified/data.min.json`,
     {},
@@ -92,9 +103,10 @@ export function GameRegistryProvider({
     const options = Object.keys(blockStates).map(labelizeOption);
     return { options, vanilla: options };
   }, [blockStates]);
+  const worldgen = holder ? holder.worldgen : {};
 
   useEffect(() => {
-    if (!window.indexedDB) {
+    if (!window.indexedDB || !holder) {
       return;
     }
     entries<string, Schema>().then((entries) => {
@@ -119,20 +131,21 @@ export function GameRegistryProvider({
     <GameContext.Provider
       value={{
         blockStates,
+        // @ts-ignore
         registries: {
           ...registries,
-          ...holder.worldgen,
+          ...worldgen,
           biome_particle: emptyRegistry,
           block: blockTypes,
           block_state: blockTypes,
           block_state_provider: emptyRegistry
         },
         get worldgen(): WorldgenRegistryHolder {
-          return holder;
+          return holder!;
         },
         set worldgen(holder: WorldgenRegistryHolder) {
           clear().then(() => {
-            setHolder((current) => holder.withVanilla(current));
+            setHolder((current) => holder.withVanilla(current!));
             const entries: [string, Schema][] = [];
             for (const [registryKey, registry] of holder.entries) {
               entries.push(

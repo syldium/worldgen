@@ -8,7 +8,7 @@ import { Option } from '../../component/ui/Select';
 import { labelizeOption } from '../../util/LabelHelper';
 import { MapNode } from '../../model/node/MapNode';
 
-const SamplingConfig = ObjectNode({
+export const SamplingConfig = ObjectNode({
   xz_scale: FloatNode({ min: 0.001, max: 1000 }),
   y_scale: FloatNode({ min: 0.001, max: 1000 }),
   xz_factor: FloatNode({ min: 0.001, max: 1000 }),
@@ -42,7 +42,7 @@ const StructureConfig = ObjectNode({
   separation: IntNode({ min: 0, max: 4096 }),
   salt: IntNode({ min: 0 })
 });
-const StructuresConfig = ObjectNode({
+export const StructuresConfig = ObjectNode({
   stronghold: Opt(
     ObjectNode({
       count: IntNode({ min: 1, max: 4095 }),

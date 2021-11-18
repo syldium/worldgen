@@ -16,7 +16,7 @@ import type { Schema } from '../../model/Registry';
 import type { WorldgenRegistryKey } from '../../model/RegistryKey';
 
 export function ConfiguredFeature(): JSX.Element {
-  const { worldgen } = useContext(GameContext);
+  const worldgen = useContext(GameContext).worldgen!;
   const registryKey: WorldgenRegistryKey = 'worldgen/configured_feature';
   const [registry, previousKey, initial, postLoad] = useRegistry<
     Configured & Obj

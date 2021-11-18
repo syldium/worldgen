@@ -49,7 +49,7 @@ function CreateDatapackForm({
   onLoad,
   toggleMerge
 }: CreateDatapackFormProps): JSX.Element {
-  const { worldgen } = useContext(GameContext);
+  const worldgen = useContext(GameContext).worldgen!;
   const [zip, setZip] = useState<ZipAction | null>(null);
   const [error, setError] = useState<string | null>(null);
 

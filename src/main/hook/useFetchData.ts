@@ -31,7 +31,7 @@ export function useRegistryFetch<
   T extends { [key in RegistryKey]?: RegistryData }
 >(
   registries: T,
-  holder: WorldgenRegistryHolder
+  holder?: WorldgenRegistryHolder
 ): [Record<keyof T, Registry>, RefObject<boolean>] {
   const [values, setValues] = useState<Record<keyof T, Registry>>(() => {
     const empty: Registry = { options: [], vanilla: [] };
@@ -45,7 +45,7 @@ export function useRegistryFetch<
 
   useEffect(
     function () {
-      if (done.current || !window.fetch) {
+      if (done.current || !holder || !window.fetch) {
         return;
       }
 

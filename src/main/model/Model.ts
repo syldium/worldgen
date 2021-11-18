@@ -14,6 +14,8 @@ export interface Model {
   preset: (version: GameVersion) => Record<string, unknown>;
 }
 
+export const EmptyModel: Model = { node: {}, preset: () => ({}) };
+
 export const DefaultedModel = function <T extends ObjectModel>(
   fields: T,
   preset: (version: GameVersion) => { [key in keyof Partial<T>]: unknown }

@@ -10,6 +10,7 @@ export type GameRegistryKey =
   | 'tags/blocks';
 
 const WorldgenRegistryKeys = [
+  'block_predicate',
   'dimension',
   'dimension_type',
   'worldgen/biome',
@@ -20,7 +21,12 @@ const WorldgenRegistryKeys = [
   'worldgen/configured_feature',
   'worldgen/configured_structure_feature',
   'worldgen/configured_surface_builder',
+  'worldgen/material_condition',
+  'worldgen/material_rule',
+  'worldgen/noise',
   'worldgen/noise_settings',
+  'worldgen/placed_feature',
+  'worldgen/placement_modifier',
   'worldgen/processor_list'
 ] as const;
 export type WorldgenRegistryKey = typeof WorldgenRegistryKeys[number];

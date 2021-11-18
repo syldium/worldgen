@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useCallback, useContext } from 'react';
+import { ChangeEvent, useCallback, useContext } from 'react';
 import { GameContext } from '../../context/GameRegistry';
 import { Select } from '../ui/Select';
 import {
