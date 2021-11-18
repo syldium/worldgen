@@ -9,7 +9,7 @@ import type {
   Dependants,
   DependencyGraph
 } from '../../main/model/graph/DependencyGraph';
-import { structuredClone } from '../copy-utils';
+import { structuredClone } from '../../copy-utils';
 import { Biome } from '../../main/data/1.17/Biome';
 
 interface BiomeType {
