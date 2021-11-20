@@ -1,5 +1,9 @@
-import { ConfiguredFeature as ConfiguredFeature1_17 } from '../1.17/ConfiguredFeature';
-import { Model, ObjectModel } from '../../model/Model';
+import {
+  ConfiguredFeature as ConfiguredFeature1_17,
+  RootSystemConfig as RootSystemConfig1_17,
+  VegetationPatchConfig as VegetationPatchConfig1_17
+} from '../1.17/ConfiguredFeature';
+import {Model, ObjectModel} from '../../model/Model';
 import { SwitchNode } from '../../model/node/SwitchNode';
 import { ResourceNode } from '../../model/node/ResourceNode';
 import { IntNode } from '../../model/node/IntNode';
@@ -7,6 +11,7 @@ import { BoolNode } from '../../model/node/BoolNode';
 import { FloatNode } from '../../model/node/FloatNode';
 import { ListNode } from '../../model/node/ListNode';
 import type { SwitchNodeParams } from '../../model/node/SwitchNode';
+import { ObjectNode } from '../../model/node/ObjectNode';
 
 const GlowLichenConfig: ObjectModel = {
   search_range: IntNode({ min: 1, max: 64, default: 10 }),
@@ -15,6 +20,36 @@ const GlowLichenConfig: ObjectModel = {
   can_place_on_wall: BoolNode(false),
   chance_of_spreading: FloatNode({ min: 0, max: 1, default: 0.5 }),
   can_be_placed_on: ListNode(ResourceNode('block'))
+};
+
+const SimpleRandomConfig: ObjectModel = {
+  features: ListNode(ResourceNode('worldgen/placed_feature'))
+};
+
+const RootSystemConfig: ObjectModel = {
+  ...RootSystemConfig1_17,
+  feature: ResourceNode('worldgen/placed_feature'),
+  allowed_tree_position: ResourceNode('block_predicate')
+};
+
+const RandomBooleanSelector: ObjectModel = {
+  feature_true: ResourceNode('worldgen/placed_feature'),
+  feature_false: ResourceNode('worldgen/placed_feature')
+};
+
+const RandomConfig: ObjectModel = {
+  default: ResourceNode('worldgen/placed_feature'),
+  features: ListNode(
+    ObjectNode({
+      feature: ResourceNode('worldgen/placed_feature'),
+      chance: FloatNode({ min: 0, max: 1 })
+    })
+  )
+};
+
+const VegetationPatchConfig: ObjectModel = {
+  ...VegetationPatchConfig1_17,
+  vegetation_feature: ResourceNode('worldgen/placed_feature')
 };
 
 const features1_17 = ConfiguredFeature1_17.node as SwitchNodeParams;
@@ -32,9 +67,15 @@ export const ConfiguredFeature: Model = {
         fluid: ResourceNode('block_state_provider'),
         barrier: ResourceNode('block_state_provider')
       },
-      tree,
       monster_room_deep: {},
-      ore_gold_lower: {}
+      ore_gold_lower: {},
+      random_boolean_selector: RandomBooleanSelector,
+      random_selector: RandomConfig,
+      root_system: RootSystemConfig,
+      simple_random_selector: SimpleRandomConfig,
+      tree,
+      vegetation_patch: VegetationPatchConfig,
+      waterlogged_vegetation_patch: VegetationPatchConfig
     },
     features1_17.preset
   ),
