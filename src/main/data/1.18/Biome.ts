@@ -3,7 +3,14 @@ import { ObjectNode, ObjectNodeParams } from '../../model/node/ObjectNode';
 import type { Model } from '../../model/Model';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const { depth, scale, starts, player_spawn_friendly, ...v1_17 } = Biome1_17;
+const {
+  depth,
+  scale,
+  starts,
+  surface_builder,
+  player_spawn_friendly,
+  ...v1_17
+} = Biome1_17;
 
 export const Biome: Model = {
   node: {
@@ -26,7 +33,6 @@ export const Biome: Model = {
       water_color: 4159204,
       water_fog_color: 329011
     },
-    surface_builder: 'minecraft:grass',
     carvers: {
       air: [
         'minecraft:cave',
@@ -36,9 +42,9 @@ export const Biome: Model = {
     },
     features: [
       [],
-      ['minecraft:lake_water', 'minecraft:lake_lava'],
+      ['minecraft:lake_lava_underground', 'minecraft:lake_lava_surface'],
       ['minecraft:amethyst_geode'],
-      ['minecraft:monster_room'],
+      ['minecraft:monster_room', 'minecraft:monster_room_deep'],
       [],
       [],
       [
@@ -57,10 +63,12 @@ export const Biome: Model = {
         'minecraft:ore_iron_middle',
         'minecraft:ore_iron_small',
         'minecraft:ore_gold',
+        'minecraft:ore_gold_lower',
         'minecraft:ore_redstone',
         'minecraft:ore_redstone_lower',
         'minecraft:ore_diamond',
         'minecraft:ore_diamond_large',
+        'minecraft:ore_diamond_buried',
         'minecraft:ore_lapis',
         'minecraft:ore_lapis_buried',
         'minecraft:ore_copper',
@@ -70,18 +78,17 @@ export const Biome: Model = {
         'minecraft:disk_gravel'
       ],
       [],
+      ['minecraft:spring_water', 'minecraft:spring_lava'],
       [
-        'minecraft:patch_tall_grass_2',
         'minecraft:glow_lichen',
-        'minecraft:plain_vegetation',
-        'minecraft:flower_plain_decorated',
+        'minecraft:patch_tall_grass_2',
+        'minecraft:trees_plains',
+        'minecraft:flower_plains',
         'minecraft:patch_grass_plain',
         'minecraft:brown_mushroom_normal',
         'minecraft:red_mushroom_normal',
         'minecraft:patch_sugar_cane',
-        'minecraft:patch_pumpkin',
-        'minecraft:spring_water',
-        'minecraft:spring_lava'
+        'minecraft:patch_pumpkin'
       ],
       ['minecraft:freeze_top_layer']
     ],
@@ -196,7 +203,6 @@ export const Biome: Model = {
       misc: []
     },
     spawn_costs: {},
-    player_spawn_friendly: true,
     precipitation: 'rain',
     temperature: 0.8,
     downfall: 0.4,
