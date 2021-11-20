@@ -27,10 +27,11 @@ export function ConfiguredFeature(): JSX.Element {
     [initial]
   );
 
+  const hasDecorators = worldgen.packFormat < 8;
   const decoratorNode =
     worldgen.worldgen['worldgen/configured_decorator'].model.node;
   const [feature, setFeature] = useState<Configured & Obj>(_feature);
-  const dispatchDecorators = useCrud<Configured & Obj>(_decorators, () => ({
+  const dispatchDecorators = useCrud<Configured & Obj>(hasDecorators ? _decorators : [], () => ({
     ...(CountDecoratorConfig as Configured & Obj)
   }));
   const decorators = dispatchDecorators.elements;
