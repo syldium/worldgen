@@ -26,6 +26,7 @@ interface GameRegistry {
   registries: Record<RegistryKey, Registry>;
   worldgen?: WorldgenRegistryHolder;
   namespace: string;
+  version: GameVersion;
 }
 
 export const GameContext = createContext<GameRegistry>({} as GameRegistry);
@@ -164,6 +165,18 @@ export function GameRegistryProvider({
         },
         set namespace(namespace: string) {
           setDefNamespace(namespace);
+        },
+        get version(): GameVersion {
+          return version;
+        },
+        set version(version: GameVersion) {
+          WorldgenRegistryHolder.create(version).then((h) => {
+            setHolder((current) => {
+              current && h.merge(current);
+              return h;
+            });
+            setVersion(version);
+          });
         }
       }}
     >
