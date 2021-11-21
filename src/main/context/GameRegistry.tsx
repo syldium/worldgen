@@ -63,7 +63,7 @@ export function GameRegistryProvider({
     defaultVersion
   );
   const [holder, setHolder] = useState<WorldgenRegistryHolder | undefined>(
-    version === defaultVersion ? WorldgenRegistryHolder.def() : undefined
+    version === defaultVersion ? () => WorldgenRegistryHolder.def() : undefined
   );
   useEffect(() => {
     if (version !== defaultVersion) {
