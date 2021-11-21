@@ -19,3 +19,13 @@ export const loadVanillaZip = async function (
       )
     );
 };
+
+export const dataUrl = function (version: GameVersion) {
+  let ref = 'master';
+  if (version === '1.17') {
+    ref = '9c9aa93ca1e44a61cc60954b5580546490d936f6';
+  } else if (version === '1.16') {
+    ref = '2aa35bd15742950a3d63a2f62e091074d946cbe2';
+  }
+  return `https://raw.githubusercontent.com/Arcensoth/mcdata/${ref}/processed/`;
+};

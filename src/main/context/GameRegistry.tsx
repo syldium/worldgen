@@ -20,6 +20,7 @@ import { findNamespacedKeyAndRegistry, resourcePath } from '../util/PathHelper';
 import { useForceUpdate } from '@pastable/use-force-update';
 import type { RegistryKey, WorldgenRegistryKey } from '../model/RegistryKey';
 import { GameVersion } from './GameVersion';
+import { dataUrl } from '../util/FetchHelper';
 
 interface GameRegistry {
   blockStates: BlockStateRegistry;
@@ -31,11 +32,6 @@ interface GameRegistry {
 
 export const GameContext = createContext<GameRegistry>({} as GameRegistry);
 
-//const github = '/';
-const github =
-  'https://raw.githubusercontent.com/Arcensoth/mcdata/master/processed/';
-const registryUrl = (registry: string) =>
-  `${github}reports/registries/${registry}/data.values.txt`;
 const valuesUrl = (registry: string) => `/values/1.17/${registry}.json`;
 
 interface ProviderProps {
@@ -63,6 +59,9 @@ export function GameRegistryProvider({
     'game-version',
     defaultVersion
   );
+  const github = dataUrl(version);
+  const registryUrl = (registry: string) =>
+    `${github}reports/registries/${registry}/data.values.txt`;
   const [holder, setHolder] = useState<WorldgenRegistryHolder | undefined>(
     version === defaultVersion ? () => WorldgenRegistryHolder.def() : undefined
   );
@@ -96,6 +95,7 @@ export function GameRegistryProvider({
       ),
       'worldgen/processor_list': json(valuesUrl('processor_list'))
     },
+    version,
     holder
   );
   const [defNamespace, setDefNamespace] = useLocalStorageState<string>('demo');
