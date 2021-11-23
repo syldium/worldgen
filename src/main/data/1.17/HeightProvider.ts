@@ -41,7 +41,42 @@ export const HeightProvider = EitherNode(
         value: YOffset
       })
     },
-    {},
+    {
+      uniform: {
+        min_inclusive: {
+          above_bottom: 8
+        },
+        max_inclusive: {
+          absolute: 126
+        }
+      },
+      biased_to_bottom: {
+        min_inclusive: {
+          absolute: 0
+        },
+        max_inclusive: {
+          absolute: 127
+        },
+        inner: 8
+      },
+      very_biased_to_bottom: {
+        min_inclusive: {
+          above_bottom: 0
+        },
+        max_inclusive: {
+          below_top: 8
+        },
+        inner: 8
+      },
+      trapezoid: {
+        min_inclusive: {
+          absolute: 0
+        },
+        max_inclusive: {
+          absolute: 192
+        }
+      }
+    },
     null
   )
 );

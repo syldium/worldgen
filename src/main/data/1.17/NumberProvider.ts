@@ -70,7 +70,29 @@ export const FloatProvider = (min?: number, max?: number): ModelNode => {
           max: floatNode
         }
       },
-      {},
+      {
+        uniform: {
+          value: {
+            min_inclusive: 0.75,
+            max_exclusive: 1
+          }
+        },
+        clamped_normal: {
+          value: {
+            mean: 0.1,
+            deviation: 0.3,
+            min: 0.1,
+            max: 0.9
+          }
+        },
+        trapezoid: {
+          value: {
+            min: 0,
+            max: 6,
+            plateau: 2
+          }
+        }
+      },
       'value'
     )
   );
