@@ -63,7 +63,72 @@ const PlacementModifierSwitch = SwitchNode(
       max_water_depth: IntNode()
     }
   },
-  {},
+  {
+    block_predicate_filter: {
+      predicate: {
+        blocks: ['minecraft:air'],
+        type: 'minecraft:matching_blocks'
+      }
+    },
+    carving_mask: {
+      step: 'liquid'
+    },
+    count: {
+      count: 64
+    },
+    count_on_every_layer: {
+      count: 8
+    },
+    environment_scan: {
+      direction_of_search: 'up',
+      target_condition: {
+        type: 'minecraft:solid'
+      },
+      allowed_search_condition: {
+        blocks: ['minecraft:air'],
+        type: 'minecraft:matching_blocks'
+      },
+      max_steps: 12
+    },
+    heightmap: {
+      heightmap: 'WORLD_SURFACE_WG'
+    },
+    height_range: {
+      height: {
+        min_inclusive: {
+          absolute: 40
+        },
+        max_inclusive: {
+          absolute: 70
+        },
+        type: 'minecraft:uniform'
+      }
+    },
+    noise_based_count: {
+      noise_to_count_ratio: 160,
+      noise_factor: 80.0,
+      noise_offset: 0.3
+    },
+    noise_threshold_count: {
+      noise_level: -0.8,
+      below_noise: 15,
+      above_noise: 4
+    },
+    rarity_filter: {
+      chance: 32
+    },
+    random_offset: {
+      xz_spread: 0,
+      y_spread: -1
+    },
+    surface_relative_threshold_filter: {
+      heightmap: 'OCEAN_FLOOR_WG',
+      max_inclusive: -13
+    },
+    surface_water_depth_filter: {
+      max_water_depth: 1
+    }
+  },
   null
 );
 

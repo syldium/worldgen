@@ -20,7 +20,7 @@ export const RuleCondition = SwitchNode(
     },
     hole: {},
     noise_threshold: {
-      // name: StringNode(),
+      name: StringNode(),
       noise: NoiseValues,
       min_threshold: DoubleNode(),
       max_threshold: DoubleNode()
@@ -52,7 +52,48 @@ export const RuleCondition = SwitchNode(
       add_stone_depth: BoolNode()
     }
   },
-  {},
+  {
+    biome: {
+      biome_is: ['minecraft:swamp']
+    },
+    noise_threshold: {
+      noise: 'minecraft:surface',
+      min_threshold: -0.9,
+      max_threshold: -0.5
+    },
+    not: {
+      invert: {
+        type: 'minecraft:hole'
+      }
+    },
+    stone_depth: {
+      offset: 0,
+      add_surface_depth: false,
+      add_surface_secondary_depth: false,
+      surface_type: 'ceiling'
+    },
+    vertical_gradient: {
+      random_name: 'minecraft:bedrock_floor',
+      true_at_and_below: {
+        above_bottom: 0
+      },
+      false_at_and_above: {
+        above_bottom: 5
+      }
+    },
+    water: {
+      offset: -1,
+      surface_depth_multiplier: 0,
+      add_stone_depth: false
+    },
+    y_above: {
+      anchor: {
+        absolute: 62
+      },
+      surface_depth_multiplier: 0,
+      add_stone_depth: false
+    }
+  },
   null
 );
 

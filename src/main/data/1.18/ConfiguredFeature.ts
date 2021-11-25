@@ -3,7 +3,7 @@ import {
   RootSystemConfig as RootSystemConfig1_17,
   VegetationPatchConfig as VegetationPatchConfig1_17
 } from '../1.17/ConfiguredFeature';
-import {Model, ObjectModel} from '../../model/Model';
+import { Model, ObjectModel } from '../../model/Model';
 import { SwitchNode } from '../../model/node/SwitchNode';
 import { ResourceNode } from '../../model/node/ResourceNode';
 import { IntNode } from '../../model/node/IntNode';
