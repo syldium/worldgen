@@ -7,7 +7,7 @@
     "build": "tsc && vite build",
     "build:deploy": "yarn build && yarn generate && rm -R dist/server",
     "build:server": "vite build --ssr src/entry-server.tsx --outDir dist/server",
-    "generate": "yarn build:server && node prerender",
+    "generate": "yarn build:server && node prerender.mjs",
     "format": "prettier \"{src,tests}/**/*.{css,ts,tsx}\" --write --tab-width 2 --single-quote --trailing-comma none",
     "lint": "eslint src/main/** src/test/**",
     "serve": "vite preview",
@@ -29,7 +29,7 @@
     "react-router-dom": "^5.2.0",
     "react-select": "^5.0.0",
     "react-window": "^1.8.6",
-    "use-local-storage-state": "^11.0.0"
+    "use-local-storage-state": "^12.0.0"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^5.14.1",
@@ -43,11 +43,11 @@
     "@typescript-eslint/eslint-plugin": "^5.1.0",
     "@typescript-eslint/parser": "^5.1.0",
     "@vitejs/plugin-react": "^1.0.1",
-    "chalk": "^4.1.2",
+    "chalk": "^5.0.0",
     "dotenv": "^10.0.0",
-    "esbuild": "^0.13.3",
+    "esbuild": "^0.14.0",
     "esbuild-jest": "^0.5.0",
-    "eslint": "^7.29.0",
+    "eslint": "^8.3.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-jest": "^25.0.6",
     "eslint-plugin-react": "^7.24.0",
@@ -58,7 +58,7 @@
     "react-select-event": "^5.3.0",
     "rollup-plugin-visualizer": "^5.5.2",
     "sass": "^1.35.2",
-    "typescript": "~4.4.3",
+    "typescript": "~4.5.2",
     "vite": "^2.3.7"
   },
   "resolutions": {
