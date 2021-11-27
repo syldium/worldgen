@@ -42,6 +42,7 @@ import { MapNodeParams } from '../model/node/MapNode';
 import { useToggle } from '../hook/useToggle';
 import { NumberInput } from './ui/NumberInput';
 import { Labelized } from './ui/Labelized';
+import type { WorldgenRegistryKey } from '../model/RegistryKey';
 import type { OnChangeValue } from 'react-select';
 import type {
   ChangeEvent,
@@ -49,6 +50,7 @@ import type {
   ReactElement,
   ReactNode
 } from 'react';
+import { StringNodeParams } from '../model/node/StringNode';
 
 interface ModelViewProps {
   children?: ReactNode;
@@ -81,6 +83,22 @@ export function ModelView({
     );
   }
   return <ObjectView obj={model} value={value} onChange={onChange} />;
+}
+
+interface ResourceViewProps extends ModelViewProps {
+  name: WorldgenRegistryKey;
+}
+export function ResourceView(props: ResourceViewProps): JSX.Element {
+  const viewers = ViewerElement(props.name, props.value);
+  if (viewers !== null) {
+    return (
+      <div className="grid-2">
+        <div>{ModelView(props)}</div>
+        {viewers}
+      </div>
+    );
+  }
+  return ModelView(props);
 }
 
 interface ObjectViewProps {
@@ -210,6 +228,8 @@ function findNodeElement(
       return OptionalInput;
     case 'resource':
       return ResourceInput;
+    case 'string':
+      return StringInput;
     case 'switch':
       return SelectSwitch;
     default:
@@ -711,7 +731,7 @@ function ResourceInput({
   onChange,
   children
 }: NodeProps<IdentifierNodeParams>) {
-  const { worldgen } = useContext(GameContext);
+  const worldgen = useContext(GameContext).worldgen!;
   const resource = value[name];
 
   const handleChange = useCallback(
@@ -784,6 +804,31 @@ function ResourceInput({
     >
       {children}
     </ResourceSelectInput>
+  );
+}
+
+function StringInput({
+  name,
+  node,
+  value,
+  onChange
+}: NodeProps<StringNodeParams>): JSX.Element {
+  const id = useId(name);
+  const handleChange = useCallback(
+    function (e: ChangeEvent<HTMLInputElement>) {
+      onChange({ [name]: e.target.value });
+    },
+    [name, onChange]
+  );
+  return (
+    <Labelized id={id} name={name}>
+      <input
+        type="text"
+        id={id}
+        value={(value[name] || node.default || '') as string}
+        onChange={handleChange}
+      />
+    </Labelized>
   );
 }
 

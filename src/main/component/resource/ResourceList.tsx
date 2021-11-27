@@ -13,9 +13,9 @@ interface ResourceListProps {
   registryKey: WorldgenRegistryKey;
 }
 export function ResourceList({ registryKey }: ResourceListProps): JSX.Element {
-  const { namespace, worldgen } = useContext(GameContext);
+  const context = useContext(GameContext);
   const forceUpdate = useForceUpdate();
-  const registry = worldgen.worldgen[registryKey];
+  const registry = context.worldgen!.worldgen[registryKey];
   const entries = Object.keys(registry.entries);
   const name = WorldgenNames[registryKey];
 
@@ -35,7 +35,7 @@ export function ResourceList({ registryKey }: ResourceListProps): JSX.Element {
       </h5>
       <ul>
         {entries.map((key) => {
-          const name = stripDefaultNamespace(key, namespace);
+          const name = stripDefaultNamespace(key, context.namespace);
           return (
             <li key={key}>
               <a href="#remove" onClick={(e) => handleRemove(e, key)}>

@@ -6,7 +6,6 @@ import { ListNode } from '../../model/node/ListNode';
 import { ObjectNode, Opt } from '../../model/node/ObjectNode';
 import { FloatNode, Probability } from '../../model/node/FloatNode';
 import { BoolNode } from '../../model/node/BoolNode';
-import { EnumNode } from '../../model/node/EnumNode';
 import { SwitchNode } from '../../model/node/SwitchNode';
 import { VerticalSurface } from './WorldgenStep';
 import {
@@ -15,6 +14,7 @@ import {
   DECORATED_TREE
 } from './ConfiguredFeatureDefault';
 import { BlockPlacer } from './BlockPlacer';
+import { Direction } from './Direction';
 
 const BasaltColumnsConfig: ObjectModel = {
   reach: IntProvider(0, 3),
@@ -144,14 +144,7 @@ const GlowLichenConfig: ObjectModel = {
 
 const GrowingPlantConfig: ObjectModel = {
   height_distribution: ListNode(IntProvider(), -1, true),
-  direction: EnumNode([
-    'down',
-    'up',
-    'north',
-    'south',
-    'west',
-    'east'
-  ] as const),
+  direction: Direction,
   body_provider: ResourceNode('block_state_provider'),
   head_provider: ResourceNode('block_state_provider'),
   allow_water: BoolNode()
@@ -268,7 +261,7 @@ const RandomConfig: ObjectModel = {
   )
 };
 
-const RootSystemConfig: ObjectModel = {
+export const RootSystemConfig: ObjectModel = {
   feature: ResourceNode('worldgen/configured_feature'),
   required_vertical_space_for_tree: IntNode({ min: 1, max: 64 }),
   root_radius: IntNode({ min: 1, max: 64 }),
@@ -437,7 +430,7 @@ export const TreeConfig: ObjectModel = {
   force_dirt: BoolNode(false)
 };
 
-const VegetationPatchConfig: ObjectModel = {
+export const VegetationPatchConfig: ObjectModel = {
   replaceable: IdentifierNode('tags/blocks'),
   ground_state: ResourceNode('block_state_provider'),
   vegetation_feature: ResourceNode('worldgen/configured_feature'),

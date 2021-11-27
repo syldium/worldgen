@@ -16,7 +16,7 @@ import type { WorldgenRegistryKey } from '../model/RegistryKey';
 
 export function MainMenu(): JSX.Element {
   const context = useContext(GameContext);
-  const { worldgen } = context;
+  const worldgen = context.worldgen!;
   const [open, toggleAction] = useToggle(false);
 
   const history = useHistory();

@@ -1,5 +1,5 @@
 import { ReactNode, useCallback, useState } from 'react';
-import { ModelView } from '../NodeElement';
+import { ResourceView } from '../NodeElement';
 import { NamespacedKey } from '../NamespacedKey';
 import { Obj } from '../../util/DomHelper';
 import { JsonViewer } from '../ui/JsonViewer';
@@ -37,9 +37,9 @@ export function Resource({
         {children}
         <JsonViewer data={value} />
       </NamespacedKey>
-      <ModelView
+      <ResourceView
         model={registry.model.node}
-        name={'model'}
+        name={registryKey}
         value={value as Obj}
         onChange={handleChange}
       />

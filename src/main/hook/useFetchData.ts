@@ -1,5 +1,6 @@
 import { RefObject, useEffect, useRef, useState } from 'react';
 import { defaultNamespace, labelizeOption } from '../util/LabelHelper';
+import type { GameVersion } from '../context/GameVersion';
 import type { Option } from '../component/ui/Select';
 import type { Registry, WorldgenRegistryHolder } from '../model/Registry';
 import type { RegistryKey } from '../model/RegistryKey';
@@ -31,8 +32,9 @@ export function useRegistryFetch<
   T extends { [key in RegistryKey]?: RegistryData }
 >(
   registries: T,
-  holder: WorldgenRegistryHolder
-): [Record<keyof T, Registry>, RefObject<boolean>] {
+  version: GameVersion,
+  holder?: WorldgenRegistryHolder
+): [Record<keyof T, Registry>, RefObject<GameVersion | undefined>] {
   const [values, setValues] = useState<Record<keyof T, Registry>>(() => {
     const empty: Registry = { options: [], vanilla: [] };
     const initial = {} as Record<keyof T, Registry>;
@@ -41,11 +43,11 @@ export function useRegistryFetch<
     }
     return initial;
   });
-  const done = useRef<boolean>(false);
+  const done = useRef<GameVersion | undefined>(undefined);
 
   useEffect(
     function () {
-      if (done.current || !window.fetch) {
+      if (done.current === version || !holder || !window.fetch) {
         return;
       }
 
@@ -85,10 +87,10 @@ export function useRegistryFetch<
         )
         .then((d) => {
           setValues(d);
-          done.current = true;
+          done.current = version;
         });
     },
-    [holder, registries]
+    [holder, registries, version]
   );
 
   return [values, done];

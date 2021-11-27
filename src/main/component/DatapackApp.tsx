@@ -1,3 +1,4 @@
+import { useContext } from 'react';
 import { NavBar } from './ui/NavBar';
 import { Route, Switch } from 'react-router-dom';
 import { Resource } from './resource/Resource';
@@ -7,6 +8,7 @@ import { ConfiguredFeature } from './resource/ConfiguredFeature';
 import { WorldgenNames } from '../model/Registry';
 import { NoRouteMatch } from './ui/NoRouteMatch';
 import type { WorldgenRegistryKey } from '../model/RegistryKey';
+import { GameContext } from '../context/GameRegistry';
 
 export const DatapackApp = (): JSX.Element => (
   <div>
@@ -29,28 +31,32 @@ export const DatapackApp = (): JSX.Element => (
       </ul>
     </NavBar>
     <div className="content">
-      <Switch>
-        <Route exact path="/">
-          <MainMenu />
-        </Route>
-        {(Object.keys(WorldgenNames) as WorldgenRegistryKey[])
-          .filter(
-            (key) =>
-              key !== 'worldgen/configured_feature' &&
-              key !== 'worldgen/configured_structure_feature'
-          )
-          .map((key) => (
-            <Route path={`/${key}/:id?`} key={key}>
-              <Resource registryKey={key} key={key} />
-            </Route>
-          ))}
-        <Route path="/worldgen/configured_feature/:id?">
-          <ConfiguredFeature />
-        </Route>
-        <Route path="*">
-          <NoRouteMatch />
-        </Route>
-      </Switch>
+      {useContext(GameContext).worldgen ? (
+        <Switch>
+          <Route exact path="/">
+            <MainMenu />
+          </Route>
+          {(Object.keys(WorldgenNames) as WorldgenRegistryKey[])
+            .filter(
+              (key) =>
+                key !== 'worldgen/configured_feature' &&
+                key !== 'worldgen/configured_structure_feature'
+            )
+            .map((key) => (
+              <Route path={`/${key}/:id?`} key={key}>
+                <Resource registryKey={key} key={key} />
+              </Route>
+            ))}
+          <Route path="/worldgen/configured_feature/:id?">
+            <ConfiguredFeature />
+          </Route>
+          <Route path="*">
+            <NoRouteMatch />
+          </Route>
+        </Switch>
+      ) : (
+        <p>Loading models…</p>
+      )}
     </div>
   </div>
 );

@@ -9,7 +9,6 @@ import { customOption, stripDefaultNamespace } from '../util/LabelHelper';
 import { loadVanillaZip } from '../util/FetchHelper';
 import { strFromU8, Unzipped } from 'fflate';
 import type { WorldgenRegistryKey } from './RegistryKey';
-import { Registries1_18 } from '../data/1.18/v1_18';
 import { Registries1_17 } from '../data/1.17/v1_17';
 
 export interface Registry {
@@ -131,12 +130,14 @@ export class WorldgenRegistryHolder {
   readonly gameVersion: GameVersion;
   vanillaZip?: Unzipped;
 
-  constructor(version: GameVersion | keyof typeof PackFormatNumber) {
+  constructor(
+    version: GameVersion | keyof typeof PackFormatNumber,
+    provider: WorldgenRegistriesType = Registries1_17
+  ) {
     this.packFormat =
       typeof version === 'number' ? version : PackFormatString[version];
     this.gameVersion =
       typeof version === 'number' ? PackFormatNumber[version] : version;
-    const provider = this.packFormat === 8 ? Registries1_18 : Registries1_17;
     this.worldgen = Object.fromEntries(
       Object.entries(provider).map(([key, registry]) => [
         key,
@@ -144,6 +145,20 @@ export class WorldgenRegistryHolder {
         new WorldgenRegistry(...registry)
       ])
     ) as Record<WorldgenRegistryKey, WorldgenRegistry>;
+  }
+
+  static async create(version: GameVersion): Promise<WorldgenRegistryHolder> {
+    if (version === '1.18') {
+      return new WorldgenRegistryHolder(
+        version,
+        (await import('../data/1.18/v1_18')).Registries1_18
+      );
+    }
+    return this.def();
+  }
+
+  static def(): WorldgenRegistryHolder {
+    return new WorldgenRegistryHolder('1.17', Registries1_17);
   }
 
   async resource(
@@ -262,6 +277,7 @@ export class WorldgenRegistryHolder {
 }
 
 export const WorldgenNames: Record<WorldgenRegistryKey, string> = {
+  block_predicate: 'block predicate',
   dimension_type: 'dimension type',
   dimension: 'dimension',
   'worldgen/biome': 'biome',
@@ -272,6 +288,11 @@ export const WorldgenNames: Record<WorldgenRegistryKey, string> = {
   'worldgen/configured_feature': 'configured feature',
   'worldgen/configured_structure_feature': 'configured structure feature',
   'worldgen/configured_surface_builder': 'configured surface builder',
+  'worldgen/material_condition': 'material condition',
+  'worldgen/material_rule': 'material rule',
+  'worldgen/noise': 'noise',
   'worldgen/noise_settings': 'noise settings',
+  'worldgen/placed_feature': 'placed feature',
+  'worldgen/placement_modifier': 'placement modifier',
   'worldgen/processor_list': 'processor list'
 };
