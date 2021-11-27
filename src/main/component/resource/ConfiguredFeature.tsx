@@ -31,9 +31,12 @@ export function ConfiguredFeature(): JSX.Element {
   const decoratorNode =
     worldgen.worldgen['worldgen/configured_decorator'].model.node;
   const [feature, setFeature] = useState<Configured & Obj>(_feature);
-  const dispatchDecorators = useCrud<Configured & Obj>(hasDecorators ? _decorators : [], () => ({
-    ...(CountDecoratorConfig as Configured & Obj)
-  }));
+  const dispatchDecorators = useCrud<Configured & Obj>(
+    hasDecorators ? _decorators : [],
+    () => ({
+      ...(CountDecoratorConfig as Configured & Obj)
+    })
+  );
   const decorators = dispatchDecorators.elements;
 
   const featureModel = registry.model.node as SwitchNodeParams;

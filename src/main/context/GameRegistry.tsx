@@ -32,7 +32,8 @@ interface GameRegistry {
 
 export const GameContext = createContext<GameRegistry>({} as GameRegistry);
 
-const valuesUrl = (registry: string) => `/values/1.17/${registry}.json`;
+const valuesUrl = (version: GameVersion, registry: string) =>
+  `/values/${version}/${registry}.json`;
 
 interface ProviderProps {
   children?: ReactNode;
@@ -85,15 +86,19 @@ export function GameRegistryProvider({
       'tags/blocks': text(
         `${github}data/minecraft/tags/blocks/data.values.txt`
       ),
-      'worldgen/configured_carver': json(valuesUrl('configured_carvers')),
-      'worldgen/configured_feature': json(valuesUrl('configured_features')),
+      'worldgen/configured_carver': json(
+        valuesUrl(version, 'configured_carvers')
+      ),
+      'worldgen/configured_feature': json(
+        valuesUrl(version, 'configured_features')
+      ),
       'worldgen/configured_structure_feature': text(
         registryUrl('worldgen/structure_feature')
       ),
       'worldgen/configured_surface_builder': json(
-        valuesUrl('configured_surface_builders')
+        valuesUrl('1.17', 'configured_surface_builders')
       ),
-      'worldgen/processor_list': json(valuesUrl('processor_list'))
+      'worldgen/processor_list': json(valuesUrl('1.17', 'processor_list'))
     },
     version,
     holder
