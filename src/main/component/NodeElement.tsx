@@ -894,16 +894,31 @@ export function SelectSwitch({
       if (onTypeChange) {
         onTypeChange(strippedType);
       } else {
-        const p = node.preset[strippedType];
+        let p: DataType = node.preset[strippedType];
         if (typeof p === 'string') {
           throw Error('Unsupported vanilla resource loading!');
+        } else if (p) {
+          interOnChange(p);
+        } else {
+          p = providePreset(node.values[strippedType]);
+          if (node.config) {
+            interOnChange({ [node.config]: p, [node.typeField]: type });
+          } else if (typeof p === 'object') {
+            interOnChange({ ...p, [node.typeField]: type });
+          } else {
+            interOnChange({ [node.typeField]: type });
+          }
         }
-        interOnChange(
-          p ? { ...(val[name] as Obj), ...p } : { [node.typeField]: type }
-        );
       }
     },
-    [interOnChange, name, node.preset, node.typeField, onTypeChange, val]
+    [
+      interOnChange,
+      node.config,
+      node.preset,
+      node.typeField,
+      node.values,
+      onTypeChange
+    ]
   );
   const typeWithNamespace = defaultNamespace(type);
   const schema = node.values[type];

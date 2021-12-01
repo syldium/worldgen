@@ -63,7 +63,10 @@ function createPreset(node: Record<string, ModelNode>) {
       .map(([name, p]) => [name, providePreset(p)])
   );
 }
-export function providePreset(node: ModelNode): DataType {
+export function providePreset(node: ObjectOrNodeModel): DataType {
+  if (!isNode(node)) {
+    return createPreset(node);
+  }
   if (typeof node.default !== 'undefined') {
     return node.default as DataType;
   }
