@@ -7,6 +7,8 @@ import { useToggle } from '../../hook/useToggle';
 import { GameContext } from '../../context/GameRegistry';
 import { MergeForm } from './MergeForm';
 import { toast } from 'react-hot-toast';
+import { RemovableModelsByVersion } from '../../context/GameVersion';
+import { EmptyModel } from '../../model/Model';
 import type { WorldgenRegistryKey } from '../../model/RegistryKey';
 import type { ChangeEvent, DragEvent, FormEvent, ReactNode } from 'react';
 
@@ -164,29 +166,32 @@ interface NewResourceProps {
   onClick: (registryKey: WorldgenRegistryKey) => void;
 }
 
-const NewResource = ({ onClick }: NewResourceProps): JSX.Element => (
-  <div>
-    <h3>Create a new resource</h3>
-    <ul className="models-list">
-      {(Object.keys(WorldgenNames) as WorldgenRegistryKey[])
-        .filter(
-          (key) =>
-            key !== 'worldgen/configured_decorator' &&
-            key !== 'worldgen/configured_structure_feature'
-        )
-        .map((key) => (
-          <li key={key} className="model-type">
-            <a
-              href={`/${key}`}
-              onClick={function (event) {
-                event.preventDefault();
-                onClick(key);
-              }}
-            >
-              {WorldgenNames[key]}
-            </a>
-          </li>
-        ))}
-    </ul>
-  </div>
-);
+function NewResource({ onClick }: NewResourceProps): JSX.Element {
+  const context = useContext(GameContext);
+  return (
+    <div>
+      <h3>Create a new resource</h3>
+      <ul className="models-list">
+        {(Object.keys(context.worldgen!.worldgen) as WorldgenRegistryKey[])
+          .filter(
+            (key) =>
+              !RemovableModelsByVersion[context.version].has(key) &&
+              context.worldgen!.worldgen[key].model != EmptyModel
+          )
+          .map((key) => (
+            <li key={key} className="model-type">
+              <a
+                href={`/${key}`}
+                onClick={function (event) {
+                  event.preventDefault();
+                  onClick(key);
+                }}
+              >
+                {WorldgenNames[key]}
+              </a>
+            </li>
+          ))}
+      </ul>
+    </div>
+  );
+}
