@@ -1,6 +1,6 @@
 import { Dimension, Dimensions } from './Dimension';
 import { DimensionType, DimensionTypes } from './DimensionType';
-import { Biome, Biomes } from './Biome';
+import { Biome } from './Biome';
 import { BiomeSource } from './BiomeSource';
 import { ChunkGenerator, ChunkGenerators } from './ChunkGenerator';
 import { ConfiguredCarver } from './ConfiguredCarver';
@@ -19,7 +19,7 @@ export const Registries1_17: WorldgenRegistriesType = {
   block_predicate: [EmptyModel],
   dimension: [Dimension, Dimensions],
   dimension_type: [DimensionType, DimensionTypes],
-  'worldgen/biome': [Biome, Biomes],
+  'worldgen/biome': [Biome],
   'worldgen/biome_source': [BiomeSource],
   'worldgen/chunk_generator': [ChunkGenerator, ChunkGenerators],
   'worldgen/configured_carver': [ConfiguredCarver],

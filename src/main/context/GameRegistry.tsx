@@ -86,6 +86,9 @@ export function GameRegistryProvider({
       'tags/blocks': text(
         `${github}data/minecraft/tags/blocks/data.values.txt`
       ),
+      'worldgen/biome': json(
+        valuesUrl(version, 'biomes')
+      ),
       'worldgen/configured_carver': json(
         valuesUrl(version, 'configured_carvers')
       ),

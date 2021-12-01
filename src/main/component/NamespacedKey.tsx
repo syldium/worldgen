@@ -161,7 +161,7 @@ export function NamespacedKey({
           <div className="inbl" style={style}>
             <Select
               options={options}
-              value={options.find((o) => key === o.value)}
+              value={options.find((o) => key === o.value) || null}
               onChange={handleReplaceTargetChange}
               inputId="key"
             />
