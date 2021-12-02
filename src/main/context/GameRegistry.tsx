@@ -93,6 +93,7 @@ export function GameRegistryProvider({
       'worldgen/configured_feature': json(
         valuesUrl(version, 'configured_features')
       ),
+      'worldgen/placed_feature': json(valuesUrl('1.18', 'placed_features')),
       'worldgen/configured_structure_feature': text(
         registryUrl('worldgen/structure_feature')
       ),
