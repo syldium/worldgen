@@ -339,7 +339,8 @@ function ListValues({
     (node.of.type === 'resource' || node.of.type === 'identifier') &&
     (absent || Array.isArray(value[name])) &&
     (absent || isStringArray(value[name] as unknown[])) &&
-    node.of.registry !== 'block_state'
+    node.of.registry !== 'block_state' &&
+    node.of.registry !== 'worldgen/placement_modifier'
   ) {
     return (
       <ResourceSelectMultipleInput
@@ -732,11 +733,12 @@ function ResourceInput({
   children
 }: NodeProps<IdentifierNodeParams>) {
   const worldgen = useContext(GameContext).worldgen!;
-  const resource = value[name];
+  const resource = value[name] as Obj;
 
   const handleChange = useCallback(
-    (value: Record<string, unknown>) => onChange({ [name]: value }),
-    [name, onChange]
+    (value: Record<string, unknown>) =>
+      onChange({ [name]: { ...resource, ...value } }),
+    [name, onChange, resource]
   );
 
   if (
