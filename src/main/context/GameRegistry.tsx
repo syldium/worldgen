@@ -152,20 +152,26 @@ export function GameRegistryProvider({
           return holder!;
         },
         set worldgen(holder: WorldgenRegistryHolder) {
-          clear().then(() => {
-            setHolder((current) => holder.withVanilla(current!));
-            const entries: [string, Schema][] = [];
-            for (const [registryKey, registry] of holder.entries) {
-              entries.push(
-                // @ts-ignore
-                ...Object.entries(registry.entries).map(([key, schema]) => [
-                  resourcePath(registryKey, key),
-                  schema
-                ])
+          clear()
+            .then(() => {
+              const entries: [string, Schema][] = [];
+              for (const [registryKey, registry] of holder.entries) {
+                entries.push(
+                  // @ts-ignore
+                  ...Object.entries(registry.entries).map(([key, schema]) => [
+                    resourcePath(registryKey, key),
+                    schema
+                  ])
+                );
+              }
+              setMany(entries).then(() =>
+                setHolder((current) => holder.withVanilla(current!))
               );
-            }
-            setMany(entries);
-          });
+            })
+            .catch((e) => {
+              setHolder((current) => holder.withVanilla(current!));
+              console.error(e);
+            });
         },
         get namespace(): string {
           return defNamespace || 'unset';
