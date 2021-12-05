@@ -2,7 +2,12 @@ import { memo } from 'react';
 import ReactSelect, { createFilter } from 'react-select';
 import ReactSelectCreatable, { CreatableProps } from 'react-select/creatable';
 import { FixedSizeList } from 'react-window';
-import type { GroupBase, StylesConfig, SelectComponentsConfig, MenuProps } from 'react-select';
+import type {
+  GroupBase,
+  StylesConfig,
+  SelectComponentsConfig,
+  MenuProps
+} from 'react-select';
 import type { Option } from './Select';
 import type { Props } from 'react-select/base';
 
