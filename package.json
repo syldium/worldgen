@@ -15,7 +15,6 @@
   },
   "dependencies": {
     "@delangle/use-modal": "^1.9.27",
-    "@pastable/use-force-update": "^0.0.3",
     "fflate": "^0.7.1",
     "file-saver": "^2.0.5",
     "idb-keyval": "^6.0.1",
@@ -29,7 +28,7 @@
     "react-router-dom": "^5.2.0",
     "react-select": "^5.0.0",
     "react-window": "^1.8.6",
-    "use-local-storage-state": "^12.0.0"
+    "use-local-storage-state": "^13.0.0"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^5.14.1",

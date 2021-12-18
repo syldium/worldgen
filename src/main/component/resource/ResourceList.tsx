@@ -3,7 +3,7 @@ import { MouseEvent, useContext } from 'react';
 import { GameContext } from '../../context/GameRegistry';
 import { stripDefaultNamespace } from '../../util/LabelHelper';
 import { Trash } from 'react-feather';
-import { useForceUpdate } from '@pastable/use-force-update';
+import { useForceUpdate } from '../../hook/useForceUpdate';
 import { Link } from 'react-router-dom';
 import { del } from 'idb-keyval';
 import { resourcePath } from '../../util/PathHelper';

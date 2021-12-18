@@ -17,7 +17,7 @@ import {
 import useLocalStorageState from 'use-local-storage-state';
 import { clear, entries, setMany } from 'idb-keyval';
 import { findNamespacedKeyAndRegistry, resourcePath } from '../util/PathHelper';
-import { useForceUpdate } from '@pastable/use-force-update';
+import { useForceUpdate } from '../hook/useForceUpdate';
 import type { RegistryKey, WorldgenRegistryKey } from '../model/RegistryKey';
 import { GameVersion } from './GameVersion';
 import { dataUrl } from '../util/FetchHelper';
