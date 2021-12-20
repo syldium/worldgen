@@ -1,6 +1,6 @@
 import { Dimension, Dimensions } from './Dimension';
 import { DimensionType, DimensionTypes } from './DimensionType';
-import { Biome, Biomes } from './Biome';
+import { Biome } from './Biome';
 import { BiomeSource } from './BiomeSource';
 import { ChunkGenerator, ChunkGenerators } from './ChunkGenerator';
 import { ConfiguredCarver } from './ConfiguredCarver';
@@ -10,16 +10,23 @@ import { ConfiguredSurfaceBuilder } from './ConfiguredSurfaceBuilder';
 import { NoiseSettings, NoiseSettingsOptions } from './NoiseSettings';
 import { ProcessorList } from './StructureProcessor';
 import type { WorldgenRegistriesType } from '../../model/Registry';
+import { EmptyModel } from '../../model/Model';
 
 export const Registries1_17: WorldgenRegistriesType = {
+  'worldgen/material_condition': [EmptyModel],
+  'worldgen/placed_feature': [EmptyModel],
+  'worldgen/placement_modifier': [EmptyModel],
+  block_predicate: [EmptyModel],
   dimension: [Dimension, Dimensions],
   dimension_type: [DimensionType, DimensionTypes],
-  'worldgen/biome': [Biome, Biomes],
+  'worldgen/biome': [Biome],
   'worldgen/biome_source': [BiomeSource],
   'worldgen/chunk_generator': [ChunkGenerator, ChunkGenerators],
   'worldgen/configured_carver': [ConfiguredCarver],
   'worldgen/configured_decorator': [ConfiguredDecorator],
   'worldgen/configured_feature': [ConfiguredFeature],
+  'worldgen/material_rule': [EmptyModel],
+  'worldgen/noise': [EmptyModel],
   'worldgen/configured_structure_feature': [DimensionType],
   'worldgen/configured_surface_builder': [ConfiguredSurfaceBuilder],
   'worldgen/noise_settings': [NoiseSettings, NoiseSettingsOptions],

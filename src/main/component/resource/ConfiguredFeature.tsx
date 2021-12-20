@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useMemo, useState } from 'react';
+import { useCallback, useContext, useMemo, useState } from 'react';
 import { GameContext } from '../../context/GameRegistry';
 import { Configured } from '../../model/Model';
 import { buildDecorated, findDecorators } from '../../util/FeatureHelper';
@@ -16,7 +16,7 @@ import type { Schema } from '../../model/Registry';
 import type { WorldgenRegistryKey } from '../../model/RegistryKey';
 
 export function ConfiguredFeature(): JSX.Element {
-  const { worldgen } = useContext(GameContext);
+  const worldgen = useContext(GameContext).worldgen!;
   const registryKey: WorldgenRegistryKey = 'worldgen/configured_feature';
   const [registry, previousKey, initial, postLoad] = useRegistry<
     Configured & Obj
@@ -27,12 +27,16 @@ export function ConfiguredFeature(): JSX.Element {
     [initial]
   );
 
+  const hasDecorators = worldgen.packFormat < 8;
   const decoratorNode =
     worldgen.worldgen['worldgen/configured_decorator'].model.node;
   const [feature, setFeature] = useState<Configured & Obj>(_feature);
-  const dispatchDecorators = useCrud<Configured & Obj>(_decorators, () => ({
-    ...(CountDecoratorConfig as Configured & Obj)
-  }));
+  const dispatchDecorators = useCrud<Configured & Obj>(
+    hasDecorators ? _decorators : [],
+    () => ({
+      ...(CountDecoratorConfig as Configured & Obj)
+    })
+  );
   const decorators = dispatchDecorators.elements;
 
   const featureModel = registry.model.node as SwitchNodeParams;
@@ -103,30 +107,32 @@ export function ConfiguredFeature(): JSX.Element {
           onTypeChange={handleFeatureTypeChange}
         />
       </div>
-      <fieldset>
-        <legend>
-          Decorators wrapper{' '}
-          <Button onClick={dispatchDecorators.create}>Add decorator</Button>
-        </legend>
-        {decorators.map((decorator, i) => (
-          <SelectSwitch
-            name={i.toString()}
-            node={decoratorNode as SwitchNodeParams}
-            value={decorators as Record<number, Obj>}
-            onChange={handleDecoratorChange}
-            key={decorator.__reactKey}
-            isObject={true}
-          >
-            <Button
-              cat="danger"
-              className="mlm"
-              onClick={(e) => dispatchDecorators.remove(i, e)}
+      {hasDecorators && (
+        <fieldset>
+          <legend>
+            Decorators wrapper{' '}
+            <Button onClick={dispatchDecorators.create}>Add decorator</Button>
+          </legend>
+          {decorators.map((decorator, i) => (
+            <SelectSwitch
+              name={i.toString()}
+              node={decoratorNode as SwitchNodeParams}
+              value={decorators as Record<number, Obj>}
+              onChange={handleDecoratorChange}
+              key={decorator.__reactKey}
+              isObject={true}
             >
-              Remove
-            </Button>
-          </SelectSwitch>
-        ))}
-      </fieldset>
+              <Button
+                cat="danger"
+                className="mlm"
+                onClick={(e) => dispatchDecorators.remove(i, e)}
+              >
+                Remove
+              </Button>
+            </SelectSwitch>
+          ))}
+        </fieldset>
+      )}
       <Button>Save</Button>
     </form>
   );

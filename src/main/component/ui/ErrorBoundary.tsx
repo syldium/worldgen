@@ -1,8 +1,9 @@
-import React, { Component } from 'react';
+import { Component } from 'react';
+import type { ReactNode } from 'react';
 
 interface NodeErrorBoundaryProps {
   name: string;
-  children?: React.ReactNode;
+  children?: ReactNode;
 }
 
 export class NodeErrorBoundary extends Component<
@@ -18,7 +19,7 @@ export class NodeErrorBoundary extends Component<
     this.setState(() => true);
   }
 
-  render(): React.ReactNode {
+  render(): ReactNode {
     if (this.state) {
       return (
         <p>

@@ -1,14 +1,12 @@
 /* eslint-disable */
+import chalk from 'chalk';
+import fs from 'fs';
+import { render, WorldgenNames } from './dist/server/entry-server.js';
+import dotenv from 'dotenv';
 
-require('dotenv').config();
-const chalk = require('chalk');
-const fs = require('fs');
-const path = require('path');
+dotenv.config();
 
-const toAbsolute = (p) => path.resolve(__dirname, p);
-
-const template = fs.readFileSync(toAbsolute('dist/index.html'), 'utf-8');
-const { render, WorldgenNames } = require('./dist/server/entry-server.js');
+const template = fs.readFileSync(new URL('dist/index.html', import.meta.url), 'utf-8');
 
 const baseurl = process.env.BASE_URL;
 const sitemap = [];
@@ -37,9 +35,10 @@ for (const url of [
     <meta property="og:description" content="A tool to generate datapacks with ${custom}${plural} for Minecraft 1.17.1" />`)
     .replace('<div id="root"></div>', '<div id="root">' + appHtml + '</div>');
 
-  const filePath = `dist${url === '' ? url : '/' + url}/index.html`;
-  const absolutePath = toAbsolute(filePath);
-  fs.mkdir(path.dirname(absolutePath), { recursive: true }, (err) => {
+  const dirPath = `dist${url === '' ? url : '/' + url}`;
+  const filePath = dirPath + '/index.html';
+  const absolutePath = new URL(filePath, import.meta.url);
+  fs.mkdir(dirPath, { recursive: true }, (err) => {
     if (err) {
       throw err;
     }
@@ -53,6 +52,6 @@ for (const url of [
 
 if (sitemap.length) {
   const path = 'dist/sitemap.txt';
-  fs.writeFileSync(toAbsolute(path), sitemap.join('\n'));
+  fs.writeFileSync(new URL(path, import.meta.url), sitemap.join('\n'));
   console.log('Created:', chalk.white(path));
 }

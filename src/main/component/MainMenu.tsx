@@ -1,6 +1,6 @@
-import React, { useCallback, useContext } from 'react';
+import { useCallback, useContext } from 'react';
 import { GameContext } from '../context/GameRegistry';
-import { WorldgenNames, WorldgenRegistryHolder } from '../model/Registry';
+import { WorldgenRegistryHolder } from '../model/Registry';
 import { ZipAction } from '../context/ZipAction';
 import { saveAs } from 'file-saver';
 import { Download, PlusCircle } from 'react-feather';
@@ -12,11 +12,13 @@ import { Button } from './ui/Button';
 import { catchToast } from '../util/ErrorHelper';
 import { toast } from 'react-hot-toast';
 import { ResourceList } from './resource/ResourceList';
+import { RemovableModelsByVersion } from '../context/GameVersion';
+import { EmptyModel } from '../model/Model';
 import type { WorldgenRegistryKey } from '../model/RegistryKey';
 
 export function MainMenu(): JSX.Element {
   const context = useContext(GameContext);
-  const { worldgen } = context;
+  const worldgen = context.worldgen!;
   const [open, toggleAction] = useToggle(false);
 
   const history = useHistory();
@@ -84,9 +86,13 @@ export function MainMenu(): JSX.Element {
         </Modal>
       )}
       {!import.meta.env.SSR &&
-        (Object.keys(WorldgenNames) as WorldgenRegistryKey[]).map((key) => (
-          <ResourceList registryKey={key} key={key} />
-        ))}
+        (Object.keys(worldgen.worldgen) as WorldgenRegistryKey[])
+          .filter(
+            (key) =>
+              !RemovableModelsByVersion[context.version].has(key) &&
+              context.worldgen!.worldgen[key].model != EmptyModel
+          )
+          .map((key) => <ResourceList registryKey={key} key={key} />)}
     </div>
   );
 }

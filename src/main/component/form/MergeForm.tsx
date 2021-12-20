@@ -1,4 +1,4 @@
-import React, { useContext, MouseEvent } from 'react';
+import { useContext, MouseEvent } from 'react';
 import { Button } from '../ui/Button';
 import { AlertTriangle, FolderMinus, GitMerge } from 'react-feather';
 import { ZipAction } from '../../context/ZipAction';
@@ -14,7 +14,7 @@ export function MergeForm({
   onLoad,
   zip
 }: MergeFormProps): JSX.Element {
-  const { worldgen } = useContext(GameContext);
+  const worldgen = useContext(GameContext).worldgen!;
   const conflicts = worldgen.doesConflict(zip.registries);
   const load = function (event: MouseEvent<HTMLButtonElement>, merge: boolean) {
     event.preventDefault();

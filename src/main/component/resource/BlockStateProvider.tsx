@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useMemo } from 'react';
+import { useCallback, useContext, useMemo } from 'react';
 import { BlockState, BlockStateValue } from './BlockState';
 import { BlockStateRegistry, DEFAULT_BLOCK_STATE } from '../../model/Registry';
 import { useOptionsArray } from '../../hook/useOptions';
@@ -68,7 +68,7 @@ export function BlockStateProvider({
   onChange
 }: BlockStateProviderProps): JSX.Element {
   const context = useContext(GameContext);
-  const format = context.worldgen.packFormat;
+  const format = context.worldgen!.packFormat;
   const options = useOptionsArray(
     format === 8 ? providers1_18 : format === 7 ? providers1_17 : providers1_16
   );

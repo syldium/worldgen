@@ -1,10 +1,10 @@
-import React from 'react';
+import type { ChangeEvent } from 'react';
 
 interface ToggleProps {
   ariaLabel?: string;
   checked?: boolean;
   id?: string;
-  onChange?: (event: React.ChangeEvent) => void;
+  onChange?: (event: ChangeEvent) => void;
 }
 
 export const Toggle = ({

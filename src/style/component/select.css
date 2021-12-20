@@ -23,3 +23,9 @@ select:hover {
 select:focus {
   box-shadow: 0 0 0 1px var(--focus-color);
 }
+
+.version-select {
+  width: 80px;
+  background-position: calc(100% - 8px) 1em, calc(100% - 3px) 1em, -20px;
+  margin-right: 8px;
+}

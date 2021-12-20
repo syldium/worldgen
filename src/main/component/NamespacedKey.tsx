@@ -1,6 +1,5 @@
-import React, {
+import {
   ChangeEvent,
-  CSSProperties,
   KeyboardEvent,
   useCallback,
   useContext,
@@ -15,9 +14,11 @@ import { GameContext } from '../context/GameRegistry';
 import { useToggle } from '../hook/useToggle';
 import { Button } from './ui/Button';
 import type { WorldgenRegistryKey } from '../model/RegistryKey';
+import type { ReactNode } from 'react';
+import { useSelectAutosize } from '../hook/useSelectAutosize';
 
 interface NamespacedKeyProps {
-  children?: React.ReactNode;
+  children?: ReactNode;
   defaultReplace?: boolean;
   example?: string;
   registry: WorldgenRegistryKey;
@@ -49,6 +50,7 @@ export function NamespacedKey({
   );
 
   const context = useContext(GameContext);
+  const worldgen = context.worldgen!;
   const defaultNamespace = context.namespace;
 
   // Adjust value with default namespace if needed
@@ -81,14 +83,14 @@ export function NamespacedKey({
       setKey(key);
       setMayFill(true);
       if (fill && onSelectLoad) {
-        context.worldgen
+        worldgen
           .vanillaResource(registry, key)
           .then(onSelectLoad)
           .then(setMayFill)
           .catch(console.error);
       }
     },
-    [context.worldgen, fill, onSelectLoad, registry, setMayFill]
+    [worldgen, fill, onSelectLoad, registry, setMayFill]
   );
 
   // Allow form submit by pressing enter
@@ -121,7 +123,7 @@ export function NamespacedKey({
   const handleFillToggle = useCallback(
     function (event: ChangeEvent<HTMLInputElement>) {
       if (event.target.checked && mayFill && onSelectLoad) {
-        context.worldgen
+        worldgen
           .vanillaResource(registry, key)
           .then(onSelectLoad)
           .then(setMayFill)
@@ -129,7 +131,7 @@ export function NamespacedKey({
       }
       toggleFill(event);
     },
-    [context, key, mayFill, onSelectLoad, registry, setMayFill, toggleFill]
+    [key, mayFill, onSelectLoad, registry, setMayFill, toggleFill, worldgen]
   );
 
   // Hidden input value - set to empty when nothing is selected (keeps the key from text mode)
@@ -144,16 +146,7 @@ export function NamespacedKey({
   );
 
   // Adapt select width to its content
-  const style = useMemo<CSSProperties>(
-    function () {
-      const width = 8 * Math.max(...options.map((o) => o.label.length)) + 60;
-      if (!isFinite(width)) {
-        return { width: '250px' };
-      }
-      return { width };
-    },
-    [options]
-  );
+  const style = useSelectAutosize(options);
 
   return (
     <div className="namespaced-key">
@@ -168,7 +161,7 @@ export function NamespacedKey({
           <div className="inbl" style={style}>
             <Select
               options={options}
-              value={options.find((o) => key === o.value)}
+              value={options.find((o) => key === o.value) || null}
               onChange={handleReplaceTargetChange}
               inputId="key"
             />

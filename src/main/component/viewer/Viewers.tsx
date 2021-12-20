@@ -1,6 +1,7 @@
-import React, { Suspense } from 'react';
+import { createElement, lazy, Suspense } from 'react';
 import { stripDefaultNamespace } from '../../util/LabelHelper';
 import type { WorldgenRegistryKey } from '../../model/RegistryKey';
+import type { LazyExoticComponent, NamedExoticComponent } from 'react';
 
 export interface ViewerProps {
   value: any;
@@ -9,7 +10,7 @@ export interface ViewerProps {
 interface Viewer {
   key: string;
   predicate: (value: Record<string, any>) => boolean;
-  component: React.LazyExoticComponent<React.NamedExoticComponent<ViewerProps>>;
+  component: LazyExoticComponent<NamedExoticComponent<ViewerProps>>;
 }
 
 let Viewers: Partial<Record<WorldgenRegistryKey, ReadonlyArray<Viewer>>>;
@@ -28,7 +29,7 @@ if (!import.meta.env.SSR) {
         'seed' in value
       );
     },
-    component: React.lazy(() => import('./BiomeSourceMap'))
+    component: lazy(() => import('./BiomeSourceMap'))
   };
   Viewers = {
     'worldgen/biome_source': [BiomeSourceMap]
@@ -50,7 +51,7 @@ export function ViewerElement(
       <div className="viewers">
         {viewers.map((viewer) => (
           <Suspense fallback={<div>Loading...</div>} key={viewer.key}>
-            {React.createElement(viewer.component, { value: resource })}
+            {createElement(viewer.component, { value: resource })}
           </Suspense>
         ))}
       </div>

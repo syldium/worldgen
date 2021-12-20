@@ -9,6 +9,7 @@ import { ObjectOrNodeModel } from '../Model';
 import { ListNodeParams } from './ListNode';
 import { DataType } from '../../hook/useCrud';
 import { MapNodeParams } from './MapNode';
+import { StringNodeParams } from './StringNode';
 
 export type NodeType =
   | 'bool'
@@ -23,6 +24,7 @@ export type NodeType =
   | 'object'
   | 'optional'
   | 'resource'
+  | 'string'
   | 'switch';
 
 export interface NodeBase<T extends NodeType> {
@@ -47,6 +49,7 @@ export type ModelNode =
   | NumberNodeParams
   | ObjectNodeParams
   | OptionalNodeParams
+  | StringNodeParams
   | SwitchNodeParams;
 
 export function isNode(model: ObjectOrNodeModel): model is ModelNode {
@@ -60,7 +63,10 @@ function createPreset(node: Record<string, ModelNode>) {
       .map(([name, p]) => [name, providePreset(p)])
   );
 }
-export function providePreset(node: ModelNode): DataType {
+export function providePreset(node: ObjectOrNodeModel): DataType {
+  if (!isNode(node)) {
+    return createPreset(node);
+  }
   if (typeof node.default !== 'undefined') {
     return node.default as DataType;
   }

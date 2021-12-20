@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useCallback, useContext, useMemo } from 'react';
+import { memo, useCallback, useContext, useMemo } from 'react';
 import {
   isNode,
   ModelNode,
@@ -42,10 +42,18 @@ import { MapNodeParams } from '../model/node/MapNode';
 import { useToggle } from '../hook/useToggle';
 import { NumberInput } from './ui/NumberInput';
 import { Labelized } from './ui/Labelized';
+import type { WorldgenRegistryKey } from '../model/RegistryKey';
 import type { OnChangeValue } from 'react-select';
+import type {
+  ChangeEvent,
+  FunctionComponent,
+  ReactElement,
+  ReactNode
+} from 'react';
+import { StringNodeParams } from '../model/node/StringNode';
 
 interface ModelViewProps {
-  children?: React.ReactNode;
+  children?: ReactNode;
   model: ObjectOrNodeModel;
   name: string;
   value: Record<string, unknown>;
@@ -77,15 +85,31 @@ export function ModelView({
   return <ObjectView obj={model} value={value} onChange={onChange} />;
 }
 
+interface ResourceViewProps extends ModelViewProps {
+  name: WorldgenRegistryKey;
+}
+export function ResourceView(props: ResourceViewProps): JSX.Element {
+  const viewers = ViewerElement(props.name, props.value);
+  if (viewers !== null) {
+    return (
+      <div className="grid-2">
+        <div>{ModelView(props)}</div>
+        {viewers}
+      </div>
+    );
+  }
+  return ModelView(props);
+}
+
 interface ObjectViewProps {
   obj: Record<string, ModelNode>;
   value: Record<string, unknown>;
   onChange: (value: Record<string, unknown>) => void;
-  children?: React.ReactNode;
+  children?: ReactNode;
 }
 function ObjectView({ obj, value, onChange, children }: ObjectViewProps) {
-  const nodes: React.ReactElement[] = [];
-  let inline: React.ReactElement[] = [];
+  const nodes: ReactElement[] = [];
+  let inline: ReactElement[] = [];
   for (const [name, node] of Object.entries(obj)) {
     const isShort = mayInline(node);
     const el = (
@@ -136,7 +160,7 @@ function ObjectView({ obj, value, onChange, children }: ObjectViewProps) {
 }
 
 interface NodeElementProps {
-  children?: React.ReactNode;
+  children?: ReactNode;
   name: string;
   node: ModelNode;
   value: Record<string, unknown>;
@@ -175,11 +199,11 @@ function _NodeElement({
     </NodeErrorBoundary>
   );
 }
-export const NodeElement = React.memo(_NodeElement);
+export const NodeElement = memo(_NodeElement);
 
 function findNodeElement(
   node: ModelNode
-): null | React.FunctionComponent<NodeProps<any>> {
+): null | FunctionComponent<NodeProps<any>> {
   switch (node.type) {
     case 'bool':
       return CheckboxInput;
@@ -204,6 +228,8 @@ function findNodeElement(
       return OptionalInput;
     case 'resource':
       return ResourceInput;
+    case 'string':
+      return StringInput;
     case 'switch':
       return SelectSwitch;
     default:
@@ -212,7 +238,7 @@ function findNodeElement(
 }
 
 interface NodeProps<T extends NodeBase<NodeType>> {
-  children?: React.ReactNode;
+  children?: ReactNode;
   name: string;
   node: T;
   value: Record<string, unknown>;
@@ -313,7 +339,8 @@ function ListValues({
     (node.of.type === 'resource' || node.of.type === 'identifier') &&
     (absent || Array.isArray(value[name])) &&
     (absent || isStringArray(value[name] as unknown[])) &&
-    node.of.registry !== 'block_state'
+    node.of.registry !== 'block_state' &&
+    node.of.registry !== 'worldgen/placement_modifier'
   ) {
     return (
       <ResourceSelectMultipleInput
@@ -352,7 +379,7 @@ function ListCrud({ name, node, value, onChange }: NodeProps<ListNodeParams>) {
     },
     [update]
   );
-  const El: React.FunctionComponent<NodeProps<ModelNode>> = node.weighted
+  const El: FunctionComponent<NodeProps<ModelNode>> = node.weighted
     ? WeightedValue
     : NodeElement;
   return (
@@ -705,12 +732,13 @@ function ResourceInput({
   onChange,
   children
 }: NodeProps<IdentifierNodeParams>) {
-  const { worldgen } = useContext(GameContext);
-  const resource = value[name];
+  const worldgen = useContext(GameContext).worldgen!;
+  const resource = value[name] as Obj;
 
   const handleChange = useCallback(
-    (value: Record<string, unknown>) => onChange({ [name]: value }),
-    [name, onChange]
+    (value: Record<string, unknown>) =>
+      onChange({ [name]: { ...resource, ...value } }),
+    [name, onChange, resource]
   );
 
   if (
@@ -781,6 +809,31 @@ function ResourceInput({
   );
 }
 
+function StringInput({
+  name,
+  node,
+  value,
+  onChange
+}: NodeProps<StringNodeParams>): JSX.Element {
+  const id = useId(name);
+  const handleChange = useCallback(
+    function (e: ChangeEvent<HTMLInputElement>) {
+      onChange({ [name]: e.target.value });
+    },
+    [name, onChange]
+  );
+  return (
+    <Labelized id={id} name={name}>
+      <input
+        type="text"
+        id={id}
+        value={(value[name] || node.default || '') as string}
+        onChange={handleChange}
+      />
+    </Labelized>
+  );
+}
+
 interface SelectSwitchProps extends NodeProps<SwitchNodeParams> {
   onTypeChange?: (type: string) => void;
 }
@@ -843,16 +896,31 @@ export function SelectSwitch({
       if (onTypeChange) {
         onTypeChange(strippedType);
       } else {
-        const p = node.preset[strippedType];
+        let p: DataType = node.preset[strippedType];
         if (typeof p === 'string') {
           throw Error('Unsupported vanilla resource loading!');
+        } else if (p) {
+          interOnChange(p);
+        } else {
+          p = providePreset(node.values[strippedType]);
+          if (node.config) {
+            interOnChange({ [node.config]: p, [node.typeField]: type });
+          } else if (typeof p === 'object') {
+            interOnChange({ ...p, [node.typeField]: type });
+          } else {
+            interOnChange({ [node.typeField]: type });
+          }
         }
-        interOnChange(
-          p ? { ...(val[name] as Obj), ...p } : { [node.typeField]: type }
-        );
       }
     },
-    [interOnChange, name, node.preset, node.typeField, onTypeChange, val]
+    [
+      interOnChange,
+      node.config,
+      node.preset,
+      node.typeField,
+      node.values,
+      onTypeChange
+    ]
   );
   const typeWithNamespace = defaultNamespace(type);
   const schema = node.values[type];

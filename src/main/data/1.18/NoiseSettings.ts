@@ -1,28 +1,80 @@
-import { NoiseParameters as NoiseParameters1_17 } from '../1.17/NoiseSettings';
+import { SamplingConfig, StructuresConfig } from '../1.17/NoiseSettings';
 import { Model, ObjectModel } from '../../model/Model';
 import { ObjectNode } from '../../model/node/ObjectNode';
-import { NoiseValues } from '../1.17/BiomeSource';
+import { IntNode } from '../../model/node/IntNode';
+import { DoubleNode, FloatNode } from '../../model/node/FloatNode';
+import { BoolNode } from '../../model/node/BoolNode';
+import { ResourceNode } from '../../model/node/ResourceNode';
+import { RuleSource } from './SurfaceRule';
+import { EnumNode } from '../../model/node/EnumNode';
+import { ListNode } from '../../model/node/ListNode';
+import { EitherNode } from '../../model/node/EitherNode';
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const { min_surface_level, ...NoiseParameters } = {
-  ...NoiseParameters1_17,
-  octaves: ObjectNode({
-    continentalness: NoiseValues,
-    erosion: NoiseValues,
-    humidity: NoiseValues,
-    temperature: NoiseValues,
-    weirdness: NoiseValues,
-    shift: NoiseValues
-  })
+const SplinePoint = ObjectNode({
+  location: FloatNode(),
+  value: FloatNode(),
+  derivative: FloatNode()
+});
+
+const Spline = ObjectNode({
+  coordinate: EnumNode([
+    'continents',
+    'erosion',
+    'weirdness',
+    'ridges' as const
+  ]),
+  points: ListNode(SplinePoint)
+});
+
+SplinePoint.records.value = EitherNode(SplinePoint.records.value, Spline);
+
+const TerrainShaper = ObjectNode({
+  offset: Spline,
+  factor: Spline,
+  jaggedness: Spline
+});
+
+const SlideConfig = ObjectNode({
+  target: DoubleNode(),
+  size: IntNode({ min: 0 }),
+  offset: IntNode()
+});
+
+const NoiseConfig = ObjectNode({
+  min_y: IntNode({ min: -2032, max: 2031, step: 16 }),
+  height: IntNode({ min: 0, max: 4064, step: 16 }),
+  sampling: SamplingConfig,
+  top_slide: SlideConfig,
+  bottom_slide: SlideConfig,
+  size_horizontal: IntNode({ min: 1, max: 4 }),
+  size_vertical: IntNode({ min: 1, max: 4 }),
+  island_noise_override: BoolNode(false),
+  amplified: BoolNode(false),
+  large_biomes: BoolNode(false),
+  terrain_shaper: TerrainShaper
+});
+const NoiseParameters: ObjectModel = {
+  noise: NoiseConfig,
+  default_block: ResourceNode('block_state'),
+  default_fluid: ResourceNode('block_state'),
+  surface_rule: RuleSource,
+  sea_level: IntNode(),
+  disable_mob_generation: BoolNode(),
+  aquifers_enabled: BoolNode(),
+  noise_caves_enabled: BoolNode(),
+  ore_veins_enabled: BoolNode(),
+  noodle_caves_enabled: BoolNode(),
+  legacy_random_source: BoolNode(),
+  structures: StructuresConfig
 };
 
 export const NoiseSettings: Model = {
-  node: NoiseParameters as unknown as ObjectModel,
+  node: NoiseParameters,
   preset: () => ({
     noise_caves_enabled: true,
-    deepslate_enabled: true,
     ore_veins_enabled: true,
     noodle_caves_enabled: true,
+    legacy_random_source: false,
     sea_level: 63,
     disable_mob_generation: false,
     aquifers_enabled: true,
@@ -35,8 +87,30 @@ export const NoiseSettings: Model = {
       },
       Name: 'minecraft:water'
     },
-    bedrock_roof_position: -2147483648,
-    bedrock_floor_position: 0,
+    surface_rule: {
+      sequence: [
+        {
+          if_true: {
+            random_name: 'minecraft:bedrock_floor',
+            true_at_and_below: {
+              above_bottom: 0
+            },
+            false_at_and_above: {
+              above_bottom: 5
+            },
+            type: 'minecraft:vertical_gradient'
+          },
+          then_run: {
+            result_state: {
+              Name: 'minecraft:bedrock'
+            },
+            type: 'minecraft:block'
+          },
+          type: 'minecraft:condition'
+        }
+      ],
+      type: 'minecraft:sequence'
+    },
     structures: {
       stronghold: {
         distance: 32,
@@ -137,10 +211,38 @@ export const NoiseSettings: Model = {
       }
     },
     noise: {
-      random_density_offset: true,
-      density_factor: 1.0,
-      density_offset: -0.51875,
-      simplex_surface_noise: true,
+      terrain_shaper: {
+        offset: {
+          coordinate: 'continents',
+          points: [
+            {
+              location: -1,
+              value: 0.05,
+              derivative: 0
+            }
+          ]
+        },
+        factor: {
+          coordinate: 'continents',
+          points: [
+            {
+              location: -0.19,
+              value: 3.95,
+              derivative: 0
+            }
+          ]
+        },
+        jaggedness: {
+          coordinate: 'continents',
+          points: [
+            {
+              location: -0.11,
+              value: 0,
+              derivative: 0
+            }
+          ]
+        }
+      },
       top_slide: {
         target: -0.078125,
         size: 2,
@@ -156,36 +258,10 @@ export const NoiseSettings: Model = {
       min_y: -64,
       height: 384,
       sampling: {
-        xz_scale: 0.9999999814507745,
-        y_scale: 0.9999999814507745,
-        xz_factor: 80.0,
-        y_factor: 160.0
-      }
-    },
-    octaves: {
-      erosion: {
-        firstOctave: -9,
-        amplitudes: [1.0, 1.0, 0.0, 1.0, 1.0]
-      },
-      weirdness: {
-        firstOctave: -7,
-        amplitudes: [1.0, 2.0, 1.0, 0.0, 0.0, 0.0]
-      },
-      shift: {
-        firstOctave: -3,
-        amplitudes: [1.0, 1.0, 1.0, 0.0]
-      },
-      temperature: {
-        firstOctave: -9,
-        amplitudes: [1.5, 0.0, 1.0, 0.0, 0.0, 0.0]
-      },
-      humidity: {
-        firstOctave: -7,
-        amplitudes: [1.0, 1.0, 0.0, 0.0, 0.0, 0.0]
-      },
-      continentalness: {
-        firstOctave: -9,
-        amplitudes: [1.0, 1.0, 2.0, 2.0, 2.0, 1.0, 1.0, 1.0, 1.0]
+        xz_scale: 1,
+        y_scale: 1,
+        xz_factor: 80,
+        y_factor: 160
       }
     }
   })

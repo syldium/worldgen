@@ -110,6 +110,22 @@ const DecoratorDefaults = {
       noise_offset: 0.3
     }
   },
+  decorated: {
+    config: {
+      outer: {
+        config: {
+          max_water_depth: 0
+        },
+        type: 'minecraft:water_depth_threshold'
+      },
+      inner: {
+        config: {
+          heightmap: 'OCEAN_FLOOR'
+        },
+        type: 'minecraft:heightmap'
+      }
+    }
+  },
   heightmap: {
     config: {
       heightmap: 'MOTION_BLOCKING'

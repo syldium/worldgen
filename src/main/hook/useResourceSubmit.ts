@@ -20,7 +20,7 @@ export function useResourceSubmit(
   supplySchema: ValueSupplier
 ): SubmitHandler {
   const { namespace, worldgen } = useContext(GameContext);
-  const registry = worldgen.worldgen[registryKey];
+  const registry = worldgen!.worldgen[registryKey];
   const history = useHistory();
 
   return function (event: FormEvent<HTMLFormElement>) {
@@ -33,7 +33,7 @@ export function useResourceSubmit(
       typeof supplySchema === 'function' ? supplySchema() : supplySchema;
     const previous = registry.register(key, value);
     updateDependencyGraph(
-      worldgen,
+      worldgen!,
       registryKey,
       previousKey || key,
       previous,
@@ -42,7 +42,7 @@ export function useResourceSubmit(
     set(resourcePath(registryKey, key), value);
     if (previousKey && key !== previousKey) {
       registry.remove(previousKey);
-      renameDependency(worldgen, registryKey, previousKey, key);
+      renameDependency(worldgen!, registryKey, previousKey, key);
       del(resourcePath(registryKey, previousKey));
     }
     history.push('/');

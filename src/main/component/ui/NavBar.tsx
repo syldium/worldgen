@@ -1,12 +1,14 @@
-import React from 'react';
 import { DarkModeToggle } from './DarkModeToggle';
+import { VersionSelect } from './VersionSelect';
+import type { ReactNode } from 'react';
 
 interface NavBarProps {
-  children?: React.ReactNode;
+  children?: ReactNode;
 }
 export const NavBar = ({ children }: NavBarProps): JSX.Element => (
   <div className="navbar">
     <nav className="tabs">{children}</nav>
+    <VersionSelect />
     <p className="github">
       <a
         href="https://github.com/syldium/worldgen"

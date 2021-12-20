@@ -1,4 +1,4 @@
-import React, { ReactNode, useEffect, useMemo } from 'react';
+import { ReactNode, useEffect, useMemo } from 'react';
 import {
   BlockStateRegistry,
   Registry,
@@ -17,25 +17,24 @@ import {
 import useLocalStorageState from 'use-local-storage-state';
 import { clear, entries, setMany } from 'idb-keyval';
 import { findNamespacedKeyAndRegistry, resourcePath } from '../util/PathHelper';
-import { useForceUpdate } from '@pastable/use-force-update';
 import { analyzeDependencies } from '../model/graph/DependencyGraph';
+import { useForceUpdate } from '../hook/useForceUpdate';
+import { GameVersion } from './GameVersion';
+import { dataUrl } from '../util/FetchHelper';
 import type { RegistryKey, WorldgenRegistryKey } from '../model/RegistryKey';
 
 interface GameRegistry {
   blockStates: BlockStateRegistry;
   registries: Record<RegistryKey, Registry>;
-  worldgen: WorldgenRegistryHolder;
+  worldgen?: WorldgenRegistryHolder;
   namespace: string;
+  version: GameVersion;
 }
 
 export const GameContext = createContext<GameRegistry>({} as GameRegistry);
 
-//const github = '/';
-const github =
-  'https://raw.githubusercontent.com/Arcensoth/mcdata/master/processed/';
-const registryUrl = (registry: string) =>
-  `${github}reports/registries/${registry}/data.values.txt`;
-const valuesUrl = (registry: string) => `/values/1.17/${registry}.json`;
+const valuesUrl = (version: GameVersion, registry: string) =>
+  `/values/${version}/${registry}.json`;
 
 interface ProviderProps {
   children?: ReactNode;
@@ -51,15 +50,28 @@ const json = (url: string, label?: boolean): RegistryData =>
   res(url, readJson, label);
 const text = (url: string, label?: boolean): RegistryData =>
   res(url, readText, label);
+const defaultVersion: GameVersion = '1.17';
 
 export function GameRegistryProvider({
   children,
   states
 }: ProviderProps): JSX.Element {
   const forceUpdate = useForceUpdate();
-  const [holder, setHolder] = useState<WorldgenRegistryHolder>(
-    () => new WorldgenRegistryHolder('1.17')
+  const [version, setVersion] = useLocalStorageState<GameVersion>(
+    'game-version',
+    defaultVersion
   );
+  const github = dataUrl(version);
+  const registryUrl = (registry: string) =>
+    `${github}reports/registries/${registry}/data.values.txt`;
+  const [holder, setHolder] = useState<WorldgenRegistryHolder | undefined>(
+    version === defaultVersion ? () => WorldgenRegistryHolder.def() : undefined
+  );
+  useEffect(() => {
+    if (version !== defaultVersion) {
+      WorldgenRegistryHolder.create(version).then(setHolder);
+    }
+  }, [version]);
   const blockStates = useFetchData<BlockStateRegistry>(
     `${github}reports/blocks/simplified/data.min.json`,
     {},
@@ -75,16 +87,23 @@ export function GameRegistryProvider({
       'tags/blocks': text(
         `${github}data/minecraft/tags/blocks/data.values.txt`
       ),
-      'worldgen/configured_carver': json(valuesUrl('configured_carvers')),
-      'worldgen/configured_feature': json(valuesUrl('configured_features')),
+      'worldgen/biome': json(valuesUrl(version, 'biomes')),
+      'worldgen/configured_carver': json(
+        valuesUrl(version, 'configured_carvers')
+      ),
+      'worldgen/configured_feature': json(
+        valuesUrl(version, 'configured_features')
+      ),
+      'worldgen/placed_feature': json(valuesUrl('1.18', 'placed_features')),
       'worldgen/configured_structure_feature': text(
         registryUrl('worldgen/structure_feature')
       ),
       'worldgen/configured_surface_builder': json(
-        valuesUrl('configured_surface_builders')
+        valuesUrl('1.17', 'configured_surface_builders')
       ),
-      'worldgen/processor_list': json(valuesUrl('processor_list'))
+      'worldgen/processor_list': json(valuesUrl('1.17', 'processor_list'))
     },
+    version,
     holder
   );
   const [defNamespace, setDefNamespace] = useLocalStorageState<string>('demo');
@@ -93,9 +112,10 @@ export function GameRegistryProvider({
     const options = Object.keys(blockStates).map(labelizeOption);
     return { options, vanilla: options };
   }, [blockStates]);
+  const worldgen = holder ? holder.worldgen : {};
 
   useEffect(() => {
-    if (!window.indexedDB) {
+    if (!window.indexedDB || !holder) {
       return;
     }
     entries<string, Schema>().then((entries) => {
@@ -121,39 +141,57 @@ export function GameRegistryProvider({
     <GameContext.Provider
       value={{
         blockStates,
+        // @ts-ignore
         registries: {
           ...registries,
-          ...holder.worldgen,
+          ...worldgen,
           biome_particle: emptyRegistry,
           block: blockTypes,
           block_state: blockTypes,
           block_state_provider: emptyRegistry
         },
         get worldgen(): WorldgenRegistryHolder {
-          return holder;
+          return holder!;
         },
         set worldgen(holder: WorldgenRegistryHolder) {
-          clear().then(() => {
-            setHolder((current) => holder.withVanilla(current));
-            const entries: [string, Schema][] = [];
-            for (const [registryKey, registry] of holder.entries) {
-              entries.push(
-                // @ts-ignore
-                ...Object.entries(registry.entries).map(([key, schema]) => [
-                  resourcePath(registryKey, key),
-                  schema
-                ])
+          clear()
+            .then(() => {
+              const entries: [string, Schema][] = [];
+              for (const [registryKey, registry] of holder.entries) {
+                entries.push(
+                  // @ts-ignore
+                  ...Object.entries(registry.entries).map(([key, schema]) => [
+                    resourcePath(registryKey, key),
+                    schema
+                  ])
+                );
+              }
+              setMany(entries).then(() =>
+                setHolder((current) => holder.withVanilla(current!))
               );
-            }
-            holder.graph = analyzeDependencies(holder);
-            setMany(entries);
-          });
+            })
+            .catch((e) => {
+              setHolder((current) => holder.withVanilla(current!));
+              console.error(e);
+            });
         },
         get namespace(): string {
           return defNamespace || 'unset';
         },
         set namespace(namespace: string) {
           setDefNamespace(namespace);
+        },
+        get version(): GameVersion {
+          return version;
+        },
+        set version(version: GameVersion) {
+          WorldgenRegistryHolder.create(version).then((h) => {
+            setHolder((current) => {
+              current && h.merge(current);
+              return h;
+            });
+            setVersion(version);
+          });
         }
       }}
     >
