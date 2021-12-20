@@ -1,14 +1,14 @@
-import { SamplingConfig, StructuresConfig } from '../1.17/NoiseSettings';
 import { Model, ObjectModel } from '../../model/Model';
-import { ObjectNode } from '../../model/node/ObjectNode';
-import { IntNode } from '../../model/node/IntNode';
-import { DoubleNode, FloatNode } from '../../model/node/FloatNode';
 import { BoolNode } from '../../model/node/BoolNode';
-import { ResourceNode } from '../../model/node/ResourceNode';
-import { RuleSource } from './SurfaceRule';
-import { EnumNode } from '../../model/node/EnumNode';
-import { ListNode } from '../../model/node/ListNode';
 import { EitherNode } from '../../model/node/EitherNode';
+import { EnumNode } from '../../model/node/EnumNode';
+import { DoubleNode, FloatNode } from '../../model/node/FloatNode';
+import { IntNode } from '../../model/node/IntNode';
+import { ListNode } from '../../model/node/ListNode';
+import { ObjectNode } from '../../model/node/ObjectNode';
+import { ResourceNode } from '../../model/node/ResourceNode';
+import { SamplingConfig, StructuresConfig } from '../1.17/NoiseSettings';
+import { RuleSource } from './SurfaceRule';
 
 const SplinePoint = ObjectNode({
   location: FloatNode(),

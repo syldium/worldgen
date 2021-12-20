@@ -1,20 +1,20 @@
-import { useCallback, useContext } from 'react';
-import { GameContext } from '../context/GameRegistry';
-import { WorldgenRegistryHolder } from '../model/Registry';
-import { ZipAction } from '../context/ZipAction';
 import { saveAs } from 'file-saver';
+import { useCallback, useContext } from 'react';
 import { Download, PlusCircle } from 'react-feather';
-import { useToggle } from '../hook/useToggle';
-import { Modal } from './ui/Modal';
-import { CreateForm } from './form/CreateForm';
-import { useHistory } from 'react-router-dom';
-import { Button } from './ui/Button';
-import { catchToast } from '../util/ErrorHelper';
 import { toast } from 'react-hot-toast';
-import { ResourceList } from './resource/ResourceList';
+import { useHistory } from 'react-router-dom';
+import { GameContext } from '../context/GameRegistry';
 import { RemovableModelsByVersion } from '../context/GameVersion';
+import { ZipAction } from '../context/ZipAction';
+import { useToggle } from '../hook/useToggle';
 import { EmptyModel } from '../model/Model';
+import { WorldgenRegistryHolder } from '../model/Registry';
 import type { WorldgenRegistryKey } from '../model/RegistryKey';
+import { catchToast } from '../util/ErrorHelper';
+import { CreateForm } from './form/CreateForm';
+import { ResourceList } from './resource/ResourceList';
+import { Button } from './ui/Button';
+import { Modal } from './ui/Modal';
 
 export function MainMenu(): JSX.Element {
   const context = useContext(GameContext);

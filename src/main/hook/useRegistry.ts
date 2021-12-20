@@ -1,14 +1,14 @@
+import { get } from 'idb-keyval';
 import { useContext, useEffect, useMemo, useRef } from 'react';
+import { useLocation, useParams } from 'react-router-dom';
+import { GameContext } from '../context/GameRegistry';
 import type {
   PostLoadCallback,
   Schema,
   WorldgenRegistry
 } from '../model/Registry';
-import { GameContext } from '../context/GameRegistry';
-import { useLocation, useParams } from 'react-router-dom';
-import { get } from 'idb-keyval';
-import { resourcePath } from '../util/PathHelper';
 import type { WorldgenRegistryKey } from '../model/RegistryKey';
+import { resourcePath } from '../util/PathHelper';
 
 export function useRegistry<S extends Schema>(
   registryKey: WorldgenRegistryKey

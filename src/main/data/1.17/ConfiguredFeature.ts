@@ -1,20 +1,20 @@
-import { FloatProvider, IntProvider } from './NumberProvider';
 import { Model, ObjectModel } from '../../model/Model';
-import { IdentifierNode, ResourceNode } from '../../model/node/ResourceNode';
+import { BoolNode } from '../../model/node/BoolNode';
+import { FloatNode, Probability } from '../../model/node/FloatNode';
 import { IntNode } from '../../model/node/IntNode';
 import { ListNode } from '../../model/node/ListNode';
 import { ObjectNode, Opt } from '../../model/node/ObjectNode';
-import { FloatNode, Probability } from '../../model/node/FloatNode';
-import { BoolNode } from '../../model/node/BoolNode';
+import { IdentifierNode, ResourceNode } from '../../model/node/ResourceNode';
 import { SwitchNode } from '../../model/node/SwitchNode';
-import { VerticalSurface } from './WorldgenStep';
+import { BlockPlacer } from './BlockPlacer';
 import {
   DECORATED_FILL_LAYER,
   DECORATED_NO_BONEMEAL_FLOWER,
   DECORATED_TREE
 } from './ConfiguredFeatureDefault';
-import { BlockPlacer } from './BlockPlacer';
 import { Direction } from './Direction';
+import { FloatProvider, IntProvider } from './NumberProvider';
+import { VerticalSurface } from './WorldgenStep';
 
 const BasaltColumnsConfig: ObjectModel = {
   reach: IntProvider(0, 3),

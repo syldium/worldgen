@@ -1,7 +1,7 @@
-import { lazy, ChangeEvent, Suspense } from 'react';
+import { ChangeEvent, lazy, Suspense } from 'react';
 import type { ActionMeta, GroupBase, OnChangeValue, Props } from 'react-select';
-import type { CreatableProps } from 'react-select/creatable';
 import type ReactSelect from 'react-select';
+import type { CreatableProps } from 'react-select/creatable';
 
 export interface Option {
   label: string;
@@ -69,9 +69,9 @@ function HtmlSelect<
       );
     }
   };
-  const val = Array.isArray(value)
-    ? value.map((o) => o.value)
-    : (value as unknown as Option)?.value;
+  const val = Array.isArray(value) ?
+    value.map((o) => o.value) :
+    (value as unknown as Option)?.value;
   return (
     <select
       id={inputId}
@@ -94,8 +94,9 @@ export const CreatableSelect = <
   IsMulti extends boolean = false,
   Group extends GroupBase<OptionType> = GroupBase<OptionType>
 >(
-  props: CreatableProps<OptionType, IsMulti, Group> &
-    SelectProps<OptionType, IsMulti>
+  props:
+    & CreatableProps<OptionType, IsMulti, Group>
+    & SelectProps<OptionType, IsMulti>
 ): JSX.Element => <Select creatable={true} {...props} />;
 
 export default Select as unknown as typeof ReactSelect;

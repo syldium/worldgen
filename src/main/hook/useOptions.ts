@@ -1,8 +1,8 @@
 import { useContext, useMemo } from 'react';
-import { GameContext } from '../context/GameRegistry';
-import { labelizeOption } from '../util/LabelHelper';
 import type { Option } from '../component/ui/Select';
+import { GameContext } from '../context/GameRegistry';
 import type { RegistryKey } from '../model/RegistryKey';
+import { labelizeOption } from '../util/LabelHelper';
 
 export function useOptions(key: RegistryKey, onlyDefault = false): Option[] {
   const context = useContext(GameContext);

@@ -1,14 +1,14 @@
 // surface_rule in noise_settings
 
+import { Model } from '../../model/Model';
 import { BoolNode } from '../../model/node/BoolNode';
 import { DoubleNode } from '../../model/node/FloatNode';
 import { IntNode } from '../../model/node/IntNode';
 import { ListNode } from '../../model/node/ListNode';
 import { IdentifierNode, ResourceNode } from '../../model/node/ResourceNode';
+import { StringNode } from '../../model/node/StringNode';
 import { SwitchNode } from '../../model/node/SwitchNode';
 import { NoiseValues } from '../1.17/BiomeSource';
-import { Model } from '../../model/Model';
-import { StringNode } from '../../model/node/StringNode';
 import { YOffset } from '../1.17/HeightProvider';
 import { VerticalSurface } from '../1.17/WorldgenStep';
 

@@ -1,13 +1,13 @@
-import { SwitchNode } from '../../model/node/SwitchNode';
-import { BlockPredicateSwitch } from './BlockPredicate';
-import { EnumNode } from '../../model/node/EnumNode';
-import { IntProvider } from '../1.17/NumberProvider';
-import { Opt } from '../../model/node/ObjectNode';
-import { IntNode } from '../../model/node/IntNode';
-import { Heightmap } from '../1.17/WorldgenStep';
-import { HeightProvider } from '../1.17/HeightProvider';
-import { DoubleNode } from '../../model/node/FloatNode';
 import { Model } from '../../model/Model';
+import { EnumNode } from '../../model/node/EnumNode';
+import { DoubleNode } from '../../model/node/FloatNode';
+import { IntNode } from '../../model/node/IntNode';
+import { Opt } from '../../model/node/ObjectNode';
+import { SwitchNode } from '../../model/node/SwitchNode';
+import { HeightProvider } from '../1.17/HeightProvider';
+import { IntProvider } from '../1.17/NumberProvider';
+import { Heightmap } from '../1.17/WorldgenStep';
+import { BlockPredicateSwitch } from './BlockPredicate';
 
 const PlacementModifierSwitch = SwitchNode(
   {

@@ -38,13 +38,13 @@ interface RenderMessageResponse extends RenderMessage {
 export type MapboundMessage =
   | { workerId: number; action: 'ready' }
   | {
-      workerId: number;
-      action: 'biome';
-      x: number;
-      z: number;
-      biome: string;
-      id: string;
-    }
+    workerId: number;
+    action: 'biome';
+    x: number;
+    z: number;
+    biome: string;
+    id: string;
+  }
   | RenderMessageResponse;
 
 export type WorkerboundMessage = SettingsMessage | RenderMessage | BiomeMessage;

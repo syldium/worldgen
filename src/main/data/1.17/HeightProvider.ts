@@ -1,8 +1,8 @@
+import { ObjectModel } from '../../model/Model';
 import { EitherNode } from '../../model/node/EitherNode';
 import { IntNode } from '../../model/node/IntNode';
-import { SwitchNode } from '../../model/node/SwitchNode';
-import { ObjectModel } from '../../model/Model';
 import { ObjectNode } from '../../model/node/ObjectNode';
+import { SwitchNode } from '../../model/node/SwitchNode';
 
 export const YOffset = EitherNode(
   ObjectNode({

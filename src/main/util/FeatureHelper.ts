@@ -44,10 +44,9 @@ export function buildDecorated(
   const decorated: Feature = { config: {}, type: 'minecraft:decorated' };
   let current = decorated;
   decorators.forEach((decorator, i) => {
-    const f: Feature =
-      i === decorators.length - 1
-        ? feature
-        : { config: {}, type: 'minecraft:decorated' };
+    const f: Feature = i === decorators.length - 1 ?
+      feature :
+      { config: {}, type: 'minecraft:decorated' };
     current.config = {
       feature: f,
       decorator

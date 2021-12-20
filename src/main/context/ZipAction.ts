@@ -1,5 +1,6 @@
+import type { Unzipped } from 'fflate';
 import { WorldgenRegistryHolder } from '../model/Registry';
-import ZipWorker from './ZipWorker?worker';
+import type { WorldgenRegistryKey } from '../model/RegistryKey';
 import type {
   ExtractDoneMessage,
   RawRegistries,
@@ -7,8 +8,7 @@ import type {
   ZipDoneMessage,
   ZipWorkerboundMessage
 } from './ZipWorker';
-import type { Unzipped } from 'fflate';
-import type { WorldgenRegistryKey } from '../model/RegistryKey';
+import ZipWorker from './ZipWorker?worker';
 
 const worker = import.meta.env.SSR ? ({} as Worker) : new ZipWorker();
 export type ReadResult<T> = { [path: string]: T };

@@ -1,5 +1,5 @@
-import { labelize } from '../../util/LabelHelper';
 import type { ReactElement } from 'react';
+import { labelize } from '../../util/LabelHelper';
 
 interface LabelizedProps {
   className?: string;

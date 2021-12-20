@@ -1,11 +1,11 @@
 import { StrictMode } from 'react';
 import ReactDOM from 'react-dom';
-import './style/index.css';
-import './style/spacers.scss';
+import { Toaster } from 'react-hot-toast';
+import { BrowserRouter } from 'react-router-dom';
 import { DatapackApp } from './main/component/DatapackApp';
 import { GameRegistryProvider } from './main/context/GameRegistry';
-import { BrowserRouter } from 'react-router-dom';
-import { Toaster } from 'react-hot-toast';
+import './style/index.css';
+import './style/spacers.scss';
 
 ReactDOM.render(
   <StrictMode>

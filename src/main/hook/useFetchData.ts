@@ -1,15 +1,15 @@
 import { RefObject, useEffect, useRef, useState } from 'react';
-import { defaultNamespace, labelizeOption } from '../util/LabelHelper';
-import type { GameVersion } from '../context/GameVersion';
 import type { Option } from '../component/ui/Select';
+import type { GameVersion } from '../context/GameVersion';
 import type { Registry, WorldgenRegistryHolder } from '../model/Registry';
 import type { RegistryKey } from '../model/RegistryKey';
+import { defaultNamespace, labelizeOption } from '../util/LabelHelper';
 
 export const readJson = <S>(response: Response): Promise<S> => response.json();
 export const readText = (response: Response): Promise<string[]> =>
-  response.ok
-    ? response.text().then((string) => string.split('\n'))
-    : Promise.resolve([]);
+  response.ok ?
+    response.text().then((string) => string.split('\n')) :
+    Promise.resolve([]);
 export function useFetchData<S>(
   url: RequestInfo,
   initial: S | (() => S),
@@ -59,12 +59,12 @@ export function useRegistryFetch<
           fetch(data.url)
             .then(data.reader)
             .then((values) => {
-              const options = data.label
-                ? values.map(labelizeOption)
-                : values.map((val) => ({
-                    label: val,
-                    value: defaultNamespace(val)
-                  }));
+              const options = data.label ?
+                values.map(labelizeOption) :
+                values.map((val) => ({
+                  label: val,
+                  value: defaultNamespace(val)
+                }));
               if (holder.isRegistered(registryKey)) {
                 holder.worldgen[registryKey].withVanilla(options);
               }

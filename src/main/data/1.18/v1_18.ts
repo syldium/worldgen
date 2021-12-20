@@ -1,16 +1,16 @@
+import { EmptyModel } from '../../model/Model';
+import type { WorldgenRegistriesType } from '../../model/Registry';
+import { NoiseSettingsOptions } from '../1.17/NoiseSettings';
 import { Registries1_17 } from '../1.17/v1_17';
 import { Biome } from './Biome';
-import { NoiseSettings } from './NoiseSettings';
-import { NoiseSettingsOptions } from '../1.17/NoiseSettings';
 import { BiomeSource } from './BiomeSource';
-import { ConfiguredFeature } from './ConfiguredFeature';
-import { MaterialRule } from './SurfaceRule';
-import { EmptyModel } from '../../model/Model';
-import { Noise, Noises } from './Noise';
-import type { WorldgenRegistriesType } from '../../model/Registry';
-import { PlacementModifier } from './PlacementModifier';
-import { PlacedFeature } from './PlacedFeature';
 import { BlockPredicate } from './BlockPredicate';
+import { ConfiguredFeature } from './ConfiguredFeature';
+import { Noise, Noises } from './Noise';
+import { NoiseSettings } from './NoiseSettings';
+import { PlacedFeature } from './PlacedFeature';
+import { PlacementModifier } from './PlacementModifier';
+import { MaterialRule } from './SurfaceRule';
 
 export const Registries1_18: WorldgenRegistriesType = {
   ...Registries1_17,

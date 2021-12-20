@@ -1,5 +1,5 @@
-import { Dimension, Dimensions } from './Dimension';
-import { DimensionType, DimensionTypes } from './DimensionType';
+import { EmptyModel } from '../../model/Model';
+import type { WorldgenRegistriesType } from '../../model/Registry';
 import { Biome } from './Biome';
 import { BiomeSource } from './BiomeSource';
 import { ChunkGenerator, ChunkGenerators } from './ChunkGenerator';
@@ -7,10 +7,10 @@ import { ConfiguredCarver } from './ConfiguredCarver';
 import { ConfiguredDecorator } from './ConfiguredDecorator';
 import { ConfiguredFeature } from './ConfiguredFeature';
 import { ConfiguredSurfaceBuilder } from './ConfiguredSurfaceBuilder';
+import { Dimension, Dimensions } from './Dimension';
+import { DimensionType, DimensionTypes } from './DimensionType';
 import { NoiseSettings, NoiseSettingsOptions } from './NoiseSettings';
 import { ProcessorList } from './StructureProcessor';
-import type { WorldgenRegistriesType } from '../../model/Registry';
-import { EmptyModel } from '../../model/Model';
 
 export const Registries1_17: WorldgenRegistriesType = {
   'worldgen/material_condition': [EmptyModel],

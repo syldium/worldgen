@@ -1,6 +1,6 @@
-import { NoiseValues } from '../1.17/BiomeSource';
 import { Model } from '../../model/Model';
 import { labelizeOption } from '../../util/LabelHelper';
+import { NoiseValues } from '../1.17/BiomeSource';
 
 export const Noise: Model = {
   node: NoiseValues.records,

@@ -1,9 +1,9 @@
+import type { LocationDescriptor, Pathname } from 'history';
 import { useCallback } from 'react';
+import type { ReactNode, RefAttributes } from 'react';
 import { match } from 'react-router';
 import { NavLink } from 'react-router-dom';
 import { isValidNamespacedKey } from '../../util/LabelHelper';
-import type { LocationDescriptor, Pathname } from 'history';
-import type { RefAttributes, ReactNode } from 'react';
 
 interface LinkProps extends RefAttributes<HTMLAnchorElement> {
   exact?: boolean;
@@ -31,8 +31,7 @@ export function Link({
     }
     const additionalInfo = pathname.substring(match.path.length);
     return additionalInfo === '' || isValidNamespacedKey(additionalInfo);
-  },
-  []);
+  }, []);
 
   return (
     <NavLink

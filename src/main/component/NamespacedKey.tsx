@@ -7,15 +7,15 @@ import {
   useRef,
   useState
 } from 'react';
-import { useOptions } from '../hook/useOptions';
-import Select from './ui/Select';
-import { Schema, WorldgenNames } from '../model/Registry';
-import { GameContext } from '../context/GameRegistry';
-import { useToggle } from '../hook/useToggle';
-import { Button } from './ui/Button';
-import type { WorldgenRegistryKey } from '../model/RegistryKey';
 import type { ReactNode } from 'react';
+import { GameContext } from '../context/GameRegistry';
+import { useOptions } from '../hook/useOptions';
 import { useSelectAutosize } from '../hook/useSelectAutosize';
+import { useToggle } from '../hook/useToggle';
+import { Schema, WorldgenNames } from '../model/Registry';
+import type { WorldgenRegistryKey } from '../model/RegistryKey';
+import { Button } from './ui/Button';
+import Select from './ui/Select';
 
 interface NamespacedKeyProps {
   children?: ReactNode;
@@ -106,8 +106,7 @@ export function NamespacedKey({
         );
       }
     }
-  },
-  []);
+  }, []);
 
   // Displayed input value - trim namespace if default
   const inputValue = useMemo<string>(

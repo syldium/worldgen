@@ -1,6 +1,6 @@
+import { BoolNode } from '../../main/model/node/BoolNode';
 import { EitherNode } from '../../main/model/node/EitherNode';
 import { IntNode } from '../../main/model/node/IntNode';
-import { BoolNode } from '../../main/model/node/BoolNode';
 import { ObjectNode } from '../../main/model/node/ObjectNode';
 
 describe('EitherNode', function () {

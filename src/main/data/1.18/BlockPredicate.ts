@@ -1,9 +1,9 @@
-import { SwitchNode } from '../../model/node/SwitchNode';
-import { ListNode } from '../../model/node/ListNode';
-import { ResourceNode } from '../../model/node/ResourceNode';
-import { Opt } from '../../model/node/ObjectNode';
-import { IntNode } from '../../model/node/IntNode';
 import { Model } from '../../model/Model';
+import { IntNode } from '../../model/node/IntNode';
+import { ListNode } from '../../model/node/ListNode';
+import { Opt } from '../../model/node/ObjectNode';
+import { ResourceNode } from '../../model/node/ResourceNode';
+import { SwitchNode } from '../../model/node/SwitchNode';
 import { Direction } from '../1.17/Direction';
 
 const List = ListNode(ResourceNode('block_predicate'));

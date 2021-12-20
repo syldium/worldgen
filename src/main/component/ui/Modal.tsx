@@ -1,8 +1,8 @@
-import { useEffect, useMemo } from 'react';
-import { createPortal } from 'react-dom';
 import useModal from '@delangle/use-modal';
-import { voidReturn } from '../../util/DomHelper';
+import { useEffect, useMemo } from 'react';
 import type { MouseEvent, ReactNode } from 'react';
+import { createPortal } from 'react-dom';
+import { voidReturn } from '../../util/DomHelper';
 
 interface ModalProps {
   children?: ReactNode;

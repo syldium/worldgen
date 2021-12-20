@@ -1,5 +1,5 @@
-import { NodeBase } from './Node';
 import { isValidModel, ObjectOrNodeModel } from '../Model';
+import { NodeBase } from './Node';
 
 type Nodes = readonly [
   ObjectOrNodeModel,

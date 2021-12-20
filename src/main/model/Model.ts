@@ -1,9 +1,9 @@
 import { GameVersion } from '../context/GameVersion';
-import { isNode, ModelNode, NodeType } from './node/Node';
-import { Typed } from './node/SwitchNode';
-import { ColorNodeParams, NumberNodeParams } from './node/IntNode';
 import { BoolNodeParams } from './node/BoolNode';
+import { ColorNodeParams, NumberNodeParams } from './node/IntNode';
+import { isNode, ModelNode, NodeType } from './node/Node';
 import { OptionalNodeParams } from './node/ObjectNode';
+import { Typed } from './node/SwitchNode';
 
 export interface Configured extends Typed {
   config: unknown;
@@ -16,7 +16,7 @@ export interface Model {
 
 export const EmptyModel: Model = { node: {}, preset: () => ({}) };
 
-export const DefaultedModel = function <T extends ObjectModel>(
+export const DefaultedModel = function<T extends ObjectModel> (
   fields: T,
   preset: (version: GameVersion) => { [key in keyof Partial<T>]: unknown }
 ): Model {
@@ -52,7 +52,8 @@ export function mayInline(
   | BoolNodeParams
   | ColorNodeParams
   | NumberNodeParams
-  | OptionalNodeParams {
+  | OptionalNodeParams
+{
   return (
     inline.has(model.type) ||
     (model.type === 'optional' && inline.has(model.node.type))

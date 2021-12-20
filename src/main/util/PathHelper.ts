@@ -1,6 +1,6 @@
-import { isValidNamespace, isValidValue } from './LabelHelper';
 import { isWorldgenRegistryKey } from '../model/RegistryKey';
 import type { RegistryKey, WorldgenRegistryKey } from '../model/RegistryKey';
+import { isValidNamespace, isValidValue } from './LabelHelper';
 
 export function resourcePath(
   registryKey: RegistryKey,

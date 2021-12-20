@@ -1,7 +1,7 @@
 import { createElement, lazy, Suspense } from 'react';
-import { stripDefaultNamespace } from '../../util/LabelHelper';
-import type { WorldgenRegistryKey } from '../../model/RegistryKey';
 import type { LazyExoticComponent, NamedExoticComponent } from 'react';
+import type { WorldgenRegistryKey } from '../../model/RegistryKey';
+import { stripDefaultNamespace } from '../../util/LabelHelper';
 
 export interface ViewerProps {
   value: any;

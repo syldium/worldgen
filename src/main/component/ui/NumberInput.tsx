@@ -1,9 +1,9 @@
 import {
-  MouseEvent,
+  ChangeEventHandler,
   InputHTMLAttributes,
-  useRef,
+  MouseEvent,
   useEffect,
-  ChangeEventHandler
+  useRef
 } from 'react';
 import { INT_MAX_VALUE, INT_MIN_VALUE } from '../../util/MathHelper';
 

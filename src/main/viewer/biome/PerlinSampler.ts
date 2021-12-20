@@ -1,5 +1,5 @@
-import { Random } from '../random/Random';
 import { INT_MAX_VALUE, INT_MIN_VALUE } from '../../util/MathHelper';
+import { Random } from '../random/Random';
 import { NoiseSettings } from './types';
 
 export class DoublePerlinSampler {
@@ -106,8 +106,7 @@ class OctavePerlinNoise {
 
     this.octaveSamplers.forEach((sampler, i) => {
       if (sampler) {
-        noise +=
-          this.amplitudes[i] *
+        noise += this.amplitudes[i] *
           sampler.sample(
             x * lacunarity,
             useOrigin ? -sampler.originY : y * lacunarity,
@@ -160,10 +159,9 @@ class PerlinNoiseSampler {
 
     let t = 0;
     if (yScale !== 0) {
-      t =
-        Math.floor(
-          (yMax >= 0 && yMax < dy ? yMax : dy) / yScale + 1.0000000116860974e-7
-        ) * yScale;
+      t = Math.floor(
+        (yMax >= 0 && yMax < dy ? yMax : dy) / yScale + 1.0000000116860974e-7
+      ) * yScale;
     }
     return this._sample(fx, fy, fz, dx, dy - t, dz, dy);
   }

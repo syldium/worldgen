@@ -1,15 +1,4 @@
 import {
-  memo,
-  ChangeEvent,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef
-} from 'react';
-import { BiomeSourceMapLayer } from '../../viewer/biome/BiomeSourceMapLayer';
-import 'leaflet/dist/leaflet.css';
-import { ViewableBiomeSource } from '../../viewer/biome/types';
-import {
   Control,
   ControlOptions,
   CRS,
@@ -18,14 +7,25 @@ import {
   Map,
   map
 } from 'leaflet';
-import { voidReturn } from '../../util/DomHelper';
-import { debounce } from '../../util/debounce';
-import { ViewerProps } from './Viewers';
+import 'leaflet/dist/leaflet.css';
+import {
+  ChangeEvent,
+  memo,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef
+} from 'react';
 import { useBiomeColors } from '../../hook/useBiomeColors';
 import {
   bgrCanvasToHexColor,
   hexColorToBgrCanvas
 } from '../../util/ColorHelper';
+import { debounce } from '../../util/debounce';
+import { voidReturn } from '../../util/DomHelper';
+import { BiomeSourceMapLayer } from '../../viewer/biome/BiomeSourceMapLayer';
+import { ViewableBiomeSource } from '../../viewer/biome/types';
+import { ViewerProps } from './Viewers';
 
 type AskBiome = (
   x: number,
@@ -80,7 +80,7 @@ class MousePosition extends Control {
 export interface BiomeSourceMapProps extends ViewerProps {
   value: ViewableBiomeSource;
 }
-const BiomeSourceMap = memo(function BiomeSourceMap({
+const BiomeSourceMap = memo(function BiomeSourceMap ({
   value
 }: BiomeSourceMapProps) {
   const divRef = useRef<HTMLDivElement>(null);

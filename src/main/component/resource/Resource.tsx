@@ -1,13 +1,13 @@
 import { ReactNode, useCallback, useState } from 'react';
-import { ResourceView } from '../NodeElement';
-import { NamespacedKey } from '../NamespacedKey';
-import { Obj } from '../../util/DomHelper';
-import { JsonViewer } from '../ui/JsonViewer';
-import { Button } from '../ui/Button';
 import { useRegistry } from '../../hook/useRegistry';
 import { useResourceSubmit } from '../../hook/useResourceSubmit';
 import type { Schema } from '../../model/Registry';
 import type { WorldgenRegistryKey } from '../../model/RegistryKey';
+import { Obj } from '../../util/DomHelper';
+import { NamespacedKey } from '../NamespacedKey';
+import { ResourceView } from '../NodeElement';
+import { Button } from '../ui/Button';
+import { JsonViewer } from '../ui/JsonViewer';
 
 interface ResourceFormProps {
   registryKey: WorldgenRegistryKey;

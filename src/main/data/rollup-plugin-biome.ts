@@ -1,9 +1,9 @@
-import { Plugin } from 'vite';
-import { BiomeColors } from '../viewer/biome/MultiNoiseMapWorker';
 import { dataToEsm } from '@rollup/pluginutils';
+import { Plugin } from 'vite';
 import { rgbToBgrCanvas } from '../util/ColorHelper';
+import { BiomeColors } from '../viewer/biome/MultiNoiseMapWorker';
 
-export default function createBiomeColors(): Plugin {
+export default function createBiomeColors (): Plugin {
   const importId = 'biome-colors';
   return {
     name: 'create-biome-colors',
@@ -18,10 +18,14 @@ export default function createBiomeColors(): Plugin {
       }
       try {
         const colors: BiomeColors = {};
-        for (const {
-          name,
-          color
-        } of require('minecraft-data/minecraft-data/data/pc/1.16.1/biomes.json')) {
+        for (
+          const {
+            name,
+            color
+          } of require(
+            'minecraft-data/minecraft-data/data/pc/1.16.1/biomes.json'
+          )
+        ) {
           colors[name] = rgbToBgrCanvas(color);
         }
 

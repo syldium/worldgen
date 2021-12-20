@@ -1,5 +1,5 @@
-import { ResourceNode } from '../../model/node/ResourceNode';
 import { Model, ObjectModel } from '../../model/Model';
+import { ResourceNode } from '../../model/node/ResourceNode';
 import { forEveryType } from '../../model/node/SwitchNode';
 
 const config: ObjectModel = {

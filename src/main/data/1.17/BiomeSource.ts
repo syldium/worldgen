@@ -1,11 +1,11 @@
+import { Model } from '../../model/Model';
+import { BoolNode } from '../../model/node/BoolNode';
 import { FloatNode } from '../../model/node/FloatNode';
-import { ObjectNode } from '../../model/node/ObjectNode';
-import { IdentifierNode, ResourceNode } from '../../model/node/ResourceNode';
 import { IntNode, LongNode } from '../../model/node/IntNode';
 import { ListNode } from '../../model/node/ListNode';
+import { ObjectNode } from '../../model/node/ObjectNode';
+import { IdentifierNode, ResourceNode } from '../../model/node/ResourceNode';
 import { SwitchNode } from '../../model/node/SwitchNode';
-import { BoolNode } from '../../model/node/BoolNode';
-import { Model } from '../../model/Model';
 
 const BiomeNoiseParameters = ObjectNode({
   biome: ResourceNode('worldgen/biome'),

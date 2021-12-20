@@ -1,13 +1,13 @@
-import { WorldgenNames } from '../../model/Registry';
-import { MouseEvent, useContext } from 'react';
-import { GameContext } from '../../context/GameRegistry';
-import { stripDefaultNamespace } from '../../util/LabelHelper';
-import { Trash } from 'react-feather';
-import { useForceUpdate } from '../../hook/useForceUpdate';
-import { Link } from 'react-router-dom';
 import { del } from 'idb-keyval';
-import { resourcePath } from '../../util/PathHelper';
+import { MouseEvent, useContext } from 'react';
+import { Trash } from 'react-feather';
+import { Link } from 'react-router-dom';
+import { GameContext } from '../../context/GameRegistry';
+import { useForceUpdate } from '../../hook/useForceUpdate';
+import { WorldgenNames } from '../../model/Registry';
 import type { WorldgenRegistryKey } from '../../model/RegistryKey';
+import { stripDefaultNamespace } from '../../util/LabelHelper';
+import { resourcePath } from '../../util/PathHelper';
 
 interface ResourceListProps {
   registryKey: WorldgenRegistryKey;

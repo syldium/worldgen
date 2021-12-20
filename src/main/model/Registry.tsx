@@ -1,15 +1,15 @@
+import { strFromU8, Unzipped } from 'fflate';
 import { Option } from '../component/ui/Select';
-import { Model } from './Model';
 import {
   GameVersion,
   PackFormatNumber,
   PackFormatString
 } from '../context/GameVersion';
-import { customOption, stripDefaultNamespace } from '../util/LabelHelper';
-import { loadVanillaZip } from '../util/FetchHelper';
-import { strFromU8, Unzipped } from 'fflate';
-import type { WorldgenRegistryKey } from './RegistryKey';
 import { Registries1_17 } from '../data/1.17/v1_17';
+import { loadVanillaZip } from '../util/FetchHelper';
+import { customOption, stripDefaultNamespace } from '../util/LabelHelper';
+import { Model } from './Model';
+import type { WorldgenRegistryKey } from './RegistryKey';
 
 export interface Registry {
   options: Option[];
@@ -134,10 +134,12 @@ export class WorldgenRegistryHolder {
     version: GameVersion | keyof typeof PackFormatNumber,
     provider: WorldgenRegistriesType = Registries1_17
   ) {
-    this.packFormat =
-      typeof version === 'number' ? version : PackFormatString[version];
-    this.gameVersion =
-      typeof version === 'number' ? PackFormatNumber[version] : version;
+    this.packFormat = typeof version === 'number' ?
+      version :
+      PackFormatString[version];
+    this.gameVersion = typeof version === 'number' ?
+      PackFormatNumber[version] :
+      version;
     this.worldgen = Object.fromEntries(
       Object.entries(provider).map(([key, registry]) => [
         key,
@@ -191,8 +193,8 @@ export class WorldgenRegistryHolder {
       }
       this.vanillaZip = await loadVanillaZip(this.gameVersion);
     }
-    const path =
-      registry + '/' + stripDefaultNamespace(namespacedKey) + '.json';
+    const path = registry + '/' + stripDefaultNamespace(namespacedKey) +
+      '.json';
     const file = this.vanillaZip[path];
     if (!file) {
       return Promise.reject(

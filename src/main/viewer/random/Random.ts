@@ -71,8 +71,9 @@ class LCG {
     this.multiplier = multiplier;
     this.addend = addend;
     this.modulus = modulus;
-    if ((modulus & -modulus) !== modulus)
+    if ((modulus & -modulus) !== modulus) {
       throw new Error('Modulus is not a power of 2');
+    }
     this.mod = modulus - 1n;
   }
 

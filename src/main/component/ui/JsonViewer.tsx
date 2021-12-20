@@ -1,10 +1,10 @@
-import { useCallback } from 'react';
-import { useToggle } from '../../hook/useToggle';
-import { Obj, removeReactKeys } from '../../util/DomHelper';
 import { JsonView } from 'json-view-for-react';
-import { Modal } from './Modal';
+import { useCallback } from 'react';
 import { Code } from 'react-feather';
+import { useToggle } from '../../hook/useToggle';
 import type { Schema } from '../../model/Registry';
+import { Obj, removeReactKeys } from '../../util/DomHelper';
+import { Modal } from './Modal';
 
 interface JsonViewerProps {
   data: Schema | (() => Schema);

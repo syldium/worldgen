@@ -1,15 +1,15 @@
+import { DataType } from '../../hook/useCrud';
+import { ObjectOrNodeModel } from '../Model';
 import { BoolNodeParams } from './BoolNode';
 import { EitherNodeParams } from './EitherNode';
-import { ColorNodeParams, NumberNodeParams } from './IntNode';
-import { ObjectNodeParams, OptionalNodeParams } from './ObjectNode';
-import { SwitchNodeParams } from './SwitchNode';
 import { EnumNodeParams } from './EnumNode';
-import { IdentifierNodeParams } from './ResourceNode';
-import { ObjectOrNodeModel } from '../Model';
+import { ColorNodeParams, NumberNodeParams } from './IntNode';
 import { ListNodeParams } from './ListNode';
-import { DataType } from '../../hook/useCrud';
 import { MapNodeParams } from './MapNode';
+import { ObjectNodeParams, OptionalNodeParams } from './ObjectNode';
+import { IdentifierNodeParams } from './ResourceNode';
 import { StringNodeParams } from './StringNode';
+import { SwitchNodeParams } from './SwitchNode';
 
 export type NodeType =
   | 'bool'
@@ -84,9 +84,9 @@ export function providePreset(node: ObjectOrNodeModel): DataType {
     case 'float':
       return 0;
     case 'list':
-      return node.fixed === -1
-        ? []
-        : new Array(node.fixed).fill(providePreset(node.of));
+      return node.fixed === -1 ?
+        [] :
+        new Array(node.fixed).fill(providePreset(node.of));
     case 'map':
       return {};
     case 'object':

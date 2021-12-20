@@ -1,7 +1,8 @@
 import type { ModelNode, NodeBase } from './Node';
 
 export interface ListNodeParams<T extends ModelNode = ModelNode>
-  extends NodeBase<'list'> {
+  extends NodeBase<'list'>
+{
   of: T;
   fixed: number;
   weighted: boolean;

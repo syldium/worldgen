@@ -1,6 +1,6 @@
+import type { ReactNode } from 'react';
 import { DarkModeToggle } from './DarkModeToggle';
 import { VersionSelect } from './VersionSelect';
-import type { ReactNode } from 'react';
 
 interface NavBarProps {
   children?: ReactNode;

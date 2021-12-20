@@ -1,6 +1,6 @@
 import { EitherNode, EitherNodeParams } from '../../model/node/EitherNode';
-import { ListNode } from '../../model/node/ListNode';
 import { NumberNodeParams } from '../../model/node/IntNode';
+import { ListNode } from '../../model/node/ListNode';
 import { ObjectNode } from '../../model/node/ObjectNode';
 
 export const RangeInterval = (

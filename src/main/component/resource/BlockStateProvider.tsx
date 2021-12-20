@@ -1,31 +1,31 @@
 import { useCallback, useContext, useMemo } from 'react';
-import { BlockState, BlockStateValue } from './BlockState';
-import { BlockStateRegistry, DEFAULT_BLOCK_STATE } from '../../model/Registry';
+import type { OnChangeValue } from 'react-select';
+import { GameContext } from '../../context/GameRegistry';
+import { IntProvider } from '../../data/1.17/NumberProvider';
+import {
+  SeededBlockStateProviderPresets,
+  SeededBlockStateProviders
+} from '../../data/1.18/BlockStateProvider';
+import { useCrudProps } from '../../hook/useCrud';
 import { useOptionsArray } from '../../hook/useOptions';
-import Select, { Option } from '../ui/Select';
+import { Typed } from '../../model/node/SwitchNode';
+import { BlockStateRegistry, DEFAULT_BLOCK_STATE } from '../../model/Registry';
+import { Obj } from '../../util/DomHelper';
 import {
   labelize,
   labelizeOption,
   stripDefaultNamespace
 } from '../../util/LabelHelper';
-import { GameContext } from '../../context/GameRegistry';
-import { useCrudProps } from '../../hook/useCrud';
-import { Obj } from '../../util/DomHelper';
-import { Button } from '../ui/Button';
-import { ModelView, NodeElement } from '../NodeElement';
-import { IntProvider } from '../../data/1.17/NumberProvider';
 import {
   findBlockTypes,
   findIntProviderFromProperties,
   RandomizedIntStateProvider,
   WeightedStateEntry
 } from '../../viewer/block/StateProvider';
-import { Typed } from '../../model/node/SwitchNode';
-import {
-  SeededBlockStateProviderPresets,
-  SeededBlockStateProviders
-} from '../../data/1.18/BlockStateProvider';
-import type { OnChangeValue } from 'react-select';
+import { ModelView, NodeElement } from '../NodeElement';
+import { Button } from '../ui/Button';
+import Select, { Option } from '../ui/Select';
+import { BlockState, BlockStateValue } from './BlockState';
 
 export interface StateProvider {
   type: string;
@@ -106,9 +106,9 @@ export function BlockStateProvider({
     [onChange, name, value]
   );
 
-  const providerType = value?.type
-    ? stripDefaultNamespace(value.type)
-    : 'simple_state_provider';
+  const providerType = value?.type ?
+    stripDefaultNamespace(value.type) :
+    'simple_state_provider';
   const node = SeededBlockStateProviders[providerType];
 
   const defaultBlocks = context.blockStates;
@@ -203,9 +203,9 @@ function WeightedProvider({
       }
     ).value;
     const Properties = (registry[Name] || DEFAULT_BLOCK_STATE).default;
-    const data: BlockStateValue = Object.keys(Properties).length
-      ? { Name, Properties }
-      : { Name };
+    const data: BlockStateValue = Object.keys(Properties).length ?
+      { Name, Properties } :
+      { Name };
     return { data, weight: 1 };
   });
 
@@ -282,12 +282,12 @@ function RandomizedIntProvider({
   const properties = useMemo(
     function () {
       try {
-        return value.source
-          ? findIntProviderFromProperties(
-              findBlockTypes(value.source),
-              registry
-            )
-          : {};
+        return value.source ?
+          findIntProviderFromProperties(
+            findBlockTypes(value.source),
+            registry
+          ) :
+          {};
       } catch (e) {
         return {};
       }

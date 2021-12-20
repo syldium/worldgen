@@ -4,8 +4,9 @@ import { GameVersion } from '../../context/GameVersion';
 
 export function VersionSelect(): JSX.Element {
   const context = useContext(GameContext);
-  const handleChange = (event: ChangeEvent<HTMLSelectElement>) =>
-    (context.version = event.target.value as GameVersion);
+  const handleChange = (
+    event: ChangeEvent<HTMLSelectElement>
+  ) => (context.version = event.target.value as GameVersion);
   return (
     <select
       value={context.version}

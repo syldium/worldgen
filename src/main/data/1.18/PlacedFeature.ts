@@ -1,6 +1,6 @@
 import { Model } from '../../model/Model';
-import { ResourceNode } from '../../model/node/ResourceNode';
 import { ListNode } from '../../model/node/ListNode';
+import { ResourceNode } from '../../model/node/ResourceNode';
 
 export const PlacedFeature: Model = {
   node: {

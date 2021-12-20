@@ -1,10 +1,10 @@
+import { IntProvider } from '../../../main/data/1.17/NumberProvider';
+import { EitherNodeParams } from '../../../main/model/node/EitherNode';
+import { NumberNodeParams } from '../../../main/model/node/IntNode';
 import {
   findBlockTypes,
   findIntProviderFromProperties
 } from '../../../main/viewer/block/StateProvider';
-import { IntProvider } from '../../../main/data/1.17/NumberProvider';
-import { EitherNodeParams } from '../../../main/model/node/EitherNode';
-import { NumberNodeParams } from '../../../main/model/node/IntNode';
 
 describe('StateProvider', function () {
   it('should find a block type', () => {

@@ -1,14 +1,14 @@
-import {
-  BiomeSourceSwitch as BiomeSourceSwitch1_17,
-  BiomeSource as BiomeSource1_17
-} from '../1.17/BiomeSource';
-import { SwitchNode } from '../../model/node/SwitchNode';
-import { ObjectNode } from '../../model/node/ObjectNode';
+import type { Model } from '../../model/Model';
 import { FloatNode } from '../../model/node/FloatNode';
 import { ListNode } from '../../model/node/ListNode';
-import { RangeInterval } from './RangeInterval';
+import { ObjectNode } from '../../model/node/ObjectNode';
 import { ResourceNode } from '../../model/node/ResourceNode';
-import type { Model } from '../../model/Model';
+import { SwitchNode } from '../../model/node/SwitchNode';
+import {
+  BiomeSource as BiomeSource1_17,
+  BiomeSourceSwitch as BiomeSourceSwitch1_17
+} from '../1.17/BiomeSource';
+import { RangeInterval } from './RangeInterval';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const { vanilla_layered, ...sources } = BiomeSourceSwitch1_17.values;

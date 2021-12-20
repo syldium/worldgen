@@ -1,4 +1,23 @@
 import { memo, useCallback, useContext, useMemo } from 'react';
+import type {
+  ChangeEvent,
+  FunctionComponent,
+  ReactElement,
+  ReactNode
+} from 'react';
+import type { OnChangeValue } from 'react-select';
+import { GameContext } from '../context/GameRegistry';
+import { DataType, useCrudProps } from '../hook/useCrud';
+import { useId } from '../hook/useId';
+import { useOptions } from '../hook/useOptions';
+import { useToggle } from '../hook/useToggle';
+import { mayInline, ObjectOrNodeModel } from '../model/Model';
+import { BoolNodeParams } from '../model/node/BoolNode';
+import { EitherNodeParams } from '../model/node/EitherNode';
+import { EnumNodeParams } from '../model/node/EnumNode';
+import { ColorNodeParams, NumberNodeParams } from '../model/node/IntNode';
+import { ListNodeParams } from '../model/node/ListNode';
+import { MapNodeParams } from '../model/node/MapNode';
 import {
   isNode,
   ModelNode,
@@ -6,7 +25,13 @@ import {
   NodeType,
   providePreset
 } from '../model/node/Node';
-import { ColorNodeParams, NumberNodeParams } from '../model/node/IntNode';
+import { ObjectNodeParams, OptionalNodeParams } from '../model/node/ObjectNode';
+import { IdentifierNodeParams } from '../model/node/ResourceNode';
+import { StringNodeParams } from '../model/node/StringNode';
+import { SwitchNodeParams } from '../model/node/SwitchNode';
+import type { WorldgenRegistryKey } from '../model/RegistryKey';
+import { hexColorToInteger, intColorToHex } from '../util/ColorHelper';
+import { Obj } from '../util/DomHelper';
 import {
   defaultNamespace,
   isStringArray,
@@ -14,43 +39,18 @@ import {
   labelizeOption,
   stripDefaultNamespace
 } from '../util/LabelHelper';
-import { useId } from '../hook/useId';
-import { NodeErrorBoundary } from './ui/ErrorBoundary';
-import { EnumNodeParams } from '../model/node/EnumNode';
-import Select, { Option } from './ui/Select';
-import { BoolNodeParams } from '../model/node/BoolNode';
-import { ObjectNodeParams, OptionalNodeParams } from '../model/node/ObjectNode';
-import { IdentifierNodeParams } from '../model/node/ResourceNode';
-import { useOptions } from '../hook/useOptions';
-import { SwitchNodeParams } from '../model/node/SwitchNode';
 import { BlockState, BlockStateValue } from './resource/BlockState';
-import { EitherNodeParams } from '../model/node/EitherNode';
-import { mayInline, ObjectOrNodeModel } from '../model/Model';
-import { GameContext } from '../context/GameRegistry';
-import { ListNodeParams } from '../model/node/ListNode';
-import { DataType, useCrudProps } from '../hook/useCrud';
-import { Obj } from '../util/DomHelper';
 import {
   BlockStateProvider,
   StateProvider
 } from './resource/BlockStateProvider';
 import { ParticuleEffect } from './resource/ParticuleEffect';
-import { hexColorToInteger, intColorToHex } from '../util/ColorHelper';
 import { Button } from './ui/Button';
-import { ViewerElement } from './viewer/Viewers';
-import { MapNodeParams } from '../model/node/MapNode';
-import { useToggle } from '../hook/useToggle';
-import { NumberInput } from './ui/NumberInput';
+import { NodeErrorBoundary } from './ui/ErrorBoundary';
 import { Labelized } from './ui/Labelized';
-import type { WorldgenRegistryKey } from '../model/RegistryKey';
-import type { OnChangeValue } from 'react-select';
-import type {
-  ChangeEvent,
-  FunctionComponent,
-  ReactElement,
-  ReactNode
-} from 'react';
-import { StringNodeParams } from '../model/node/StringNode';
+import { NumberInput } from './ui/NumberInput';
+import Select, { Option } from './ui/Select';
+import { ViewerElement } from './viewer/Viewers';
 
 interface ModelViewProps {
   children?: ReactNode;
@@ -129,13 +129,15 @@ function ObjectView({ obj, value, onChange, children }: ObjectViewProps) {
     }
     if ((!isShort && inline.length) || inline.length > 3) {
       nodes.push(
-        inline.length > 1 ? (
-          <div className="form-row" key={inline[0]!.key}>
-            {inline}
-          </div>
-        ) : (
-          inline[0]
-        )
+        inline.length > 1 ?
+          (
+            <div className="form-row" key={inline[0]!.key}>
+              {inline}
+            </div>
+          ) :
+          (
+            inline[0]
+          )
       );
       inline = [];
     }
@@ -147,13 +149,15 @@ function ObjectView({ obj, value, onChange, children }: ObjectViewProps) {
   }
   if (inline.length) {
     nodes.push(
-      inline.length > 1 ? (
-        <div className="form-row" key={inline[0]!.key}>
-          {inline}
-        </div>
-      ) : (
-        inline[0]
-      )
+      inline.length > 1 ?
+        (
+          <div className="form-row" key={inline[0]!.key}>
+            {inline}
+          </div>
+        ) :
+        (
+          inline[0]
+        )
     );
   }
   return <>{nodes}</>;
@@ -258,10 +262,9 @@ function CheckboxInput({
       onChange({ [name]: event.target.checked }),
     [name, onChange]
   );
-  const booleanValue: boolean =
-    typeof value[name] === 'boolean'
-      ? (value[name] as boolean)
-      : node.default || false;
+  const booleanValue: boolean = typeof value[name] === 'boolean' ?
+    (value[name] as boolean) :
+    node.default || false;
   return (
     <Labelized className="form-group" id={id} name={name}>
       <input
@@ -287,10 +290,9 @@ function ColorInput({
       onChange({ [name]: hexColorToInteger(event.target.value) }),
     [name, onChange]
   );
-  const colorValue: number =
-    typeof value[name] === 'number'
-      ? (value[name] as number)
-      : node.default || 0;
+  const colorValue: number = typeof value[name] === 'number' ?
+    (value[name] as number) :
+    node.default || 0;
   return (
     <Labelized className="form-group" id={id} name={name}>
       <input
@@ -379,9 +381,9 @@ function ListCrud({ name, node, value, onChange }: NodeProps<ListNodeParams>) {
     },
     [update]
   );
-  const El: FunctionComponent<NodeProps<ModelNode>> = node.weighted
-    ? WeightedValue
-    : NodeElement;
+  const El: FunctionComponent<NodeProps<ModelNode>> = node.weighted ?
+    WeightedValue :
+    NodeElement;
   return (
     <div className="node-list">
       <div className="toggle-label">
@@ -393,12 +395,18 @@ function ListCrud({ name, node, value, onChange }: NodeProps<ListNodeParams>) {
           )}
           {elements.length > 0 && (
             <Button cat="secondary" onClick={setVisible}>
-              {visible ? 'Less' : 'More'}...
+              {visible ?
+                'Less' :
+                'More'}...
             </Button>
           )}
         </div>
       </div>
-      <div className={mayInline(node.of) ? ' form-row' : ''}>
+      <div
+        className={mayInline(node.of) ?
+          ' form-row' :
+          ''}
+      >
         {visible &&
           elements.map((element, i) => (
             <El
@@ -408,7 +416,10 @@ function ListCrud({ name, node, value, onChange }: NodeProps<ListNodeParams>) {
               value={list as Record<number, unknown>}
               onChange={handleChange}
             >
-              <Button cat="danger" onClick={(e) => remove(i, e)}>
+              <Button
+                cat="danger"
+                onClick={(e) => remove(i, e)}
+              >
                 Remove
               </Button>
             </El>
@@ -480,9 +491,9 @@ function MapInput({ name, node, value, onChange }: NodeProps<MapNodeParams>) {
                 name={key}
                 node={node.key}
                 value={{ [key]: key }}
-                onChange={
-                  handleKeyChange as (value: Record<string, unknown>) => void
-                }
+                onChange={handleKeyChange as (
+                  value: Record<string, unknown>
+                ) => void}
               />
             </legend>
             <NodeElement
@@ -509,10 +520,9 @@ function NumberNodeInput({
     (value: number) => onChange({ [name]: value }),
     [name, onChange]
   );
-  const numberValue: number =
-    typeof value[name] === 'number'
-      ? (value[name] as number)
-      : node.default || 0;
+  const numberValue: number = typeof value[name] === 'number' ?
+    (value[name] as number) :
+    node.default || 0;
 
   return (
     <Labelized className="form-group flex" id={id} name={name}>
@@ -626,8 +636,9 @@ function SelectInput({
     },
     [name, onChange]
   );
-  const stringValue: null | string =
-    typeof value[name] === 'string' ? (value[name] as string) : null;
+  const stringValue: null | string = typeof value[name] === 'string' ?
+    (value[name] as string) :
+    null;
   const selectedOption = useMemo(
     () =>
       node.values.find((option) => option.value === stringValue) ||
@@ -663,8 +674,9 @@ function ResourceSelectInput({
     },
     [name, onChange]
   );
-  const stringValue: null | string =
-    typeof value[name] === 'string' ? (value[name] as string) : null;
+  const stringValue: null | string = typeof value[name] === 'string' ?
+    (value[name] as string) :
+    null;
   const options = useOptions(node.registry);
   const selected = useMemo(
     () => options.find((o) => o.value === stringValue) || null,
@@ -854,9 +866,9 @@ export function SelectSwitch({
     () => (isObject ? (value[name] as Record<string, unknown>) : value) || {},
     [isObject, name, value]
   );
-  const content = Array.isArray(val)
-    ? (val[name] as Record<string, unknown>)
-    : val;
+  const content = Array.isArray(val) ?
+    (val[name] as Record<string, unknown>) :
+    val;
   const type = stripDefaultNamespace(
     (content[node.typeField] as string) ?? options[0].value
   );
@@ -875,8 +887,9 @@ export function SelectSwitch({
       if (node.config === null) {
         interOnChange({ ...content, ...config });
       } else {
-        const configuration =
-          node.config in config ? config[node.config] : config;
+        const configuration = node.config in config ?
+          config[node.config] :
+          config;
         interOnChange({
           ...val,
           [node.config]: {
@@ -945,12 +958,10 @@ export function SelectSwitch({
         <ModelView
           model={schema}
           name={node.config || name}
-          value={
-            node.config === null ||
-            (isNode(schema) && schema.type === 'resource')
-              ? content
-              : (val[node.config] as Record<string, unknown>)
-          }
+          value={node.config === null ||
+              (isNode(schema) && schema.type === 'resource') ?
+            content :
+            (val[node.config] as Record<string, unknown>)}
           onChange={handleConfigChange}
         />
       )}

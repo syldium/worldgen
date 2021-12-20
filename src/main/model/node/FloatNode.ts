@@ -1,10 +1,10 @@
-import { NumberNodeParams } from './IntNode';
 import {
   FLOAT_MAX_VALUE,
   FLOAT_MIN_VALUE,
   isInRange
 } from '../../util/MathHelper';
 import { ObjectModel } from '../Model';
+import { NumberNodeParams } from './IntNode';
 
 export const FloatNode = (
   config?: Partial<NumberNodeParams>

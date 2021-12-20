@@ -1,9 +1,10 @@
 import { isValidNamespacedKey } from '../../util/LabelHelper';
-import type { NodeBase } from './Node';
 import type { RegistryKey } from '../RegistryKey';
+import type { NodeBase } from './Node';
 
 export interface IdentifierNodeParams
-  extends NodeBase<'identifier' | 'resource'> {
+  extends NodeBase<'identifier' | 'resource'>
+{
   registry: RegistryKey;
 }
 const isIdentifier = (val: unknown) =>

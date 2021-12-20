@@ -1,9 +1,9 @@
-import { ModelNode } from '../../model/node/Node';
+import { ObjectModel } from '../../model/Model';
 import { EitherNode } from '../../model/node/EitherNode';
-import { SwitchNode } from '../../model/node/SwitchNode';
 import { FloatNode } from '../../model/node/FloatNode';
 import { IntNode } from '../../model/node/IntNode';
-import { ObjectModel } from '../../model/Model';
+import { ModelNode } from '../../model/node/Node';
+import { SwitchNode } from '../../model/node/SwitchNode';
 import { INT_MAX_VALUE, INT_MIN_VALUE } from '../../util/MathHelper';
 
 const SimpleIntProvider = (

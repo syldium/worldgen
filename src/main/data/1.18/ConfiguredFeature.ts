@@ -1,17 +1,17 @@
+import { Model, ObjectModel } from '../../model/Model';
+import { BoolNode } from '../../model/node/BoolNode';
+import { FloatNode } from '../../model/node/FloatNode';
+import { IntNode } from '../../model/node/IntNode';
+import { ListNode } from '../../model/node/ListNode';
+import { ObjectNode } from '../../model/node/ObjectNode';
+import { ResourceNode } from '../../model/node/ResourceNode';
+import { SwitchNode } from '../../model/node/SwitchNode';
+import type { SwitchNodeParams } from '../../model/node/SwitchNode';
 import {
   ConfiguredFeature as ConfiguredFeature1_17,
   RootSystemConfig as RootSystemConfig1_17,
   VegetationPatchConfig as VegetationPatchConfig1_17
 } from '../1.17/ConfiguredFeature';
-import { Model, ObjectModel } from '../../model/Model';
-import { SwitchNode } from '../../model/node/SwitchNode';
-import { ResourceNode } from '../../model/node/ResourceNode';
-import { IntNode } from '../../model/node/IntNode';
-import { BoolNode } from '../../model/node/BoolNode';
-import { FloatNode } from '../../model/node/FloatNode';
-import { ListNode } from '../../model/node/ListNode';
-import type { SwitchNodeParams } from '../../model/node/SwitchNode';
-import { ObjectNode } from '../../model/node/ObjectNode';
 
 const GlowLichenConfig: ObjectModel = {
   search_range: IntNode({ min: 1, max: 64, default: 10 }),

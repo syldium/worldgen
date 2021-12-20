@@ -1,11 +1,11 @@
-import type { Schema } from '../model/Registry';
-import { FormEvent, useContext } from 'react';
-import { GameContext } from '../context/GameRegistry';
-import { useHistory } from 'react-router-dom';
-import { defaultNamespace } from '../util/LabelHelper';
 import { del, set } from 'idb-keyval';
-import { resourcePath } from '../util/PathHelper';
+import { FormEvent, useContext } from 'react';
+import { useHistory } from 'react-router-dom';
+import { GameContext } from '../context/GameRegistry';
+import type { Schema } from '../model/Registry';
 import type { WorldgenRegistryKey } from '../model/RegistryKey';
+import { defaultNamespace } from '../util/LabelHelper';
+import { resourcePath } from '../util/PathHelper';
 
 type ValueSupplier = Schema | (() => Schema);
 type SubmitHandler = (event: FormEvent<HTMLFormElement>) => void;
@@ -25,8 +25,9 @@ export function useResourceSubmit(
       document.querySelector('[name=key]') as HTMLInputElement
     ).value;
     const key = defaultNamespace(inputValue, namespace);
-    const value =
-      typeof supplySchema === 'function' ? supplySchema() : supplySchema;
+    const value = typeof supplySchema === 'function' ?
+      supplySchema() :
+      supplySchema;
     set(resourcePath(registryKey, key), value);
     if (registry.register(key, value) && previousKey && key !== previousKey) {
       registry.remove(previousKey);

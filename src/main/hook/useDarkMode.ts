@@ -13,8 +13,8 @@ const classNameDark = 'dark-mode';
 const classNameLight = 'light-mode';
 
 export function useDarkMode(): DarkMode {
-  const mediaQueryValue =
-    !import.meta.env.SSR && window.matchMedia(preferDarkQuery)?.matches;
+  const mediaQueryValue = !import.meta.env.SSR &&
+    window.matchMedia(preferDarkQuery)?.matches;
   const [state, setState] = useLocalStorageState<boolean>(
     'darkMode',
     mediaQueryValue
