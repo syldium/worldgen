@@ -19,7 +19,7 @@ describe('Registry', function () {
   it('should create an entry and a option', () => {
     const vanilla: Option[] = [];
     const registry = new WorldgenRegistry(emptyModel, vanilla);
-    registry.register(key, schema);
+    expect(registry.register(key, schema)).toBeUndefined();
 
     expect(registry.entries[key]).toBe(schema);
     expect(registry.options).toEqual([option]);
@@ -29,7 +29,7 @@ describe('Registry', function () {
   it('should create an entry and rename the option only in the global options array', () => {
     const vanilla: Option[] = [key].map(labelizeOption);
     const registry = new WorldgenRegistry(emptyModel, vanilla);
-    registry.register(key, schema);
+    expect(registry.register(key, schema)).toBeUndefined();
 
     expect(registry.entries[key]).toBe(schema);
     expect(registry.options).toEqual([option]);
@@ -38,11 +38,11 @@ describe('Registry', function () {
 
   it('should update the existing entry', () => {
     const registry = new WorldgenRegistry(emptyModel);
-    registry.register(key, schema);
+    expect(registry.register(key, schema)).toBeUndefined();
     expect(registry.entries[key]).toBe(schema);
 
     const v2 = { version: 2 };
-    registry.register(key, v2);
+    expect(registry.register(key, v2)).toBe(schema);
     expect(registry.entries[key]).toBe(v2);
     expect(registry.options).toEqual([option]);
   });

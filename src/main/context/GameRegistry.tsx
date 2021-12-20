@@ -17,10 +17,11 @@ import {
 import useLocalStorageState from 'use-local-storage-state';
 import { clear, entries, setMany } from 'idb-keyval';
 import { findNamespacedKeyAndRegistry, resourcePath } from '../util/PathHelper';
+import { analyzeDependencies } from '../model/graph/DependencyGraph';
 import { useForceUpdate } from '../hook/useForceUpdate';
-import type { RegistryKey, WorldgenRegistryKey } from '../model/RegistryKey';
 import { GameVersion } from './GameVersion';
 import { dataUrl } from '../util/FetchHelper';
+import type { RegistryKey, WorldgenRegistryKey } from '../model/RegistryKey';
 
 interface GameRegistry {
   blockStates: BlockStateRegistry;
@@ -130,6 +131,7 @@ export function GameRegistryProvider({
       console.timeEnd('indexeddb');
       holder.copyOptions(edited);
       if (edited.size && fetched.current) {
+        holder.graph = analyzeDependencies(holder);
         forceUpdate();
       }
     });
