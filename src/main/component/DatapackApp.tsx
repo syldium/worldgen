@@ -1,62 +1,41 @@
 import { useContext } from 'react';
-import { Route, Switch } from 'react-router-dom';
 import { GameContext } from '../context/GameRegistry';
 import { WorldgenNames } from '../model/Registry';
 import type { WorldgenRegistryKey } from '../model/RegistryKey';
+import { Editor } from './Editor';
 import { MainMenu } from './MainMenu';
 import { ConfiguredFeature } from './resource/ConfiguredFeature';
 import { Resource } from './resource/Resource';
-import { Link } from './ui/Link';
+import { NavLink } from './ui/Link';
 import { NavBar } from './ui/NavBar';
 import { NoRouteMatch } from './ui/NoRouteMatch';
 
-export const DatapackApp = (): JSX.Element => (
+interface DatapackAppProps {
+  location: string;
+}
+
+export const DatapackApp = ({ location }: DatapackAppProps): JSX.Element => (
   <div>
     <NavBar>
       <ul>
         <li>
-          <Link exact to="/">
-            Main
-          </Link>
+          <NavLink href="/">Main</NavLink>
         </li>
         <li>
-          <Link to="/worldgen/biome">Biome</Link>
+          <NavLink href="/worldgen/biome">Biome</NavLink>
         </li>
         <li>
-          <Link to="/worldgen/configured_feature">Feature</Link>
+          <NavLink href="/worldgen/configured_feature">Feature</NavLink>
         </li>
         <li>
-          <Link to="/dimension">Dimension</Link>
+          <NavLink href="/dimension">Dimension</NavLink>
         </li>
       </ul>
     </NavBar>
-    <div className="content">
+    <main className="content">
       {useContext(GameContext).worldgen ?
-        (
-          <Switch>
-            <Route exact path="/">
-              <MainMenu />
-            </Route>
-            {(Object.keys(WorldgenNames) as WorldgenRegistryKey[])
-              .filter(
-                (key) =>
-                  key !== 'worldgen/configured_feature' &&
-                  key !== 'worldgen/configured_structure_feature'
-              )
-              .map((key) => (
-                <Route path={`/${key}/:id?`} key={key}>
-                  <Resource registryKey={key} key={key} />
-                </Route>
-              ))}
-            <Route path="/worldgen/configured_feature/:id?">
-              <ConfiguredFeature />
-            </Route>
-            <Route path="*">
-              <NoRouteMatch />
-            </Route>
-          </Switch>
-        ) :
+        <Editor location={location} /> :
         <p>Loading models…</p>}
-    </div>
+    </main>
   </div>
 );

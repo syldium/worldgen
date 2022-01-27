@@ -13,7 +13,7 @@ export default defineConfig({
     react(),
     createBiomeColors(),
     {
-      ...visualizer(),
+      ...visualizer({ open: true }),
       apply: 'build',
       enforce: 'post'
     }

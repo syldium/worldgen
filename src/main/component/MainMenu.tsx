@@ -2,7 +2,6 @@ import { saveAs } from 'file-saver';
 import { useCallback, useContext } from 'react';
 import { Download, PlusCircle } from 'react-feather';
 import { toast } from 'react-hot-toast';
-import { useHistory } from 'react-router-dom';
 import { GameContext } from '../context/GameRegistry';
 import { RemovableModelsByVersion } from '../context/GameVersion';
 import { ZipAction } from '../context/ZipAction';
@@ -11,6 +10,7 @@ import { EmptyModel } from '../model/Model';
 import { WorldgenRegistryHolder } from '../model/Registry';
 import type { WorldgenRegistryKey } from '../model/RegistryKey';
 import { catchToast } from '../util/ErrorHelper';
+import { navigate } from '../util/UriHelper';
 import { CreateForm } from './form/CreateForm';
 import { ResourceList } from './resource/ResourceList';
 import { Button } from './ui/Button';
@@ -21,7 +21,6 @@ export function MainMenu(): JSX.Element {
   const worldgen = context.worldgen!;
   const [open, toggleAction] = useToggle(false);
 
-  const history = useHistory();
   const handleGenerateClick = useCallback(
     function () {
       const id = toast.loading('Generating datapack');
@@ -36,10 +35,10 @@ export function MainMenu(): JSX.Element {
   );
   const handleNewResource = useCallback(
     function (key: WorldgenRegistryKey) {
-      history.push(`/${key}`);
+      navigate(`/${key}`);
       toggleAction(false);
     },
-    [history, toggleAction]
+    [toggleAction]
   );
   const handleNewDatapack = useCallback(
     function (namespace: string) {
