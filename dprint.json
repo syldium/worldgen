@@ -19,7 +19,7 @@
     "**/dist"
   ],
   "plugins": [
-    "https://plugins.dprint.dev/typescript-0.62.0.wasm",
-    "https://plugins.dprint.dev/json-0.14.0.wasm"
+    "https://plugins.dprint.dev/typescript-0.63.0.wasm",
+    "https://plugins.dprint.dev/json-0.14.1.wasm"
   ]
 }
