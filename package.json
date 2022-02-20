@@ -11,7 +11,7 @@
     "format": "dprint fmt",
     "lint": "eslint src/main/** src/test/**",
     "serve": "vite preview",
-    "test": "jest"
+    "test": "vitest"
   },
   "dependencies": {
     "@delangle/use-modal": "^1.9.27",
@@ -44,19 +44,18 @@
     "dotenv": "^16.0.0",
     "dprint": "^0.22.2",
     "esbuild": "^0.14.0",
-    "esbuild-jest": "^0.5.0",
     "eslint": "^8.3.0",
     "eslint-config-prettier": "^8.3.0",
-    "eslint-plugin-jest": "^26.0.0",
     "eslint-plugin-react": "^7.24.0",
     "eslint-plugin-react-hooks": "^4.2.0",
-    "jest": "^27.0.5",
+    "jsdom": "^19.0.0",
     "minecraft-data": "^2.88.0",
     "react-select-event": "^5.3.0",
     "rollup-plugin-visualizer": "^5.5.2",
     "sass": "^1.35.2",
     "typescript": "~4.5.2",
-    "vite": "^2.3.7"
+    "vite": "^2.3.7",
+    "vitest": "^0.4.2"
   },
   "resolutions": {
     "set-value": "^4.1.0"

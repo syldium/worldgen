@@ -1,4 +1,5 @@
 import { fireEvent, render } from '@testing-library/react';
+import { vitest } from 'vitest';
 import { BlockState } from '../../../main/component/resource/BlockState';
 import { GameRegistryProvider } from '../../../main/context/GameRegistry';
 import {
@@ -23,7 +24,7 @@ const BLOCKS_STATES: BlockStateRegistry = {
 
 describe('block state form', function () {
   it('should have a block type list', async () => {
-    const changeCallback = jest.fn();
+    const changeCallback = vitest.fn();
     const { container, getByTestId } = render(
       <form data-testid="form">
         <GameRegistryProvider states={BLOCKS_STATES}>

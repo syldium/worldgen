@@ -9,6 +9,11 @@ export default defineConfig({
     //sourcemap: true,
     target: 'es2020'
   },
+  test: {
+    globals: true,
+    environment: 'jsdom',
+    setupFiles: './src/setupTests.ts'
+  },
   plugins: [
     react(),
     createBiomeColors(),
