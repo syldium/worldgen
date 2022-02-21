@@ -11,8 +11,7 @@ module.exports = {
     'plugin:@typescript-eslint/recommended',
     'plugin:react/recommended',
     'plugin:react/jsx-runtime',
-    'plugin:react-hooks/recommended',
-    'prettier'
+    'plugin:react-hooks/recommended'
   ],
   rules: {
     '@typescript-eslint/ban-ts-comment': 'off',

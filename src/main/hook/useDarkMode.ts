@@ -17,7 +17,7 @@ export function useDarkMode(): DarkMode {
     window.matchMedia(preferDarkQuery)?.matches;
   const [state, setState] = useLocalStorageState<boolean>(
     'darkMode',
-    mediaQueryValue
+    { defaultValue: mediaQueryValue }
   );
 
   useEffect(() => {

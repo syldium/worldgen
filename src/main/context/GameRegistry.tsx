@@ -58,7 +58,7 @@ export function GameRegistryProvider({
   const forceUpdate = useForceUpdate();
   const [version, setVersion] = useLocalStorageState<GameVersion>(
     'game-version',
-    defaultVersion
+    { defaultValue: defaultVersion }
   );
   const github = dataUrl(version);
   const registryUrl = (registry: string) =>
