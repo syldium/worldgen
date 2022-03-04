@@ -23,9 +23,9 @@ for (
     'worldgen/biome',
     'worldgen/configured_carver',
     'worldgen/configured_feature',
-    'worldgen/configured_surface_builder',
-    'worldgen/noise_settings',
-    'worldgen/processor_list'
+    //'worldgen/noise_settings', // FIXME
+    'worldgen/processor_list',
+    'worldgen/structure_set'
   ]
 ) {
   const appHtml = render(url);

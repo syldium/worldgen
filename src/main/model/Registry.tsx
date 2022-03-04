@@ -304,6 +304,6 @@ export const WorldgenNames: Record<WorldgenRegistryKey, string> = {
   'worldgen/placed_feature': 'placed feature',
   'worldgen/placement_modifier': 'placement modifier',
   'worldgen/processor_list': 'processor list',
-  'worldgen/structure_set': 'structure set (wip)',
-  'worldgen/template_pool': 'template pool (wip)'
+  'worldgen/structure_set': 'structure set',
+  'worldgen/template_pool': 'template pool'
 };
