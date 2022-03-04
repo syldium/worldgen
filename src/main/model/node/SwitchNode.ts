@@ -2,7 +2,7 @@ import {
   defaultNamespace,
   stripDefaultNamespace
 } from '../../util/LabelHelper';
-import { ObjectOrNodeModel } from '../Model';
+import { ObjectModel, ObjectOrNodeModel } from '../Model';
 import { NodeBase } from './Node';
 import { ObjectNodeParams } from './ObjectNode';
 
@@ -18,6 +18,7 @@ export interface SwitchNodeParams extends NodeBase<'switch'> {
   values: Record<string, ModelType>;
   config: string | null;
   typeField: string;
+  commonFields: ObjectModel;
   preset: { [type in string]: string | Record<string, unknown> };
 }
 
@@ -32,6 +33,7 @@ function isTyped(value: unknown): value is Record<string, unknown> {
  * @param preset
  * @param config
  * @param typeField
+ * @param commonFields
  */
 export const SwitchNode = <
   T extends Record<string, ModelType>,
@@ -40,7 +42,8 @@ export const SwitchNode = <
   values: T,
   preset: Partial<PresetType<keyof T, S>> = {},
   config: string | null = 'config',
-  typeField = 'type' as S
+  typeField = 'type' as S,
+  commonFields: ObjectModel = {}
 ): SwitchNodeParams => {
   Object.entries(preset).forEach(([key, value]) => {
     if (typeof value !== 'object') {
@@ -55,6 +58,7 @@ export const SwitchNode = <
     preset: preset as Record<string, string | Record<string, unknown>>,
     config,
     typeField,
+    commonFields,
     type: 'switch',
     isValid: (value: unknown) => {
       if (!isTyped(value) || (config && !value[config])) {

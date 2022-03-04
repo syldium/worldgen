@@ -17,12 +17,14 @@ const SplinePoint = ObjectNode({
 });
 
 const Spline = ObjectNode({
-  coordinate: EnumNode([
-    'continents',
-    'erosion',
-    'weirdness',
-    'ridges' as const
-  ]),
+  coordinate: EnumNode(
+    [
+      'continents',
+      'erosion',
+      'weirdness',
+      'ridges'
+    ] as const
+  ),
   points: ListNode(SplinePoint)
 });
 
@@ -48,9 +50,6 @@ const NoiseConfig = ObjectNode({
   bottom_slide: SlideConfig,
   size_horizontal: IntNode({ min: 1, max: 4 }),
   size_vertical: IntNode({ min: 1, max: 4 }),
-  island_noise_override: BoolNode(false),
-  amplified: BoolNode(false),
-  large_biomes: BoolNode(false),
   terrain_shaper: TerrainShaper
 });
 const NoiseParameters: ObjectModel = {

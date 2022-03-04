@@ -4,7 +4,11 @@ import { FloatNode, Probability } from '../../model/node/FloatNode';
 import { IntNode } from '../../model/node/IntNode';
 import { ListNode } from '../../model/node/ListNode';
 import { ObjectNode, Opt } from '../../model/node/ObjectNode';
-import { IdentifierNode, ResourceNode } from '../../model/node/ResourceNode';
+import {
+  IdentifierNode,
+  ResourceNode,
+  TagNode
+} from '../../model/node/ResourceNode';
 import { SwitchNode } from '../../model/node/SwitchNode';
 import { BlockPlacer } from './BlockPlacer';
 import {
@@ -103,8 +107,8 @@ const GeodeConfig: ObjectModel = {
     middle_layer_provider: ResourceNode('block_state_provider'),
     outer_layer_provider: ResourceNode('block_state_provider'),
     inner_placements: ListNode(ResourceNode('block_state')),
-    cannot_replace: IdentifierNode('tags/blocks'),
-    invalid_blocks: IdentifierNode('tags/blocks')
+    cannot_replace: TagNode('block'),
+    invalid_blocks: TagNode('block')
   }),
   layers: ObjectNode({
     filling: FloatNode({ min: 0.01, max: 50, default: 1.7 }),
@@ -192,7 +196,7 @@ const BlockPredicate = SwitchNode(
       block_state: ResourceNode('block_state')
     },
     tag_match: {
-      tag: IdentifierNode('tags/blocks')
+      tag: TagNode('block')
     },
     random_block_match: {
       block: ResourceNode('block'),
@@ -265,7 +269,7 @@ export const RootSystemConfig: ObjectModel = {
   feature: ResourceNode('worldgen/configured_feature'),
   required_vertical_space_for_tree: IntNode({ min: 1, max: 64 }),
   root_radius: IntNode({ min: 1, max: 64 }),
-  root_replaceable: IdentifierNode('tags/blocks'),
+  root_replaceable: TagNode('block'),
   root_state_provider: ResourceNode('block_state_provider'),
   root_placement_attempts: IntNode({ min: 1, max: 256 }),
   root_column_max_height: IntNode({ min: 1, max: 4096 }),
@@ -431,7 +435,7 @@ export const TreeConfig: ObjectModel = {
 };
 
 export const VegetationPatchConfig: ObjectModel = {
-  replaceable: IdentifierNode('tags/blocks'),
+  replaceable: TagNode('block'),
   ground_state: ResourceNode('block_state_provider'),
   vegetation_feature: ResourceNode('worldgen/configured_feature'),
   surface: VerticalSurface,

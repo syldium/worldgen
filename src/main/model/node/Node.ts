@@ -25,7 +25,8 @@ export type NodeType =
   | 'optional'
   | 'resource'
   | 'string'
-  | 'switch';
+  | 'switch'
+  | 'tag';
 
 export interface NodeBase<T extends NodeType> {
   /** The node type */

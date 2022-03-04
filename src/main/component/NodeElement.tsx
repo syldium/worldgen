@@ -29,7 +29,7 @@ import { ObjectNodeParams, OptionalNodeParams } from '../model/node/ObjectNode';
 import { IdentifierNodeParams } from '../model/node/ResourceNode';
 import { StringNodeParams } from '../model/node/StringNode';
 import { SwitchNodeParams } from '../model/node/SwitchNode';
-import type { WorldgenRegistryKey } from '../model/RegistryKey';
+import type { RegistryKey, WorldgenRegistryKey } from '../model/RegistryKey';
 import { hexColorToInteger, intColorToHex } from '../util/ColorHelper';
 import { Obj } from '../util/DomHelper';
 import {
@@ -39,6 +39,7 @@ import {
   labelizeOption,
   stripDefaultNamespace
 } from '../util/LabelHelper';
+import { addTagHash, removeTagHash } from '../util/PathHelper';
 import { BlockState, BlockStateValue } from './resource/BlockState';
 import {
   BlockStateProvider,
@@ -236,6 +237,8 @@ function findNodeElement(
       return StringInput;
     case 'switch':
       return SelectSwitch;
+    case 'tag':
+      return TagInput;
     default:
       return null;
   }
@@ -658,26 +661,32 @@ function SelectInput({
   );
 }
 
+interface ResourceSelectInputProps extends NodeProps<IdentifierNodeParams> {
+  tag?: boolean;
+}
 function ResourceSelectInput({
   name,
   node,
   value,
   onChange,
-  children
-}: NodeProps<IdentifierNodeParams>) {
+  children,
+  tag = false
+}: ResourceSelectInputProps) {
   const id = useId(name);
   const handleChange = useCallback(
     function (option: OnChangeValue<Option, false>): void {
       if (option?.value) {
-        onChange({ [name]: option.value });
+        onChange({ [name]: addTagHash(tag, option.value) });
       }
     },
-    [name, onChange]
+    [tag, name, onChange]
   );
   const stringValue: null | string = typeof value[name] === 'string' ?
-    (value[name] as string) :
+    removeTagHash(value[name] as string) :
     null;
-  const options = useOptions(node.registry);
+  const options = useOptions(
+    tag ? ('tags/' + node.registry) as RegistryKey : node.registry
+  );
   const selected = useMemo(
     () => options.find((o) => o.value === stringValue) || null,
     [options, stringValue]
@@ -965,6 +974,21 @@ export function SelectSwitch({
           onChange={handleConfigChange}
         />
       )}
+      {
+        <ObjectView
+          obj={node.commonFields}
+          value={content}
+          onChange={interOnChange}
+        />
+      }
     </fieldset>
   );
+}
+
+function TagInput(props: NodeProps<IdentifierNodeParams>): JSX.Element {
+  const asArray = useContext(GameContext).version === '1.18.2';
+  if (asArray && Array.isArray(props.value[props.name])) {
+    return ResourceSelectMultipleInput(props);
+  }
+  return ResourceSelectInput({ tag: asArray, ...props });
 }

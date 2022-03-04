@@ -14,8 +14,9 @@ export function VersionSelect(): JSX.Element {
       className="version-select"
       title="Game version"
     >
-      <option value="1.17">1.17</option>
+      <option value="1.17">1.17.1</option>
       <option value="1.18">1.18</option>
+      <option value="1.18.2">1.18.2</option>
     </select>
   );
 }

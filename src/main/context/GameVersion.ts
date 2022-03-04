@@ -1,8 +1,9 @@
-export type GameVersion = '1.16' | '1.17' | '1.18';
+export type GameVersion = '1.16' | '1.17' | '1.18' | '1.18.2';
 export const PackFormatString: Record<GameVersion, number> = {
   '1.16': 6,
   '1.17': 7,
-  '1.18': 8
+  '1.18': 8,
+  '1.18.2': 9
 };
 
 export const PackFormatNumber: Record<number, GameVersion> = Object.fromEntries(
@@ -12,8 +13,8 @@ export const PackFormatNumber: Record<number, GameVersion> = Object.fromEntries(
 export const RemovableModelsByVersion: Record<GameVersion, Set<string>> = {
   '1.16': new Set(),
   '1.17': new Set([
-    'worldgen/configured_decorator',
-    'worldgen/configured_structure_feature'
+    'worldgen/configured_decorator'
   ]),
-  '1.18': new Set(['worldgen/configured_structure_feature'])
+  '1.18': new Set(),
+  '1.18.2': new Set()
 };

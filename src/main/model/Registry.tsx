@@ -6,6 +6,7 @@ import {
   PackFormatString
 } from '../context/GameVersion';
 import { Registries1_17 } from '../data/1.17/v1_17';
+import { Registries1_18_2 } from '../data/1.18.2/v1_18_2';
 import { loadVanillaZip } from '../util/FetchHelper';
 import { customOption, stripDefaultNamespace } from '../util/LabelHelper';
 import { Model } from './Model';
@@ -156,11 +157,17 @@ export class WorldgenRegistryHolder {
         (await import('../data/1.18/v1_18')).Registries1_18
       );
     }
+    if (version === '1.17') {
+      return new WorldgenRegistryHolder(
+        version,
+        (await import('../data/1.17/v1_17')).Registries1_17
+      );
+    }
     return this.def();
   }
 
   static def(): WorldgenRegistryHolder {
-    return new WorldgenRegistryHolder('1.17', Registries1_17);
+    return new WorldgenRegistryHolder('1.18.2', Registries1_18_2);
   }
 
   async resource(
@@ -296,5 +303,7 @@ export const WorldgenNames: Record<WorldgenRegistryKey, string> = {
   'worldgen/noise_settings': 'noise settings',
   'worldgen/placed_feature': 'placed feature',
   'worldgen/placement_modifier': 'placement modifier',
-  'worldgen/processor_list': 'processor list'
+  'worldgen/processor_list': 'processor list',
+  'worldgen/structure_set': 'structure set (wip)',
+  'worldgen/template_pool': 'template pool (wip)'
 };

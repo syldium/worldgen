@@ -2,7 +2,7 @@ import { Model } from '../../model/Model';
 import { IntNode } from '../../model/node/IntNode';
 import { ListNode } from '../../model/node/ListNode';
 import { Opt } from '../../model/node/ObjectNode';
-import { ResourceNode } from '../../model/node/ResourceNode';
+import { ResourceNode, TagNode } from '../../model/node/ResourceNode';
 import { SwitchNode } from '../../model/node/SwitchNode';
 import { Direction } from '../1.17/Direction';
 
@@ -30,7 +30,7 @@ export const BlockPredicateSwitch = SwitchNode(
     },
     matching_block_tag: {
       offset: Offset,
-      tag: ResourceNode('tags/blocks')
+      tag: TagNode('block')
     },
     matching_fluids: {
       blocks: ListNode(ResourceNode('block')), // TODO fluid type

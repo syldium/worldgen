@@ -4,10 +4,10 @@ export type GameRegistryKey =
   | 'block_state'
   | 'block_state_provider'
   | 'entity_type'
+  | 'fluid'
   | 'particle_type'
   | 'sound_event'
-  | 'structure'
-  | 'tags/blocks';
+  | 'structure';
 
 const WorldgenRegistryKeys = [
   'block_predicate',
@@ -27,7 +27,9 @@ const WorldgenRegistryKeys = [
   'worldgen/noise_settings',
   'worldgen/placed_feature',
   'worldgen/placement_modifier',
-  'worldgen/processor_list'
+  'worldgen/processor_list',
+  'worldgen/structure_set',
+  'worldgen/template_pool'
 ] as const;
 export type WorldgenRegistryKey = typeof WorldgenRegistryKeys[number];
 

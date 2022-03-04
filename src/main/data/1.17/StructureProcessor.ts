@@ -5,7 +5,11 @@ import { FloatNode, Probability } from '../../model/node/FloatNode';
 import { IntNode } from '../../model/node/IntNode';
 import { ListNode } from '../../model/node/ListNode';
 import { ObjectNode } from '../../model/node/ObjectNode';
-import { IdentifierNode, ResourceNode } from '../../model/node/ResourceNode';
+import {
+  IdentifierNode,
+  ResourceNode,
+  TagNode
+} from '../../model/node/ResourceNode';
 import { SwitchNode } from '../../model/node/SwitchNode';
 import { Axis } from '../Axis';
 import { Heightmap } from './WorldgenStep';
@@ -45,7 +49,7 @@ const RuleTest = SwitchNode(
       ...Probability
     },
     tag_match: {
-      tag: IdentifierNode('tags/blocks')
+      tag: TagNode('block')
     }
   },
   {},

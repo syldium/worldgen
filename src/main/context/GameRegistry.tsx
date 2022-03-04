@@ -49,7 +49,9 @@ const json = (url: string, label?: boolean): RegistryData =>
   res(url, readJson, label);
 const text = (url: string, label?: boolean): RegistryData =>
   res(url, readText, label);
-const defaultVersion: GameVersion = '1.17';
+const baseVersion = (version: GameVersion) =>
+  version === '1.18.2' ? '1.18' : version;
+const defaultVersion: GameVersion = '1.18.2';
 
 export function GameRegistryProvider({
   children,
@@ -83,15 +85,17 @@ export function GameRegistryProvider({
       particle_type: text(registryUrl('particle_type')),
       sound_event: text(registryUrl('sound_event'), false),
       structure: json('/values/1.17/structures.json', false),
-      'tags/blocks': text(
+      'tags/block': text(
         `${github}data/minecraft/tags/blocks/data.values.txt`
       ),
-      'worldgen/biome': json(valuesUrl(version, 'biomes')),
+      'tags/fluid': json(valuesUrl('1.18.2', 'tag_fluids'), false),
+      'tags/worldgen/biome': json(valuesUrl('1.18.2', 'tag_biomes'), false),
+      'worldgen/biome': json(valuesUrl(baseVersion(version), 'biomes')),
       'worldgen/configured_carver': json(
-        valuesUrl(version, 'configured_carvers')
+        valuesUrl(baseVersion(version), 'configured_carvers')
       ),
       'worldgen/configured_feature': json(
-        valuesUrl(version, 'configured_features')
+        valuesUrl(baseVersion(version), 'configured_features')
       ),
       'worldgen/placed_feature': json(valuesUrl('1.18', 'placed_features')),
       'worldgen/configured_structure_feature': text(
@@ -100,7 +104,12 @@ export function GameRegistryProvider({
       'worldgen/configured_surface_builder': json(
         valuesUrl('1.17', 'configured_surface_builders')
       ),
-      'worldgen/processor_list': json(valuesUrl('1.17', 'processor_list'))
+      'worldgen/processor_list': json(valuesUrl('1.17', 'processor_list')),
+      'worldgen/structure_set': json(
+        valuesUrl('1.18.2', 'structure_sets'),
+        false
+      ),
+      'worldgen/template_pool': json(valuesUrl('1.18', 'template_pools'), false)
     },
     version,
     holder
@@ -145,6 +154,7 @@ export function GameRegistryProvider({
           ...worldgen,
           biome_particle: emptyRegistry,
           block: blockTypes,
+          fluid: blockTypes, // TODO
           block_state: blockTypes,
           block_state_provider: emptyRegistry
         },

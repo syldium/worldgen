@@ -3,7 +3,7 @@ import type { RegistryKey } from '../RegistryKey';
 import type { NodeBase } from './Node';
 
 export interface IdentifierNodeParams
-  extends NodeBase<'identifier' | 'resource'>
+  extends NodeBase<'identifier' | 'resource' | 'tag'>
 {
   registry: RegistryKey;
 }
@@ -30,3 +30,13 @@ export const ResourceNode = (
     isValid: isResource
   };
 };
+
+const isTag = (val: unknown) =>
+  Array.isArray(val) ?
+    val.every(v => typeof v === 'string') :
+    typeof val === 'string';
+export const TagNode = (key: RegistryKey): IdentifierNodeParams => ({
+  registry: key,
+  type: 'tag',
+  isValid: isTag
+});

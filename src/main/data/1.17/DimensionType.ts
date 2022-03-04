@@ -5,7 +5,7 @@ import { EnumNode } from '../../model/node/EnumNode';
 import { FloatNode } from '../../model/node/FloatNode';
 import { IntNode, LongNode } from '../../model/node/IntNode';
 import { Opt } from '../../model/node/ObjectNode';
-import { IdentifierNode } from '../../model/node/ResourceNode';
+import { TagNode } from '../../model/node/ResourceNode';
 import { labelizeOption } from '../../util/LabelHelper';
 
 export const DimensionType: Model = DefaultedModel(
@@ -29,7 +29,7 @@ export const DimensionType: Model = DefaultedModel(
     has_raids: BoolNode(),
     has_ceiling: BoolNode(),
     coordinate_scale: FloatNode({ min: 0.00001, max: 30000000 }),
-    infiniburn: IdentifierNode('tags/blocks')
+    infiniburn: TagNode('block')
   },
   () => ({
     ambient_light: 0,

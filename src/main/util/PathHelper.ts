@@ -45,3 +45,11 @@ export function findNamespacedKeyAndRegistry(
   }
   return [filenames[1], key, registry];
 }
+
+export function removeTagHash(value: string): string {
+  return value.startsWith('#') ? value.substring(1) : value;
+}
+
+export function addTagHash(needHash: boolean, value: string): string {
+  return needHash ? '#' + value : value;
+}
