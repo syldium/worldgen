@@ -69,9 +69,9 @@ export const ChunkGenerator: Model = {
     null
   ),
   preset: (version) => ({
-    biome_source: version === '1.18' ?
-      FIXED_BIOME_SOURCE :
-      VANILLA_LAYERED_BIOME_SOURCE,
+    biome_source: version === '1.16' || version === '1.17' ?
+      VANILLA_LAYERED_BIOME_SOURCE :
+      FIXED_BIOME_SOURCE,
     seed: generatorSeed,
     settings: 'minecraft:overworld',
     type: 'minecraft:noise'
