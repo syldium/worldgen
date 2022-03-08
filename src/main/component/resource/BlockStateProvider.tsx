@@ -70,7 +70,7 @@ export function BlockStateProvider({
   const context = useContext(GameContext);
   const format = context.worldgen!.packFormat;
   const options = useOptionsArray(
-    format === 8 ? providers1_18 : format === 7 ? providers1_17 : providers1_16
+    format >= 8 ? providers1_18 : format === 7 ? providers1_17 : providers1_16
   );
 
   const handleTypeChange = useCallback(
