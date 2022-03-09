@@ -1,10 +1,11 @@
 import type { Option } from '../../main/component/ui/Select';
 import type { Model } from '../../main/model/Model';
+import { Obj } from '../../main/model/node/ObjectNode';
 import { WorldgenRegistry } from '../../main/model/Registry';
 import { customOption, labelizeOption } from '../../main/util/LabelHelper';
 
 const emptyModel: Model = {
-  node: {},
+  node: Obj({}),
   preset: () => ({})
 };
 const key = 'key:resource';

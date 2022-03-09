@@ -1,45 +1,47 @@
-import { ObjectModel } from '../../model/Model';
 import { EitherNode } from '../../model/node/EitherNode';
 import { IntNode } from '../../model/node/IntNode';
-import { ObjectNode } from '../../model/node/ObjectNode';
+import { Obj } from '../../model/node/ObjectNode';
 import { SwitchNode } from '../../model/node/SwitchNode';
 
 export const YOffset = EitherNode(
-  ObjectNode({
+  Obj({
     absolute: IntNode({ min: -2032, max: 2031 })
   }),
-  ObjectNode({
+  Obj({
     above_bottom: IntNode({ min: -2032, max: 2031 })
   }),
-  ObjectNode({
+  Obj({
     below_top: IntNode({ min: -2032, max: 2031 })
   })
 );
 
-const Uniform: ObjectModel = {
+const Uniform = {
   min_inclusive: YOffset,
   max_inclusive: YOffset
 };
 
-const BiasedToBottom: ObjectModel = {
+const BiasedToBottom = Obj({
   ...Uniform,
   inner: IntNode({ min: 1, default: 1 })
-};
+});
 
 export const HeightProvider = EitherNode(
   YOffset,
   SwitchNode(
     {
-      uniform: Uniform,
+      uniform: Obj(Uniform),
       biased_to_bottom: BiasedToBottom,
       very_biased_to_bottom: BiasedToBottom,
-      trapezoid: {
+      trapezoid: Obj({
         ...Uniform,
         plateau: IntNode({ default: 0 })
-      },
-      constant: EitherNode(YOffset, {
-        value: YOffset
-      })
+      }),
+      constant: EitherNode(
+        YOffset,
+        Obj({
+          value: YOffset
+        })
+      )
     },
     {
       uniform: {

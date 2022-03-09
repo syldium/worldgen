@@ -5,6 +5,7 @@ import { BoolNode } from '../../model/node/BoolNode';
 import { DoubleNode } from '../../model/node/FloatNode';
 import { IntNode } from '../../model/node/IntNode';
 import { ListNode } from '../../model/node/ListNode';
+import { Empty, Obj } from '../../model/node/ObjectNode';
 import { IdentifierNode, ResourceNode } from '../../model/node/ResourceNode';
 import { StringNode } from '../../model/node/StringNode';
 import { SwitchNode } from '../../model/node/SwitchNode';
@@ -14,43 +15,43 @@ import { VerticalSurface } from '../1.17/WorldgenStep';
 
 export const RuleCondition = SwitchNode(
   {
-    above_preliminary_surface: {},
-    biome: {
+    above_preliminary_surface: Empty,
+    biome: Obj({
       biome_is: ListNode(IdentifierNode('worldgen/biome'))
-    },
-    hole: {},
-    noise_threshold: {
+    }),
+    hole: Empty,
+    noise_threshold: Obj({
       name: StringNode(),
       noise: NoiseValues,
       min_threshold: DoubleNode(),
       max_threshold: DoubleNode()
-    },
-    not: {
+    }),
+    not: Obj({
       invert: ResourceNode('worldgen/material_condition')
-    },
-    steep: {},
-    stone_depth: {
+    }),
+    steep: Empty,
+    stone_depth: Obj({
       offset: IntNode(),
       add_surface_depth: BoolNode(),
       add_surface_secondary_depth: BoolNode(),
       surface_type: VerticalSurface
-    },
-    temperature: {},
-    vertical_gradient: {
+    }),
+    temperature: Empty,
+    vertical_gradient: Obj({
       random_name: StringNode(),
       true_at_and_below: YOffset,
       false_at_and_above: YOffset
-    },
-    water: {
+    }),
+    water: Obj({
       offset: IntNode(),
       run_depth_multiplier: IntNode({ min: -20, max: 20 }),
       add_stone_depth: BoolNode()
-    },
-    y_above: {
+    }),
+    y_above: Obj({
       anchor: YOffset,
       run_depth_multiplier: IntNode({ min: -20, max: 20 }),
       add_stone_depth: BoolNode()
-    }
+    })
   },
   {
     biome: {
@@ -99,17 +100,17 @@ export const RuleCondition = SwitchNode(
 
 export const RuleSource = SwitchNode(
   {
-    bandlands: {},
-    block: {
+    bandlands: Empty,
+    block: Obj({
       result_state: ResourceNode('block_state')
-    },
-    condition: {
+    }),
+    condition: Obj({
       if_true: RuleCondition,
       then_run: ResourceNode('worldgen/material_rule')
-    },
-    sequence: {
+    }),
+    sequence: Obj({
       sequence: ListNode(ResourceNode('worldgen/material_rule'))
-    }
+    })
   },
   {
     block: {

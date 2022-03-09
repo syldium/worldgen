@@ -1,37 +1,32 @@
-import { memo, useCallback, useContext, useMemo } from 'react';
-import type {
-  ChangeEvent,
-  FunctionComponent,
-  ReactElement,
-  ReactNode
-} from 'react';
-import type { OnChangeValue } from 'react-select';
+import type { ChangeEvent, MouseEvent, ReactElement, ReactNode } from 'react';
+import { createElement, useCallback, useContext, useMemo } from 'react';
+import type { OnChangeValue } from 'react-select/dist/declarations/src/types';
 import { GameContext } from '../context/GameRegistry';
-import { DataType, useCrudProps } from '../hook/useCrud';
+import { DataType } from '../hook/useCrud';
 import { useId } from '../hook/useId';
 import { useOptions } from '../hook/useOptions';
 import { useToggle } from '../hook/useToggle';
-import { mayInline, ObjectOrNodeModel } from '../model/Model';
-import { BoolNodeParams } from '../model/node/BoolNode';
-import { EitherNodeParams } from '../model/node/EitherNode';
-import { EnumNodeParams } from '../model/node/EnumNode';
-import { ColorNodeParams, NumberNodeParams } from '../model/node/IntNode';
-import { ListNodeParams } from '../model/node/ListNode';
+import { useValue } from '../hook/useValue';
+import { mayInline } from '../model/Model';
+import type { BoolNodeParams } from '../model/node/BoolNode';
+import type { EitherNodeParams } from '../model/node/EitherNode';
+import type { EnumNodeParams } from '../model/node/EnumNode';
+import type { ColorNodeParams, NumberNodeParams } from '../model/node/IntNode';
+import type { ListNodeParams } from '../model/node/ListNode';
 import { MapNodeParams } from '../model/node/MapNode';
-import {
-  isNode,
-  ModelNode,
-  NodeBase,
-  NodeType,
-  providePreset
-} from '../model/node/Node';
-import { ObjectNodeParams, OptionalNodeParams } from '../model/node/ObjectNode';
-import { IdentifierNodeParams } from '../model/node/ResourceNode';
-import { StringNodeParams } from '../model/node/StringNode';
-import { SwitchNodeParams } from '../model/node/SwitchNode';
+import type { ModelNode } from '../model/node/Node';
+import { providePreset } from '../model/node/Node';
+import type {
+  ObjectNodeParams,
+  OptionalNodeParams
+} from '../model/node/ObjectNode';
+import { Empty } from '../model/node/ObjectNode';
+import type { IdentifierNodeParams } from '../model/node/ResourceNode';
+import type { StringNodeParams } from '../model/node/StringNode';
+import type { SwitchNodeParams } from '../model/node/SwitchNode';
 import type { RegistryKey, WorldgenRegistryKey } from '../model/RegistryKey';
 import { hexColorToInteger, intColorToHex } from '../util/ColorHelper';
-import { Obj } from '../util/DomHelper';
+import type { Obj } from '../util/DomHelper';
 import {
   defaultNamespace,
   isStringArray,
@@ -47,65 +42,272 @@ import {
 } from './resource/BlockStateProvider';
 import { ParticuleEffect } from './resource/ParticuleEffect';
 import { Button } from './ui/Button';
-import { NodeErrorBoundary } from './ui/ErrorBoundary';
+import { FieldsetLegend } from './ui/FieldsetLegend';
 import { Labelized } from './ui/Labelized';
-import { NumberInput } from './ui/NumberInput';
-import Select, { Option } from './ui/Select';
+import { NumberInput as NumberInputWrapper } from './ui/NumberInput';
+import { Option, Select } from './ui/Select';
 import { ViewerElement } from './viewer/Viewers';
 
-interface ModelViewProps {
+export type ObjectKey = string | number;
+interface NodeProps<
+  T extends ModelNode,
+  N extends ObjectKey = ObjectKey
+> {
+  name: N;
+  node: T;
+  value: unknown;
+  onChange: (name: N, value: unknown) => void;
+  noFieldset?: boolean;
   children?: ReactNode;
-  model: ObjectOrNodeModel;
-  name: string;
-  value: Record<string, unknown>;
-  onChange: (val: Record<string, unknown>) => void;
-  isObject?: boolean;
 }
-
-export function ModelView({
-  children,
-  model,
-  name,
-  value,
-  onChange,
-  isObject
-}: ModelViewProps): JSX.Element {
-  if (isNode(model)) {
-    return (
-      <NodeElement
-        node={model}
-        name={name}
-        value={value}
-        onChange={onChange}
-        isObject={isObject}
-      >
-        {children}
-      </NodeElement>
-    );
+export function NodeElement(props: NodeProps<ModelNode>): JSX.Element {
+  switch (props.node.type) {
+    case 'bool':
+      return createElement(CheckboxInput, props as NodeProps<BoolNodeParams>);
+    case 'color':
+      return createElement(ColorInput, props as NodeProps<ColorNodeParams>);
+    case 'either':
+      return createElement(EitherInput, props as NodeProps<EitherNodeParams>);
+    case 'enum':
+      return createElement(SelectEnum, props as NodeProps<EnumNodeParams>);
+    case 'identifier':
+      return createElement(
+        IdentifierInput,
+        props as NodeProps<IdentifierNodeParams>
+      );
+    case 'float':
+    case 'int':
+      return createElement(NumberInput, props as NodeProps<NumberNodeParams>);
+    case 'list':
+      return createElement(ListInput, props as NodeProps<ListNodeParams>);
+    case 'map':
+      return createElement(MapInput, props as NodeProps<MapNodeParams>);
+    case 'object':
+      return createElement(ObjectInput, props as NodeProps<ObjectNodeParams>);
+    case 'optional':
+      return createElement(
+        OptionalInput,
+        props as NodeProps<OptionalNodeParams>
+      );
+    case 'resource':
+      return createElement(
+        ResourceInput,
+        props as NodeProps<IdentifierNodeParams>
+      );
+    case 'string':
+      return createElement(StringInput, props as NodeProps<StringNodeParams>);
+    case 'switch':
+      return createElement(SwitchInput, props as NodeProps<SwitchNodeParams>);
+    case 'tag':
+      return createElement(TagInput, props as NodeProps<IdentifierNodeParams>);
   }
-  return <ObjectView obj={model} value={value} onChange={onChange} />;
+  console.warn("Unknown node for '" + props.name + "'!", props.node);
+  return (
+    <p>
+      Unknown <code>{(props.node as ModelNode).type}</code> node for{' '}
+      <code>{props.name}</code>!
+    </p>
+  );
 }
 
-interface ResourceViewProps extends ModelViewProps {
+interface ResourceViewProps<T extends ModelNode> {
+  model: T;
   name: WorldgenRegistryKey;
+  value: unknown;
+  onChange: (value: unknown) => void;
 }
-export function ResourceView(props: ResourceViewProps): JSX.Element {
-  const viewers = ViewerElement(props.name, props.value);
-  if (viewers !== null) {
+export function ResourceView<T extends ModelNode>(
+  { model, name, value, onChange }: ResourceViewProps<T>
+) {
+  const handleChange = useCallback(
+    (_: ObjectKey, value: unknown) => onChange(value),
+    [onChange]
+  );
+  const viewers = ViewerElement(name, Object(value));
+  const node = (
+    <NodeElement
+      name={name}
+      node={model}
+      value={value}
+      onChange={handleChange}
+      noFieldset={true}
+    />
+  );
+  if (viewers) {
     return (
       <div className="grid-2">
-        <div>{ModelView(props)}</div>
+        <div>{node}</div>
         {viewers}
       </div>
     );
   }
-  return ModelView(props);
+  return node;
+}
+
+function EitherInput(
+  { name, node, value, onChange, children }: NodeProps<EitherNodeParams>
+): JSX.Element {
+  const i = Math.max(node.findCurrentIndex(value), 0);
+  return (
+    <fieldset>
+      <FieldsetLegend name={name} />
+      <NodeElement
+        name={name}
+        node={node.nodes[i]}
+        value={value}
+        onChange={onChange}
+        noFieldset={true}
+      >
+        {children}
+      </NodeElement>
+    </fieldset>
+  );
+}
+
+function ListInput(
+  { name, node, value, onChange }: NodeProps<ListNodeParams>
+): JSX.Element {
+  const absent = value == null;
+  if (
+    (node.of.type === 'resource' || node.of.type === 'identifier') &&
+    (absent || Array.isArray(value)) &&
+    (absent || isStringArray(value as unknown[])) &&
+    node.of.registry !== 'block_state' &&
+    node.of.registry !== 'worldgen/placement_modifier'
+  ) {
+    return (
+      <IdentifierMultipleInput
+        name={name}
+        node={node.of}
+        value={value}
+        onChange={onChange}
+      />
+    );
+  }
+  return (
+    <CommonListInput
+      name={name}
+      node={node}
+      value={value}
+      onChange={onChange}
+    />
+  );
+}
+
+function CommonListInput(
+  { name, node, value, onChange }: NodeProps<ListNodeParams>
+): JSX.Element {
+  const arrayValue = useValue(Array.isArray(value) ? value : []);
+  const create = function (event: MouseEvent<HTMLElement>) {
+    event.preventDefault();
+    onChange(name, [...arrayValue.current, providePreset(node.of)]);
+  };
+  const update = useCallback(
+    (index: ObjectKey, value: unknown) =>
+      onChange(
+        name,
+        arrayValue.current.map((element, i) => (i === index ? value : element))
+      ),
+    [arrayValue, name, onChange]
+  );
+  const remove = function (index: number, event: MouseEvent<HTMLElement>) {
+    event.preventDefault();
+    onChange(name, arrayValue.current.filter((element, i) => i !== index));
+  };
+  const elements = arrayValue.current;
+  const [visible, setVisible] = useToggle(
+    elements.length < 3 || name === 'features'
+  );
+  // TODO weighted
+  return (
+    <div className="node-list">
+      <div className="toggle-label">
+        {typeof name === 'string' && labelize(name)}
+        {' (' + elements.length + ')'}
+        <div className="btn-group">
+          {(node.fixed < 0 || node.fixed > elements.length) && (
+            <Button onClick={create}>Add</Button>
+          )}
+          {elements.length > 0 && (
+            <Button cat="secondary" onClick={setVisible}>
+              {visible ?
+                'Less' :
+                'More'}...
+            </Button>
+          )}
+        </div>
+      </div>
+      <div
+        className={mayInline(node.of) ?
+          ' form-row' :
+          ''}
+      >
+        {visible &&
+          elements.map((element, i) => (
+            <NodeElement
+              key={i}
+              name={i}
+              node={node.of}
+              value={element}
+              onChange={update}
+            >
+              <Button
+                cat="danger"
+                onClick={(e) => remove(i, e)}
+              >
+                Remove
+              </Button>
+            </NodeElement>
+          ))}
+      </div>
+    </div>
+  );
+}
+
+function MapInput({ name, node, value, onChange }: NodeProps<MapNodeParams>) {
+  const objValue = useValue(Object(value));
+  const handleKeyChange = useCallback((oldKey: ObjectKey, newKey: unknown) => {
+    const map = {};
+    delete Object.assign(map, objValue.current, {
+      [newKey as ObjectKey]: objValue.current[oldKey]
+    })[oldKey];
+    onChange(name, map);
+  }, [name, objValue, onChange]);
+  const handleValueChange = useCallback(
+    (key: ObjectKey, value: unknown) =>
+      onChange(name, { ...objValue.current, [key]: value }),
+    [name, objValue, onChange]
+  );
+  return (
+    <>
+      {Object.entries(objValue.current).map(([key, val]) => {
+        return (
+          <fieldset key={key}>
+            <legend>
+              <NodeElement
+                name={key}
+                node={node.key}
+                value={key}
+                onChange={handleKeyChange}
+              />
+            </legend>
+            <NodeElement
+              name={key}
+              node={node.value}
+              value={val}
+              onChange={handleValueChange}
+            />
+          </fieldset>
+        );
+      })}
+    </>
+  );
 }
 
 interface ObjectViewProps {
   obj: Record<string, ModelNode>;
   value: Record<string, unknown>;
-  onChange: (value: Record<string, unknown>) => void;
+  onChange: (name: ObjectKey, value: unknown) => void;
   children?: ReactNode;
 }
 function ObjectView({ obj, value, onChange, children }: ObjectViewProps) {
@@ -118,8 +320,7 @@ function ObjectView({ obj, value, onChange, children }: ObjectViewProps) {
         key={name}
         node={node}
         name={name}
-        value={value}
-        isObject={true}
+        value={value[name]}
         onChange={onChange}
       >
         {!isShort && children}
@@ -164,411 +365,37 @@ function ObjectView({ obj, value, onChange, children }: ObjectViewProps) {
   return <>{nodes}</>;
 }
 
-interface NodeElementProps {
-  children?: ReactNode;
-  name: string;
-  node: ModelNode;
-  value: Record<string, unknown>;
-  onChange: (val: Record<string, unknown>) => void;
-  isObject?: boolean;
-}
-
-function _NodeElement({
-  children,
-  name,
-  node,
-  value,
-  onChange,
-  isObject
-}: NodeElementProps): JSX.Element {
-  const El = findNodeElement(node);
-  if (El === null) {
-    console.warn("Unknown node for '" + name + "' field!", node);
-    return (
-      <p>
-        Unknown node for <code>{name}</code>!
-      </p>
-    );
-  }
-  return (
-    <NodeErrorBoundary name={name} key={name}>
-      <El
-        name={name}
-        node={node}
-        value={value}
-        onChange={onChange}
-        isObject={isObject}
-      >
-        {children}
-      </El>
-    </NodeErrorBoundary>
-  );
-}
-export const NodeElement = memo(_NodeElement);
-
-function findNodeElement(
-  node: ModelNode
-): null | FunctionComponent<NodeProps<any>> {
-  switch (node.type) {
-    case 'bool':
-      return CheckboxInput;
-    case 'color':
-      return ColorInput;
-    case 'int':
-    case 'float':
-      return NumberNodeInput;
-    case 'either':
-      return EitherInput;
-    case 'enum':
-      return SelectInput;
-    case 'identifier':
-      return ResourceSelectInput;
-    case 'list':
-      return ListValues;
-    case 'map':
-      return MapInput;
-    case 'object':
-      return ObjectInput;
-    case 'optional':
-      return OptionalInput;
-    case 'resource':
-      return ResourceInput;
-    case 'string':
-      return StringInput;
-    case 'switch':
-      return SelectSwitch;
-    case 'tag':
-      return TagInput;
-    default:
-      return null;
-  }
-}
-
-interface NodeProps<T extends NodeBase<NodeType>> {
-  children?: ReactNode;
-  name: string;
-  node: T;
-  value: Record<string, unknown>;
-  onChange: (val: Record<string, unknown>) => void;
-  isObject?: boolean;
-}
-
-function CheckboxInput({
-  name,
-  node,
-  value,
-  onChange
-}: NodeProps<BoolNodeParams>) {
-  const id = useId(name);
+function ObjectInput(
+  { name, node, value, onChange, children, noFieldset = false }: NodeProps<
+    ObjectNodeParams
+  >
+): JSX.Element {
+  const objValue = useValue(Object(value));
   const handleChange = useCallback(
-    (event: ChangeEvent<HTMLInputElement>) =>
-      onChange({ [name]: event.target.checked }),
-    [name, onChange]
-  );
-  const booleanValue: boolean = typeof value[name] === 'boolean' ?
-    (value[name] as boolean) :
-    node.default || false;
-  return (
-    <Labelized className="form-group" id={id} name={name}>
-      <input
-        type="checkbox"
-        className="checkbox"
-        id={id}
-        checked={booleanValue}
-        onChange={handleChange}
-      />
-    </Labelized>
-  );
-}
-
-function ColorInput({
-  name,
-  node,
-  value,
-  onChange
-}: NodeProps<ColorNodeParams>) {
-  const id = useId(name);
-  const handleChange = useCallback(
-    (event: ChangeEvent<HTMLInputElement>) =>
-      onChange({ [name]: hexColorToInteger(event.target.value) }),
-    [name, onChange]
-  );
-  const colorValue: number = typeof value[name] === 'number' ?
-    (value[name] as number) :
-    node.default || 0;
-  return (
-    <Labelized className="form-group" id={id} name={name}>
-      <input
-        id={id}
-        type="color"
-        value={intColorToHex(colorValue)}
-        onChange={handleChange}
-      />
-    </Labelized>
-  );
-}
-
-function EitherInput({
-  children,
-  name,
-  node,
-  value,
-  onChange,
-  isObject
-}: NodeProps<EitherNodeParams>) {
-  const i = Math.max(node.findCurrentIndex(value[name]), 0);
-  return (
-    <fieldset>
-      <legend>{labelize(name)}</legend>
-      <ModelView
-        model={node.nodes[i]}
-        name={name}
-        value={value}
-        onChange={onChange}
-        isObject={isObject}
-      >
-        {children}
-      </ModelView>
-    </fieldset>
-  );
-}
-
-function ListValues({
-  name,
-  node,
-  value,
-  onChange
-}: NodeProps<ListNodeParams>) {
-  const absent = !(name in value);
-  if (
-    (node.of.type === 'resource' || node.of.type === 'identifier') &&
-    (absent || Array.isArray(value[name])) &&
-    (absent || isStringArray(value[name] as unknown[])) &&
-    node.of.registry !== 'block_state' &&
-    node.of.registry !== 'worldgen/placement_modifier'
-  ) {
-    return (
-      <ResourceSelectMultipleInput
-        name={name}
-        node={node.of}
-        value={value}
-        onChange={onChange}
-      />
-    );
-  }
-  return <ListCrud name={name} node={node} value={value} onChange={onChange} />;
-}
-
-function ListCrud({ name, node, value, onChange }: NodeProps<ListNodeParams>) {
-  const handleValuesChange = useCallback(
-    (values) => onChange({ [name]: values }),
-    [name, onChange]
-  );
-  const list = value[name] as Obj[];
-  const initial = useCallback<() => DataType>(
-    () => providePreset(node.of),
-    [node.of]
-  );
-  const { elements, create, update, remove } = useCrudProps<DataType>(
-    handleValuesChange,
-    list,
-    initial
-  );
-  const [visible, setVisible] = useToggle(
-    elements.length < 3 || name === 'features'
-  );
-  const handleChange = useCallback(
-    function (values: Record<string, unknown>) {
-      const index = parseInt(Object.keys(values)[0]);
-      update(values[index] as DataType, index);
-    },
-    [update]
-  );
-  const El: FunctionComponent<NodeProps<ModelNode>> = node.weighted ?
-    WeightedValue :
-    NodeElement;
-  return (
-    <div className="node-list">
-      <div className="toggle-label">
-        {labelize(name)}
-        {' (' + elements.length + ')'}
-        <div className="btn-group">
-          {(node.fixed < 0 || node.fixed > elements.length) && (
-            <Button onClick={create}>Add</Button>
-          )}
-          {elements.length > 0 && (
-            <Button cat="secondary" onClick={setVisible}>
-              {visible ?
-                'Less' :
-                'More'}...
-            </Button>
-          )}
-        </div>
-      </div>
-      <div
-        className={mayInline(node.of) ?
-          ' form-row' :
-          ''}
-      >
-        {visible &&
-          elements.map((element, i) => (
-            <El
-              key={i}
-              name={i.toString()}
-              node={node.of}
-              value={list as Record<number, unknown>}
-              onChange={handleChange}
-            >
-              <Button
-                cat="danger"
-                onClick={(e) => remove(i, e)}
-              >
-                Remove
-              </Button>
-            </El>
-          ))}
-      </div>
-    </div>
-  );
-}
-
-function WeightedValue({ name, node, value, onChange }: NodeProps<ModelNode>) {
-  const weightId = useId(name);
-  const val = value[name] as Obj;
-  const weight = (val.weight as number) ?? 1;
-  const handleDataChange = useCallback(
-    (value: Obj) => onChange({ [name]: { ...value, weight } }),
-    [name, onChange, weight]
-  );
-  const handleWeightChange = useCallback(
-    function (event: ChangeEvent<HTMLInputElement>) {
-      onChange({
-        [name]: { data: val.data, weight: parseInt(event.target.value) }
-      });
-    },
-    [name, onChange, val.data]
-  );
-  return (
-    <NodeElement
-      name="data"
-      node={node}
-      value={val}
-      onChange={handleDataChange}
-      isObject={true}
-    >
-      <label htmlFor={weightId}>Weight</label>:{' '}
-      <input
-        type="number"
-        id={weightId}
-        value={weight}
-        onChange={handleWeightChange}
-      />
-    </NodeElement>
-  );
-}
-
-function MapInput({ name, node, value, onChange }: NodeProps<MapNodeParams>) {
-  const map = value[name] as Record<string, unknown>;
-  const entries = useMemo(() => Object.entries(map), [map]);
-  const handleKeyChange = useCallback(
-    function (value: Record<string, string>) {
-      const newMap = {};
-      const [oldKey, newKey] = Object.entries(value)[0];
-      delete Object.assign(newMap, map, { [newKey]: map[oldKey] })[oldKey];
-      onChange({ [name]: newMap });
-    },
-    [map, name, onChange]
-  );
-  const handleValueChange = useCallback(
-    (value: Record<string, unknown>) =>
-      onChange({ [name]: { ...map, ...value } }),
-    [map, name, onChange]
-  );
-  return (
-    <>
-      {entries.map(([key]) => {
-        return (
-          <fieldset key={key}>
-            <legend>
-              <ResourceSelectInput
-                name={key}
-                node={node.key}
-                value={{ [key]: key }}
-                onChange={handleKeyChange as (
-                  value: Record<string, unknown>
-                ) => void}
-              />
-            </legend>
-            <NodeElement
-              name={key}
-              node={node.value}
-              value={map}
-              onChange={handleValueChange}
-            />
-          </fieldset>
-        );
-      })}
-    </>
-  );
-}
-
-function NumberNodeInput({
-  name,
-  node,
-  value,
-  onChange
-}: NodeProps<NumberNodeParams>) {
-  const id = useId(name);
-  const handleChange = useCallback(
-    (value: number) => onChange({ [name]: value }),
-    [name, onChange]
-  );
-  const numberValue: number = typeof value[name] === 'number' ?
-    (value[name] as number) :
-    node.default || 0;
-
-  return (
-    <Labelized className="form-group flex" id={id} name={name}>
-      <NumberInput
-        id={id}
-        min={node.min}
-        max={node.max}
-        value={numberValue}
-        step={node.step}
-        onChange={handleChange}
-      />
-    </Labelized>
-  );
-}
-
-function ObjectInput({
-  name,
-  node,
-  value,
-  children,
-  onChange
-}: NodeProps<ObjectNodeParams>) {
-  const objectValue = value[name] as Record<string, unknown>;
-  const handleChange = useCallback(
-    function (val) {
-      onChange({ [name]: { ...objectValue, ...val } });
-    },
-    [name, onChange, objectValue]
+    (childName: ObjectKey, childValue: unknown) =>
+      onChange(name, { ...objValue.current, [childName]: childValue }),
+    [name, objValue, onChange]
   );
   const view = (
-    <ObjectView obj={node.records} value={objectValue} onChange={handleChange}>
+    <ObjectView
+      obj={node.records}
+      value={objValue.current}
+      onChange={handleChange}
+    >
       {children}
     </ObjectView>
   );
-  if (Array.isArray(value)) {
+  if (
+    noFieldset || Array.isArray(value) || Object.keys(node.records).length === 1
+  ) {
     return view;
   }
   return (
     <fieldset>
-      <legend>{labelize(name)}</legend>
+      <FieldsetLegend name={name} />
       <ObjectView
         obj={node.records}
-        value={objectValue}
+        value={objValue.current}
         onChange={handleChange}
       >
         {children}
@@ -583,23 +410,17 @@ function OptionalInput({
   value,
   onChange
 }: NodeProps<OptionalNodeParams>) {
-  const id = useId(name);
-  const handleCheckboxChange = useCallback(
-    function (event: ChangeEvent<HTMLInputElement>) {
-      if (event.target.checked) {
-        onChange({ [name]: providePreset(node.node) });
-      } else {
-        onChange({ [name]: undefined });
-      }
-    },
-    [name, node.node, onChange]
-  );
-  const isPresent = value[name] != null;
+  const id = useId(name.toString());
+  const handleCheckboxChange = (event: ChangeEvent<HTMLInputElement>) =>
+    onChange(name, event.target.checked ? providePreset(node.node) : undefined);
+  const isPresent = value != null;
   return (
     <div className={isPresent ? 'flex' : 'form-group flex'}>
       {!isPresent && (
         <div>
-          <label htmlFor={id}>{labelize(name)}</label>:
+          <label htmlFor={id}>
+            {typeof name === 'string' && labelize(name)}
+          </label>:
         </div>
       )}
       {isPresent && (
@@ -624,72 +445,163 @@ function OptionalInput({
   );
 }
 
-function SelectInput({
-  name,
-  node,
-  value,
-  onChange
-}: NodeProps<EnumNodeParams>) {
-  const id = useId(name);
-  const handleChange = useCallback(
-    function (option: OnChangeValue<Option, false>): void {
-      if (option?.value) {
-        onChange({ [name]: option.value });
+interface SwitchInputProps extends NodeProps<SwitchNodeParams> {
+  onTypeChange?: (type: string) => void;
+}
+export function SwitchInput(
+  { name, node, value, onChange, onTypeChange }: SwitchInputProps
+): JSX.Element {
+  const objValue = useValue(
+    Object(typeof value === 'object' ? value : node.default)
+  );
+  const type = stripDefaultNamespace(String(objValue.current[node.typeField]));
+  const namespacedType = defaultNamespace(type);
+  const model = node.values[type];
+  const handleTypeChange = useCallback(
+    function (c: OnChangeValue<Option, false>) {
+      const strippedType = stripDefaultNamespace(c!.value);
+      const completeType = defaultNamespace(c!.value);
+      if (onTypeChange) {
+        onTypeChange(strippedType);
+      } else {
+        let preset: DataType = node.preset[strippedType];
+        if (!preset) {
+          preset = providePreset(node.values[strippedType]);
+        }
+        if (node.config) {
+          onChange(name, {
+            [node.config]: preset,
+            [node.typeField]: completeType
+          });
+        } else {
+          onChange(name, {
+            ...(preset as Obj),
+            [node.typeField]: completeType
+          });
+        }
       }
     },
-    [name, onChange]
+    [name, node, onChange, onTypeChange]
   );
-  const stringValue: null | string = typeof value[name] === 'string' ?
-    (value[name] as string) :
-    null;
-  const selectedOption = useMemo(
-    () =>
-      node.values.find((option) => option.value === stringValue) ||
-      node.default ||
-      null,
-    [node.default, node.values, stringValue]
+  const handleConfigChange = useCallback(
+    (_: ObjectKey, configValue: unknown) =>
+      onChange(
+        name,
+        node.config ?
+          {
+            ...objValue.current,
+            [node.config]: configValue
+          } :
+          { ...objValue.current, ...(configValue as Obj) }
+      ),
+    [name, node.config, objValue, onChange]
+  );
+  const options: Option[] = useMemo(
+    () => Object.keys(node.values).map(labelizeOption),
+    [node.values]
   );
   return (
+    <fieldset>
+      <legend>
+        <Select
+          options={options}
+          value={options.find(o => o.value === namespacedType) || null}
+          onChange={handleTypeChange}
+        />
+      </legend>
+      {model ?
+        (
+          <NodeElement
+            name={name}
+            node={model}
+            value={node.config ?
+              objValue.current[node.config] :
+              objValue.current}
+            onChange={handleConfigChange}
+            noFieldset={true}
+          />
+        ) :
+        (
+          <p>
+            No <code>type</code> selected!
+          </p>
+        )}
+      {node.commonFields !== Empty && (
+        <NodeElement
+          name={name}
+          node={node.commonFields}
+          value={objValue.current}
+          onChange={onChange}
+          noFieldset={true}
+        />
+      )}
+    </fieldset>
+  );
+}
+
+function CheckboxInput(
+  { name, node, value, onChange }: NodeProps<BoolNodeParams>
+): JSX.Element {
+  const id = useId(name);
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) =>
+    onChange(name, e.target.checked);
+  const boolValue = typeof value === 'boolean' ? value : node.default || false;
+  return (
     <Labelized className="form-group" id={id} name={name}>
-      <Select
-        options={node.values}
-        value={selectedOption}
+      <input
+        type="checkbox"
+        className="checkbox"
+        id={id}
+        checked={boolValue}
         onChange={handleChange}
-        inputId={id}
       />
     </Labelized>
   );
 }
 
-interface ResourceSelectInputProps extends NodeProps<IdentifierNodeParams> {
+function ColorInput(
+  { name, node, value, onChange }: NodeProps<ColorNodeParams>
+): JSX.Element {
+  const id = useId(name);
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) =>
+    onChange(name, hexColorToInteger(e.target.value));
+  const intValue = typeof value === 'number' ? value : node.default || 0;
+  return (
+    <Labelized className="form-group" id={id} name={name}>
+      <input
+        id={id}
+        type="color"
+        value={intColorToHex(intValue)}
+        onChange={handleChange}
+      />
+    </Labelized>
+  );
+}
+
+interface IdentifierInputProps extends NodeProps<IdentifierNodeParams> {
   tag?: boolean;
 }
-function ResourceSelectInput({
-  name,
-  node,
-  value,
-  onChange,
-  children,
-  tag = false
-}: ResourceSelectInputProps) {
+function IdentifierInput(
+  { name, node, value, onChange, children, tag = false }: IdentifierInputProps
+): JSX.Element {
   const id = useId(name);
   const handleChange = useCallback(
     function (option: OnChangeValue<Option, false>): void {
       if (option?.value) {
-        onChange({ [name]: addTagHash(tag, option.value) });
+        onChange(name, addTagHash(tag, option.value));
       }
     },
     [tag, name, onChange]
   );
-  const stringValue: null | string = typeof value[name] === 'string' ?
-    removeTagHash(value[name] as string) :
-    null;
+  const strValue = typeof value === 'string' ?
+    removeTagHash(value) :
+    node.default;
   const options = useOptions(
     tag ? ('tags/' + node.registry) as RegistryKey : node.registry
   );
   const selected = useMemo(
-    () => options.find((o) => o.value === stringValue) || null,
-    [options, stringValue]
+    () => options.find((o) => o.value === strValue) || null,
+    [options, strValue]
   );
   return (
     <Labelized className="form-group" id={id} name={name}>
@@ -708,7 +620,7 @@ function ResourceSelectInput({
   );
 }
 
-function ResourceSelectMultipleInput({
+function IdentifierMultipleInput({
   name,
   node,
   value,
@@ -716,23 +628,18 @@ function ResourceSelectMultipleInput({
 }: NodeProps<IdentifierNodeParams>) {
   const id = useId(name);
   const options = useOptions(node.registry);
-  const selected: Option[] = useMemo(
-    function () {
-      const values = ((value[name] || []) as string[]).map((val: string) =>
-        defaultNamespace(val)
-      );
-      return options.filter((option) => values.includes(option.value));
-    },
-    [name, options, value]
-  );
   const handleChange = useCallback(
-    function (options: OnChangeValue<Option, true>): void {
-      onChange({
-        [name]: options === null ? [] : options.map((option) => option.value)
-      });
-    },
+    (options: OnChangeValue<Option, true>) =>
+      onChange(
+        name,
+        options === null ? [] : options.map((option) => option.value)
+      ),
     [name, onChange]
   );
+  const values = Array.isArray(value) ?
+    value.map((val) => defaultNamespace(val as string)) :
+    [];
+  const selected = options.filter((option) => values.includes(option.value));
   return (
     <Labelized id={id} name={name}>
       <Select
@@ -746,41 +653,56 @@ function ResourceSelectMultipleInput({
   );
 }
 
-function ResourceInput({
-  name,
-  node,
-  value,
-  onChange,
-  children
-}: NodeProps<IdentifierNodeParams>) {
+function NumberInput(
+  { name, node, value, onChange }: NodeProps<NumberNodeParams>
+): JSX.Element {
+  const id = useId(name);
+  const handleChange = (value: number) => onChange(name, value);
+  const numberValue = typeof value === 'number' ?
+    value :
+    node.default || 0;
+
+  return (
+    <Labelized className="form-group flex" id={id} name={name}>
+      <NumberInputWrapper
+        id={id}
+        min={node.min}
+        max={node.max}
+        value={numberValue}
+        step={node.step}
+        onChange={handleChange}
+      />
+    </Labelized>
+  );
+}
+
+function ResourceInput(
+  { name, node, value, onChange, children }: NodeProps<IdentifierNodeParams>
+): JSX.Element {
   const worldgen = useContext(GameContext).worldgen!;
-  const resource = value[name] as Obj;
 
   const handleChange = useCallback(
-    (value: Record<string, unknown>) =>
-      onChange({ [name]: { ...resource, ...value } }),
-    [name, onChange, resource]
+    (name: ObjectKey, newValue: unknown) => onChange(name, newValue),
+    [onChange]
   );
 
   if (
-    resource !== null &&
-    typeof resource === 'object' &&
+    value !== null &&
+    typeof value === 'object' &&
     worldgen.isRegistered(node.registry)
   ) {
     const model = worldgen.worldgen[node.registry].model.node;
     const el = (
-      <ModelView
-        model={model}
+      <NodeElement
         name={name}
-        value={resource as Record<string, unknown>}
+        node={model}
+        value={value}
         onChange={handleChange}
-      >
-        {children}
-      </ModelView>
+      />
     );
     const viewers = ViewerElement(
       node.registry,
-      resource as Record<string, unknown>
+      value as Record<string, unknown>
     );
     if (viewers !== null) {
       return (
@@ -794,8 +716,8 @@ function ResourceInput({
   } else if (node.registry === 'block_state') {
     return (
       <BlockState
-        name={name}
-        value={value[name] as BlockStateValue}
+        name={name.toString()}
+        value={value as BlockStateValue}
         onChange={onChange}
       >
         {children}
@@ -805,190 +727,76 @@ function ResourceInput({
     return (
       <BlockStateProvider
         name={name}
-        value={value[name] as StateProvider}
+        value={value as StateProvider}
         onChange={onChange}
       />
     );
   } else if (node.registry === 'biome_particle') {
     return (
       <ParticuleEffect
-        particle={value[name] as Record<string, any>}
+        particle={value as Record<string, any>}
         onChange={onChange}
         name={name}
       />
     );
   }
   return (
-    <ResourceSelectInput
+    <IdentifierInput
       name={name}
       node={node}
       value={value}
       onChange={onChange}
     >
       {children}
-    </ResourceSelectInput>
+    </IdentifierInput>
   );
 }
 
-function StringInput({
-  name,
-  node,
-  value,
-  onChange
-}: NodeProps<StringNodeParams>): JSX.Element {
+function SelectEnum(
+  { name, node, value, onChange }: NodeProps<EnumNodeParams>
+): JSX.Element {
   const id = useId(name);
   const handleChange = useCallback(
-    function (e: ChangeEvent<HTMLInputElement>) {
-      onChange({ [name]: e.target.value });
-    },
+    (c: OnChangeValue<Option, false>) => onChange(name, c!.value),
     [name, onChange]
   );
+  let selected: Option | undefined;
+  if (typeof value === 'string') {
+    const strValue = stripDefaultNamespace(value);
+    selected = node.values.find(o => o.value === strValue);
+  } else {
+    selected = node.default;
+  }
   return (
-    <Labelized id={id} name={name}>
-      <input
-        type="text"
-        id={id}
-        value={(value[name] || node.default || '') as string}
+    <Labelized className="form-group" id={id} name={name}>
+      <Select
+        options={node.values}
+        value={selected || null}
         onChange={handleChange}
+        inputId={id}
       />
     </Labelized>
   );
 }
 
-interface SelectSwitchProps extends NodeProps<SwitchNodeParams> {
-  onTypeChange?: (type: string) => void;
-}
-export function SelectSwitch({
-  children,
-  name,
-  node,
-  value,
-  onChange,
-  onTypeChange,
-  isObject = false
-}: SelectSwitchProps): JSX.Element {
-  const options: Option[] = useMemo(
-    () => Object.keys(node.values).map(labelizeOption),
-    [node.values]
-  );
-  const val = useMemo(
-    () => (isObject ? (value[name] as Record<string, unknown>) : value) || {},
-    [isObject, name, value]
-  );
-  const content = Array.isArray(val) ?
-    (val[name] as Record<string, unknown>) :
-    val;
-  const type = stripDefaultNamespace(
-    (content[node.typeField] as string) ?? options[0].value
-  );
-  const interOnChange = useCallback(
-    function (value: Record<string, unknown>) {
-      if (isObject || Array.isArray(val)) {
-        onChange({ [name]: value });
-      } else {
-        onChange(value);
-      }
-    },
-    [isObject, name, onChange, val]
-  );
-  const handleConfigChange = useCallback(
-    function (config) {
-      if (node.config === null) {
-        interOnChange({ ...content, ...config });
-      } else {
-        const configuration = node.config in config ?
-          config[node.config] :
-          config;
-        interOnChange({
-          ...val,
-          [node.config]: {
-            ...(val[node.config] as Record<string, unknown>),
-            ...configuration
-          }
-        });
-      }
-    },
-    [content, interOnChange, node.config, val]
-  );
-  const handleTypeChange = useCallback(
-    function (option: Option | null) {
-      if (!option) return;
-      const type = option.value;
-      const strippedType = stripDefaultNamespace(type);
-      if (onTypeChange) {
-        onTypeChange(strippedType);
-      } else {
-        let p: DataType = node.preset[strippedType];
-        if (typeof p === 'string') {
-          throw Error('Unsupported vanilla resource loading!');
-        } else if (p) {
-          interOnChange(p);
-        } else {
-          p = providePreset(node.values[strippedType]);
-          if (node.config) {
-            interOnChange({ [node.config]: p, [node.typeField]: type });
-          } else if (typeof p === 'object') {
-            interOnChange({ ...p, [node.typeField]: type });
-          } else {
-            interOnChange({ [node.typeField]: type });
-          }
-        }
-      }
-    },
-    [
-      interOnChange,
-      node.config,
-      node.preset,
-      node.typeField,
-      node.values,
-      onTypeChange
-    ]
-  );
-  const typeWithNamespace = defaultNamespace(type);
-  const schema = node.values[type];
-  const selected: Option | null = useMemo(
-    () => options.find((o) => o.value === typeWithNamespace) || null,
-    [options, typeWithNamespace]
-  );
-
+function StringInput(
+  { name, node, value, onChange }: NodeProps<StringNodeParams>
+): JSX.Element {
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) =>
+    onChange(name, e.target.value);
   return (
-    <fieldset>
-      <legend className="flex">
-        <div className="full-width">
-          <Select
-            options={options}
-            value={selected}
-            onChange={handleTypeChange}
-          />
-        </div>
-        {children}
-      </legend>
-      {schema && (
-        <ModelView
-          model={schema}
-          name={node.config || name}
-          value={node.config === null ||
-              (isNode(schema) && schema.type === 'resource') ?
-            content :
-            (val[node.config] as Record<string, unknown>)}
-          onChange={handleConfigChange}
-        />
-      )}
-      {
-        <ObjectView
-          obj={node.commonFields}
-          value={content}
-          onChange={interOnChange}
-        />
-      }
-    </fieldset>
+    <input
+      type="text"
+      value={String(value || node.default)}
+      onChange={handleChange}
+    />
   );
 }
 
 function TagInput(props: NodeProps<IdentifierNodeParams>): JSX.Element {
-  const asArray = useContext(GameContext).version === '1.18.2';
-  if (asArray && Array.isArray(props.value[props.name])) {
-    return ResourceSelectMultipleInput(props);
+  const asArray = useContext(GameContext).worldgen!.packFormat >= 9;
+  if (asArray && Array.isArray(props.value)) {
+    return IdentifierMultipleInput(props);
   }
-  return ResourceSelectInput({ tag: asArray, ...props });
+  return IdentifierInput({ tag: asArray, ...props });
 }

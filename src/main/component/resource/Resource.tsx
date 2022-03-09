@@ -1,4 +1,4 @@
-import { ReactNode, useCallback, useState } from 'react';
+import { ReactNode, useState } from 'react';
 import { useRegistry } from '../../hook/useRegistry';
 import { useResourceSubmit } from '../../hook/useResourceSubmit';
 import type { Schema } from '../../model/Registry';
@@ -25,10 +25,6 @@ export function Resource({
   );
 
   const [value, setValue] = useState<Schema>(initial);
-  const handleChange = useCallback(
-    (value: Obj) => setValue((val) => ({ ...val, ...value })),
-    []
-  );
   const handleSubmit = useResourceSubmit(registryKey, previousKey, value);
   postLoad(setValue);
 
@@ -46,7 +42,7 @@ export function Resource({
         model={registry.model.node}
         name={registryKey}
         value={value as Obj}
-        onChange={handleChange}
+        onChange={setValue}
       />
       <Button>Save</Button>
     </form>

@@ -1,33 +1,33 @@
 import { Model } from '../../model/Model';
 import { IntNode } from '../../model/node/IntNode';
 import { ListNode } from '../../model/node/ListNode';
-import { ObjectNode } from '../../model/node/ObjectNode';
+import { Empty, Obj } from '../../model/node/ObjectNode';
 import { IdentifierNode, ResourceNode } from '../../model/node/ResourceNode';
 import { StringNode } from '../../model/node/StringNode';
 import { SwitchNode } from '../../model/node/SwitchNode';
 
 export const TemplatePool: Model = {
-  node: {
+  node: Obj({
     name: StringNode(),
     fallback: StringNode(),
-    elements: ListNode(ObjectNode({
+    elements: ListNode(Obj({
       element: SwitchNode(
         {
-          single_pool_element: {
+          single_pool_element: Obj({
             location: IdentifierNode('structure'),
             processors: ResourceNode('worldgen/processor_list')
-          },
-          list_pool_element: {
+          }),
+          list_pool_element: Obj({
             elements: ListNode(ResourceNode('worldgen/template_pool'))
-          },
-          feature_pool_element: {
+          }),
+          feature_pool_element: Obj({
             feature: ResourceNode('worldgen/placed_feature')
-          },
-          empty_pool_element: {},
-          legacy_single_pool_element: {
+          }),
+          empty_pool_element: Empty,
+          legacy_single_pool_element: Obj({
             location: IdentifierNode('structure'),
             processors: ResourceNode('worldgen/processor_list')
-          }
+          })
         },
         {},
         null,
@@ -35,7 +35,7 @@ export const TemplatePool: Model = {
       ),
       weight: IntNode({ min: 1, max: 150 })
     }))
-  },
+  }),
   preset: () => ({
     fallback: 'minecraft:empty',
     elements: [

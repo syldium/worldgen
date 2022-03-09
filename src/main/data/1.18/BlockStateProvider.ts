@@ -1,24 +1,24 @@
 import { DataType } from '../../hook/useCrud';
-import { ObjectModel } from '../../model/Model';
 import { FloatNode } from '../../model/node/FloatNode';
 import { IntNode, LongNode } from '../../model/node/IntNode';
 import { ListNode } from '../../model/node/ListNode';
+import { Obj, ObjectNodeParams } from '../../model/node/ObjectNode';
 import { ResourceNode } from '../../model/node/ResourceNode';
 import { NoiseValues } from '../1.17/BiomeSource';
 import { RangeInterval } from './RangeInterval';
 
 const BlockStateList = ListNode(ResourceNode('block_state'));
 
-const seeded: ObjectModel = {
+const seeded = {
   seed: LongNode(),
   noise: NoiseValues,
   scale: FloatNode({ min: 0, max: 1 })
 };
-const noise: ObjectModel = {
+const noise = {
   ...seeded,
   states: BlockStateList
 };
-const dualNoise: ObjectModel = {
+const dualNoise = Obj({
   ...noise,
   variety: RangeInterval(
     IntNode({ min: 1, max: 64 }),
@@ -27,18 +27,18 @@ const dualNoise: ObjectModel = {
   ),
   slow_noise: NoiseValues,
   slow_scale: FloatNode({ min: 0 })
-};
-const noiseThreshold: ObjectModel = {
+});
+const noiseThreshold = Obj({
   ...seeded,
   threshold: FloatNode({ min: -1, max: 1 }),
   high_chance: FloatNode({ min: 0, max: 1 }),
   default_state: ResourceNode('block_state'),
   low_states: BlockStateList,
   high_states: BlockStateList
-};
+});
 
-export const SeededBlockStateProviders: Record<string, ObjectModel> = {
-  noise_provider: noise,
+export const SeededBlockStateProviders: Record<string, ObjectNodeParams> = {
+  noise_provider: Obj(noise),
   dual_noise_provider: dualNoise,
   noise_threshold_provider: noiseThreshold
 };

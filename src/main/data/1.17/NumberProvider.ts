@@ -1,21 +1,21 @@
-import { ObjectModel } from '../../model/Model';
 import { EitherNode } from '../../model/node/EitherNode';
 import { FloatNode } from '../../model/node/FloatNode';
 import { IntNode } from '../../model/node/IntNode';
-import { ModelNode } from '../../model/node/Node';
+import type { ModelNode } from '../../model/node/Node';
+import { Obj } from '../../model/node/ObjectNode';
 import { SwitchNode } from '../../model/node/SwitchNode';
 import { INT_MAX_VALUE, INT_MIN_VALUE } from '../../util/MathHelper';
 
 const SimpleIntProvider = (
   min: number = INT_MIN_VALUE,
   max: number = INT_MAX_VALUE
-): [ModelNode, ObjectModel] => {
+): [ModelNode, Record<string, ModelNode>] => {
   const intNode = IntNode({ min, max });
-  const rangeModel: ObjectModel = {
+  const rangeModel = {
     min_inclusive: intNode,
     max_inclusive: intNode
   };
-  const clampedModel: ObjectModel = {
+  const clampedModel = {
     ...rangeModel
   };
   return [
@@ -24,9 +24,9 @@ const SimpleIntProvider = (
       SwitchNode(
         {
           constant: intNode,
-          uniform: rangeModel,
-          biased_to_bottom: rangeModel,
-          clamped: clampedModel
+          uniform: Obj(rangeModel),
+          biased_to_bottom: Obj(rangeModel),
+          clamped: Obj(clampedModel)
         },
         {},
         'value'
@@ -42,6 +42,7 @@ export const IntProvider = (
 ): ModelNode => {
   const [node, clampedNode] = SimpleIntProvider(min, max);
   const [nonClampedNode, nonClampedClampedNode] = SimpleIntProvider();
+  // TODO check
   nonClampedClampedNode.source = nonClampedNode;
   clampedNode.source = nonClampedNode;
   return node;
@@ -54,21 +55,21 @@ export const FloatProvider = (min?: number, max?: number): ModelNode => {
     SwitchNode(
       {
         constant: floatNode,
-        uniform: {
+        uniform: Obj({
           min_inclusive: floatNode,
           max_exclusive: floatNode
-        },
-        clamped_normal: {
+        }),
+        clamped_normal: Obj({
           mean: FloatNode(),
           deviation: FloatNode(),
           min: floatNode,
           max: floatNode
-        },
-        trapezoid: {
+        }),
+        trapezoid: Obj({
           plateau: FloatNode(),
           min: floatNode,
           max: floatNode
-        }
+        })
       },
       {
         uniform: {

@@ -10,15 +10,16 @@ import {
   defaultNamespace,
   stripDefaultNamespace
 } from '../../util/LabelHelper';
+import type { ObjectKey } from '../NodeElement';
 import { Labelized } from '../ui/Labelized';
 import { NumberInput } from '../ui/NumberInput';
 import { Select } from '../ui/Select';
 import { BlockState, BlockStateValue } from './BlockState';
 
 interface ParticuleEffectProps {
-  name: string;
+  name: ObjectKey;
   particle: Record<string, any>;
-  onChange: (value: Record<string, unknown>) => void;
+  onChange: (name: ObjectKey, value: unknown) => void;
 }
 const def = {};
 export function ParticuleEffect({
@@ -55,18 +56,16 @@ export function ParticuleEffect({
             arrival_in_ticks: 20
           };
       }
-      onChange({
-        [name]: {
-          probability: particle.probability,
-          options: { ...data, type: option.value }
-        }
+      onChange(name, {
+        probability: particle.probability,
+        options: { ...data, type: option.value }
       });
     },
     [name, onChange, particle.probability]
   );
   const handleOptionsChange = useCallback(
     function (options) {
-      onChange({ [name]: { ...particle, options: { ...data, ...options } } });
+      onChange(name, { ...particle, options: { ...data, ...options } });
     },
     [data, name, onChange, particle]
   );
@@ -84,7 +83,7 @@ export function ParticuleEffect({
         <BlockState
           name="options"
           value={data as BlockStateValue}
-          onChange={(val) => handleOptionsChange(val.options)}
+          onChange={(_, val) => handleOptionsChange(val)}
         />
       )}
       {type === 'minecraft:dust' && (
@@ -125,7 +124,7 @@ export function ParticuleEffect({
         step={0.005}
         value={particle as Record<'probability', number>}
         onChange={(probability) =>
-          onChange({ [name]: { options: data, ...probability } })}
+          onChange(name, { options: data, ...probability })}
       />
     </div>
   );

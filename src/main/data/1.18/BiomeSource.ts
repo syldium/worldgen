@@ -1,7 +1,7 @@
 import type { Model } from '../../model/Model';
 import { FloatNode } from '../../model/node/FloatNode';
 import { ListNode } from '../../model/node/ListNode';
-import { ObjectNode } from '../../model/node/ObjectNode';
+import { Obj } from '../../model/node/ObjectNode';
 import { ResourceNode } from '../../model/node/ResourceNode';
 import { SwitchNode } from '../../model/node/SwitchNode';
 import {
@@ -14,11 +14,11 @@ import { RangeInterval } from './RangeInterval';
 const { vanilla_layered, ...sources } = BiomeSourceSwitch1_17.values;
 
 const range = RangeInterval(FloatNode({ min: -2, max: 2 }));
-const MultiNoise = {
+const MultiNoise = Obj({
   biomes: ListNode(
-    ObjectNode({
+    Obj({
       biome: ResourceNode('worldgen/biome'),
-      parameters: ObjectNode({
+      parameters: Obj({
         continentalness: range,
         depth: range,
         erosion: range,
@@ -29,7 +29,7 @@ const MultiNoise = {
       })
     })
   )
-};
+});
 
 export const BiomeSource: Model = {
   node: SwitchNode(

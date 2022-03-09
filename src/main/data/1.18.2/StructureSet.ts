@@ -2,23 +2,23 @@ import { Model } from '../../model/Model';
 import { EnumNode } from '../../model/node/EnumNode';
 import { IntNode } from '../../model/node/IntNode';
 import { ListNode } from '../../model/node/ListNode';
-import { ObjectNode } from '../../model/node/ObjectNode';
+import { Obj } from '../../model/node/ObjectNode';
 import { IdentifierNode } from '../../model/node/ResourceNode';
 import { SwitchNode } from '../../model/node/SwitchNode';
 
 export const StructureSet: Model = {
-  node: {
-    structures: ListNode(ObjectNode({
+  node: Obj({
+    structures: ListNode(Obj({
       structure: IdentifierNode('worldgen/configured_structure_feature'),
       weight: IntNode({ min: 1 })
     })),
     placement: SwitchNode({
-      concentric_rings: {
+      concentric_rings: Obj({
         distance: IntNode({ min: 0, max: 1023 }),
         spread: IntNode({ min: 0, max: 1023 }),
         count: IntNode({ min: 1, max: 4095 })
-      },
-      random_spread: {
+      }),
+      random_spread: Obj({
         spread_type: EnumNode(['linear', 'triangular'] as const, 'linear'),
         spacing: IntNode({ min: 0, max: 4096 }),
         separation: IntNode({ min: 0, max: 4096 }),
@@ -27,7 +27,7 @@ export const StructureSet: Model = {
           IntNode({ min: -16, max: 16, default: 0 }),
           3
         )
-      }
+      })
     }, {
       concentric_rings: {
         distance: 32,
@@ -40,7 +40,7 @@ export const StructureSet: Model = {
         salt: 7431
       }
     }, null)
-  },
+  }),
   preset: () => ({
     structures: [
       {

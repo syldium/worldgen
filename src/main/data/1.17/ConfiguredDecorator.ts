@@ -1,64 +1,65 @@
-import { Model, ObjectModel } from '../../model/Model';
+import type { Model } from '../../model/Model';
 import { EnumNode } from '../../model/node/EnumNode';
 import { FloatNode } from '../../model/node/FloatNode';
 import { IntNode } from '../../model/node/IntNode';
+import { Empty, Obj } from '../../model/node/ObjectNode';
 import { ResourceNode } from '../../model/node/ResourceNode';
 import { SwitchNode } from '../../model/node/SwitchNode';
 import { HeightProvider } from './HeightProvider';
 import { IntProvider } from './NumberProvider';
 import { Heightmap, VerticalSurface } from './WorldgenStep';
 
-const CarvingMaskConfig: ObjectModel = {
+const CarvingMaskConfig = Obj({
   step: EnumNode(['air', 'liquid'] as const)
-};
+});
 
-const CaveSurfaceConfig: ObjectModel = {
+const CaveSurfaceConfig = Obj({
   surface: VerticalSurface,
   floor_to_ceiling_search_range: IntNode()
-};
+});
 
-const ChanceConfig: ObjectModel = {
+const ChanceConfig = Obj({
   chance: IntNode()
-};
+});
 
-const CountConfig: ObjectModel = {
+const CountConfig = Obj({
   count: IntProvider(0, 256)
-};
+});
 
-const CountExtraConfig: ObjectModel = {
+const CountExtraConfig = Obj({
   count: IntNode(),
   extra_chance: FloatNode(),
   extra_count: IntNode()
-};
+});
 
-const CountNoiseConfig: ObjectModel = {
+const CountNoiseConfig = Obj({
   noise_level: FloatNode(),
   below_noise: IntNode(),
   above_noise: IntNode()
-};
+});
 
-const CountNoiseBiasedConfig: ObjectModel = {
+const CountNoiseBiasedConfig = Obj({
   noise_to_count_ratio: IntNode(),
   noise_factor: FloatNode(),
   noise_offset: FloatNode({ default: 0 })
-};
+});
 
-const DecoratedConfig: ObjectModel = {
+const DecoratedConfig = Obj({
   outer: ResourceNode('worldgen/configured_decorator'),
   inner: ResourceNode('worldgen/configured_decorator')
-};
+});
 
-const HeightmapConfig: ObjectModel = {
+const HeightmapConfig = Obj({
   heightmap: Heightmap
-};
+});
 
-const RangeConfig: ObjectModel = {
+const RangeConfig = Obj({
   height: HeightProvider
-};
+});
 
-const WaterDepthThresholdConfig: ObjectModel = {
+const WaterDepthThresholdConfig = Obj({
   max_water_depth: IntNode()
-};
+});
 
 export const CountDecoratorConfig = {
   config: {
@@ -171,18 +172,18 @@ export const DecoratorsSwitch = SwitchNode(
     count_multilayer: CountConfig,
     count_noise: CountNoiseConfig,
     count_noise_biased: CountNoiseBiasedConfig,
-    dark_oak_tree: {},
+    dark_oak_tree: Empty,
     decorated: DecoratedConfig,
-    end_gateway: {},
+    end_gateway: Empty,
     heightmap: HeightmapConfig,
     heightmap_spread_double: HeightmapConfig,
     water_depth_threshold: WaterDepthThresholdConfig,
-    iceberg: {},
+    iceberg: Empty,
     lava_lake: ChanceConfig,
-    nope: {},
+    nope: Empty,
     range: RangeConfig,
-    spread_32_above: {},
-    square: {}
+    spread_32_above: Empty,
+    square: Empty
   },
   DecoratorDefaults
 );

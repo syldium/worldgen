@@ -1,4 +1,4 @@
-import { Option } from '../../component/ui/Select';
+import type { Option } from '../../component/ui/Select';
 import { DefaultedModel, Model } from '../../model/Model';
 import { BoolNode } from '../../model/node/BoolNode';
 import { EnumNode } from '../../model/node/EnumNode';

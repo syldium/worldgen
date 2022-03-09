@@ -4,14 +4,15 @@ import { GameContext } from '../../context/GameRegistry';
 import { DEFAULT_BLOCK_STATE } from '../../model/Registry';
 import { defaultNamespace, isValidNamespacedKey } from '../../util/LabelHelper';
 import { areConsecutiveIntegers } from '../../util/MathHelper';
+import type { ObjectKey } from '../NodeElement';
 import { NumberInput } from '../ui/NumberInput';
 import Select, { CreatableSelect, Option } from '../ui/Select';
 
 interface BlockStateProps {
-  name: string;
+  name: ObjectKey;
   options?: Option[];
   value?: BlockStateValue;
-  onChange: (state: Record<string, BlockStateValue>) => void;
+  onChange: (name: ObjectKey, state: BlockStateValue) => void;
   children?: ReactNode;
   inputId?: string;
 }
@@ -49,9 +50,9 @@ export function BlockState({
       const block = states[Name];
       const Properties = (block ?? DEFAULT_BLOCK_STATE).default;
       if (Object.keys(Properties).length) {
-        onChange({ [name]: { Name, Properties } });
+        onChange(name, { Name, Properties });
       } else {
-        onChange({ [name]: { Name } });
+        onChange(name, { Name });
       }
     },
     [name, onChange, states]
@@ -61,7 +62,7 @@ export function BlockState({
 
   const handlePropertiesChange = useCallback(
     (Properties: Properties) =>
-      onChange({ [name]: { Name: value.Name, Properties } }),
+      onChange(name, { Name: value.Name, Properties }),
     [name, onChange, value.Name]
   );
 
@@ -79,7 +80,7 @@ export function BlockState({
         ...context.blockStates,
         [Name]: DEFAULT_BLOCK_STATE
       };
-      onChange({ [name]: { Name } });
+      onChange(name, { Name });
     },
     [context, name, onChange]
   );

@@ -1,14 +1,14 @@
-import { Model, ObjectModel } from '../../model/Model';
+import type { Model } from '../../model/Model';
 import { BoolNode } from '../../model/node/BoolNode';
 import { FloatNode, Probability } from '../../model/node/FloatNode';
 import { IntNode } from '../../model/node/IntNode';
-import { ObjectNode, Opt } from '../../model/node/ObjectNode';
+import { Obj, Opt } from '../../model/node/ObjectNode';
 import { ResourceNode } from '../../model/node/ResourceNode';
 import { SwitchNode } from '../../model/node/SwitchNode';
 import { HeightProvider, YOffset } from './HeightProvider';
 import { FloatProvider } from './NumberProvider';
 
-const CarverDebugConfig = ObjectNode({
+const CarverDebugConfig = Obj({
   debug_mode: BoolNode(false),
   air_state: Opt(ResourceNode('block_state')),
   water_state: Opt(ResourceNode('block_state')),
@@ -16,7 +16,7 @@ const CarverDebugConfig = ObjectNode({
   barrier_state: Opt(ResourceNode('block_state'))
 });
 
-const CarverConfig: ObjectModel = {
+const CarverConfig = {
   ...Probability,
   y: HeightProvider,
   yScale: FloatProvider(),
@@ -25,17 +25,17 @@ const CarverConfig: ObjectModel = {
   debug_settings: CarverDebugConfig
 };
 
-const CaveCarverConfig: ObjectModel = {
+const CaveCarverConfig = Obj({
   ...CarverConfig,
   horizontal_radius_multiplier: FloatProvider(),
   vertical_radius_multiplier: FloatProvider(),
   floor_level: FloatProvider(-1, 1)
-};
+});
 
-const RavineCarverConfig: ObjectModel = {
+const RavineCarverConfig = Obj({
   ...CarverConfig,
   vertical_rotation: FloatProvider(),
-  shape: ObjectNode({
+  shape: Obj({
     distance_factor: FloatProvider(),
     thickness: FloatProvider(),
     width_smoothness: IntNode({ min: 0 }),
@@ -43,7 +43,7 @@ const RavineCarverConfig: ObjectModel = {
     vertical_radius_default_factor: FloatNode(),
     vertical_radius_center_factor: FloatNode()
   })
-};
+});
 
 export const ConfiguredCarver: Model = {
   node: SwitchNode({

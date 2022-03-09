@@ -23,11 +23,12 @@ for (
     'worldgen/biome',
     'worldgen/configured_carver',
     'worldgen/configured_feature',
-    //'worldgen/noise_settings', // FIXME
+    'worldgen/noise_settings',
     'worldgen/processor_list',
     'worldgen/structure_set'
   ]
 ) {
+  console.log('Redering:', chalk.white('/' + url));
   const appHtml = render(url);
   const name = WorldgenNames[url] || 'dimension';
   const plural = name.endsWith('s') ? name : name + 's';
@@ -36,9 +37,9 @@ for (
   const html = template
     .replace(
       '<!--meta-->',
-      `<meta name="description" content="A ${custom}${name} datapack generator for Minecraft Java Edition 1.17.1" />
+      `<meta name="description" content="A ${custom}${name} datapack generator for Minecraft Java Edition 1.18.2" />
     <meta property="og:title" content="${capitalizedName} datapack generator for Minecraft" />
-    <meta property="og:description" content="A tool to generate datapacks with ${custom}${plural} for Minecraft 1.17.1" />`
+    <meta property="og:description" content="A tool to generate datapacks with ${custom}${plural} for Minecraft 1.18.2" />`
     )
     .replace('<div id="root"></div>', '<div id="root">' + appHtml + '</div>');
 
@@ -54,7 +55,6 @@ for (
   if (baseurl) {
     sitemap.push(new URL(url, baseurl).toString());
   }
-  console.log('Rendered:', chalk.white('/' + url));
 }
 
 if (sitemap.length) {

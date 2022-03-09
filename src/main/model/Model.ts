@@ -1,45 +1,36 @@
-import { GameVersion } from '../context/GameVersion';
-import { BoolNodeParams } from './node/BoolNode';
-import { ColorNodeParams, NumberNodeParams } from './node/IntNode';
-import { isNode, ModelNode, NodeType } from './node/Node';
-import { OptionalNodeParams } from './node/ObjectNode';
-import { Typed } from './node/SwitchNode';
+import type { GameVersion } from '../context/GameVersion';
+import type { BoolNodeParams } from './node/BoolNode';
+import type { ColorNodeParams, NumberNodeParams } from './node/IntNode';
+import type { ModelNode, NodeType } from './node/Node';
+import type { OptionalNodeParams } from './node/ObjectNode';
+import { Empty, Obj } from './node/ObjectNode';
+import type { Typed } from './node/SwitchNode';
 
 export interface Configured extends Typed {
   config: unknown;
 }
 
 export interface Model {
-  node: ObjectOrNodeModel;
+  node: ModelNode;
   preset: (version: GameVersion) => Record<string, unknown>;
 }
 
-export const EmptyModel: Model = { node: {}, preset: () => ({}) };
+export const EmptyModel: Model = { node: Empty, preset: () => ({}) };
 
-export const DefaultedModel = function<T extends ObjectModel> (
+export const DefaultedModel = function<T extends Record<string, ModelNode>> (
   fields: T,
   preset: (version: GameVersion) => { [key in keyof Partial<T>]: unknown }
 ): Model {
-  return { node: fields, preset };
+  return { node: Obj(fields), preset };
 };
 
-export type ObjectModel = Record<string, ModelNode>;
-export type ObjectOrNodeModel = ModelNode | ObjectModel;
+export type ObjectOrNodeModel = ModelNode;
 
-export function isValidModel(
+export const isValidModel = (
   model: ObjectOrNodeModel,
   value: unknown
-): boolean {
-  if (isNode(model)) {
-    return model.isValid(value);
-  }
-  if (value === null || typeof value !== 'object') {
-    return false;
-  }
-  return Object.entries(model).every(([name, node]) =>
-    node.isValid((value as Record<string, unknown>)[name])
-  );
-}
+): boolean => model.isValid(value);
+
 const inline: ReadonlySet<NodeType> = new Set<NodeType>([
   'bool',
   'color',

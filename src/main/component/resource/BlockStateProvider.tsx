@@ -22,7 +22,7 @@ import {
   RandomizedIntStateProvider,
   WeightedStateEntry
 } from '../../viewer/block/StateProvider';
-import { ModelView, NodeElement } from '../NodeElement';
+import { NodeElement, ObjectKey } from '../NodeElement';
 import { Button } from '../ui/Button';
 import Select, { Option } from '../ui/Select';
 import { BlockState, BlockStateValue } from './BlockState';
@@ -51,11 +51,11 @@ const providers1_18 = [
 ];
 
 interface BlockStateProviderProps {
-  name: string;
+  name: ObjectKey;
   value?: StateProvider;
   blocks?: BlockStateRegistry;
   blockPlacerType?: string;
-  onChange: (provider: Record<string, StateProvider>) => void;
+  onChange: (name: ObjectKey, provider: StateProvider) => void;
 }
 export function BlockStateProvider({
   name,
@@ -88,21 +88,21 @@ export function BlockStateProvider({
         } else {
           val = { type: option.value };
         }
-        onChange({ [name]: val });
+        onChange(name, val);
       }
     },
     [onChange, name, value]
   );
 
   const handleSimpleStateChange = useCallback(
-    (state: Record<string, BlockStateValue>) =>
-      onChange({ [name]: { ...value, ...state } }),
+    (_: ObjectKey, state: BlockStateValue) =>
+      onChange(name, { ...value, ...state }),
     [onChange, name, value]
   );
 
   const handleWeightedStateChange = useCallback(
     (entries: readonly WeightedStateEntry[]) =>
-      onChange({ [name]: { ...value, entries } }),
+      onChange(name, { ...value, entries }),
     [onChange, name, value]
   );
 
@@ -135,7 +135,7 @@ export function BlockStateProvider({
 
   return (
     <fieldset>
-      <legend>{labelize(name)}</legend>
+      <legend>{typeof name === 'string' && labelize(name)}</legend>
       <label>Provider type</label>
       <Select
         options={options}
@@ -168,10 +168,9 @@ export function BlockStateProvider({
         />
       )}
       {node && (
-        <ModelView
+        <NodeElement
           name={name}
-          model={node}
-          // @ts-ignore
+          node={node}
           value={value}
           // @ts-ignore
           onChange={onChange}
@@ -223,8 +222,8 @@ function WeightedProvider({
             value={block.data}
             options={filteredOptions}
             key={block.__reactKey}
-            onChange={(state) => {
-              update({ ...block, data: state[i] }, i);
+            onChange={(_, state) => {
+              update({ ...block, data: state }, i);
             }}
           >
             <div className="mls">
@@ -251,8 +250,8 @@ function WeightedProvider({
 }
 
 interface RandomizedIntProviderProps {
-  name: string;
-  onChange: (provider: Record<string, StateProvider>) => void;
+  name: ObjectKey;
+  onChange: (name: ObjectKey, provider: StateProvider) => void;
   registry: BlockStateRegistry;
   value: RandomizedIntStateProvider & Typed;
 }
@@ -263,20 +262,18 @@ function RandomizedIntProvider({
   onChange
 }: RandomizedIntProviderProps) {
   const handleSourceChange = useCallback(
-    (source: Record<string, StateProvider>) =>
-      onChange({ [name]: { ...value, ...source } }),
+    (_: ObjectKey, source: StateProvider) =>
+      onChange(name, { ...value, ...source }),
     [name, onChange, value]
   );
   const handleValuesChange = useCallback(
-    (values: Record<string, unknown>) =>
-      onChange({ [name]: { ...value, ...values } }),
+    (_: ObjectKey, values: unknown) =>
+      onChange(name, { ...value, values } as StateProvider),
     [name, onChange, value]
   );
   const handlePropertyChange = useCallback(
     (option) =>
-      onChange({
-        [name]: { ...value, property: option.value } as StateProvider
-      }),
+      onChange(name, { ...value, property: option.value } as StateProvider),
     [name, onChange, value]
   );
   const properties = useMemo(
@@ -312,9 +309,8 @@ function RandomizedIntProvider({
           <NodeElement
             name="values"
             node={intProvider}
-            value={value as unknown as Obj}
+            value={value}
             onChange={handleValuesChange}
-            isObject={true}
           />
         </div>
         <div style={{ width: '150px' }}>

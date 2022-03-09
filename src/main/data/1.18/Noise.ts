@@ -1,9 +1,10 @@
 import { Model } from '../../model/Model';
+import { Obj } from '../../model/node/ObjectNode';
 import { labelizeOption } from '../../util/LabelHelper';
 import { NoiseValues } from '../1.17/BiomeSource';
 
 export const Noise: Model = {
-  node: NoiseValues.records,
+  node: Obj(NoiseValues.records),
   preset: () => ({
     firstOctave: -7,
     amplitudes: [1, 1]

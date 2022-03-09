@@ -14,7 +14,7 @@ export function JsonViewer({ data }: JsonViewerProps): JSX.Element {
   const closeModal = useCallback(() => toggleModal(false), [toggleModal]);
 
   const obj = useCallback(
-    () => removeReactKeys((typeof data === 'object' ? data : data()) as Obj),
+    () => removeReactKeys((data instanceof Function ? data() : data) as Obj),
     [data]
   );
 

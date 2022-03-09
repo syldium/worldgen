@@ -1,7 +1,7 @@
 import { BoolNode } from '../../main/model/node/BoolNode';
 import { EitherNode } from '../../main/model/node/EitherNode';
 import { IntNode } from '../../main/model/node/IntNode';
-import { ObjectNode } from '../../main/model/node/ObjectNode';
+import { Obj } from '../../main/model/node/ObjectNode';
 
 describe('EitherNode', function () {
   it('should find the correct currently used node', () => {
@@ -15,10 +15,13 @@ describe('EitherNode', function () {
 
   it('should handle primitive and object type', () => {
     const int = IntNode();
-    const either = EitherNode(int, {
-      min: int,
-      max: int
-    });
+    const either = EitherNode(
+      int,
+      Obj({
+        min: int,
+        max: int
+      })
+    );
     expect(either.findCurrentIndex(7)).toBe(0);
     expect(
       either.findCurrentIndex({
@@ -36,13 +39,13 @@ describe('EitherNode', function () {
   it('should handle objects', () => {
     const bool = BoolNode();
     const either = EitherNode(
-      ObjectNode({
+      Obj({
         a: bool
       }),
-      ObjectNode({
+      Obj({
         b: bool
       }),
-      ObjectNode({
+      Obj({
         c: bool
       })
     );

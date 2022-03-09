@@ -1,10 +1,11 @@
 import type { ReactElement } from 'react';
 import { labelize } from '../../util/LabelHelper';
+import type { ObjectKey } from '../NodeElement';
 
 interface LabelizedProps {
   className?: string;
   id: string | undefined;
-  name: string;
+  name: ObjectKey;
   children: ReactElement;
 }
 export function Labelized({
@@ -13,7 +14,7 @@ export function Labelized({
   name,
   children
 }: LabelizedProps): JSX.Element {
-  if (isNaN(name as unknown as number)) {
+  if (typeof name === 'string') {
     return (
       <div className={className}>
         <div className="inline">

@@ -1,5 +1,5 @@
 import type { Model } from '../../model/Model';
-import { ObjectNode, ObjectNodeParams } from '../../model/node/ObjectNode';
+import { Obj, ObjectNodeParams } from '../../model/node/ObjectNode';
 import { BiomeSettings as Biome1_17, Spawners } from '../1.17/Biome';
 
 /* eslint-disable */
@@ -14,13 +14,13 @@ const {
 /* eslint-enable */
 
 export const Biome: Model = {
-  node: {
+  node: Obj({
     ...v1_17,
-    spawners: ObjectNode({
+    spawners: Obj({
       ...(v1_17.spawners as ObjectNodeParams).records,
       axolotls: Spawners
     })
-  },
+  }),
   preset: () => ({
     effects: {
       mood_sound: {

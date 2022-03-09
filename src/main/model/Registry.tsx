@@ -20,7 +20,7 @@ export interface Registry {
 export type PostLoadCallback<S = Schema> = (schema: S) => void;
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface Schema {}
+export type Schema = unknown;
 export type RegistryEntries = { [identifier: string]: Schema };
 export class WorldgenRegistry implements Registry {
   readonly entries: RegistryEntries;

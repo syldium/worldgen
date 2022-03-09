@@ -1,57 +1,61 @@
-import { Model, ObjectModel } from '../../model/Model';
+import type { Model } from '../../model/Model';
 import { BoolNode } from '../../model/node/BoolNode';
 import { EnumNode } from '../../model/node/EnumNode';
 import { Probability } from '../../model/node/FloatNode';
 import { IntNode } from '../../model/node/IntNode';
-import { ObjectNode, Opt } from '../../model/node/ObjectNode';
+import { MapNode } from '../../model/node/MapNode';
+import { Obj } from '../../model/node/ObjectNode';
 import { IdentifierNode, TagNode } from '../../model/node/ResourceNode';
 import { SwitchNode } from '../../model/node/SwitchNode';
 import { Spawners } from '../1.17/Biome';
 import { HeightProvider } from '../1.17/HeightProvider';
 
-const StructureSpawn = ObjectNode({
+const StructureSpawn = Obj({
   bounding_box: EnumNode(['piece', 'full'] as const),
   spawns: Spawners
 });
 
-const Parameters = {
+const SpawnGroup = [
+  'monster',
+  'creature',
+  'ambient',
+  'ambient',
+  'axolotls',
+  'underground_water_creature',
+  'water_creature',
+  'water_ambient',
+  'misc'
+] as const;
+const Parameters = Obj({
   biomes: TagNode('worldgen/biome'),
   adapt_noise: BoolNode(false),
-  spawn_overrides: ObjectNode({
-    monster: Opt(StructureSpawn),
-    creature: Opt(StructureSpawn),
-    ambient: Opt(StructureSpawn),
-    underground_water_creature: Opt(StructureSpawn),
-    water_creature: Opt(StructureSpawn),
-    water_ambient: Opt(StructureSpawn),
-    misc: Opt(StructureSpawn)
-  })
-};
+  spawn_overrides: MapNode(EnumNode(SpawnGroup), StructureSpawn)
+});
 
-const TemplatePool: ObjectModel = {
+const TemplatePool = Obj({
   start_pool: IdentifierNode('worldgen/template_pool'),
   size: IntNode()
-};
+});
 
 export const ConfiguredStructureFeature: Model = {
   node: SwitchNode(
     {
       bastion_remnant: TemplatePool,
-      buried_treasure: Probability,
-      mineshaft: {
+      buried_treasure: Obj(Probability),
+      mineshaft: Obj({
         type: EnumNode(['normal', 'mesa'] as const),
         ...Probability
-      },
-      nether_fossil: {
+      }),
+      nether_fossil: Obj({
         height: HeightProvider
-      },
-      ocean_ruin: {
+      }),
+      ocean_ruin: Obj({
         biome_temp: EnumNode(['cold', 'warm'] as const),
         large_probability: Probability.probability,
         cluster_probability: Probability.probability
-      },
+      }),
       pillager_outpost: TemplatePool,
-      ruined_portal: {
+      ruined_portal: Obj({
         portal_type: EnumNode(
           [
             'standard',
@@ -63,10 +67,10 @@ export const ConfiguredStructureFeature: Model = {
             'nether'
           ] as const
         )
-      },
-      shipwreck: {
+      }),
+      shipwreck: Obj({
         is_beached: BoolNode(false)
-      },
+      }),
       village: TemplatePool
     },
     {},

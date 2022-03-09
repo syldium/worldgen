@@ -1,9 +1,9 @@
-import { Model, ObjectModel } from '../../model/Model';
+import { Model } from '../../model/Model';
 import { BoolNode } from '../../model/node/BoolNode';
 import { FloatNode, Probability } from '../../model/node/FloatNode';
 import { IntNode } from '../../model/node/IntNode';
 import { ListNode } from '../../model/node/ListNode';
-import { ObjectNode, Opt } from '../../model/node/ObjectNode';
+import { Empty, Obj, Opt } from '../../model/node/ObjectNode';
 import {
   IdentifierNode,
   ResourceNode,
@@ -20,34 +20,34 @@ import { Direction } from './Direction';
 import { FloatProvider, IntProvider } from './NumberProvider';
 import { VerticalSurface } from './WorldgenStep';
 
-const BasaltColumnsConfig: ObjectModel = {
+const BasaltColumnsConfig = Obj({
   reach: IntProvider(0, 3),
   height: IntProvider(1, 10)
-};
+});
 
-const BlockPileConfig: ObjectModel = {
+const BlockPileConfig = Obj({
   state_provider: ResourceNode('block_state_provider')
-};
+});
 
-const DecoratedConfig: ObjectModel = {
+const DecoratedConfig = Obj({
   feature: IdentifierNode('worldgen/configured_feature')
-};
+});
 
-const DeltaConfig: ObjectModel = {
+const DeltaConfig = Obj({
   contents: ResourceNode('block_state'),
   rim: ResourceNode('block_state'),
   size: IntProvider(0, 16),
   rim_size: IntProvider(0, 16)
-};
+});
 
-const DiskConfig: ObjectModel = {
+const DiskConfig = Obj({
   state: ResourceNode('block_state'),
   radius: IntProvider(0, 8),
   half_height: IntNode({ min: 0, max: 4 }),
   targets: ListNode(ResourceNode('block_state'))
-};
+});
 
-const DripstoneClusterConfig: ObjectModel = {
+const DripstoneClusterConfig = Obj({
   floor_to_ceiling_search_range: IntNode({ min: 5, max: 512 }),
   height: IntProvider(1, 128),
   radius: IntProvider(1, 128),
@@ -65,42 +65,42 @@ const DripstoneClusterConfig: ObjectModel = {
     max: 64
   }),
   max_distance_from_center_affecting_height_bias: IntNode({ min: 1, max: 64 })
-};
+});
 
 export const BlockPos = ListNode(IntNode(), 3);
-const EndGatewayConfig: ObjectModel = {
+const EndGatewayConfig = Obj({
   exact: BoolNode(),
   exit: Opt(BlockPos)
-};
+});
 
-const EndSpikeConfig: ObjectModel = {
+const EndSpikeConfig = Obj({
   crystal_beam_target: Opt(BlockPos),
   crystal_invulnerable: BoolNode(false),
   spikes: ListNode(
-    ObjectNode({
+    Obj({
       centerX: IntNode({ default: 0 }),
       centerZ: IntNode({ default: 0 }),
       height: IntNode({ default: 0 }),
       guarded: BoolNode(false)
     })
   )
-};
+});
 
-const FillLayerConfig: ObjectModel = {
+const FillLayerConfig = Obj({
   height: IntNode({ min: 0, max: 4064 }),
   state: ResourceNode('block_state')
-};
+});
 
-const FossilConfig: ObjectModel = {
+const FossilConfig = Obj({
   fossil_structures: ListNode(IdentifierNode('structure')),
   overlay_structures: ListNode(IdentifierNode('structure')),
   fossil_processors: ResourceNode('worldgen/processor_list'), // type
   overlay_processors: ResourceNode('worldgen/processor_list'), // type
   max_empty_corners_allowed: IntNode({ min: 0, max: 7 })
-};
+});
 
-const GeodeConfig: ObjectModel = {
-  blocks: ObjectNode({
+const GeodeConfig = Obj({
+  blocks: Obj({
     filling_provider: ResourceNode('block_state_provider'),
     inner_layer_provider: ResourceNode('block_state_provider'),
     alternate_inner_layer_provider: ResourceNode('block_state_provider'),
@@ -110,13 +110,13 @@ const GeodeConfig: ObjectModel = {
     cannot_replace: TagNode('block'),
     invalid_blocks: TagNode('block')
   }),
-  layers: ObjectNode({
+  layers: Obj({
     filling: FloatNode({ min: 0.01, max: 50, default: 1.7 }),
     inner_layer: FloatNode({ min: 0.01, max: 50, default: 2.2 }),
     middle_layer: FloatNode({ min: 0.01, max: 50, default: 3.2 }),
     outer_layer: FloatNode({ min: 0.01, max: 50, default: 4.2 })
   }),
-  crack: ObjectNode({
+  crack: Obj({
     generate_crack_chance: FloatNode({ min: 0, max: 1, default: 1 }),
     base_crack_size: FloatNode({ min: 0, max: 5, default: 2 }),
     crack_point_offset: IntNode({ min: 0, max: 10, default: 2 })
@@ -135,40 +135,40 @@ const GeodeConfig: ObjectModel = {
   max_gen_offset: IntNode({ default: 16 }),
   noise_multiplier: FloatNode({ min: 0, max: 1, default: 0.05 }),
   invalid_blocks_threshold: IntNode()
-};
+});
 
-const GlowLichenConfig: ObjectModel = {
+const GlowLichenConfig = Obj({
   search_range: IntNode({ min: 1, max: 64, default: 10 }),
   can_place_on_floor: BoolNode(false),
   can_place_on_ceiling: BoolNode(false),
   can_place_on_wall: BoolNode(false),
   chance_of_spreading: FloatNode({ min: 0, max: 1, default: 0.5 }),
   can_be_placed_on: ListNode(ResourceNode('block_state'))
-};
+});
 
-const GrowingPlantConfig: ObjectModel = {
+const GrowingPlantConfig = Obj({
   height_distribution: ListNode(IntProvider(), -1, true),
   direction: Direction,
   body_provider: ResourceNode('block_state_provider'),
   head_provider: ResourceNode('block_state_provider'),
   allow_water: BoolNode()
-};
+});
 
-const HugeFungusConfig: ObjectModel = {
+const HugeFungusConfig = Obj({
   valid_base_block: ResourceNode('block_state'),
   stem_state: ResourceNode('block_state'),
   hat_state: ResourceNode('block_state'),
   decor_state: ResourceNode('block_state'),
   planted: BoolNode(false)
-};
+});
 
-const HugeMushroomConfig: ObjectModel = {
+const HugeMushroomConfig = Obj({
   cap_provider: ResourceNode('block_state_provider'),
   stem_provider: ResourceNode('block_state_provider'),
   foliage_radius: IntNode({ default: 2 })
-};
+});
 
-const LargeDripstoneConfig: ObjectModel = {
+const LargeDripstoneConfig = Obj({
   floor_to_ceiling_search_range: IntNode({ min: 1, max: 512 }),
   column_radius: IntProvider(1, 60),
   height_scale: FloatProvider(0, 20),
@@ -178,34 +178,34 @@ const LargeDripstoneConfig: ObjectModel = {
   wind_speed: FloatProvider(0, 2),
   min_radius_for_wind: IntNode({ min: 0, max: 100 }),
   min_bluntness_for_wind: FloatNode({ min: 0, max: 5 })
-};
+});
 
-const NetherrackReplaceBlobsConfig: ObjectModel = {
+const NetherrackReplaceBlobsConfig = Obj({
   target: ResourceNode('block_state'),
   state: ResourceNode('block_state'),
   radius: IntProvider(0, 12)
-};
+});
 
 const BlockPredicate = SwitchNode(
   {
-    always_true: {},
-    block_match: {
+    always_true: Empty,
+    block_match: Obj({
       block: ResourceNode('block')
-    },
-    blockstate_match: {
+    }),
+    blockstate_match: Obj({
       block_state: ResourceNode('block_state')
-    },
-    tag_match: {
+    }),
+    tag_match: Obj({
       tag: TagNode('block')
-    },
-    random_block_match: {
+    }),
+    random_block_match: Obj({
       block: ResourceNode('block'),
       ...Probability
-    },
-    random_blockstate_match: {
+    }),
+    random_blockstate_match: Obj({
       block: ResourceNode('block_state'),
       ...Probability
-    }
+    })
   },
   {
     block_match: {
@@ -227,21 +227,21 @@ const ReplaceTarget = {
   target: BlockPredicate,
   state: ResourceNode('block_state')
 };
-const ReplaceSingleBlockConfig: ObjectModel = {
-  targets: ListNode(ObjectNode(ReplaceTarget))
-};
-const OreConfig: ObjectModel = {
-  targets: ListNode(ObjectNode(ReplaceTarget)),
+const ReplaceSingleBlockConfig = Obj({
+  targets: ListNode(Obj(ReplaceTarget))
+});
+const OreConfig = Obj({
+  targets: ListNode(Obj(ReplaceTarget)),
   size: IntNode({ min: 0, max: 64 }),
   discard_chance_on_air_exposure: FloatNode({ min: 0, max: 1 })
-};
+});
 
-const RandomBooleanSelector: ObjectModel = {
+const RandomBooleanSelector = Obj({
   feature_true: ResourceNode('worldgen/configured_feature'),
   feature_false: ResourceNode('worldgen/configured_feature')
-};
+});
 
-const RandomPatchConfig: ObjectModel = {
+const RandomPatchConfig = Obj({
   can_replace: BoolNode(false),
   project: BoolNode(true),
   need_water: BoolNode(false),
@@ -253,19 +253,19 @@ const RandomPatchConfig: ObjectModel = {
   block_placer: BlockPlacer,
   whitelist: ListNode(ResourceNode('block_state')),
   blacklist: ListNode(ResourceNode('block_state'))
-};
+});
 
-const RandomConfig: ObjectModel = {
+const RandomConfig = Obj({
   default: ResourceNode('worldgen/configured_feature'),
   features: ListNode(
-    ObjectNode({
+    Obj({
       feature: ResourceNode('worldgen/configured_feature'),
       chance: FloatNode({ min: 0, max: 1 })
     })
   )
-};
+});
 
-export const RootSystemConfig: ObjectModel = {
+export const RootSystemConfig = {
   feature: ResourceNode('worldgen/configured_feature'),
   required_vertical_space_for_tree: IntNode({ min: 1, max: 64 }),
   root_radius: IntNode({ min: 1, max: 64 }),
@@ -280,44 +280,44 @@ export const RootSystemConfig: ObjectModel = {
   allowed_vertical_water_for_tree: IntNode({ min: 1, max: 64 })
 };
 
-const SimpleBlockConfig: ObjectModel = {
+const SimpleBlockConfig = Obj({
   to_place: ResourceNode('block_state_provider'),
   place_on: ListNode(ResourceNode('block_state')),
   place_in: ListNode(ResourceNode('block_state')),
   place_under: ListNode(ResourceNode('block_state'))
-};
+});
 
-const SimpleRandomConfig: ObjectModel = {
+const SimpleRandomConfig = Obj({
   features: ListNode(ResourceNode('worldgen/configured_feature'))
-};
+});
 
-const SmallDripstoneConfig: ObjectModel = {
+const SmallDripstoneConfig = Obj({
   max_placements: IntNode({ min: 0, max: 100 }),
   empty_space_search_radius: IntNode({ min: 0, max: 20 }),
   max_offset_from_origin: IntNode({ min: 0, max: 20 }),
   chance_of_taller_dripstone: FloatNode({ min: 0, max: 1 })
-};
+});
 
-const SpringConfig: ObjectModel = {
+const SpringConfig = Obj({
   state: ResourceNode('block_state'), // TODO fluid
   requires_block_below: BoolNode(true),
   rock_count: IntNode({ default: 4 }),
   hole_count: IntNode({ default: 1 }),
   valid_blocks: ListNode(ResourceNode('block'))
-};
+});
 
-const TrunkPlacerBaseConfig: ObjectModel = {
+const TrunkPlacerBaseConfig = Obj({
   base_height: IntNode({ min: 0, max: 32 }),
   height_rand_a: IntNode({ min: 0, max: 24 }),
   height_rand_b: IntNode({ min: 0, max: 24 })
-};
+});
 
-const FoliagePlacerBaseConfig: ObjectModel = {
+const FoliagePlacerBaseConfig = Obj({
   radius: IntProvider(0, 16),
   offset: IntProvider(0, 16)
-};
+});
 
-export const TreeConfig: ObjectModel = {
+export const TreeConfig = {
   trunk_provider: ResourceNode('block_state_provider'),
   foliage_provider: ResourceNode('block_state_provider'),
   sapling_provider: ResourceNode('block_state_provider'),
@@ -379,20 +379,20 @@ export const TreeConfig: ObjectModel = {
   ),
   minimum_size: SwitchNode(
     {
-      two_layers_feature_size: {
+      two_layers_feature_size: Obj({
         min_clipped_height: Opt(IntNode({ min: 0, max: 80 })),
         limit: IntNode({ min: 0, max: 81, default: 1 }),
         lower_size: IntNode({ min: 0, max: 16, default: 0 }),
         upper_size: IntNode({ min: 0, max: 16, default: 1 })
-      },
-      three_layers_feature_size: {
+      }),
+      three_layers_feature_size: Obj({
         min_clipped_height: Opt(IntNode({ min: 0, max: 80 })),
         limit: IntNode({ min: 0, max: 80, default: 1 }),
         lower_size: IntNode({ min: 0, max: 16, default: 0 }),
         middle_size: IntNode({ min: 0, max: 16, default: 1 }),
         upper_size: IntNode({ min: 0, max: 16, default: 1 }),
         upper_limit: IntNode({ min: 0, max: 80, default: 1 })
-      }
+      })
     },
     {},
     null
@@ -400,13 +400,13 @@ export const TreeConfig: ObjectModel = {
   decorators: ListNode(
     SwitchNode(
       {
-        alter_ground: {
+        alter_ground: Obj({
           provider: ResourceNode('block_state_provider')
-        },
-        beehive: Probability,
-        cocoa: Probability,
-        leave_vine: {},
-        trunk_vine: {}
+        }),
+        beehive: Obj(Probability),
+        cocoa: Obj(Probability),
+        leave_vine: Empty,
+        trunk_vine: Empty
       },
       {
         alter_ground: {
@@ -434,7 +434,7 @@ export const TreeConfig: ObjectModel = {
   force_dirt: BoolNode(false)
 };
 
-export const VegetationPatchConfig: ObjectModel = {
+export const VegetationPatchConfig = {
   replaceable: TagNode('block'),
   ground_state: ResourceNode('block_state_provider'),
   vegetation_feature: ResourceNode('worldgen/configured_feature'),
@@ -447,85 +447,85 @@ export const VegetationPatchConfig: ObjectModel = {
   extra_edge_column_chance: Probability.probability
 };
 
-const UnderwaterMagmaConfig: ObjectModel = {
+const UnderwaterMagmaConfig = Obj({
   floor_search_range: IntNode({ min: 0, max: 512 }),
   placement_radius_around_floor: IntNode({ min: 0, max: 64 }),
   placement_probability_per_valid_position: FloatNode({ min: 0, max: 1 })
-};
+});
 
-const CountConfig: ObjectModel = {
+const CountConfig = Obj({
   count: IntProvider(0, 256)
-};
+});
 
-const StateConfig: ObjectModel = {
+const StateConfig = Obj({
   state: ResourceNode('block_state')
-};
+});
 
 export const ConfiguredFeature: Model = {
   node: SwitchNode(
     {
-      bamboo: Probability,
+      bamboo: Obj(Probability),
       basalt_columns: BasaltColumnsConfig,
-      basalt_pillar: {},
+      basalt_pillar: Empty,
       block_pile: BlockPileConfig,
-      blue_ice: {},
-      bonus_chest: {},
-      chorus_plant: {},
-      coral_claw: {},
-      coral_mushroom: {},
-      coral_tree: {},
+      blue_ice: Empty,
+      bonus_chest: Empty,
+      chorus_plant: Empty,
+      coral_claw: Empty,
+      coral_mushroom: Empty,
+      coral_tree: Empty,
       decorated: DecoratedConfig,
       delta_feature: DeltaConfig,
-      desert_well: {},
+      desert_well: Empty,
       disk: DiskConfig,
       dripstone_cluster: DripstoneClusterConfig,
       end_gateway: EndGatewayConfig,
-      end_island: {},
+      end_island: Empty,
       end_spike: EndSpikeConfig,
       fill_layer: FillLayerConfig,
       flower: RandomPatchConfig,
       forest_rock: StateConfig,
       fossil: FossilConfig,
-      freeze_top_layer: {},
+      freeze_top_layer: Empty,
       geode: GeodeConfig,
       glow_lichen: GlowLichenConfig,
-      glowstone_blob: {},
+      glowstone_blob: Empty,
       growing_plant: GrowingPlantConfig,
       huge_brown_mushroom: HugeMushroomConfig,
       huge_fungus: HugeFungusConfig,
       huge_red_mushroom: HugeMushroomConfig,
       iceberg: StateConfig,
       ice_patch: DiskConfig,
-      ice_spike: {},
-      kelp: {},
+      ice_spike: Empty,
+      kelp: Empty,
       lake: StateConfig,
       large_dripstone: LargeDripstoneConfig,
-      monster_room: {},
+      monster_room: Empty,
       nether_forest_vegetation: BlockPileConfig,
       netherrack_replace_blobs: NetherrackReplaceBlobsConfig,
       no_bonemeal_flower: RandomPatchConfig,
-      no_op: {},
+      no_op: Empty,
       ore: OreConfig,
       random_boolean_selector: RandomBooleanSelector,
       random_patch: RandomPatchConfig,
       random_selector: RandomConfig,
       replace_single_block: ReplaceSingleBlockConfig,
-      root_system: RootSystemConfig,
+      root_system: Obj(RootSystemConfig),
       scattered_ore: OreConfig,
-      seagrass: Probability,
+      seagrass: Obj(Probability),
       sea_pickle: CountConfig,
       simple_block: SimpleBlockConfig,
       simple_random_selector: SimpleRandomConfig,
       small_dripstone: SmallDripstoneConfig,
       spring_feature: SpringConfig,
-      tree: TreeConfig,
-      twisting_vines: {},
+      tree: Obj(TreeConfig),
+      twisting_vines: Empty,
       underwater_magma: UnderwaterMagmaConfig,
-      vegetation_patch: VegetationPatchConfig,
-      vines: {},
-      void_start_platform: {},
-      waterlogged_vegetation_patch: VegetationPatchConfig,
-      weeping_vines: {}
+      vegetation_patch: Obj(VegetationPatchConfig),
+      vines: Empty,
+      void_start_platform: Empty,
+      waterlogged_vegetation_patch: Obj(VegetationPatchConfig),
+      weeping_vines: Empty
     },
     {
       bamboo: 'bamboo',

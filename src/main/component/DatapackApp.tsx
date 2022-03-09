@@ -1,14 +1,8 @@
 import { useContext } from 'react';
 import { GameContext } from '../context/GameRegistry';
-import { WorldgenNames } from '../model/Registry';
-import type { WorldgenRegistryKey } from '../model/RegistryKey';
 import { Editor } from './Editor';
-import { MainMenu } from './MainMenu';
-import { ConfiguredFeature } from './resource/ConfiguredFeature';
-import { Resource } from './resource/Resource';
 import { NavLink } from './ui/Link';
 import { NavBar } from './ui/NavBar';
-import { NoRouteMatch } from './ui/NoRouteMatch';
 
 interface DatapackAppProps {
   location: string;

@@ -4,14 +4,14 @@ import { CountDecoratorConfig } from '../../data/1.17/ConfiguredDecorator';
 import { useCrud } from '../../hook/useCrud';
 import { useRegistry } from '../../hook/useRegistry';
 import { useResourceSubmit } from '../../hook/useResourceSubmit';
-import { Configured } from '../../model/Model';
+import { Configured, Model } from '../../model/Model';
 import { SwitchNodeParams } from '../../model/node/SwitchNode';
 import type { Schema } from '../../model/Registry';
 import type { WorldgenRegistryKey } from '../../model/RegistryKey';
 import { Obj } from '../../util/DomHelper';
 import { buildDecorated, findDecorators } from '../../util/FeatureHelper';
 import { NamespacedKey } from '../NamespacedKey';
-import { SelectSwitch } from '../NodeElement';
+import { ObjectKey, SwitchInput } from '../NodeElement';
 import { Button } from '../ui/Button';
 import { JsonViewer } from '../ui/JsonViewer';
 
@@ -35,6 +35,10 @@ export function ConfiguredFeature({ id }: ConfiguredFeatureProps): JSX.Element {
   const decoratorNode =
     worldgen.worldgen['worldgen/configured_decorator'].model.node;
   const [feature, setFeature] = useState<Configured & Obj>(_feature);
+  const handleFeatureChange = useCallback(
+    (name: ObjectKey, value: unknown) => setFeature(value as Configured & Obj),
+    []
+  );
   const dispatchDecorators = useCrud<Configured & Obj>(
     hasDecorators ? _decorators : [],
     () => ({
@@ -74,10 +78,8 @@ export function ConfiguredFeature({ id }: ConfiguredFeatureProps): JSX.Element {
   );
 
   const handleDecoratorChange = useCallback(
-    function (values: Record<string, unknown>) {
-      const index = parseInt(Object.keys(values)[0]);
-      dispatchDecorators.update(values[index] as Obj & Configured, index);
-    },
+    (index: ObjectKey, value: unknown) =>
+      dispatchDecorators.update(value as Obj & Configured, index as number),
     [dispatchDecorators]
   );
 
@@ -105,11 +107,11 @@ export function ConfiguredFeature({ id }: ConfiguredFeatureProps): JSX.Element {
         <JsonViewer data={() => buildDecorated(feature, decorators)} />
       </NamespacedKey>
       <div className="form-group">
-        <SelectSwitch
+        <SwitchInput
           name="feature"
           node={featureModel}
           value={feature}
-          onChange={setFeature as (feature: Obj) => void}
+          onChange={handleFeatureChange}
           onTypeChange={handleFeatureTypeChange}
         />
       </div>
@@ -120,13 +122,12 @@ export function ConfiguredFeature({ id }: ConfiguredFeatureProps): JSX.Element {
             <Button onClick={dispatchDecorators.create}>Add decorator</Button>
           </legend>
           {decorators.map((decorator, i) => (
-            <SelectSwitch
-              name={i.toString()}
+            <SwitchInput
+              name={i}
               node={decoratorNode as SwitchNodeParams}
-              value={decorators as Record<number, Obj>}
+              value={decorator}
               onChange={handleDecoratorChange}
               key={decorator.__reactKey}
-              isObject={true}
             >
               <Button
                 cat="danger"
@@ -135,7 +136,7 @@ export function ConfiguredFeature({ id }: ConfiguredFeatureProps): JSX.Element {
               >
                 Remove
               </Button>
-            </SelectSwitch>
+            </SwitchInput>
           ))}
         </fieldset>
       )}

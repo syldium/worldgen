@@ -3,7 +3,6 @@ import {
   FLOAT_MIN_VALUE,
   isInRange
 } from '../../util/MathHelper';
-import { ObjectModel } from '../Model';
 import { NumberNodeParams } from './IntNode';
 
 export const FloatNode = (
@@ -26,10 +25,10 @@ export const FloatNode = (
 
 export const DoubleNode = FloatNode;
 
-export const Probability: ObjectModel = {
+export const Probability = {
   probability: FloatNode({ min: 0, max: 1 })
 };
 
-export const Range: ObjectModel = {
+export const Range = {
   range: FloatNode({ min: 0, max: 1 })
 };

@@ -2,23 +2,22 @@ import {
   defaultNamespace,
   stripDefaultNamespace
 } from '../../util/LabelHelper';
-import { ObjectModel, ObjectOrNodeModel } from '../Model';
-import { NodeBase } from './Node';
-import { ObjectNodeParams } from './ObjectNode';
+import { ObjectOrNodeModel } from '../Model';
+import { ModelNode, NodeBase } from './Node';
+import { Empty, ObjectNodeParams } from './ObjectNode';
 
 type AnyKeyExcept<S extends string> = {
   [key: string]: unknown;
 } & { [k in S]?: never };
-type ModelType = Exclude<ObjectOrNodeModel, ObjectNodeParams>;
 type PresetType<T extends string | number | symbol, S extends string> = {
   [K in T]: AnyKeyExcept<S> | string;
 };
 
 export interface SwitchNodeParams extends NodeBase<'switch'> {
-  values: Record<string, ModelType>;
+  values: Record<string, ModelNode>;
   config: string | null;
   typeField: string;
-  commonFields: ObjectModel;
+  commonFields: ObjectOrNodeModel;
   preset: { [type in string]: string | Record<string, unknown> };
 }
 
@@ -36,14 +35,14 @@ function isTyped(value: unknown): value is Record<string, unknown> {
  * @param commonFields
  */
 export const SwitchNode = <
-  T extends Record<string, ModelType>,
+  T extends Record<string, ModelNode>,
   S extends string = 'type'
 >(
   values: T,
   preset: Partial<PresetType<keyof T, S>> = {},
   config: string | null = 'config',
   typeField = 'type' as S,
-  commonFields: ObjectModel = {}
+  commonFields: ObjectNodeParams = Empty
 ): SwitchNodeParams => {
   Object.entries(preset).forEach(([key, value]) => {
     if (typeof value !== 'object') {
@@ -74,7 +73,7 @@ export const SwitchNode = <
 
 export const forEveryType = <S extends string = 'type'>(
   types: ReadonlyArray<string>,
-  value: ModelType,
+  value: ModelNode,
   preset?: Partial<PresetType<typeof types[number], S>>,
   config?: string | null,
   typeField = 'type' as S
@@ -83,7 +82,7 @@ export const forEveryType = <S extends string = 'type'>(
     types.reduce((prev, type) => {
       prev[type] = value;
       return prev;
-    }, {} as Record<string, ModelType>),
+    }, {} as Record<string, ModelNode>),
     preset,
     config,
     typeField

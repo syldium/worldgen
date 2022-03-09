@@ -1,84 +1,83 @@
-import { Model, ObjectModel } from '../../model/Model';
+import type { Model } from '../../model/Model';
 import { EitherNode } from '../../model/node/EitherNode';
 import { EnumNode, EnumNodeParams } from '../../model/node/EnumNode';
 import { FloatNode, Probability } from '../../model/node/FloatNode';
 import { IntNode } from '../../model/node/IntNode';
 import { ListNode } from '../../model/node/ListNode';
-import { ObjectNode } from '../../model/node/ObjectNode';
-import {
-  IdentifierNode,
-  ResourceNode,
-  TagNode
-} from '../../model/node/ResourceNode';
+import { Empty, Obj, OrElse } from '../../model/node/ObjectNode';
+import { ResourceNode, TagNode } from '../../model/node/ResourceNode';
 import { SwitchNode } from '../../model/node/SwitchNode';
 import { Axis } from '../Axis';
 import { Heightmap } from './WorldgenStep';
 
-const BlockAgeConfig: ObjectModel = {
+const BlockAgeConfig = Obj({
   mossiness: FloatNode()
-};
-const BlockIgnoreConfig: ObjectModel = {
+});
+const BlockIgnoreConfig = Obj({
   blocks: ListNode(ResourceNode('block_state'))
-};
-const BlockRotConfig: ObjectModel = {
+});
+const BlockRotConfig = Obj({
   integrity: IntNode({ default: 1 })
-};
-const GravityConfig: ObjectModel = {
+});
+const GravityConfig = Obj({
   heightmap: {
     ...Heightmap,
     default: Heightmap.values.find((o) => o.value === 'WORLD_SURFACE_WG')
   } as EnumNodeParams,
   offset: IntNode({ default: 0 })
-};
+});
 
 const RuleTest = SwitchNode(
   {
-    always_true: {},
-    block_match: {
+    always_true: Empty,
+    block_match: Obj({
       block: ResourceNode('block')
-    },
-    blockstate_match: {
+    }),
+    blockstate_match: Obj({
       block_state: ResourceNode('block_state')
-    },
-    random_block_match: {
+    }),
+    random_block_match: Obj({
       block: ResourceNode('block'),
       ...Probability
-    },
-    random_blockstate_match: {
+    }),
+    random_blockstate_match: Obj({
       block_state: ResourceNode('block_state'),
       ...Probability
-    },
-    tag_match: {
+    }),
+    tag_match: Obj({
       tag: TagNode('block')
-    }
+    })
   },
   {},
   null,
   'predicate_type'
 );
 
-const LinearPosTest: ObjectModel = {
+const LinearPosTest = Obj({
   min_chance: FloatNode({ default: 0 }),
   max_chance: FloatNode({ default: 0 }),
   min_dist: FloatNode({ default: 0 }),
   max_dist: FloatNode({ default: 0 })
-};
+});
 
-const PosRuleTest = SwitchNode(
-  {
-    always_true: {},
-    linear_pos: LinearPosTest,
-    axis_aligned_linear_pos: {
-      ...LinearPosTest,
-      axis: EnumNode(Axis, 'y')
-    }
-  },
-  {},
-  null,
-  'predicate_type'
+const PosRuleTest = OrElse(
+  SwitchNode(
+    {
+      always_true: Empty,
+      linear_pos: LinearPosTest,
+      axis_aligned_linear_pos: Obj({
+        ...LinearPosTest.records,
+        axis: EnumNode(Axis, 'y')
+      })
+    },
+    {},
+    null,
+    'predicate_type'
+  ),
+  { predicate_type: 'always_true' }
 );
 
-const ProcessorRule = ObjectNode({
+const ProcessorRule = Obj({
   input_predicate: RuleTest,
   location_predicate: RuleTest,
   position_predicate: PosRuleTest,
@@ -109,16 +108,16 @@ const CarrotRuleProcessor = {
 
 const StructureProcessor = SwitchNode(
   {
-    blackstone_replace: {},
+    blackstone_replace: Empty,
     block_age: BlockAgeConfig,
     block_ignore: BlockIgnoreConfig,
     block_rot: BlockRotConfig,
     gravity: GravityConfig,
-    jigsaw_replacement: {},
-    lava_submerged_block: {},
-    nop: {},
-    protected_blocks: {},
-    rule: { rules: ListNode(ProcessorRule) }
+    jigsaw_replacement: Empty,
+    lava_submerged_block: Empty,
+    nop: Empty,
+    protected_blocks: Empty,
+    rule: Obj({ rules: ListNode(ProcessorRule) })
   },
   {
     block_age: {
@@ -139,7 +138,10 @@ const StructureProcessor = SwitchNode(
 const ProcessorListNode = ListNode(StructureProcessor);
 
 export const ProcessorList: Model = {
-  node: EitherNode({ processors: ProcessorListNode }, ProcessorListNode),
+  node: EitherNode(
+    Obj({ processors: ProcessorListNode }),
+    ProcessorListNode
+  ),
   preset: () => ({
     processors: [CarrotRuleProcessor]
   })

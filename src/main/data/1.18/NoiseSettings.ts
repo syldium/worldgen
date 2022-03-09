@@ -1,22 +1,22 @@
-import { Model, ObjectModel } from '../../model/Model';
+import { Model } from '../../model/Model';
 import { BoolNode } from '../../model/node/BoolNode';
 import { EitherNode } from '../../model/node/EitherNode';
 import { EnumNode } from '../../model/node/EnumNode';
 import { DoubleNode, FloatNode } from '../../model/node/FloatNode';
 import { IntNode } from '../../model/node/IntNode';
 import { ListNode } from '../../model/node/ListNode';
-import { ObjectNode } from '../../model/node/ObjectNode';
+import { Obj } from '../../model/node/ObjectNode';
 import { ResourceNode } from '../../model/node/ResourceNode';
 import { SamplingConfig, StructuresConfig } from '../1.17/NoiseSettings';
 import { RuleSource } from './SurfaceRule';
 
-const SplinePoint = ObjectNode({
+const SplinePoint = Obj({
   location: FloatNode(),
   value: FloatNode(),
   derivative: FloatNode()
 });
 
-const Spline = ObjectNode({
+const Spline = Obj({
   coordinate: EnumNode(
     [
       'continents',
@@ -30,19 +30,19 @@ const Spline = ObjectNode({
 
 SplinePoint.records.value = EitherNode(SplinePoint.records.value, Spline);
 
-const TerrainShaper = ObjectNode({
+const TerrainShaper = Obj({
   offset: Spline,
   factor: Spline,
   jaggedness: Spline
 });
 
-const SlideConfig = ObjectNode({
+const SlideConfig = Obj({
   target: DoubleNode(),
   size: IntNode({ min: 0 }),
   offset: IntNode()
 });
 
-const NoiseConfig = ObjectNode({
+const NoiseConfig = Obj({
   min_y: IntNode({ min: -2032, max: 2031, step: 16 }),
   height: IntNode({ min: 0, max: 4064, step: 16 }),
   sampling: SamplingConfig,
@@ -52,7 +52,7 @@ const NoiseConfig = ObjectNode({
   size_vertical: IntNode({ min: 1, max: 4 }),
   terrain_shaper: TerrainShaper
 });
-const NoiseParameters: ObjectModel = {
+const NoiseParameters = Obj({
   noise: NoiseConfig,
   default_block: ResourceNode('block_state'),
   default_fluid: ResourceNode('block_state'),
@@ -65,7 +65,7 @@ const NoiseParameters: ObjectModel = {
   noodle_caves_enabled: BoolNode(),
   legacy_random_source: BoolNode(),
   structures: StructuresConfig
-};
+});
 
 export const NoiseSettings: Model = {
   node: NoiseParameters,

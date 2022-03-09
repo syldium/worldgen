@@ -2,7 +2,7 @@ import { Model } from '../../model/Model';
 import { EnumNode } from '../../model/node/EnumNode';
 import { DoubleNode } from '../../model/node/FloatNode';
 import { IntNode } from '../../model/node/IntNode';
-import { Opt } from '../../model/node/ObjectNode';
+import { Empty, Obj, Opt } from '../../model/node/ObjectNode';
 import { SwitchNode } from '../../model/node/SwitchNode';
 import { HeightProvider } from '../1.17/HeightProvider';
 import { IntProvider } from '../1.17/NumberProvider';
@@ -11,57 +11,57 @@ import { BlockPredicateSwitch } from './BlockPredicate';
 
 const PlacementModifierSwitch = SwitchNode(
   {
-    biome: {},
-    block_predicate_filter: {
+    biome: Empty,
+    block_predicate_filter: Obj({
       predicate: BlockPredicateSwitch
-    },
-    carving_mask: {
+    }),
+    carving_mask: Obj({
       step: EnumNode(['air', 'liquid'] as const)
-    },
-    count: {
+    }),
+    count: Obj({
       count: IntProvider(0, 256)
-    },
-    count_on_every_layer: {
+    }),
+    count_on_every_layer: Obj({
       count: IntProvider(0, 256)
-    },
-    environment_scan: {
+    }),
+    environment_scan: Obj({
       direction_of_search: EnumNode(['up', 'down'] as const),
       target_condition: BlockPredicateSwitch,
       allowed_search_condition: Opt(BlockPredicateSwitch),
       max_steps: IntNode({ min: 1, max: 32 })
-    },
-    heightmap: {
+    }),
+    heightmap: Obj({
       heightmap: Heightmap
-    },
-    height_range: {
+    }),
+    height_range: Obj({
       height: HeightProvider
-    },
-    in_square: {},
-    noise_based_count: {
+    }),
+    in_square: Empty,
+    noise_based_count: Obj({
       noise_to_count_ratio: IntNode(),
       noise_factor: DoubleNode(),
       noise_offset: DoubleNode({ default: 0 })
-    },
-    noise_threshold_count: {
+    }),
+    noise_threshold_count: Obj({
       noise_level: DoubleNode(),
       below_noise: IntNode(),
       above_noise: IntNode()
-    },
-    rarity_filter: {
+    }),
+    rarity_filter: Obj({
       chance: IntNode({ min: 1 })
-    },
-    random_offset: {
+    }),
+    random_offset: Obj({
       xz_spread: IntProvider(-16, 16),
       y_spread: IntProvider(-16, 16)
-    },
-    surface_relative_threshold_filter: {
+    }),
+    surface_relative_threshold_filter: Obj({
       heightmap: Heightmap,
       min_inclusive: Opt(IntNode()),
       max_inclusive: Opt(IntNode())
-    },
-    surface_water_depth_filter: {
+    }),
+    surface_water_depth_filter: Obj({
       max_water_depth: IntNode()
-    }
+    })
   },
   {
     block_predicate_filter: {

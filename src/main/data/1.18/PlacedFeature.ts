@@ -1,12 +1,13 @@
 import { Model } from '../../model/Model';
 import { ListNode } from '../../model/node/ListNode';
+import { Obj } from '../../model/node/ObjectNode';
 import { ResourceNode } from '../../model/node/ResourceNode';
 
 export const PlacedFeature: Model = {
-  node: {
+  node: Obj({
     feature: ResourceNode('worldgen/configured_feature'),
     placement: ListNode(ResourceNode('worldgen/placement_modifier'))
-  },
+  }),
   preset: () => ({
     feature: 'minecraft:trees_plains',
     placement: [

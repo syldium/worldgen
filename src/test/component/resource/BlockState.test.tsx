@@ -42,13 +42,11 @@ describe('block state form', function () {
     fireEvent.change(container.querySelector('#block') as HTMLSelectElement, {
       target: { value: 'mod:double_block' }
     });
-    expect(changeCallback).toHaveBeenCalledWith({
-      block: {
-        Name: 'mod:double_block',
-        Properties: {
-          face: '0',
-          type: 'b'
-        }
+    expect(changeCallback).toHaveBeenCalledWith('block', {
+      Name: 'mod:double_block',
+      Properties: {
+        face: '0',
+        type: 'b'
       }
     });
   });

@@ -1,12 +1,13 @@
-import { Model, ObjectModel } from '../../model/Model';
+import type { Model } from '../../model/Model';
+import { Obj } from '../../model/node/ObjectNode';
 import { ResourceNode } from '../../model/node/ResourceNode';
 import { forEveryType } from '../../model/node/SwitchNode';
 
-const config: ObjectModel = {
+const config = Obj({
   top_material: ResourceNode('block_state'),
   under_material: ResourceNode('block_state'),
   underwater_material: ResourceNode('block_state')
-};
+});
 
 const types = [
   'default',

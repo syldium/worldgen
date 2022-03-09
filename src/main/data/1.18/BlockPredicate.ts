@@ -1,7 +1,7 @@
 import { Model } from '../../model/Model';
 import { IntNode } from '../../model/node/IntNode';
 import { ListNode } from '../../model/node/ListNode';
-import { Opt } from '../../model/node/ObjectNode';
+import { Empty, Obj, Opt } from '../../model/node/ObjectNode';
 import { ResourceNode, TagNode } from '../../model/node/ResourceNode';
 import { SwitchNode } from '../../model/node/SwitchNode';
 import { Direction } from '../1.17/Direction';
@@ -11,45 +11,45 @@ const Offset = Opt(ListNode(IntNode({ min: -16, max: 16 }), 3));
 
 export const BlockPredicateSwitch = SwitchNode(
   {
-    all_of: {
+    all_of: Obj({
       predicates: List
-    },
-    any_of: {
+    }),
+    any_of: Obj({
       predicates: List
-    },
-    has_sturdy_face: {
+    }),
+    has_sturdy_face: Obj({
       offset: Offset,
       direction: Direction
-    },
-    inside_world_bounds: {
+    }),
+    inside_world_bounds: Obj({
       offset: Offset
-    },
-    matching_blocks: {
+    }),
+    matching_blocks: Obj({
       blocks: ListNode(ResourceNode('block')),
       offset: Offset
-    },
-    matching_block_tag: {
+    }),
+    matching_block_tag: Obj({
       offset: Offset,
       tag: TagNode('block')
-    },
-    matching_fluids: {
+    }),
+    matching_fluids: Obj({
       blocks: ListNode(ResourceNode('block')), // TODO fluid type
       offset: Offset
-    },
-    not: {
+    }),
+    not: Obj({
       predicate: ResourceNode('block_predicate')
-    },
-    replaceable: {
+    }),
+    replaceable: Obj({
       offset: Offset
-    },
-    solid: {
+    }),
+    solid: Obj({
       offset: Offset
-    },
-    true: {},
-    would_survive: {
+    }),
+    true: Empty,
+    would_survive: Obj({
       offset: Offset,
       state: ResourceNode('block_state')
-    }
+    })
   },
   {
     all_of: {

@@ -1,9 +1,9 @@
-import { Option } from '../../component/ui/Select';
-import { Model, ObjectModel } from '../../model/Model';
+import type { Option } from '../../component/ui/Select';
+import type { Model } from '../../model/Model';
 import { BoolNode } from '../../model/node/BoolNode';
 import { IntNode } from '../../model/node/IntNode';
 import { ListNode } from '../../model/node/ListNode';
-import { ObjectNode } from '../../model/node/ObjectNode';
+import { Empty, Obj } from '../../model/node/ObjectNode';
 import { IdentifierNode, ResourceNode } from '../../model/node/ResourceNode';
 import { SwitchNode } from '../../model/node/SwitchNode';
 import { labelizeOption } from '../../util/LabelHelper';
@@ -13,31 +13,31 @@ import {
   VANILLA_LAYERED_BIOME_SOURCE
 } from './BiomeSource';
 
-const FlatBlockLayer = ObjectNode({
+const FlatBlockLayer = Obj({
   block: IdentifierNode('block'),
   height: IntNode({ min: 0, max: 4064 })
 });
 
-const FlatGenerator: ObjectModel = {
-  settings: ObjectNode({
+const FlatGenerator = Obj({
+  settings: Obj({
     //structures: ListNode(), // TODO
     layers: ListNode(FlatBlockLayer),
     features: BoolNode(false),
     lakes: BoolNode(false),
     biome: IdentifierNode('worldgen/biome')
   })
-};
-const NoiseGenerator: ObjectModel = {
+});
+const NoiseGenerator = Obj({
   biome_source: ResourceNode('worldgen/biome_source'),
   seed: IntNode(),
   settings: IdentifierNode('worldgen/noise_settings')
-};
+});
 
 const generatorSeed = 286956243;
 export const ChunkGenerator: Model = {
   node: SwitchNode(
     {
-      debug: {},
+      debug: Empty,
       flat: FlatGenerator,
       noise: NoiseGenerator
     },

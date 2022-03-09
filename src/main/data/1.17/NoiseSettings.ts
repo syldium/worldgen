@@ -4,24 +4,24 @@ import { BoolNode } from '../../model/node/BoolNode';
 import { FloatNode } from '../../model/node/FloatNode';
 import { IntNode } from '../../model/node/IntNode';
 import { MapNode } from '../../model/node/MapNode';
-import { ObjectNode, Opt } from '../../model/node/ObjectNode';
+import { Obj, Opt } from '../../model/node/ObjectNode';
 import { IdentifierNode, ResourceNode } from '../../model/node/ResourceNode';
 import { labelizeOption } from '../../util/LabelHelper';
 
-export const SamplingConfig = ObjectNode({
+export const SamplingConfig = Obj({
   xz_scale: FloatNode({ min: 0.001, max: 1000 }),
   y_scale: FloatNode({ min: 0.001, max: 1000 }),
   xz_factor: FloatNode({ min: 0.001, max: 1000 }),
   y_factor: FloatNode({ min: 0.001, max: 1000 })
 });
 
-const SlideConfig = ObjectNode({
+const SlideConfig = Obj({
   target: IntNode(),
   size: IntNode({ min: 0 }),
   offset: IntNode()
 });
 
-const NoiseConfig = ObjectNode({
+const NoiseConfig = Obj({
   min_y: IntNode({ min: -2032, max: 2031, step: 16 }),
   height: IntNode({ min: 0, max: 4064, step: 16 }),
   sampling: SamplingConfig,
@@ -37,14 +37,14 @@ const NoiseConfig = ObjectNode({
   amplified: BoolNode(false)
 });
 
-const StructureConfig = ObjectNode({
+const StructureConfig = Obj({
   spacing: IntNode({ min: 0, max: 4096 }),
   separation: IntNode({ min: 0, max: 4096 }),
   salt: IntNode({ min: 0 })
 });
-export const StructuresConfig = ObjectNode({
+export const StructuresConfig = Obj({
   stronghold: Opt(
-    ObjectNode({
+    Obj({
       count: IntNode({ min: 1, max: 4095 }),
       distance: IntNode({ min: 0, max: 1023 }),
       spread: IntNode({ min: 0, max: 1023 })
@@ -74,7 +74,7 @@ export const NoiseParameters = {
 };
 
 export const NoiseSettings: Model = {
-  node: NoiseParameters,
+  node: Obj(NoiseParameters),
   preset: () => ({
     noise_caves_enabled: false,
     deepslate_enabled: false,

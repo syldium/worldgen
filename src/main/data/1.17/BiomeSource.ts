@@ -3,13 +3,13 @@ import { BoolNode } from '../../model/node/BoolNode';
 import { FloatNode } from '../../model/node/FloatNode';
 import { IntNode, LongNode } from '../../model/node/IntNode';
 import { ListNode } from '../../model/node/ListNode';
-import { ObjectNode } from '../../model/node/ObjectNode';
+import { Obj } from '../../model/node/ObjectNode';
 import { IdentifierNode, ResourceNode } from '../../model/node/ResourceNode';
 import { SwitchNode } from '../../model/node/SwitchNode';
 
-const BiomeNoiseParameters = ObjectNode({
+const BiomeNoiseParameters = Obj({
   biome: ResourceNode('worldgen/biome'),
-  parameters: ObjectNode({
+  parameters: Obj({
     altitude: FloatNode({ min: -2, max: 2 }),
     weirdness: FloatNode({ min: -2, max: 2 }),
     temperature: FloatNode({ min: -2, max: 2 }),
@@ -18,7 +18,7 @@ const BiomeNoiseParameters = ObjectNode({
   })
 });
 
-export const NoiseValues = ObjectNode({
+export const NoiseValues = Obj({
   firstOctave: IntNode(),
   amplitudes: ListNode(FloatNode())
 });
@@ -34,29 +34,29 @@ export const FIXED_BIOME_SOURCE = {
 
 export const BiomeSourceSwitch = SwitchNode(
   {
-    checkerboard: {
+    checkerboard: Obj({
       biomes: ListNode(IdentifierNode('worldgen/biome')),
       scale: IntNode({ min: 0, max: 62, default: 2 })
-    },
-    fixed: {
+    }),
+    fixed: Obj({
       biome: IdentifierNode('worldgen/biome')
-    },
-    multi_noise: {
+    }),
+    multi_noise: Obj({
       seed: LongNode(),
       biomes: ListNode(BiomeNoiseParameters),
       humidity_noise: NoiseValues,
       altitude_noise: NoiseValues,
       weirdness_noise: NoiseValues,
       temperature_noise: NoiseValues
-    },
-    vanilla_layered: {
+    }),
+    vanilla_layered: Obj({
       legacy_biome_init_layer: BoolNode(false),
       large_biomes: BoolNode(false),
       seed: LongNode()
-    },
-    the_end: {
+    }),
+    the_end: Obj({
       seed: LongNode()
-    }
+    })
   },
   {
     checkerboard: {

@@ -1,10 +1,10 @@
-import { ModelNode, NodeBase } from './Node';
+import type { ModelNode, NodeBase } from './Node';
 
 export interface ObjectNodeParams extends NodeBase<'object'> {
   records: Record<string, ModelNode>;
 }
 
-export const ObjectNode = (
+export const Obj = (
   records: Record<string, ModelNode>,
   def?: Record<string, unknown>
 ): ObjectNodeParams => ({
@@ -20,6 +20,7 @@ export const ObjectNode = (
     );
   }
 });
+export const Empty = Obj({});
 
 export interface OptionalNodeParams extends NodeBase<'optional'> {
   node: ModelNode;
@@ -30,3 +31,8 @@ export const Opt = (node: ModelNode): OptionalNodeParams => ({
   type: 'optional',
   isValid: (value: unknown) => value == null || node.isValid(value)
 });
+
+export const OrElse = <T extends ModelNode>(node: T, defValue: unknown): T => {
+  node.default = defValue;
+  return node;
+};

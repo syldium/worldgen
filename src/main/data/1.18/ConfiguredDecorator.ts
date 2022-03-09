@@ -1,6 +1,7 @@
-import { Model, ObjectModel } from '../../model/Model';
+import { Model } from '../../model/Model';
 import { IntNode } from '../../model/node/IntNode';
 import { ListNode } from '../../model/node/ListNode';
+import { Obj } from '../../model/node/ObjectNode';
 import { ResourceNode } from '../../model/node/ResourceNode';
 import { SwitchNode } from '../../model/node/SwitchNode';
 import { INT_MAX_VALUE, INT_MIN_VALUE } from '../../util/MathHelper';
@@ -11,21 +12,21 @@ import {
 import { BlockPos } from '../1.17/ConfiguredFeature';
 import { Heightmap } from '../1.17/WorldgenStep';
 
-const BlockFilterConfig: ObjectModel = {
+const BlockFilterConfig = Obj({
   allowed: ListNode(ResourceNode('block')),
   disallowed: ListNode(ResourceNode('block')),
   offset: BlockPos
-};
+});
 
-const BlockSurvivesFilterConfig: ObjectModel = {
+const BlockSurvivesFilterConfig = Obj({
   state: ResourceNode('block_state')
-};
+});
 
-const SurfaceRelativeThresholdConfig: ObjectModel = {
+const SurfaceRelativeThresholdConfig = Obj({
   heightmap: Heightmap,
   min_inclusive: IntNode({ default: INT_MIN_VALUE }),
   max_inclusive: IntNode({ default: INT_MAX_VALUE })
-};
+});
 
 export const ConfiguredDecorator: Model = {
   node: SwitchNode(

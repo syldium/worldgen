@@ -1,7 +1,7 @@
 import { EitherNode, EitherNodeParams } from '../../model/node/EitherNode';
 import { NumberNodeParams } from '../../model/node/IntNode';
 import { ListNode } from '../../model/node/ListNode';
-import { ObjectNode } from '../../model/node/ObjectNode';
+import { Obj } from '../../model/node/ObjectNode';
 
 export const RangeInterval = (
   node: NumberNodeParams,
@@ -9,7 +9,7 @@ export const RangeInterval = (
   max = 'max'
 ): EitherNodeParams =>
   EitherNode(
-    ObjectNode({
+    Obj({
       [min]: node,
       [max]: node
     }),

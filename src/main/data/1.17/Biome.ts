@@ -1,13 +1,13 @@
-import { Model, ObjectModel } from '../../model/Model';
+import { Model } from '../../model/Model';
 import { BoolNode } from '../../model/node/BoolNode';
 import { EnumNode } from '../../model/node/EnumNode';
 import { DoubleNode, FloatNode } from '../../model/node/FloatNode';
 import { ColorNode, IntNode } from '../../model/node/IntNode';
 import { ListNode } from '../../model/node/ListNode';
-import { ObjectNode, Opt } from '../../model/node/ObjectNode';
+import { Obj, Opt } from '../../model/node/ObjectNode';
 import { IdentifierNode, ResourceNode } from '../../model/node/ResourceNode';
 
-const BiomeEffects = ObjectNode({
+const BiomeEffects = Obj({
   fog_color: ColorNode(0xc0d8ff),
   water_color: ColorNode(0x3f76e4),
   water_fog_color: ColorNode(0x050533),
@@ -28,7 +28,7 @@ const BiomeEffects = ObjectNode({
   ),
   ambient_sound: Opt(IdentifierNode('sound_event')),
   mood_sound: Opt(
-    ObjectNode(
+    Obj(
       {
         sound: IdentifierNode('sound_event'),
         tick_delay: IntNode(),
@@ -44,7 +44,7 @@ const BiomeEffects = ObjectNode({
     )
   ),
   additions_sound: Opt(
-    ObjectNode(
+    Obj(
       {
         sound: IdentifierNode('sound_event'),
         tick_chance: DoubleNode()
@@ -56,7 +56,7 @@ const BiomeEffects = ObjectNode({
     )
   ),
   music: Opt(
-    ObjectNode(
+    Obj(
       {
         sound: IdentifierNode('sound_event'),
         min_delay: IntNode(),
@@ -74,7 +74,7 @@ const BiomeEffects = ObjectNode({
 });
 
 export const Spawners = ListNode(
-  ObjectNode({
+  Obj({
     type: IdentifierNode('entity_type'),
     weight: IntNode({ min: 0 }),
     minCount: IntNode({ min: 0 }),
@@ -82,12 +82,12 @@ export const Spawners = ListNode(
   })
 );
 
-const SpawnCost = ObjectNode({
+const SpawnCost = Obj({
   energy_budget: DoubleNode({ min: 0 }),
   charge: DoubleNode({ min: 0 })
 });
 
-export const BiomeSettings: ObjectModel = {
+export const BiomeSettings = {
   depth: FloatNode(),
   scale: FloatNode(),
   downfall: FloatNode(),
@@ -118,7 +118,7 @@ export const BiomeSettings: ObjectModel = {
   temperature: FloatNode(),
   temperature_modifier: EnumNode(['none', 'frozen'] as const, 'none'),
   surface_builder: IdentifierNode('worldgen/configured_surface_builder'),
-  carvers: ObjectNode({
+  carvers: Obj({
     air: ListNode(ResourceNode('worldgen/configured_carver')),
     liquid: ListNode(ResourceNode('worldgen/configured_carver'))
   }),
@@ -130,7 +130,7 @@ export const BiomeSettings: ObjectModel = {
     default: 0.1
   }),
   player_spawn_friendly: BoolNode(false),
-  spawners: ObjectNode({
+  spawners: Obj({
     monster: Spawners,
     creature: Spawners,
     ambient: Spawners,
@@ -143,7 +143,7 @@ export const BiomeSettings: ObjectModel = {
 };
 
 export const Biome: Model = {
-  node: BiomeSettings,
+  node: Obj(BiomeSettings),
   preset: () => ({
     scale: 0.05,
     effects: {
