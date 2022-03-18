@@ -93,11 +93,13 @@ export function NumberInput({
     return (
       <input
         type="number"
-        defaultValue={value}
         min={min}
         max={max}
         step={stepValue}
         size={inputSize}
+        value={value}
+        onChange={handleChange}
+        {...props}
       />
     );
   }

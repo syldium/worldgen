@@ -270,7 +270,9 @@ function CommonListInput(
   );
 }
 
-function WeightedElement({ name, node, value, onChange }: NodeProps<ModelNode>) {
+function WeightedElement(
+  { name, node, value, onChange }: NodeProps<ModelNode>
+) {
   const weightId = useId(name);
   const objValue = useValue(Object(value));
   const handleDataChange = useCallback(
@@ -544,6 +546,7 @@ export function SwitchInput(
       <legend>
         <Select
           options={options}
+          testId={name.toString()}
           value={options.find(o => o.value === namespacedType) || null}
           onChange={handleTypeChange}
         />
@@ -562,7 +565,7 @@ export function SwitchInput(
         ) :
         (
           <p>
-            No <code>type</code> selected!
+            No type selected!
           </p>
         )}
       {node.commonFields !== Empty && (
@@ -821,14 +824,18 @@ function SelectEnum(
 function StringInput(
   { name, node, value, onChange }: NodeProps<StringNodeParams>
 ): JSX.Element {
+  const id = useId(name);
   const handleChange = (e: ChangeEvent<HTMLInputElement>) =>
     onChange(name, e.target.value);
   return (
-    <input
-      type="text"
-      value={String(value || node.default)}
-      onChange={handleChange}
-    />
+    <Labelized id={id} name={name}>
+      <input
+        type="text"
+        id={id}
+        value={String(value || node.default)}
+        onChange={handleChange}
+      />
+    </Labelized>
   );
 }
 

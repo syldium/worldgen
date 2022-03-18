@@ -23,7 +23,10 @@ export function Select<
   IsMulti extends boolean = false,
   GroupType extends GroupBase<OptionType> = GroupBase<OptionType>
 >(
-  props: SelectProps<OptionType, IsMulti, GroupType> & { creatable?: true }
+  props: SelectProps<OptionType, IsMulti, GroupType> & {
+    creatable?: true;
+    testId?: string;
+  }
 ): JSX.Element {
   if (!import.meta.env || import.meta.env.SSR) {
     return HtmlSelect(props);
@@ -45,8 +48,11 @@ function HtmlSelect<
   name,
   options,
   value,
-  onChange
-}: SelectProps<OptionType, IsMulti, GroupType>): JSX.Element {
+  onChange,
+  testId
+}: SelectProps<OptionType, IsMulti, GroupType> & {
+  testId?: string;
+}): JSX.Element {
   const handleChange = (e: ChangeEvent<HTMLSelectElement>) => {
     const actionPlaceholder = {} as ActionMeta<OptionType>;
     if (isMulti) {
@@ -79,6 +85,7 @@ function HtmlSelect<
       value={val}
       onChange={handleChange}
       multiple={isMulti}
+      data-testid={testId}
     >
       {options!.map((o) => (
         <option value={o.value} key={o.value}>
