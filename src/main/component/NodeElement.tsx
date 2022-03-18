@@ -716,7 +716,7 @@ function ResourceInput(
   } else if (node.registry === 'block_state') {
     return (
       <BlockState
-        name={name.toString()}
+        name={name}
         value={value as BlockStateValue}
         onChange={onChange}
       >

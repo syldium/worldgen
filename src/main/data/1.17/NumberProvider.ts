@@ -42,7 +42,6 @@ export const IntProvider = (
 ): ModelNode => {
   const [node, clampedNode] = SimpleIntProvider(min, max);
   const [nonClampedNode, nonClampedClampedNode] = SimpleIntProvider();
-  // TODO check
   nonClampedClampedNode.source = nonClampedNode;
   clampedNode.source = nonClampedNode;
   return node;

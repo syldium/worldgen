@@ -96,7 +96,7 @@ export function BlockStateProvider({
 
   const handleSimpleStateChange = useCallback(
     (_: ObjectKey, state: BlockStateValue) =>
-      onChange(name, { ...value, ...state }),
+      onChange(name, { ...value, state }),
     [onChange, name, value]
   );
 
