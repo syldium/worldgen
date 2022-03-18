@@ -24,6 +24,7 @@ import {
 } from '../../viewer/block/StateProvider';
 import { NodeElement, ObjectKey } from '../NodeElement';
 import { Button } from '../ui/Button';
+import { NumberInput } from '../ui/NumberInput';
 import Select, { Option } from '../ui/Select';
 import { BlockState, BlockStateValue } from './BlockState';
 
@@ -218,7 +219,7 @@ function WeightedProvider({
         );
         return (
           <BlockState
-            name={i.toString()}
+            name={i}
             value={block.data}
             options={filteredOptions}
             key={block.__reactKey}
@@ -226,15 +227,15 @@ function WeightedProvider({
               update({ ...block, data: state }, i);
             }}
           >
-            <div className="mls">
-              Weight:{' '}
-              <input
-                type="number"
+            <div className="mls flex">
+              <label htmlFor={block.__reactKey + 'w'}>Weight</label>:{' '}
+              <NumberInput
                 value={block.weight}
                 min={0}
                 size={3}
-                onChange={(event) => {
-                  update({ ...block, weight: parseInt(event.target.value) }, i);
+                id={block.__reactKey + 'w'}
+                onChange={(weight) => {
+                  update({ ...block, weight }, i);
                 }}
               />
             </div>

@@ -23,10 +23,11 @@ export function NumberInput({
   step = 1,
   min = INT_MIN_VALUE,
   max = INT_MAX_VALUE,
+  size,
   onChange,
   ...props
 }: NumberInputProps): JSX.Element {
-  const size = Math.max(String(value).length, 3) + 1;
+  const inputSize = size ?? Math.max(String(value).length, 3) + 1;
 
   const ref = useRef<HTMLInputElement>(null);
   const handleChange: ChangeEventHandler<HTMLInputElement> = function (event) {
@@ -96,7 +97,7 @@ export function NumberInput({
         min={min}
         max={max}
         step={stepValue}
-        size={size}
+        size={inputSize}
       />
     );
   }
@@ -109,7 +110,7 @@ export function NumberInput({
           min={min}
           max={max}
           step={stepValue}
-          size={size}
+          size={inputSize}
           value={value}
           onChange={handleChange}
           ref={ref}

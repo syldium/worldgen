@@ -1,4 +1,10 @@
-import type { ChangeEvent, MouseEvent, ReactElement, ReactNode } from 'react';
+import type {
+  ChangeEvent,
+  FunctionComponent,
+  MouseEvent,
+  ReactElement,
+  ReactNode
+} from 'react';
 import { createElement, useCallback, useContext, useMemo } from 'react';
 import type { OnChangeValue } from 'react-select/dist/declarations/src/types';
 import { GameContext } from '../context/GameRegistry';
@@ -150,16 +156,14 @@ function EitherInput(
   const i = Math.max(node.findCurrentIndex(value), 0);
   return (
     <fieldset>
-      <FieldsetLegend name={name} />
+      <FieldsetLegend name={name}>{children}</FieldsetLegend>
       <NodeElement
         name={name}
         node={node.nodes[i]}
         value={value}
         onChange={onChange}
         noFieldset={true}
-      >
-        {children}
-      </NodeElement>
+      />
     </fieldset>
   );
 }
@@ -218,7 +222,9 @@ function CommonListInput(
   const [visible, setVisible] = useToggle(
     elements.length < 3 || name === 'features'
   );
-  // TODO weighted
+  const El: FunctionComponent<NodeProps<ModelNode>> = node.weighted ?
+    WeightedElement :
+    NodeElement;
   return (
     <div className="node-list">
       <div className="toggle-label">
@@ -244,7 +250,7 @@ function CommonListInput(
       >
         {visible &&
           elements.map((element, i) => (
-            <NodeElement
+            <El
               key={i}
               name={i}
               node={node.of}
@@ -257,10 +263,43 @@ function CommonListInput(
               >
                 Remove
               </Button>
-            </NodeElement>
+            </El>
           ))}
       </div>
     </div>
+  );
+}
+
+function WeightedElement({ name, node, value, onChange }: NodeProps<ModelNode>) {
+  const weightId = useId(name);
+  const objValue = useValue(Object(value));
+  const handleDataChange = useCallback(
+    (_: ObjectKey, data: unknown) =>
+      onChange(name, { ...objValue.current, data }),
+    [name, objValue, onChange]
+  );
+  const handleWeightChange = useCallback(
+    (weight: number) => onChange(name, { ...objValue.current, weight }),
+    [name, objValue, onChange]
+  );
+  return (
+    <NodeElement
+      name="data"
+      node={node}
+      value={objValue.current.data}
+      onChange={handleDataChange}
+    >
+      <label htmlFor={weightId}>Weight</label>:{' '}
+      <div>
+        <NumberInputWrapper
+          id={weightId}
+          min={0}
+          size={3}
+          value={objValue.current.weight}
+          onChange={handleWeightChange}
+        />
+      </div>
+    </NodeElement>
   );
 }
 
