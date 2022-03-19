@@ -1,5 +1,7 @@
 import type { Model } from '../../model/Model';
+import { ListNode } from '../../model/node/ListNode';
 import { Obj, ObjectNodeParams } from '../../model/node/ObjectNode';
+import { ResourceNode } from '../../model/node/ResourceNode';
 import { BiomeSettings as Biome1_17, Spawners } from '../1.17/Biome';
 
 /* eslint-disable */
@@ -16,6 +18,7 @@ const {
 export const Biome: Model = {
   node: Obj({
     ...v1_17,
+    features: ListNode(ListNode(ResourceNode('worldgen/placed_feature'))),
     spawners: Obj({
       ...(v1_17.spawners as ObjectNodeParams).records,
       axolotls: Spawners
@@ -43,9 +46,17 @@ export const Biome: Model = {
     },
     features: [
       [],
-      ['minecraft:lake_lava_underground', 'minecraft:lake_lava_surface'],
-      ['minecraft:amethyst_geode'],
-      ['minecraft:monster_room', 'minecraft:monster_room_deep'],
+      [
+        'minecraft:lake_lava_underground',
+        'minecraft:lake_lava_surface'
+      ],
+      [
+        'minecraft:amethyst_geode'
+      ],
+      [
+        'minecraft:monster_room',
+        'minecraft:monster_room_deep'
+      ],
       [],
       [],
       [
@@ -79,7 +90,10 @@ export const Biome: Model = {
         'minecraft:disk_gravel'
       ],
       [],
-      ['minecraft:spring_water', 'minecraft:spring_lava'],
+      [
+        'minecraft:spring_water',
+        'minecraft:spring_lava'
+      ],
       [
         'minecraft:glow_lichen',
         'minecraft:patch_tall_grass_2',
@@ -91,7 +105,9 @@ export const Biome: Model = {
         'minecraft:patch_sugar_cane',
         'minecraft:patch_pumpkin'
       ],
-      ['minecraft:freeze_top_layer']
+      [
+        'minecraft:freeze_top_layer'
+      ]
     ],
     spawners: {
       monster: [

@@ -4,7 +4,7 @@ import { CountDecoratorConfig } from '../../data/1.17/ConfiguredDecorator';
 import { useCrud } from '../../hook/useCrud';
 import { useRegistry } from '../../hook/useRegistry';
 import { useResourceSubmit } from '../../hook/useResourceSubmit';
-import { Configured, Model } from '../../model/Model';
+import { Configured } from '../../model/Model';
 import { SwitchNodeParams } from '../../model/node/SwitchNode';
 import type { Schema } from '../../model/Registry';
 import type { WorldgenRegistryKey } from '../../model/RegistryKey';
