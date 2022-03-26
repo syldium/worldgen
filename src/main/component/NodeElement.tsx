@@ -47,6 +47,7 @@ import {
   StateProvider
 } from './resource/BlockStateProvider';
 import { ParticuleEffect } from './resource/ParticuleEffect';
+import { SelectReference, SelectReferences } from './resource/SelectReference';
 import { Button } from './ui/Button';
 import { FieldsetLegend } from './ui/FieldsetLegend';
 import { Labelized } from './ui/Labelized';
@@ -637,21 +638,17 @@ function IdentifierInput(
   );
   const strValue = typeof value === 'string' ?
     removeTagHash(value) :
-    node.default;
+    String(node.default);
   const options = useOptions(
     tag ? ('tags/' + node.registry) as RegistryKey : node.registry
-  );
-  const selected = useMemo(
-    () => options.find((o) => o.value === strValue) || null,
-    [options, strValue]
   );
   return (
     <Labelized className="form-group" id={id} name={name}>
       <div className="flex">
         <div className="full-width">
-          <Select
+          <SelectReference
             options={options}
-            value={selected}
+            value={strValue}
             onChange={handleChange}
             inputId={id}
           />
@@ -681,15 +678,13 @@ function IdentifierMultipleInput({
   const values = Array.isArray(value) ?
     value.map((val) => defaultNamespace(val as string)) :
     [];
-  const selected = options.filter((option) => values.includes(option.value));
   return (
     <Labelized id={id} name={name}>
-      <Select
+      <SelectReferences
         options={options}
-        value={selected}
+        value={values}
         onChange={handleChange}
         inputId={id}
-        isMulti={true}
       />
     </Labelized>
   );
