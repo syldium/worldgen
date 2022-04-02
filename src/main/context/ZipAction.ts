@@ -61,15 +61,15 @@ export class ZipAction {
       reader.onload = () => {
         const buffer = reader.result as ArrayBuffer;
         worker.onmessage = ({ data }: MessageEvent<ExtractDoneMessage>) => {
-          const holder = new WorldgenRegistryHolder(7);
-          for (const [registryKey, entries] of Object.entries(data[0])) {
+          const holder = new WorldgenRegistryHolder(data[0]);
+          for (const [registryKey, entries] of Object.entries(data[1])) {
             const registry =
               holder.worldgen[registryKey as WorldgenRegistryKey];
             for (const entry of Object.entries(entries)) {
               registry.register(...entry);
             }
           }
-          resolve(new ZipAction(holder, data[1]));
+          resolve(new ZipAction(holder, data[2]));
         };
         worker.onerror = ({ message }: ErrorEvent) => reject(message);
         worker.postMessage(

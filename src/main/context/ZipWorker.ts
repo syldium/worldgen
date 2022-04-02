@@ -3,6 +3,7 @@ import type { Schema } from '../model/Registry';
 import type { WorldgenRegistryKey } from '../model/RegistryKey';
 import { removeReactKeyReplacer } from '../util/DomHelper';
 import { findNamespacedKeyAndRegistry, resourcePath } from '../util/PathHelper';
+import type { PackFormat } from './GameVersion';
 import type { McMeta, ReadResult } from './ZipAction';
 
 declare const self: DedicatedWorkerGlobalScope;
@@ -14,7 +15,7 @@ export type ZipWorkerboundMessage =
   | { buffer: ArrayBuffer; action: 'extract' | 'unzip' }
   | { packMeta: McMeta; registries: RawRegistries; action: 'zip' }
   | { action: 'clear' };
-export type ExtractDoneMessage = [RawRegistries, number];
+export type ExtractDoneMessage = [PackFormat, RawRegistries, number];
 export type UnzipDoneMessage = Unzipped;
 export type ZipDoneMessage = Uint8Array;
 
@@ -55,7 +56,7 @@ function createDatapack(
   return zipSync(data);
 }
 
-function extractDatapack(unzipped: Unzipped): [RawRegistries, number] {
+function extractDatapack(unzipped: Unzipped): ExtractDoneMessage {
   const packMeta = unzipped['pack.mcmeta'];
   if (!packMeta) {
     throw Error('Invalid datapack: no pack.mcmeta');
@@ -100,5 +101,5 @@ function extractDatapack(unzipped: Unzipped): [RawRegistries, number] {
   if (failures) {
     console.error(errors);
   }
-  return [registries, failures];
+  return [mcmeta.pack.pack_format as PackFormat, registries, failures];
 }
