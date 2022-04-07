@@ -5,38 +5,34 @@ import {
   PackFormatNumber,
   PackFormatString
 } from '../context/GameVersion';
-import { Registries1_17 } from '../data/1.17/v1_17';
 import { Registries1_18_2 } from '../data/1.18.2/v1_18_2';
 import { loadVanillaZip } from '../util/FetchHelper';
 import { customOption, stripDefaultNamespace } from '../util/LabelHelper';
 import { Model } from './Model';
-import type { WorldgenRegistryKey } from './RegistryKey';
+import type {
+  GameRegistryKey,
+  RegistryKey,
+  WorldgenRegistryKey
+} from './RegistryKey';
+import { GameRegistryKeys } from './RegistryKey';
 
-export interface Registry {
-  options: Option[];
-  vanilla: Option[];
-}
+export type ValueProvider = readonly Option[];
+export type RegistryValueProvider = {
+  [type in RegistryKey]?: { registry: ValueProvider; tag: ValueProvider };
+};
 
-export type PostLoadCallback<S = Schema> = (schema: S) => void;
-
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export type Schema = unknown;
 export type RegistryEntries = { [identifier: string]: Schema };
-export class WorldgenRegistry implements Registry {
-  readonly entries: RegistryEntries;
-  readonly model: Model;
-  options: Option[];
-  vanilla: Option[];
 
-  constructor(
-    model: Model,
-    vanilla: Option[] = [],
-    entries: RegistryEntries = {}
-  ) {
-    this.model = model;
-    this.options = [...vanilla];
+export class Registry {
+  options: Option[] = [];
+  vanilla: Option[] = [];
+  readonly entries: RegistryEntries = {};
+  private populated = false;
+
+  constructor(vanilla: Option[] = []) {
     this.vanilla = vanilla;
-    this.entries = entries;
+    this.options = [...vanilla];
   }
 
   register(namespacedKey: string, schema: Schema): Schema | undefined {
@@ -53,6 +49,51 @@ export class WorldgenRegistry implements Registry {
       }
     }
     return alreadyExists;
+  }
+
+  withVanilla(current: readonly Option[]): this {
+    if (this.populated || !current.length) {
+      return this;
+    }
+    this.vanilla = [...current];
+    this.populated = true;
+    if (!this.options.length) {
+      this.options = [...current];
+      return this;
+    }
+
+    let edited = false; // If the options array has been modified
+    for (const option of current) {
+      if (!this.isRegistered(this.options, option)) {
+        this.options.push(option);
+        edited = true;
+      }
+    }
+    if (edited) {
+      // Recreate the array to re-render
+      this.options = [...this.options];
+    }
+    return this;
+  }
+
+  private isRegistered(collection: readonly Option[], option: Option) {
+    return collection.some(
+      (existing) => existing.value === option.value
+    );
+  }
+}
+
+export type PostLoadCallback<S = Schema> = (schema: S) => void;
+
+export class WorldgenRegistry extends Registry {
+  readonly model: Model;
+
+  constructor(
+    model: Model,
+    vanilla: Option[] = []
+  ) {
+    super(vanilla);
+    this.model = model;
   }
 
   remove(namespacedKey: string): Schema {
@@ -77,42 +118,6 @@ export class WorldgenRegistry implements Registry {
     }
     Object.assign(this.entries, other.entries);
   }
-
-  withVanilla(current: readonly Option[]): this {
-    const vanilla = this.vanilla;
-    const empty = !vanilla.length;
-    if (empty) {
-      // Use the array directly without having to check for duplicates
-      this.vanilla = [...current];
-      if (!this.options.length) {
-        // Are the custom options also empty?
-        this.options = [...current];
-        return this;
-      }
-    }
-
-    let edited = false; // If the options array has been modified
-    for (const option of current) {
-      let pushOption = true;
-      if (
-        !empty &&
-        (pushOption = !vanilla.some(
-          (existing) => existing.value === option.value
-        ))
-      ) {
-        vanilla.push(option);
-      }
-      if (pushOption && !(option.value in this.entries)) {
-        this.options.push(option);
-        edited = true;
-      }
-    }
-    if (edited) {
-      // Recreate the array to re-render
-      this.options = [...this.options];
-    }
-    return this;
-  }
 }
 
 export type BlockStateRegistry = {
@@ -125,7 +130,9 @@ export const DEFAULT_BLOCK_STATE = { default: {}, properties: {} };
 
 export type RegistryInfo = [Model, Option[]] | [Model];
 export type WorldgenRegistriesType = Record<WorldgenRegistryKey, RegistryInfo>;
-export class WorldgenRegistryHolder {
+export class RegistryHolder {
+  readonly game: Record<RegistryKey, Registry>;
+  readonly tags: Record<RegistryKey, Registry>;
   readonly worldgen: Record<WorldgenRegistryKey, WorldgenRegistry>;
   readonly packFormat: number;
   readonly gameVersion: GameVersion;
@@ -133,7 +140,7 @@ export class WorldgenRegistryHolder {
 
   constructor(
     version: GameVersion | keyof typeof PackFormatNumber,
-    provider: WorldgenRegistriesType = Registries1_17
+    provider: WorldgenRegistriesType = Registries1_18_2
   ) {
     this.packFormat = typeof version === 'number' ?
       version :
@@ -148,17 +155,27 @@ export class WorldgenRegistryHolder {
         new WorldgenRegistry(...registry)
       ])
     ) as Record<WorldgenRegistryKey, WorldgenRegistry>;
+    const gameRegistries = Object.fromEntries(
+      GameRegistryKeys.map((type) => [type, new Registry()])
+    ) as Record<GameRegistryKey, Registry>;
+    this.game = {
+      ...this.worldgen,
+      ...gameRegistries
+    };
+    this.tags = Object.fromEntries(
+      Object.keys(this.game).map((type) => [type, new Registry()])
+    ) as Record<RegistryKey, WorldgenRegistry>;
   }
 
-  static async create(version: GameVersion): Promise<WorldgenRegistryHolder> {
+  static async create(version: GameVersion): Promise<RegistryHolder> {
     if (version === '1.18') {
-      return new WorldgenRegistryHolder(
+      return new RegistryHolder(
         version,
         (await import('../data/1.18/v1_18')).Registries1_18
       );
     }
     if (version === '1.17') {
-      return new WorldgenRegistryHolder(
+      return new RegistryHolder(
         version,
         (await import('../data/1.17/v1_17')).Registries1_17
       );
@@ -166,8 +183,8 @@ export class WorldgenRegistryHolder {
     return this.def();
   }
 
-  static def(): WorldgenRegistryHolder {
-    return new WorldgenRegistryHolder('1.18.2', Registries1_18_2);
+  static def(): RegistryHolder {
+    return new RegistryHolder('1.18.2', Registries1_18_2);
   }
 
   async resource(
@@ -213,9 +230,10 @@ export class WorldgenRegistryHolder {
     return JSON.parse(strFromU8(file));
   }
 
-  withVanilla(current: WorldgenRegistryHolder): this {
-    for (const [key, registry] of this.entries) {
-      registry.withVanilla(current.worldgen[key].vanilla);
+  withVanilla(vanilla: RegistryValueProvider): this {
+    for (const [type, values] of Object.entries(vanilla)) {
+      this.game[type as RegistryKey].withVanilla(values.registry);
+      this.tags[type as RegistryKey].withVanilla(values.tag);
     }
     return this;
   }
@@ -240,7 +258,7 @@ export class WorldgenRegistryHolder {
     }
   }
 
-  isRegistered(key: string): key is WorldgenRegistryKey {
+  isWorldgen(key: string): key is WorldgenRegistryKey {
     return key in this.worldgen;
   }
 
@@ -252,7 +270,7 @@ export class WorldgenRegistryHolder {
     return this.worldgen[registryKey].register(namespacedKey, schema);
   }
 
-  doesConflict(other: WorldgenRegistryHolder): number {
+  doesConflict(other: RegistryHolder): number {
     let counter = 0;
     for (const [registryKey, registry] of this.entries) {
       for (const resourceKey of Object.keys(registry.entries)) {
@@ -265,7 +283,7 @@ export class WorldgenRegistryHolder {
     return counter;
   }
 
-  merge(other: WorldgenRegistryHolder): void {
+  merge(other: RegistryHolder): void {
     for (const [key, registry] of this.entries) {
       registry.merge(other.worldgen[key]);
     }

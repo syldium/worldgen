@@ -27,7 +27,7 @@ export const DatapackApp = ({ location }: DatapackAppProps): JSX.Element => (
       </ul>
     </NavBar>
     <main className="content">
-      {useContext(GameContext).worldgen ?
+      {useContext(GameContext).registries ?
         <Editor location={location} /> :
         <p>Loading models…</p>}
     </main>

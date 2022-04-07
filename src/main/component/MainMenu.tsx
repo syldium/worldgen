@@ -7,7 +7,7 @@ import { RemovableModelsByVersion } from '../context/GameVersion';
 import { ZipAction } from '../context/ZipAction';
 import { useToggle } from '../hook/useToggle';
 import { EmptyModel } from '../model/Model';
-import { WorldgenRegistryHolder } from '../model/Registry';
+import { RegistryHolder } from '../model/Registry';
 import type { WorldgenRegistryKey } from '../model/RegistryKey';
 import { catchToast } from '../util/ErrorHelper';
 import { navigate } from '../util/UriHelper';
@@ -18,7 +18,7 @@ import { Modal } from './ui/Modal';
 
 export function MainMenu(): JSX.Element {
   const context = useContext(GameContext);
-  const worldgen = context.worldgen!;
+  const worldgen = context.registries!;
   const [open, toggleAction] = useToggle(false);
 
   const handleGenerateClick = useCallback(
@@ -43,7 +43,7 @@ export function MainMenu(): JSX.Element {
   const handleNewDatapack = useCallback(
     function (namespace: string) {
       context.namespace = namespace;
-      context.worldgen = new WorldgenRegistryHolder('1.17');
+      context.registries = RegistryHolder.def();
       ZipAction.clearWorker();
       toggleAction(false);
     },
@@ -51,7 +51,7 @@ export function MainMenu(): JSX.Element {
   );
   const handleLoad = useCallback(
     function (zip: ZipAction) {
-      context.worldgen = zip.registries;
+      context.registries = zip.registries;
       context.namespace = zip.registries.findNamespace() || 'unset';
       toggleAction(false);
     },
@@ -89,7 +89,7 @@ export function MainMenu(): JSX.Element {
           .filter(
             (key) =>
               !RemovableModelsByVersion[context.version].has(key) &&
-              context.worldgen!.worldgen[key].model != EmptyModel
+              context.registries!.worldgen[key].model != EmptyModel
           )
           .map((key) => <ResourceList registryKey={key} key={key} />)}
     </div>

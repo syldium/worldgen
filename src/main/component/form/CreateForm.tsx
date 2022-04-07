@@ -51,7 +51,7 @@ function CreateDatapackForm({
   onLoad,
   toggleMerge
 }: CreateDatapackFormProps): JSX.Element {
-  const worldgen = useContext(GameContext).worldgen!;
+  const worldgen = useContext(GameContext).registries!;
   const [zip, setZip] = useState<ZipAction | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -173,11 +173,11 @@ function NewResource({ onClick }: NewResourceProps): JSX.Element {
     <div>
       <h3>Create a new resource</h3>
       <ul className="models-list">
-        {(Object.keys(context.worldgen!.worldgen) as WorldgenRegistryKey[])
+        {(Object.keys(context.registries!.worldgen) as WorldgenRegistryKey[])
           .filter(
             (key) =>
               !RemovableModelsByVersion[context.version].has(key) &&
-              context.worldgen!.worldgen[key].model != EmptyModel
+              context.registries!.worldgen[key].model != EmptyModel
           )
           .map((key) => (
             <li key={key} className="model-type">

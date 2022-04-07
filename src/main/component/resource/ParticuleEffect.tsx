@@ -28,7 +28,7 @@ export function ParticuleEffect({
   onChange
 }: ParticuleEffectProps): JSX.Element {
   const context = useContext(GameContext);
-  const options = context.registries.particle_type.options;
+  const options = context.registries!.game.particle_type.options;
 
   const data = particle.options || def;
   const type = data.type ?

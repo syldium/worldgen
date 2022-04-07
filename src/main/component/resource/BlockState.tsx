@@ -58,7 +58,7 @@ export function BlockState({
     [name, onChange, states]
   );
 
-  const blocks = options || context.registries.block.options;
+  const blocks = options || context.registries!.game.block.options;
 
   const handlePropertiesChange = useCallback(
     (Properties: Properties) =>

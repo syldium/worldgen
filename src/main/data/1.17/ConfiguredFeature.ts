@@ -92,8 +92,8 @@ const FillLayerConfig = Obj({
 });
 
 const FossilConfig = Obj({
-  fossil_structures: ListNode(IdentifierNode('structure')),
-  overlay_structures: ListNode(IdentifierNode('structure')),
+  fossil_structures: ListNode(IdentifierNode('structures')),
+  overlay_structures: ListNode(IdentifierNode('structures')),
   fossil_processors: ResourceNode('worldgen/processor_list'), // type
   overlay_processors: ResourceNode('worldgen/processor_list'), // type
   max_empty_corners_allowed: IntNode({ min: 0, max: 7 })

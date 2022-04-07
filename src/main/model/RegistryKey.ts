@@ -1,13 +1,19 @@
+export const GameRegistryKeys = [
+  'block',
+  'block_predicate',
+  'block_state',
+  'block_state_provider',
+  'dimension',
+  'dimension_type',
+  'entity_type',
+  'fluid',
+  'particle_type',
+  'sound_event',
+  'structures'
+] as const;
 export type GameRegistryKey =
-  | 'biome_particle'
-  | 'block'
-  | 'block_state'
-  | 'block_state_provider'
-  | 'entity_type'
-  | 'fluid'
-  | 'particle_type'
-  | 'sound_event'
-  | 'structure';
+  | typeof GameRegistryKeys[number]
+  | 'biome_particle';
 
 const WorldgenRegistryKeys = [
   'block_predicate',
@@ -35,7 +41,5 @@ export type WorldgenRegistryKey = typeof WorldgenRegistryKeys[number];
 
 export type RegistryKey = GameRegistryKey | WorldgenRegistryKey;
 
-const set: Set<string> = new Set<WorldgenRegistryKey>(WorldgenRegistryKeys);
-export function isWorldgenRegistryKey(key: string): key is WorldgenRegistryKey {
-  return set.has(key);
-}
+const set = new Set<string>([...GameRegistryKeys, ...WorldgenRegistryKeys]);
+export const isRegistryKey = (key: string): key is RegistryKey => set.has(key);

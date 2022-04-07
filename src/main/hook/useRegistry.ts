@@ -18,7 +18,7 @@ export function useRegistry<S extends Schema>(
   S,
   (callback: PostLoadCallback<S>) => void
 ] {
-  const worldgen = useContext(GameContext).worldgen!;
+  const worldgen = useContext(GameContext).registries!;
   const registry = worldgen.worldgen[registryKey];
   const entry = registry.entries[id];
 

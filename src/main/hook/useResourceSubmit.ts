@@ -15,8 +15,8 @@ export function useResourceSubmit(
   previousKey: string | undefined,
   supplySchema: ValueSupplier
 ): SubmitHandler {
-  const { namespace, worldgen } = useContext(GameContext);
-  const registry = worldgen!.worldgen[registryKey];
+  const { namespace, registries } = useContext(GameContext);
+  const registry = registries!.worldgen[registryKey];
 
   return function (event: FormEvent<HTMLFormElement>) {
     event.preventDefault();

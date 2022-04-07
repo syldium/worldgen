@@ -44,13 +44,13 @@ export function NamespacedKey({
   const [fill, toggleFill] = useToggle(true);
   const [mayFill, setMayFill] = useToggle(value !== '');
 
-  const options = useOptions(registry, true);
+  const options = useOptions(registry, false, true);
   const [replace, toggle] = useToggle(
     value === '' ? defaultReplace : options.some((o) => key === o.value)
   );
 
   const context = useContext(GameContext);
-  const worldgen = context.worldgen!;
+  const worldgen = context.registries!;
   const defaultNamespace = context.namespace;
 
   // Adjust value with default namespace if needed

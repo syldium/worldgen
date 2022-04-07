@@ -1,7 +1,7 @@
 import { RefObject, useEffect, useRef, useState } from 'react';
 import type { Option } from '../component/ui/Select';
 import type { GameVersion } from '../context/GameVersion';
-import type { Registry, WorldgenRegistryHolder } from '../model/Registry';
+import type { RegistryValueProvider, ValueProvider } from '../model/Registry';
 import type { RegistryKey } from '../model/RegistryKey';
 import { defaultNamespace, labelizeOption } from '../util/LabelHelper';
 
@@ -28,18 +28,20 @@ export function useFetchData<S>(
   return data;
 }
 
-export function useRegistryFetch<
-  T extends { [key in RegistryKey]?: RegistryData }
->(
-  registries: T,
-  version: GameVersion,
-  holder?: WorldgenRegistryHolder
-): [Record<keyof T, Registry>, RefObject<GameVersion | undefined>] {
-  const [values, setValues] = useState<Record<keyof T, Registry>>(() => {
-    const empty: Registry = { options: [], vanilla: [] };
-    const initial = {} as Record<keyof T, Registry>;
-    for (const registryKey of Object.keys(registries)) {
-      initial[registryKey as keyof T] = empty;
+type FetchInstructions = { [key in RegistryKey]?: RegistryData };
+export function useRegistryFetch(
+  registries: FetchInstructions,
+  tags: FetchInstructions,
+  version: GameVersion
+): [RegistryValueProvider, RefObject<GameVersion | undefined>] {
+  const [values, setValues] = useState<RegistryValueProvider>(() => {
+    const keys = new Set<RegistryKey>(
+      Object.keys(registries).concat(Object.keys(tags)) as RegistryKey[]
+    );
+    const empty: ValueProvider = [];
+    const initial = {} as RegistryValueProvider;
+    for (const registryKey of keys) {
+      initial[registryKey] = { registry: empty, tag: empty };
     }
     return initial;
   });
@@ -47,50 +49,52 @@ export function useRegistryFetch<
 
   useEffect(
     function () {
-      if (done.current === version || !holder || !window.fetch) {
+      if (done.current === version || !window.fetch) {
         return;
       }
 
-      const registryKeys: RegistryKey[] = [];
+      const registryKeys: [RegistryKey, boolean][] = [];
       const promises: Promise<Option[]>[] = [];
-      for (const [registryKey, data] of Object.entries(registries)) {
-        registryKeys.push(registryKey as RegistryKey);
-        promises.push(
-          fetch(data.url)
-            .then(data.reader)
-            .then((values) => {
-              const options = data.label ?
-                values.map(labelizeOption) :
-                values.map((val) => ({
-                  label: val,
-                  value: defaultNamespace(val)
-                }));
-              if (holder.isRegistered(registryKey)) {
-                holder.worldgen[registryKey].withVanilla(options);
-              }
-              return options;
-            })
-        );
+      function request(instructions: FetchInstructions, tag: boolean) {
+        for (const [registryKey, data] of Object.entries(instructions)) {
+          registryKeys.push([registryKey as RegistryKey, tag]);
+          promises.push(
+            fetch(data.url)
+              .then(data.reader)
+              .then((values) =>
+                data.label ?
+                  values.map(labelizeOption) :
+                  values.map((val) => ({
+                    label: val,
+                    value: defaultNamespace(val)
+                  }))
+              )
+          );
+        }
       }
+      request(registries, false);
+      request(tags, true);
 
       Promise.allSettled(promises)
         .then((results) =>
-          results.reduce((values, result, index) => {
-            const key = registryKeys[index];
-            const options = result.status === 'fulfilled' ? result.value : [];
-            values[key] = { vanilla: options, options };
-            if (options.length && holder.isRegistered(key)) {
-              holder.worldgen[key].withVanilla(options);
+          setValues((values) => {
+            values = { ...values };
+            for (let i = 0; i < results.length; i++) {
+              const [key, isTag] = registryKeys[i];
+              const result = results[i];
+              const options = result.status === 'fulfilled' ? result.value : [];
+              if (isTag) {
+                values[key]!.tag = options;
+              } else {
+                values[key]!.registry = options;
+              }
             }
+            done.current = version;
             return values;
-          }, {} as Record<keyof T, Registry>)
-        )
-        .then((d) => {
-          setValues(d);
-          done.current = version;
-        });
+          })
+        );
     },
-    [holder, registries, version]
+    [registries, tags, version]
   );
 
   return [values, done];

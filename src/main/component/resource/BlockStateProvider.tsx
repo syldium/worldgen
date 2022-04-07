@@ -69,7 +69,7 @@ export function BlockStateProvider({
   onChange
 }: BlockStateProviderProps): JSX.Element {
   const context = useContext(GameContext);
-  const format = context.worldgen!.packFormat;
+  const format = context.registries!.packFormat;
   const options = useOptionsArray(
     format >= 8 ? providers1_18 : format === 7 ? providers1_17 : providers1_16
   );
