@@ -41,9 +41,9 @@ export function MainMenu(): JSX.Element {
     [toggleAction]
   );
   const handleNewDatapack = useCallback(
-    function (namespace: string) {
+    async function (namespace: string) {
       context.namespace = namespace;
-      context.worldgen = new WorldgenRegistryHolder('1.17');
+      context.worldgen = await WorldgenRegistryHolder.create(context.version);
       ZipAction.clearWorker();
       toggleAction(false);
     },
