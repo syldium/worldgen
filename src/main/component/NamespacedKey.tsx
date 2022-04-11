@@ -1,6 +1,7 @@
 import {
   ChangeEvent,
   KeyboardEvent,
+  MouseEvent,
   useCallback,
   useContext,
   useMemo,
@@ -8,6 +9,7 @@ import {
   useState
 } from 'react';
 import type { ReactNode } from 'react';
+import type { OnChangeValue } from 'react-select';
 import { GameContext } from '../context/GameRegistry';
 import { useOptions } from '../hook/useOptions';
 import { useSelectAutosize } from '../hook/useSelectAutosize';
@@ -15,7 +17,7 @@ import { useToggle } from '../hook/useToggle';
 import { Schema, WorldgenNames } from '../model/Registry';
 import type { WorldgenRegistryKey } from '../model/RegistryKey';
 import { Button } from './ui/Button';
-import Select from './ui/Select';
+import Select, { Option } from './ui/Select';
 
 interface NamespacedKeyProps {
   children?: ReactNode;
@@ -68,7 +70,7 @@ export function NamespacedKey({
 
   // Remove the "minecraft:" part when changing mode
   const handleToggle = useCallback(
-    function (e) {
+    function (e: MouseEvent<HTMLButtonElement>) {
       if (replace && key.startsWith('minecraft:')) {
         setKey((key) => defaultNamespace + ':' + key.split(':')[1]);
       }
@@ -78,8 +80,8 @@ export function NamespacedKey({
   );
 
   const handleReplaceTargetChange = useCallback(
-    (selected) => {
-      const key = selected.value;
+    (selected: OnChangeValue<Option, false>) => {
+      const key = selected!.value;
       setKey(key);
       setMayFill(true);
       if (fill && onSelectLoad) {
