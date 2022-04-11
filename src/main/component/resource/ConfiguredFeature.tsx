@@ -84,8 +84,10 @@ export function ConfiguredFeature({ id }: ConfiguredFeatureProps): JSX.Element {
   );
 
   const handleVanillaSelect = useCallback(
-    function (configured_feature) {
-      const [decorators, feature] = findDecorators(configured_feature);
+    function (configured_feature: unknown) {
+      const [decorators, feature] = findDecorators(
+        configured_feature as Obj & Configured
+      );
       setFeature(feature);
       dispatchDecorators.replace(decorators);
     },

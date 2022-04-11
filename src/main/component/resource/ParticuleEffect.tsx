@@ -1,4 +1,5 @@
 import { ChangeEvent, useCallback, useContext } from 'react';
+import type { OnChangeValue } from 'react-select';
 import { GameContext } from '../../context/GameRegistry';
 import { useId } from '../../hook/useId';
 import {
@@ -13,7 +14,7 @@ import {
 import type { ObjectKey } from '../NodeElement';
 import { Labelized } from '../ui/Labelized';
 import { NumberInput } from '../ui/NumberInput';
-import { Select } from '../ui/Select';
+import { Option, Select } from '../ui/Select';
 import { BlockState, BlockStateValue } from './BlockState';
 
 interface ParticuleEffectProps {
@@ -36,9 +37,9 @@ export function ParticuleEffect({
     'minecraft:crimson_spore';
 
   const handleTypeChange = useCallback(
-    function (option) {
+    function (option: OnChangeValue<Option, false>) {
       let data = {};
-      switch (stripDefaultNamespace(option.value)) {
+      switch (stripDefaultNamespace(option!.value)) {
         case 'block':
         case 'falling_dust':
           data = { Name: 'minecraft:sand' };
@@ -58,13 +59,13 @@ export function ParticuleEffect({
       }
       onChange(name, {
         probability: particle.probability,
-        options: { ...data, type: option.value }
+        options: { ...data, type: option!.value }
       });
     },
     [name, onChange, particle.probability]
   );
   const handleOptionsChange = useCallback(
-    function (options) {
+    function (options: object) {
       onChange(name, { ...particle, options: { ...data, ...options } });
     },
     [data, name, onChange, particle]

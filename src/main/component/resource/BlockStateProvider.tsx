@@ -273,8 +273,8 @@ function RandomizedIntProvider({
     [name, onChange, value]
   );
   const handlePropertyChange = useCallback(
-    (option) =>
-      onChange(name, { ...value, property: option.value } as StateProvider),
+    (option: OnChangeValue<Option, false>) =>
+      onChange(name, { ...value, property: option!.value } as StateProvider),
     [name, onChange, value]
   );
   const properties = useMemo(
