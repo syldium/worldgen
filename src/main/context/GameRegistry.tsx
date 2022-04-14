@@ -99,7 +99,7 @@ export function GameRegistryProvider({
       ),
       'worldgen/placed_feature': json(valuesUrl('1.18', 'placed_features')),
       'worldgen/configured_structure_feature': text(
-        registryUrl('worldgen/structure_feature')
+        `${github}reports/worldgen/minecraft/worldgen/configured_structure_feature/data.values.txt`
       ),
       'worldgen/configured_surface_builder': json(
         valuesUrl('1.17', 'configured_surface_builders')
