@@ -5,7 +5,11 @@ export const loadVanillaZip = async function (
   version: GameVersion
 ): Promise<Unzipped> {
   let ref = 'master';
-  if (version === '1.17') {
+  if (version === '1.18.2') {
+    ref = 'd766a7028865fc210bef3ddcffb54886cdaf4860';
+  } else if (version === '1.18') {
+    ref = '033bedfa67f63a89755258e1846407d7ef185b90';
+  } else if (version === '1.17') {
     ref = '7c54f55409f395a0aa517729669b20d570969f30';
   } else if (version === '1.16') {
     ref = '80fb4b8418ff3ff5724f4a0438bb422f58960bd9';

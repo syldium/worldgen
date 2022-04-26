@@ -3,7 +3,7 @@ import { BoolNode } from '../../model/node/BoolNode';
 import { FloatNode } from '../../model/node/FloatNode';
 import { IntNode } from '../../model/node/IntNode';
 import { ListNode } from '../../model/node/ListNode';
-import { Empty, Obj } from '../../model/node/ObjectNode';
+import { Empty, Obj, ObjectNodeParams } from '../../model/node/ObjectNode';
 import { ResourceNode } from '../../model/node/ResourceNode';
 import { SwitchNode } from '../../model/node/SwitchNode';
 import type { SwitchNodeParams } from '../../model/node/SwitchNode';
@@ -55,9 +55,9 @@ const VegetationPatchConfig = Obj({
 const features1_17 = ConfiguredFeature1_17.node as SwitchNodeParams;
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const { decorated, lake_water, ...featureValues } = features1_17.values;
-// @ts-ignore
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const { sapling_provider, ...tree } = features1_17.values.tree;
+const { sapling_provider, ...tree } =
+  (features1_17.values.tree as ObjectNodeParams).records;
 export const ConfiguredFeature: Model = {
   node: SwitchNode(
     {
@@ -73,11 +73,67 @@ export const ConfiguredFeature: Model = {
       random_selector: RandomConfig,
       root_system: RootSystemConfig,
       simple_random_selector: SimpleRandomConfig,
-      tree,
+      tree: Obj(tree),
       vegetation_patch: VegetationPatchConfig,
       waterlogged_vegetation_patch: VegetationPatchConfig
     },
-    features1_17.preset
+    {
+      ...features1_17.preset,
+      // @ts-ignore
+      bamboo: 'bamboo_some_podzol',
+      basalt_columns: 'small_basalt_columns',
+      basalt_pillar: 'basalt_pillar',
+      block_column: 'patch_cactus',
+      block_pile: 'pile_melon',
+      blue_ice: 'blue_ice',
+      bonus_chest: 'bonus_chest',
+      chorus_plant: 'chorus_plant',
+      delta_feature: 'delta',
+      desert_well: 'desert_well',
+      disk: 'disk_clay',
+      dripstone_cluster: 'dripstone_cluster',
+      end_gateway: 'end_gateway_delayed',
+      end_island: 'end_island',
+      end_spike: 'end_spike',
+      flower: 'flower_swamp',
+      forest_rock: 'forest_rock',
+      fossil: 'fossil_coal',
+      freeze_top_layer: 'freeze_top_layer',
+      geode: 'amethyst_geode',
+      glow_lichen: 'glow_lichen',
+      glowstone_blob: 'glowstone_extra',
+      huge_brown_mushroom: 'huge_brown_mushroom',
+      huge_fungus: 'warped_fungus_planted',
+      huge_red_mushroom: 'huge_red_mushroom',
+      iceberg: 'iceberg_blue',
+      ice_patch: 'ice_patch',
+      ice_spike: 'ice_spike',
+      kelp: 'kelp',
+      lake: 'lake_lava',
+      large_dripstone: 'large_dripstone',
+      monster_room: 'monster_room',
+      nether_forest_vegetation: 'nether_sprouts_bonemeal',
+      netherrack_replace_blobs: 'blackstone_blobs',
+      ore: 'ore_gravel_nether',
+      random_boolean_selector: 'mushroom_island_vegetation',
+      random_patch: 'patch_grass',
+      random_selector: 'trees_savanna',
+      root_system: 'rooted_azalea_tree',
+      scattered_ore: 'ore_ancient_debris_large',
+      seagrass: 'seagrass_mid',
+      sea_pickle: 'sea_pickle',
+      simple_block: 'single_piece_of_grass',
+      simple_random_selector: 'warm_ocean_vegetation',
+      spring_feature: 'spring_nether_closed',
+      tree: 'oak',
+      twisting_vines: 'twisting_vines_bonemeal',
+      underwater_magma: 'underwater_magma',
+      vegetation_patch: 'clay_with_dripleaves',
+      vines: 'vines',
+      void_start_platform: 'void_start_platform',
+      waterlogged_vegetation_patch: 'clay_pool_with_dripleaves',
+      weeping_vines: 'weeping_vines'
+    }
   ),
   preset: ConfiguredFeature1_17.preset
 };
