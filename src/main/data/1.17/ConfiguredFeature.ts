@@ -312,12 +312,12 @@ const TrunkPlacerBaseConfig = Obj({
   height_rand_b: IntNode({ min: 0, max: 24 })
 });
 
-const FoliagePlacerBaseConfig = Obj({
+const FoliagePlacerBaseConfig = {
   radius: IntProvider(0, 16),
   offset: IntProvider(0, 16)
-});
+};
 
-export const TreeConfig = {
+const TreeConfig = {
   trunk_provider: ResourceNode('block_state_provider'),
   foliage_provider: ResourceNode('block_state_provider'),
   sapling_provider: ResourceNode('block_state_provider'),
@@ -330,49 +330,49 @@ export const TreeConfig = {
       mega_jungle_trunk_placer: TrunkPlacerBaseConfig,
       dark_oak_trunk_placer: TrunkPlacerBaseConfig,
       fancy_trunk_placer: TrunkPlacerBaseConfig,
-      bending_trunk_placer: {
-        ...TrunkPlacerBaseConfig,
+      bending_trunk_placer: Obj({
+        ...TrunkPlacerBaseConfig.records,
         min_height_for_leaves: IntNode({
           min: 1,
           default: 1
         }),
         bend_length: IntProvider(1, 64)
-      }
+      })
     },
     {},
     null
   ),
   foliage_placer: SwitchNode(
     {
-      blob_foliage_placer: {
+      blob_foliage_placer: Obj({
         ...FoliagePlacerBaseConfig,
         height: IntNode({ min: 0, max: 16 })
-      },
-      spruce_foliage_placer: {
+      }),
+      spruce_foliage_placer: Obj({
         ...FoliagePlacerBaseConfig,
         trunk_height: IntProvider(0, 24)
-      },
-      pine_foliage_placer: {
+      }),
+      pine_foliage_placer: Obj({
         ...FoliagePlacerBaseConfig,
         height: IntProvider(0, 24)
-      },
-      acacia_foliage_placer: FoliagePlacerBaseConfig,
-      bush_foliage_placer: FoliagePlacerBaseConfig,
-      fancy_foliage_placer: FoliagePlacerBaseConfig,
-      jungle_foliage_placer: {
+      }),
+      acacia_foliage_placer: Obj(FoliagePlacerBaseConfig),
+      bush_foliage_placer: Obj(FoliagePlacerBaseConfig),
+      fancy_foliage_placer: Obj(FoliagePlacerBaseConfig),
+      jungle_foliage_placer: Obj({
         ...FoliagePlacerBaseConfig,
         height: IntNode({ min: 0, max: 16 })
-      },
-      mega_pine_foliage_placer: {
+      }),
+      mega_pine_foliage_placer: Obj({
         ...FoliagePlacerBaseConfig,
         crown_height: IntProvider(0, 24)
-      },
-      dark_oak_foliage_placer: FoliagePlacerBaseConfig,
-      random_spread_foliage_placer: {
+      }),
+      dark_oak_foliage_placer: Obj(FoliagePlacerBaseConfig),
+      random_spread_foliage_placer: Obj({
         ...FoliagePlacerBaseConfig,
         foliage_height: IntProvider(1, 512),
         leaf_placement_attempts: IntNode({ min: 0, max: 256 })
-      }
+      })
     },
     {},
     null
