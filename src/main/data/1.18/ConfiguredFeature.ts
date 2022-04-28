@@ -47,6 +47,13 @@ const RandomConfig = Obj({
   )
 });
 
+const RandomPatchConfig = Obj({
+  tries: IntNode({ min: 1, default: 128 }),
+  xz_spread: IntNode({ min: 0, default: 7 }),
+  y_spread: IntNode({ min: 0, default: 3 }),
+  feature: ResourceNode('worldgen/placed_feature')
+});
+
 const VegetationPatchConfig = Obj({
   ...VegetationPatchConfig1_17,
   vegetation_feature: ResourceNode('worldgen/placed_feature')
@@ -62,15 +69,18 @@ export const ConfiguredFeature: Model = {
   node: SwitchNode(
     {
       ...featureValues,
+      flower: RandomPatchConfig,
       glow_lichen: GlowLichenConfig,
       lake: Obj({
         fluid: ResourceNode('block_state_provider'),
         barrier: ResourceNode('block_state_provider')
       }),
       monster_room_deep: Empty,
+      no_bonemeal_flower: RandomPatchConfig,
       ore_gold_lower: Empty,
       random_boolean_selector: RandomBooleanSelector,
       random_selector: RandomConfig,
+      random_patch: RandomPatchConfig,
       root_system: RootSystemConfig,
       simple_random_selector: SimpleRandomConfig,
       tree: Obj(tree),
