@@ -25,14 +25,14 @@ const CarverConfig = {
   debug_settings: CarverDebugConfig
 };
 
-const CaveCarverConfig = Obj({
+export const CaveCarverConfig = {
   ...CarverConfig,
   horizontal_radius_multiplier: FloatProvider(),
   vertical_radius_multiplier: FloatProvider(),
   floor_level: FloatProvider(-1, 1)
-});
+};
 
-const RavineCarverConfig = Obj({
+export const RavineCarverConfig = {
   ...CarverConfig,
   vertical_rotation: FloatProvider(),
   shape: Obj({
@@ -43,15 +43,15 @@ const RavineCarverConfig = Obj({
     vertical_radius_default_factor: FloatNode(),
     vertical_radius_center_factor: FloatNode()
   })
-});
+};
 
 export const ConfiguredCarver: Model = {
   node: SwitchNode({
-    cave: CaveCarverConfig,
-    nether_cave: CaveCarverConfig,
-    canyon: RavineCarverConfig,
-    underwater_canyon: RavineCarverConfig,
-    underwater_cave: CaveCarverConfig
+    cave: Obj(CaveCarverConfig),
+    nether_cave: Obj(CaveCarverConfig),
+    canyon: Obj(RavineCarverConfig),
+    underwater_canyon: Obj(RavineCarverConfig),
+    underwater_cave: Obj(CaveCarverConfig)
   }),
   preset: () => ({
     config: {

@@ -31,9 +31,9 @@ const Spline = Obj({
 SplinePoint.records.value = EitherNode(SplinePoint.records.value, Spline);
 
 const TerrainShaper = Obj({
-  offset: Spline,
-  factor: Spline,
-  jaggedness: Spline
+  offset: SplinePoint.records.value,
+  factor: SplinePoint.records.value,
+  jaggedness: SplinePoint.records.value
 });
 
 const SlideConfig = Obj({
@@ -52,7 +52,7 @@ const NoiseConfig = Obj({
   size_vertical: IntNode({ min: 1, max: 4 }),
   terrain_shaper: TerrainShaper
 });
-const NoiseParameters = Obj({
+export const NoiseParameters = {
   noise: NoiseConfig,
   default_block: ResourceNode('block_state'),
   default_fluid: ResourceNode('block_state'),
@@ -65,10 +65,10 @@ const NoiseParameters = Obj({
   noodle_caves_enabled: BoolNode(),
   legacy_random_source: BoolNode(),
   structures: StructuresConfig
-});
+};
 
 export const NoiseSettings: Model = {
-  node: NoiseParameters,
+  node: Obj(NoiseParameters),
   preset: () => ({
     noise_caves_enabled: true,
     ore_veins_enabled: true,

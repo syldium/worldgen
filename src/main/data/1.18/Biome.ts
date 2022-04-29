@@ -1,29 +1,54 @@
 import type { Model } from '../../model/Model';
+import { EnumNode } from '../../model/node/EnumNode';
 import { ListNode } from '../../model/node/ListNode';
 import { Obj, ObjectNodeParams } from '../../model/node/ObjectNode';
 import { ResourceNode } from '../../model/node/ResourceNode';
+import { omit } from '../../util/DataHelper';
 import { BiomeSettings as Biome1_17, Spawners } from '../1.17/Biome';
 
-/* eslint-disable */
-const {
-  depth,
-  scale,
-  starts,
-  surface_builder,
-  player_spawn_friendly,
-  ...v1_17
-} = Biome1_17;
-/* eslint-enable */
+const v1_17 = omit(
+  Biome1_17,
+  'depth',
+  'scale',
+  'starts',
+  'surface_builder',
+  'player_spawn_friendly'
+);
+
+export const BiomeSettings = {
+  ...v1_17,
+  category: EnumNode(
+    [
+      'beach',
+      'desert',
+      'extreme_hills',
+      'forest',
+      'icy',
+      'jungle',
+      'mesa',
+      'mountain',
+      'mushroom',
+      'nether',
+      'none',
+      'ocean',
+      'plains',
+      'river',
+      'savanna',
+      'swamp',
+      'taiga',
+      'the_end',
+      'underground'
+    ] as const
+  ),
+  features: ListNode(ListNode(ResourceNode('worldgen/placed_feature'))),
+  spawners: Obj({
+    ...(v1_17.spawners as ObjectNodeParams).records,
+    axolotls: Spawners
+  })
+};
 
 export const Biome: Model = {
-  node: Obj({
-    ...v1_17,
-    features: ListNode(ListNode(ResourceNode('worldgen/placed_feature'))),
-    spawners: Obj({
-      ...(v1_17.spawners as ObjectNodeParams).records,
-      axolotls: Spawners
-    })
-  }),
+  node: Obj(BiomeSettings),
   preset: () => ({
     effects: {
       mood_sound: {

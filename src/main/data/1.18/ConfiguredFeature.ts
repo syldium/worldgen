@@ -7,11 +7,26 @@ import { Empty, Obj, ObjectNodeParams } from '../../model/node/ObjectNode';
 import { ResourceNode } from '../../model/node/ResourceNode';
 import { SwitchNode } from '../../model/node/SwitchNode';
 import type { SwitchNodeParams } from '../../model/node/SwitchNode';
+import { omit } from '../../util/DataHelper';
 import {
   ConfiguredFeature as ConfiguredFeature1_17,
   RootSystemConfig as RootSystemConfig1_17,
   VegetationPatchConfig as VegetationPatchConfig1_17
 } from '../1.17/ConfiguredFeature';
+import { Direction } from '../1.17/Direction';
+import { IntProvider } from '../1.17/NumberProvider';
+
+const BlockColumnConfig = Obj({
+  direction: Direction,
+  allowed_placement: ResourceNode('block_predicate'),
+  prioritize_tip: BoolNode(),
+  layers: ListNode(
+    Obj({
+      height: IntProvider(0),
+      provider: ResourceNode('block_state_provider')
+    })
+  )
+});
 
 const GlowLichenConfig = Obj({
   search_range: IntNode({ min: 1, max: 64, default: 10 }),
@@ -24,6 +39,10 @@ const GlowLichenConfig = Obj({
 
 const SimpleRandomConfig = Obj({
   features: ListNode(ResourceNode('worldgen/placed_feature'))
+});
+
+const SimpleBlockConfig = Obj({
+  to_place: ResourceNode('block_state_provider')
 });
 
 const RootSystemConfig = Obj({
@@ -60,15 +79,16 @@ const VegetationPatchConfig = Obj({
 });
 
 const features1_17 = ConfiguredFeature1_17.node as SwitchNodeParams;
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const { decorated, lake_water, ...featureValues } = features1_17.values;
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const { sapling_provider, ...tree } =
-  (features1_17.values.tree as ObjectNodeParams).records;
+const featureValues = omit(features1_17.values, 'decorated', 'lake_water');
+const tree = omit(
+  (features1_17.values.tree as ObjectNodeParams).records,
+  'sapling_provider'
+);
 export const ConfiguredFeature: Model = {
   node: SwitchNode(
     {
       ...featureValues,
+      block_column: BlockColumnConfig,
       flower: RandomPatchConfig,
       glow_lichen: GlowLichenConfig,
       lake: Obj({
@@ -82,6 +102,7 @@ export const ConfiguredFeature: Model = {
       random_selector: RandomConfig,
       random_patch: RandomPatchConfig,
       root_system: RootSystemConfig,
+      simple_block: SimpleBlockConfig,
       simple_random_selector: SimpleRandomConfig,
       tree: Obj(tree),
       vegetation_patch: VegetationPatchConfig,

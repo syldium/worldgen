@@ -19,6 +19,7 @@ import type { EitherNodeParams } from '../model/node/EitherNode';
 import type { EnumNodeParams } from '../model/node/EnumNode';
 import type { ColorNodeParams, NumberNodeParams } from '../model/node/IntNode';
 import type { ListNodeParams } from '../model/node/ListNode';
+import { ListNode } from '../model/node/ListNode';
 import { MapNodeParams } from '../model/node/MapNode';
 import type { ModelNode } from '../model/node/Node';
 import { providePreset } from '../model/node/Node';
@@ -28,6 +29,7 @@ import type {
 } from '../model/node/ObjectNode';
 import { Empty } from '../model/node/ObjectNode';
 import type { IdentifierNodeParams } from '../model/node/ResourceNode';
+import { ResourceNode } from '../model/node/ResourceNode';
 import type { StringNodeParams } from '../model/node/StringNode';
 import type { SwitchNodeParams } from '../model/node/SwitchNode';
 import type { RegistryKey, WorldgenRegistryKey } from '../model/RegistryKey';
@@ -837,7 +839,14 @@ function StringInput(
 function TagInput(props: NodeProps<IdentifierNodeParams>): JSX.Element {
   const asArray = useContext(GameContext).worldgen!.packFormat >= 9;
   if (asArray && Array.isArray(props.value)) {
-    return IdentifierMultipleInput(props);
+    return (
+      <ListInput
+        name={props.name}
+        node={ListNode(ResourceNode(props.node.registry))}
+        value={props.value}
+        onChange={props.onChange}
+      />
+    );
   }
   return IdentifierInput({ tag: asArray, ...props });
 }
