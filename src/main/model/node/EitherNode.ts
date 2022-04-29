@@ -1,5 +1,5 @@
-import { isValidModel, ObjectOrNodeModel } from '../Model';
-import { NodeBase } from './Node';
+import { ObjectOrNodeModel } from '../Model';
+import { ErrorCollector, NodeBase } from './Node';
 
 type Nodes = readonly [
   ObjectOrNodeModel,
@@ -15,8 +15,19 @@ export interface EitherNodeParams extends NodeBase<'either'> {
 export const EitherNode = (...nodes: Nodes): EitherNodeParams => ({
   nodes,
   type: 'either',
-  isValid: (value: unknown) =>
-    nodes.some((model) => isValidModel(model, value)),
-  findCurrentIndex: (value: unknown) =>
-    nodes.findIndex((model) => isValidModel(model, value))
+  validate: function (path: string, value: unknown, errors: ErrorCollector) {
+    if (this.findCurrentIndex(value) === -1) {
+      errors.add(path, 'No model matches');
+    }
+  },
+  findCurrentIndex: function (value: unknown): number {
+    for (let i = 0; i < this.nodes.length; i++) {
+      const e = new ErrorCollector();
+      this.nodes[i].validate('', value, e);
+      if (!e.size) {
+        return i;
+      }
+    }
+    return -1;
+  }
 });

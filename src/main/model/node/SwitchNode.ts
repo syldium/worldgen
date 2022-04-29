@@ -3,7 +3,7 @@ import {
   stripDefaultNamespace
 } from '../../util/LabelHelper';
 import { ObjectOrNodeModel } from '../Model';
-import { ModelNode, NodeBase } from './Node';
+import type { ErrorCollector, ModelNode, NodeBase } from './Node';
 import { Empty, ObjectNodeParams } from './ObjectNode';
 
 type AnyKeyExcept<S extends string> = {
@@ -59,14 +59,27 @@ export const SwitchNode = <
     typeField,
     commonFields,
     type: 'switch',
-    isValid: (value: unknown) => {
-      if (!isTyped(value) || (config && !value[config])) {
-        return false;
+    validate: function (path: string, value: unknown, errors: ErrorCollector) {
+      if (!isTyped(value)) {
+        return errors.add(path, 'Expected an object');
       }
-      if (Object.prototype.hasOwnProperty.call(value, typeField)) {
-        return stripDefaultNamespace(value[typeField] as string) in values;
+      if (Object.prototype.hasOwnProperty.call(value, this.typeField)) {
+        const type = stripDefaultNamespace(value[this.typeField] as string);
+        if (!(type in this.values)) {
+          return errors.add(path + '.' + this.typeField, 'Unexpected type');
+        }
+        if (this.config && !value[this.config]) {
+          return errors.add(path, 'Expected a config block');
+        }
+
+        this.values[type].validate(
+          this.config ? path + '.' + this.config : path,
+          this.config ? value[this.config] : value,
+          errors
+        );
+      } else {
+        errors.add(path, 'Expected a ' + this.typeField + ' field');
       }
-      return false;
     }
   };
 };

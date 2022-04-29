@@ -5,7 +5,7 @@ import {
   LONG_MAX_VALUE,
   LONG_MIN_VALUE
 } from '../../util/MathHelper';
-import { NodeBase } from './Node';
+import type { ErrorCollector, NodeBase } from './Node';
 
 export interface NumberNodeParams extends NodeBase<'int' | 'float'> {
   /** A preset value for the generator */
@@ -38,10 +38,16 @@ export const IntNode = (
     step,
     default: def,
     type: 'int',
-    isValid: (value: unknown) =>
-      value == null ?
-        typeof def === 'number' :
-        Number.isInteger(value) && isInRange(value as number, min, max, step)
+    validate: function (path: string, value: unknown, errors: ErrorCollector) {
+      if (value == null && typeof this.default === 'number') {
+        return;
+      }
+      if (
+        !Number.isInteger(value) || !isInRange(value as number, min, max, step)
+      ) {
+        errors.add(path, 'Expected an integer');
+      }
+    }
   };
 };
 
@@ -62,7 +68,13 @@ export const ColorNode = (def?: number): ColorNodeParams => {
   return {
     default: def,
     type: 'color',
-    isValid: (value: unknown) =>
-      value == null ? typeof def === 'number' : isColor(value)
+    validate: function (path: string, value: unknown, errors: ErrorCollector) {
+      if (value == null && typeof this.default === 'number') {
+        return;
+      }
+      if (!isColor(value)) {
+        errors.add(path, 'Expected a color');
+      }
+    }
   };
 };

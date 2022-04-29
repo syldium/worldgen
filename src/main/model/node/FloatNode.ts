@@ -3,7 +3,8 @@ import {
   FLOAT_MIN_VALUE,
   isInRange
 } from '../../util/MathHelper';
-import { NumberNodeParams } from './IntNode';
+import type { NumberNodeParams } from './IntNode';
+import type { ErrorCollector } from './Node';
 
 export const FloatNode = (
   config?: Partial<NumberNodeParams>
@@ -18,8 +19,14 @@ export const FloatNode = (
     step,
     default: config?.default,
     type: 'float',
-    isValid: (value: unknown) =>
-      !Number.isNaN(value) && isInRange(value as number, min, max, step)
+    validate: function (path: string, value: unknown, errors: ErrorCollector) {
+      if (value == null && typeof this.default === 'number') {
+        return;
+      }
+      if (Number.isNaN(value) || !isInRange(value as number, min, max)) {
+        errors.add(path, 'Expected a floating point number');
+      }
+    }
   };
 };
 

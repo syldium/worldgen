@@ -1,4 +1,5 @@
 import type { ModelNode, NodeBase } from './Node';
+import { ErrorCollector } from './Node';
 
 export interface ObjectNodeParams extends NodeBase<'object'> {
   records: Record<string, ModelNode>;
@@ -11,13 +12,16 @@ export const Obj = (
   default: def,
   records,
   type: 'object',
-  isValid: (value: unknown) => {
-    if (value === null || typeof value !== 'object') {
-      return false;
+  validate: function (path: string, value: unknown, errors: ErrorCollector) {
+    if (value == null && typeof this.default !== 'undefined') {
+      return;
+    } else if (typeof value !== 'object') {
+      return errors.add(path, 'Expected an object');
     }
-    return Object.entries(records).every(([name, node]) =>
-      node.isValid((value as Record<string, unknown>)[name])
-    );
+    const obj = value as Record<string, unknown>;
+    for (const key in this.records) {
+      this.records[key].validate(path + '.' + key, obj[key], errors);
+    }
   }
 });
 export const Empty = Obj({});
@@ -29,7 +33,8 @@ export interface OptionalNodeParams extends NodeBase<'optional'> {
 export const Opt = (node: ModelNode): OptionalNodeParams => ({
   node,
   type: 'optional',
-  isValid: (value: unknown) => value == null || node.isValid(value)
+  validate: (path: string, value: unknown, errors: ErrorCollector) =>
+    value == null || node.validate(path, value, errors)
 });
 
 export const OrElse = <T extends ModelNode>(node: T, defValue: unknown): T => {

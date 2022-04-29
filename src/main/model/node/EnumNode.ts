@@ -1,10 +1,10 @@
-import { Option } from '../../component/ui/Select';
+import type { Option } from '../../component/ui/Select';
 import {
   defaultNamespace,
   labelize,
   labelizeOption
 } from '../../util/LabelHelper';
-import { NodeBase } from './Node';
+import type { ErrorCollector, NodeBase } from './Node';
 
 export interface EnumNodeParams extends NodeBase<'enum'> {
   values: Option[];
@@ -30,8 +30,14 @@ export const EnumNode = <
           value
       })),
     type: 'enum',
-    isValid: (value: unknown) =>
-      node.values.some((option) => option.value === value)
+    validate: function (path: string, value: unknown, errors: ErrorCollector) {
+      if (value == null && typeof this.default !== 'undefined') {
+        return;
+      }
+      if (!node.values.some((option) => option.value === value)) {
+        errors.add(path, 'Expected an enum value');
+      }
+    }
   };
   if (def) {
     const key = namespace ? defaultNamespace(def) : def;

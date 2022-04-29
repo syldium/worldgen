@@ -28,6 +28,25 @@ export type NodeType =
   | 'switch'
   | 'tag';
 
+export interface PathError {
+  path: string;
+  error: string;
+}
+
+export class ErrorCollector {
+  errors: PathError[] = [];
+
+  add(path: string, error: string) {
+    this.errors.push({ path, error });
+  }
+
+  get size(): number {
+    return this.errors.length;
+  }
+}
+
+type Validate = (path: string, value: unknown, errors: ErrorCollector) => void;
+
 export interface NodeBase<T extends NodeType> {
   /** The node type */
   type: T;
@@ -36,7 +55,7 @@ export interface NodeBase<T extends NodeType> {
   default?: unknown;
 
   /** A validation function */
-  isValid: (value: unknown) => boolean;
+  validate: Validate;
 }
 
 export type ModelNode =
@@ -53,10 +72,6 @@ export type ModelNode =
   | StringNodeParams
   | SwitchNodeParams;
 
-export function isNode(model: ObjectOrNodeModel): model is ModelNode {
-  return 'type' in model && typeof model.type === 'string';
-}
-
 function createPreset(node: Record<string, ModelNode>) {
   return Object.fromEntries(
     Object.entries(node)
@@ -65,9 +80,6 @@ function createPreset(node: Record<string, ModelNode>) {
   );
 }
 export function providePreset(node: ObjectOrNodeModel): DataType {
-  if (!isNode(node)) {
-    return createPreset(node);
-  }
   if (typeof node.default !== 'undefined') {
     return node.default as DataType;
   }
@@ -76,7 +88,7 @@ export function providePreset(node: ObjectOrNodeModel): DataType {
       return false;
     case 'either': {
       const nodes = node.nodes[0];
-      return isNode(nodes) ? providePreset(nodes) : createPreset(nodes);
+      return providePreset(nodes);
     }
     case 'enum':
       return node.values.length ? node.values[0].value : '';
@@ -102,7 +114,7 @@ export function providePreset(node: ObjectOrNodeModel): DataType {
       }
       const type = Object.keys(node.values)[0];
       const nodes = node.values[type];
-      const preset = isNode(nodes) ? providePreset(nodes) : createPreset(nodes);
+      const preset = providePreset(nodes);
       if (node.config) {
         return { [node.typeField]: type, [node.config]: preset };
       } else if (typeof preset === 'object') {
