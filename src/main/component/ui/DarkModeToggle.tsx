@@ -21,8 +21,8 @@ export function DarkModeToggle(): JSX.Element {
   // https://github.com/mahozad/theme-switch/blob/main/src/icon.html
   // dprint-ignore
   return (
-    <div className="dark-mode-toggle" title="Dark mode toggle">
-      <button type="button" onClick={darkMode.toggle}>
+    <div className="dark-mode-toggle">
+      <button type="button" title="Dark mode toggle" onClick={darkMode.toggle}>
         <svg viewBox="0 0 24 24" width="24" height="24" xmlns="http://www.w3.org/2000/svg">
           <defs>
             <mask id="mask">

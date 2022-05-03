@@ -37,23 +37,8 @@
   background-color: #f6f6f6;
 }
 
-.dark-mode-toggle {
-  display: flex;
-  margin: 0 0.5rem;
-}
 .dark-mode-toggle > button {
-  font-size: 1.2em;
   background: none;
   border: none;
-  color: #ffa700;
   cursor: pointer;
-  transition: color 0.3s ease;
-  padding-left: 0.75rem;
-  padding-right: 0.75rem;
-}
-.dark-mode-toggle:last-child {
-  color: #666;
-}
-.dark-mode-toggle:focus {
-  outline: none;
 }
