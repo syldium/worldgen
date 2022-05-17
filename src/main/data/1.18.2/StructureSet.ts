@@ -2,7 +2,7 @@ import { Model } from '../../model/Model';
 import { EnumNode } from '../../model/node/EnumNode';
 import { IntNode } from '../../model/node/IntNode';
 import { ListNode } from '../../model/node/ListNode';
-import { Obj } from '../../model/node/ObjectNode';
+import { Obj, Opt } from '../../model/node/ObjectNode';
 import { IdentifierNode } from '../../model/node/ResourceNode';
 import { SwitchNode } from '../../model/node/SwitchNode';
 
@@ -23,10 +23,10 @@ export const StructureSet: Model = {
         spacing: IntNode({ min: 0, max: 4096 }),
         separation: IntNode({ min: 0, max: 4096 }),
         salt: IntNode({ min: 0 }),
-        locate_offset: ListNode(
+        locate_offset: Opt(ListNode(
           IntNode({ min: -16, max: 16, default: 0 }),
           3
-        )
+        ))
       })
     }, {
       concentric_rings: {

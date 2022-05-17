@@ -1,6 +1,7 @@
 import { isValidNamespacedKey } from '../../util/LabelHelper';
 import type { RegistryKey } from '../RegistryKey';
 import type { NodeBase } from './Node';
+import type { ErrorCollector } from './Node';
 
 export interface IdentifierNodeParams
   extends NodeBase<'identifier' | 'resource' | 'tag'>
@@ -13,12 +14,20 @@ export const IdentifierNode = (key: RegistryKey): IdentifierNodeParams => {
   return {
     registry: key,
     type: 'identifier',
-    isValid: isIdentifier
+    validate: function (path: string, value: unknown, errors: ErrorCollector) {
+      if (value == null && typeof this.default === 'string') {
+        return;
+      } else if (typeof value === 'string') {
+        if (!isValidNamespacedKey(value)) {
+          return errors.add(path, 'Expected a valid identifier');
+        }
+      } else {
+        errors.add(path, 'Expected a resource identifier');
+      }
+    }
   };
 };
 
-const isResource = (val: unknown) =>
-  (val !== null && typeof val === 'object') || isIdentifier(val);
 export const ResourceNode = (
   key: RegistryKey,
   def?: string | Record<string, unknown>
@@ -27,16 +36,38 @@ export const ResourceNode = (
     default: def,
     registry: key,
     type: 'resource',
-    isValid: isResource
+    validate: function (path: string, value: unknown, errors: ErrorCollector) {
+      if (value == null && typeof this.default !== 'undefined') {
+        return;
+      } else if (typeof value === 'string') {
+        if (isValidNamespacedKey(value)) {
+          return;
+        } else {
+          return errors.add(path, 'Expected a valid identifier');
+        }
+      } else if (typeof value === 'object') {
+        return;
+      }
+      errors.add(path, 'Expected a resource');
+    }
   };
 };
 
-const isTag = (val: unknown) =>
-  Array.isArray(val) ?
-    val.every(v => typeof v === 'string') :
-    typeof val === 'string';
 export const TagNode = (key: RegistryKey): IdentifierNodeParams => ({
   registry: key,
   type: 'tag',
-  isValid: isTag
+  validate: function (path: string, value: unknown, errors: ErrorCollector) {
+    if (Array.isArray(value)) {
+      for (const i in value) {
+        if (!(typeof value === 'object') && !isIdentifier(value[i])) {
+          errors.add(
+            path + '[' + i + ']',
+            'Excepted a valid identifier for tag'
+          );
+        }
+      }
+    } else if (typeof value !== 'string') {
+      errors.add(path, 'Excepted a valid tag');
+    }
+  }
 });

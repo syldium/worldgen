@@ -4,6 +4,7 @@ import { EnumNode } from '../../model/node/EnumNode';
 import { DoubleNode, FloatNode } from '../../model/node/FloatNode';
 import { ColorNode, IntNode } from '../../model/node/IntNode';
 import { ListNode } from '../../model/node/ListNode';
+import { MapNode } from '../../model/node/MapNode';
 import { Obj, Opt } from '../../model/node/ObjectNode';
 import { IdentifierNode, ResourceNode } from '../../model/node/ResourceNode';
 
@@ -118,10 +119,10 @@ export const BiomeSettings = {
   temperature: FloatNode(),
   temperature_modifier: EnumNode(['none', 'frozen'] as const, 'none'),
   surface_builder: IdentifierNode('worldgen/configured_surface_builder'),
-  carvers: Obj({
-    air: ListNode(ResourceNode('worldgen/configured_carver')),
-    liquid: ListNode(ResourceNode('worldgen/configured_carver'))
-  }),
+  carvers: MapNode(
+    EnumNode(['air', 'liquid'] as const),
+    ListNode(ResourceNode('worldgen/configured_carver'))
+  ),
   features: ListNode(ListNode(ResourceNode('worldgen/configured_feature'))),
   starts: ListNode(IdentifierNode('worldgen/configured_structure_feature')),
   creature_spawn_probability: FloatNode({
@@ -139,7 +140,7 @@ export const BiomeSettings = {
     water_ambient: Spawners,
     misc: Spawners
   }),
-  spawn_costs: ListNode(SpawnCost)
+  spawn_costs: MapNode(IdentifierNode('entity_type'), SpawnCost)
 };
 
 export const Biome: Model = {

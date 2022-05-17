@@ -5,6 +5,7 @@ import { Registries1_17 } from '../1.17/v1_17';
 import { Biome } from './Biome';
 import { BiomeSource } from './BiomeSource';
 import { BlockPredicate } from './BlockPredicate';
+import { ConfiguredCarver } from './ConfiguredCarver';
 import { ConfiguredFeature } from './ConfiguredFeature';
 import { ConfiguredStructureFeature } from './ConfiguredStructureFeature';
 import { Noise, Noises } from './Noise';
@@ -19,6 +20,7 @@ export const Registries1_18: WorldgenRegistriesType = {
   block_predicate: [BlockPredicate],
   'worldgen/biome': [Biome],
   'worldgen/biome_source': [BiomeSource],
+  'worldgen/configured_carver': [ConfiguredCarver],
   'worldgen/configured_decorator': [EmptyModel],
   'worldgen/configured_feature': [ConfiguredFeature],
   'worldgen/configured_structure_feature': [ConfiguredStructureFeature],

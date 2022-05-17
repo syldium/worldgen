@@ -26,11 +26,6 @@ export const DefaultedModel = function<T extends Record<string, ModelNode>> (
 
 export type ObjectOrNodeModel = ModelNode;
 
-export const isValidModel = (
-  model: ObjectOrNodeModel,
-  value: unknown
-): boolean => model.isValid(value);
-
 const inline: ReadonlySet<NodeType> = new Set<NodeType>([
   'bool',
   'color',
