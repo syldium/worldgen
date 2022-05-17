@@ -1,6 +1,6 @@
 import type { Unzipped } from 'fflate';
-import { WorldgenRegistryHolder } from '../model/Registry';
-import type { WorldgenRegistryKey } from '../model/RegistryKey';
+import { RegistryHolder } from '../model/Registry';
+import type { RegistryKey, WorldgenRegistryKey } from '../model/RegistryKey';
 import type {
   ExtractDoneMessage,
   RawRegistries,
@@ -21,9 +21,9 @@ export class ZipAction {
   /**
    * The registries associated with the datapack.
    */
-  readonly registries: WorldgenRegistryHolder;
+  readonly registries: RegistryHolder;
 
-  private constructor(registries: WorldgenRegistryHolder, errors = 0) {
+  private constructor(registries: RegistryHolder, errors = 0) {
     this.errors = errors;
     this.registries = registries;
   }
@@ -33,7 +33,7 @@ export class ZipAction {
    *
    * @param registries The worldgen registries
    */
-  static create(registries: WorldgenRegistryHolder): ZipAction {
+  static create(registries: RegistryHolder): ZipAction {
     return new ZipAction(registries);
   }
 
@@ -61,10 +61,9 @@ export class ZipAction {
       reader.onload = () => {
         const buffer = reader.result as ArrayBuffer;
         worker.onmessage = ({ data }: MessageEvent<ExtractDoneMessage>) => {
-          const holder = new WorldgenRegistryHolder(data[0]);
+          const holder = new RegistryHolder(data[0]);
           for (const [registryKey, entries] of Object.entries(data[1])) {
-            const registry =
-              holder.worldgen[registryKey as WorldgenRegistryKey];
+            const registry = holder.game[registryKey as RegistryKey];
             for (const entry of Object.entries(entries)) {
               registry.register(...entry);
             }

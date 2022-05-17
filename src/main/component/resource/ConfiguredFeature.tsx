@@ -20,7 +20,7 @@ interface ConfiguredFeatureProps {
 }
 
 export function ConfiguredFeature({ id }: ConfiguredFeatureProps): JSX.Element {
-  const worldgen = useContext(GameContext).worldgen!;
+  const worldgen = useContext(GameContext).registries!;
   const registryKey: WorldgenRegistryKey = 'worldgen/configured_feature';
   const [registry, previousKey, initial, postLoad] = useRegistry<
     Configured & Obj

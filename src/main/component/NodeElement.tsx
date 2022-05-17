@@ -639,9 +639,7 @@ function IdentifierInput(
   const strValue = typeof value === 'string' ?
     removeTagHash(value) :
     String(node.default);
-  const options = useOptions(
-    tag ? ('tags/' + node.registry) as RegistryKey : node.registry
-  );
+  const options = useOptions(node.registry, tag);
   return (
     <Labelized className="form-group" id={id} name={name}>
       <div className="flex">
@@ -716,7 +714,7 @@ function NumberInput(
 function ResourceInput(
   { name, node, value, onChange, children }: NodeProps<IdentifierNodeParams>
 ): JSX.Element {
-  const worldgen = useContext(GameContext).worldgen!;
+  const worldgen = useContext(GameContext).registries!;
 
   const handleChange = useCallback(
     (name: ObjectKey, newValue: unknown) => onChange(name, newValue),
@@ -726,7 +724,7 @@ function ResourceInput(
   if (
     value !== null &&
     typeof value === 'object' &&
-    worldgen.isRegistered(node.registry)
+    worldgen.isWorldgen(node.registry)
   ) {
     const model = worldgen.worldgen[node.registry].model.node;
     const el = (
@@ -835,7 +833,7 @@ function StringInput(
 }
 
 function TagInput(props: NodeProps<IdentifierNodeParams>): JSX.Element {
-  const asArray = useContext(GameContext).worldgen!.packFormat >= 9;
+  const asArray = useContext(GameContext).registries!.packFormat >= 9;
   if (asArray && Array.isArray(props.value)) {
     return IdentifierMultipleInput(props);
   }

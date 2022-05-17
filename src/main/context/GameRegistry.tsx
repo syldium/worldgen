@@ -13,10 +13,10 @@ import { useForceUpdate } from '../hook/useForceUpdate';
 import {
   BlockStateRegistry,
   Registry,
-  Schema,
-  WorldgenRegistryHolder
+  RegistryHolder,
+  Schema
 } from '../model/Registry';
-import type { RegistryKey, WorldgenRegistryKey } from '../model/RegistryKey';
+import type { WorldgenRegistryKey } from '../model/RegistryKey';
 import { dataUrl } from '../util/FetchHelper';
 import { labelizeOption } from '../util/LabelHelper';
 import { findNamespacedKeyAndRegistry, resourcePath } from '../util/PathHelper';
@@ -24,8 +24,7 @@ import { GameVersion } from './GameVersion';
 
 interface GameRegistry {
   blockStates: BlockStateRegistry;
-  registries: Record<RegistryKey, Registry>;
-  worldgen?: WorldgenRegistryHolder;
+  registries?: RegistryHolder;
   namespace: string;
   version: GameVersion;
 }
@@ -65,12 +64,12 @@ export function GameRegistryProvider({
   const github = dataUrl(version);
   const registryUrl = (registry: string) =>
     `${github}reports/registries/${registry}/data.values.txt`;
-  const [holder, setHolder] = useState<WorldgenRegistryHolder | undefined>(
-    version === defaultVersion ? () => WorldgenRegistryHolder.def() : undefined
+  const [holder, setHolder] = useState<RegistryHolder | undefined>(
+    version === defaultVersion ? () => RegistryHolder.def() : undefined
   );
   useEffect(() => {
     if (version !== defaultVersion) {
-      WorldgenRegistryHolder.create(version).then(setHolder);
+      RegistryHolder.create(version).then(setHolder);
     }
   }, [version]);
   const blockStates = useFetchData<BlockStateRegistry>(
@@ -78,18 +77,12 @@ export function GameRegistryProvider({
     {},
     states
   );
-  const emptyRegistry: Registry = { options: [], vanilla: [] };
-  const [registries, fetched] = useRegistryFetch(
+  const [vanilla, fetched] = useRegistryFetch(
     {
       entity_type: text(registryUrl('entity_type')),
       particle_type: text(registryUrl('particle_type')),
       sound_event: text(registryUrl('sound_event'), false),
-      structure: json('/values/1.17/structures.json', false),
-      'tags/block': text(
-        `${github}data/minecraft/tags/blocks/data.values.txt`
-      ),
-      'tags/fluid': json(valuesUrl('1.18.2', 'tag_fluids'), false),
-      'tags/worldgen/biome': json(valuesUrl('1.18.2', 'tag_biomes'), false),
+      structures: json('/values/1.17/structures.json', false),
       'worldgen/biome': json(valuesUrl(baseVersion(version), 'biomes')),
       'worldgen/configured_carver': json(
         valuesUrl(baseVersion(version), 'configured_carvers')
@@ -111,16 +104,26 @@ export function GameRegistryProvider({
       ),
       'worldgen/template_pool': json(valuesUrl('1.18', 'template_pools'), false)
     },
-    version,
-    holder
+    {
+      block: text(
+        `${github}data/minecraft/tags/blocks/data.values.txt`
+      ),
+      fluid: json(valuesUrl('1.18.2', 'tag_fluids'), false),
+      'worldgen/biome': json(valuesUrl('1.18.2', 'tag_biomes'), false)
+    },
+    version
   );
   const [defNamespace, setDefNamespace] = useLocalStorageState<string>('demo');
 
-  const blockTypes: Registry = useMemo(() => {
-    const options = Object.keys(blockStates).map(labelizeOption);
-    return { options, vanilla: options };
-  }, [blockStates]);
-  const worldgen = holder ? holder.worldgen : {};
+  const blockTypes: Registry = useMemo(
+    () => new Registry(Object.keys(blockStates).map(labelizeOption)),
+    [blockStates]
+  );
+  if (holder) {
+    holder.withVanilla(vanilla);
+    holder.game.block = blockTypes;
+    holder.game.block_state = blockTypes;
+  }
 
   useEffect(() => {
     if (!window.indexedDB || !holder) {
@@ -131,7 +134,7 @@ export function GameRegistryProvider({
       const edited = new Set<WorldgenRegistryKey>();
       entries.forEach(([path, schema]) => {
         const match = findNamespacedKeyAndRegistry(path);
-        if (match) {
+        if (match && holder.isWorldgen(match[2])) {
           edited.add(match[2]);
           holder.register(match[2], match[0] + ':' + match[1], schema);
         }
@@ -148,20 +151,10 @@ export function GameRegistryProvider({
     <GameContext.Provider
       value={{
         blockStates,
-        // @ts-ignore
-        registries: {
-          ...registries,
-          ...worldgen,
-          biome_particle: emptyRegistry,
-          block: blockTypes,
-          fluid: blockTypes, // TODO
-          block_state: blockTypes,
-          block_state_provider: emptyRegistry
-        },
-        get worldgen(): WorldgenRegistryHolder {
+        get registries(): RegistryHolder {
           return holder!;
         },
-        set worldgen(holder: WorldgenRegistryHolder) {
+        set registries(holder: RegistryHolder) {
           clear()
             .then(() => {
               const entries: [string, Schema][] = [];
@@ -175,11 +168,11 @@ export function GameRegistryProvider({
                 );
               }
               setMany(entries).then(() =>
-                setHolder((current) => holder.withVanilla(current!))
+                setHolder(holder.withVanilla(vanilla))
               );
             })
             .catch((e) => {
-              setHolder((current) => holder.withVanilla(current!));
+              setHolder(holder.withVanilla(vanilla));
               console.error(e);
             });
         },
@@ -193,7 +186,7 @@ export function GameRegistryProvider({
           return version;
         },
         set version(version: GameVersion) {
-          WorldgenRegistryHolder.create(version).then((h) => {
+          RegistryHolder.create(version).then((h) => {
             setHolder((current) => {
               current && h.merge(current);
               return h;

@@ -15,7 +15,7 @@ interface ResourceListProps {
 export function ResourceList({ registryKey }: ResourceListProps): JSX.Element {
   const context = useContext(GameContext);
   const forceUpdate = useForceUpdate();
-  const registry = context.worldgen!.worldgen[registryKey];
+  const registry = context.registries!.worldgen[registryKey];
   const entries = Object.keys(registry.entries);
   const name = WorldgenNames[registryKey];
 

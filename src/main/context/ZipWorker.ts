@@ -1,6 +1,6 @@
 import { strFromU8, strToU8, Unzipped, unzipSync, zipSync } from 'fflate';
 import type { Schema } from '../model/Registry';
-import type { WorldgenRegistryKey } from '../model/RegistryKey';
+import type { RegistryKey, WorldgenRegistryKey } from '../model/RegistryKey';
 import { removeReactKeyReplacer } from '../util/DomHelper';
 import { findNamespacedKeyAndRegistry, resourcePath } from '../util/PathHelper';
 import type { PackFormat } from './GameVersion';
@@ -9,7 +9,7 @@ import type { McMeta, ReadResult } from './ZipAction';
 declare const self: DedicatedWorkerGlobalScope;
 
 export type RawRegistries = {
-  [registryKey in WorldgenRegistryKey]?: Record<string, Schema>;
+  [registryKey in RegistryKey]?: Record<string, Schema>;
 };
 export type ZipWorkerboundMessage =
   | { buffer: ArrayBuffer; action: 'extract' | 'unzip' }
@@ -84,7 +84,12 @@ function extractDatapack(unzipped: Unzipped): ExtractDoneMessage {
     if (match) {
       const registryKey = match[2];
       try {
-        const content = JSON.parse(strFromU8(entry)) as Schema;
+        const content = match[2] === 'structures' ?
+          {} :
+          JSON.parse(strFromU8(entry)) as Schema;
+        if (match[2] === 'structures') {
+          assets[path] = entry;
+        }
         if (!(registryKey in registries)) {
           registries[registryKey] = {};
         }

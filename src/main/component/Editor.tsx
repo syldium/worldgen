@@ -1,8 +1,6 @@
-import { useEffect, useState } from 'react';
-import {
-  isWorldgenRegistryKey,
-  WorldgenRegistryKey
-} from '../model/RegistryKey';
+import { useContext, useEffect, useState } from 'react';
+import { GameContext } from '../context/GameRegistry';
+import type { WorldgenRegistryKey } from '../model/RegistryKey';
 import { isValidNamespacedKey } from '../util/LabelHelper';
 import { MainMenu } from './MainMenu';
 import { ConfiguredFeature } from './resource/ConfiguredFeature';
@@ -15,6 +13,7 @@ interface EditorProps {
 
 export function Editor({ location }: EditorProps): JSX.Element {
   const [currentPath, setCurrentPath] = useState(location);
+  const registries = useContext(GameContext).registries!;
 
   // Listen to page change
   useEffect(() => {
@@ -32,11 +31,11 @@ export function Editor({ location }: EditorProps): JSX.Element {
   // Determine the registry key
   let registryKey: WorldgenRegistryKey | null = null;
   let subRegistry: string | null = null;
-  if (isWorldgenRegistryKey(segments[0])) {
+  if (registries.isWorldgen(segments[0])) {
     registryKey = segments[0];
   } else {
     subRegistry = segments[0] + '/' + segments[1];
-    if (isWorldgenRegistryKey(subRegistry)) {
+    if (registries.isWorldgen(subRegistry)) {
       registryKey = subRegistry;
     }
   }

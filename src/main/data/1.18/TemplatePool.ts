@@ -14,7 +14,7 @@ export const TemplatePool: Model = {
       element: SwitchNode(
         {
           single_pool_element: Obj({
-            location: IdentifierNode('structure'),
+            location: IdentifierNode('structures'),
             processors: ResourceNode('worldgen/processor_list')
           }),
           list_pool_element: Obj({
@@ -25,7 +25,7 @@ export const TemplatePool: Model = {
           }),
           empty_pool_element: Empty,
           legacy_single_pool_element: Obj({
-            location: IdentifierNode('structure'),
+            location: IdentifierNode('structures'),
             processors: ResourceNode('worldgen/processor_list')
           })
         },
