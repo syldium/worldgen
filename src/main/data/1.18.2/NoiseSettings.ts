@@ -1,6 +1,8 @@
+import { Option } from '../../component/ui/Select';
 import type { Model } from '../../model/Model';
 import { Obj } from '../../model/node/ObjectNode';
 import { omit } from '../../util/DataHelper';
+import { labelizeOption } from '../../util/LabelHelper';
 import {
   NoiseParameters as NoiseParameters1_18,
   NoiseSettings as NoiseSettings1_18
@@ -16,3 +18,13 @@ export const NoiseSettings: Model = {
   node: Obj(NoiseParameters),
   preset: NoiseSettings1_18.preset
 };
+
+export const NoiseSettingsOptions: Option[] = [
+  'amplified',
+  'caves',
+  'end',
+  'floating_islands',
+  'large_biomes',
+  'nether',
+  'overworld'
+].map(labelizeOption);

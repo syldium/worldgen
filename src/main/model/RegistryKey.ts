@@ -3,8 +3,6 @@ export const GameRegistryKeys = [
   'block_predicate',
   'block_state',
   'block_state_provider',
-  'dimension',
-  'dimension_type',
   'entity_type',
   'fluid',
   'particle_type',
