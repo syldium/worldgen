@@ -800,7 +800,7 @@ function SelectEnum(
   let selected: Option | undefined;
   if (typeof value === 'string') {
     const strValue = stripDefaultNamespace(value);
-    selected = node.values.find(o => o.value === strValue);
+    selected = node.values.find(o => o.value === value || o.value === strValue);
   } else {
     selected = node.default;
   }
