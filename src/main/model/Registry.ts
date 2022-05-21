@@ -249,7 +249,7 @@ export class RegistryHolder {
       for (const resourceKey of Object.keys(registry.entries)) {
         const sepIndex = resourceKey.indexOf(':');
         if (sepIndex >= 0) {
-          const namespace = resourceKey.substr(0, sepIndex);
+          const namespace = resourceKey.substring(0, sepIndex);
           if (namespace !== 'minecraft') {
             return namespace;
           }

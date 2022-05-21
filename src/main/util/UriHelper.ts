@@ -13,21 +13,21 @@ function addStartingSlash(path: string) {
 
 export function currentPath(path = pathname()) {
   if (path.startsWith(BASE_URL)) {
-    path = path.substr(BASE_URL.length);
+    path = path.substring(BASE_URL.length);
   }
   if (path.endsWith('/')) {
-    path = path.substr(0, path.length - 1);
+    path = path.substring(0, path.length - 1);
   }
   return addStartingSlash(path);
 }
 
 export function relativePath(path: string, current = currentPath()) {
   if (path.startsWith('/')) {
-    return BASE_URL + path.substr(1);
+    return BASE_URL + path.substring(1);
   }
   const sep = current.lastIndexOf('/');
   return addStartingSlash(
-    (sep === -1 ? '' : current.substr(0, sep + 1)) + path
+    (sep === -1 ? '' : current.substring(0, sep + 1)) + path
   );
 }
 

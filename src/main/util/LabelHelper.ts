@@ -80,7 +80,7 @@ export function stripDefaultNamespace(
   namespace = 'minecraft'
 ): string {
   if (namespacedKey.startsWith(`${namespace}:`)) {
-    return namespacedKey.substr(namespace.length + 1);
+    return namespacedKey.substring(namespace.length + 1);
   }
   return namespacedKey;
 }
@@ -107,8 +107,8 @@ export function isValidNamespacedKey(key: string): boolean {
     return isValidValue(key);
   }
   return (
-    isValidNamespace(key.substr(0, sepIndex)) &&
-    isValidValue(key.substr(sepIndex + 1))
+    isValidNamespace(key.substring(0, sepIndex)) &&
+    isValidValue(key.substring(sepIndex + 1))
   );
 }
 
