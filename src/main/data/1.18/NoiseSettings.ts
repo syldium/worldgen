@@ -42,7 +42,7 @@ const SlideConfig = Obj({
   offset: IntNode()
 });
 
-const NoiseConfig = Obj({
+export const NoiseConfig = {
   min_y: IntNode({ min: -2032, max: 2031, step: 16 }),
   height: IntNode({ min: 0, max: 4064, step: 16 }),
   sampling: SamplingConfig,
@@ -51,9 +51,9 @@ const NoiseConfig = Obj({
   size_horizontal: IntNode({ min: 1, max: 4 }),
   size_vertical: IntNode({ min: 1, max: 4 }),
   terrain_shaper: TerrainShaper
-});
+};
 export const NoiseParameters = {
-  noise: NoiseConfig,
+  noise: Obj(NoiseConfig),
   default_block: ResourceNode('block_state'),
   default_fluid: ResourceNode('block_state'),
   surface_rule: RuleSource,

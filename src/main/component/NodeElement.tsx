@@ -28,7 +28,10 @@ import type {
   OptionalNodeParams
 } from '../model/node/ObjectNode';
 import { Empty } from '../model/node/ObjectNode';
-import type { IdentifierNodeParams } from '../model/node/ResourceNode';
+import type {
+  IdentifierNodeParams,
+  TagNodeParams
+} from '../model/node/ResourceNode';
 import { ResourceNode } from '../model/node/ResourceNode';
 import type { StringNodeParams } from '../model/node/StringNode';
 import type { SwitchNodeParams } from '../model/node/SwitchNode';
@@ -108,7 +111,7 @@ export function NodeElement(props: NodeProps<ModelNode>): JSX.Element {
     case 'switch':
       return createElement(SwitchInput, props as NodeProps<SwitchNodeParams>);
     case 'tag':
-      return createElement(TagInput, props as NodeProps<IdentifierNodeParams>);
+      return createElement(TagInput, props as NodeProps<TagNodeParams>);
   }
   console.warn("Unknown node for '" + props.name + "'!", props.node);
   return (
@@ -204,7 +207,9 @@ function ListInput(
 function CommonListInput(
   { name, node, value, onChange }: NodeProps<ListNodeParams>
 ): JSX.Element {
-  const arrayValue = useValue(Array.isArray(value) ? value : []);
+  const arrayValue = useValue(
+    Array.isArray(value) ? value : (node.one ? [value] : [])
+  );
   const create = function (event: MouseEvent<HTMLElement>) {
     event.preventDefault();
     onChange(name, [...arrayValue.current, providePreset(node.of)]);
@@ -834,17 +839,17 @@ function StringInput(
   );
 }
 
-function TagInput(props: NodeProps<IdentifierNodeParams>): JSX.Element {
+function TagInput(props: NodeProps<TagNodeParams>): JSX.Element {
   const asArray = useContext(GameContext).registries!.packFormat >= 9;
   if (asArray && Array.isArray(props.value)) {
     return (
       <ListInput
         name={props.name}
-        node={ListNode(ResourceNode(props.node.registry))}
+        node={ListNode(props.node.registry)}
         value={props.value}
         onChange={props.onChange}
       />
     );
   }
-  return IdentifierInput({ tag: asArray, ...props });
+  return IdentifierInput({ ...props, tag: asArray, node: props.node.registry });
 }

@@ -168,19 +168,25 @@ export class RegistryHolder {
   }
 
   static async create(version: GameVersion): Promise<RegistryHolder> {
-    if (version === '1.18') {
-      return new RegistryHolder(
-        version,
-        (await import('../data/1.18/v1_18')).Registries1_18
-      );
+    switch (version) {
+      case '1.19':
+        return new RegistryHolder(
+          version,
+          (await import('../data/1.19/v1_19')).Registries1_19
+        );
+      case '1.18':
+        return new RegistryHolder(
+          version,
+          (await import('../data/1.18/v1_18')).Registries1_18
+        );
+      case '1.17':
+        return new RegistryHolder(
+          version,
+          (await import('../data/1.17/v1_17')).Registries1_17
+        );
+      default:
+        return this.def();
     }
-    if (version === '1.17') {
-      return new RegistryHolder(
-        version,
-        (await import('../data/1.17/v1_17')).Registries1_17
-      );
-    }
-    return this.def();
   }
 
   static def(): RegistryHolder {
@@ -315,6 +321,7 @@ export const WorldgenNames: Record<WorldgenRegistryKey, string> = {
   'worldgen/configured_feature': 'configured feature',
   'worldgen/configured_structure_feature': 'configured structure feature',
   'worldgen/configured_surface_builder': 'configured surface builder',
+  'worldgen/flat_level_generator_preset': 'flat level generator preset',
   'worldgen/material_condition': 'material condition',
   'worldgen/material_rule': 'material rule',
   'worldgen/noise': 'noise',
@@ -323,5 +330,6 @@ export const WorldgenNames: Record<WorldgenRegistryKey, string> = {
   'worldgen/placement_modifier': 'placement modifier',
   'worldgen/processor_list': 'processor list',
   'worldgen/structure_set': 'structure set',
-  'worldgen/template_pool': 'template pool'
+  'worldgen/template_pool': 'template pool',
+  'worldgen/world_preset': 'world preset'
 };

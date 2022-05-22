@@ -27,11 +27,11 @@ const FlatGenerator = Obj({
     biome: IdentifierNode('worldgen/biome')
   })
 });
-const NoiseGenerator = Obj({
+export const NoiseGenerator = {
   biome_source: ResourceNode('worldgen/biome_source'),
   seed: IntNode(),
   settings: IdentifierNode('worldgen/noise_settings')
-});
+};
 
 const generatorSeed = 286956243;
 export const ChunkGenerator: Model = {
@@ -39,7 +39,7 @@ export const ChunkGenerator: Model = {
     {
       debug: Empty,
       flat: FlatGenerator,
-      noise: NoiseGenerator
+      noise: Obj(NoiseGenerator)
     },
     {
       flat: {

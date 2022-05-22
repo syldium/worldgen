@@ -25,6 +25,7 @@ export const Registries1_17: WorldgenRegistriesType = {
   'worldgen/configured_carver': [ConfiguredCarver],
   'worldgen/configured_decorator': [ConfiguredDecorator],
   'worldgen/configured_feature': [ConfiguredFeature],
+  'worldgen/flat_level_generator_preset': [EmptyModel],
   'worldgen/material_rule': [EmptyModel],
   'worldgen/noise': [EmptyModel],
   'worldgen/configured_structure_feature': [EmptyModel],
@@ -32,5 +33,6 @@ export const Registries1_17: WorldgenRegistriesType = {
   'worldgen/noise_settings': [NoiseSettings, NoiseSettingsOptions],
   'worldgen/processor_list': [ProcessorList],
   'worldgen/structure_set': [EmptyModel],
-  'worldgen/template_pool': [EmptyModel]
+  'worldgen/template_pool': [EmptyModel],
+  'worldgen/world_preset': [EmptyModel]
 };

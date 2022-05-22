@@ -110,6 +110,7 @@ build/
 .vscode/
 .idea/
 
+work/
 *.txt
 vanilla_worldgen*
 stats.html

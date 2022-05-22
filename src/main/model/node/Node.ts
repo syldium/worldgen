@@ -7,7 +7,7 @@ import { ColorNodeParams, NumberNodeParams } from './IntNode';
 import { ListNodeParams } from './ListNode';
 import { MapNodeParams } from './MapNode';
 import { ObjectNodeParams, OptionalNodeParams } from './ObjectNode';
-import { IdentifierNodeParams } from './ResourceNode';
+import { IdentifierNodeParams, TagNodeParams } from './ResourceNode';
 import { StringNodeParams } from './StringNode';
 import { SwitchNodeParams } from './SwitchNode';
 
@@ -70,7 +70,8 @@ export type ModelNode =
   | ObjectNodeParams
   | OptionalNodeParams
   | StringNodeParams
-  | SwitchNodeParams;
+  | SwitchNodeParams
+  | TagNodeParams;
 
 function createPreset(node: Record<string, ModelNode>) {
   return Object.fromEntries(

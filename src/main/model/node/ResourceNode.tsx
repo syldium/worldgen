@@ -3,13 +3,16 @@ import type { RegistryKey } from '../RegistryKey';
 import type { NodeBase } from './Node';
 import type { ErrorCollector } from './Node';
 
+const MayInline = new Set<RegistryKey>([
+  'worldgen/configured_feature',
+  'worldgen/placed_feature'
+]);
+
 export interface IdentifierNodeParams
-  extends NodeBase<'identifier' | 'resource' | 'tag'>
+  extends NodeBase<'identifier' | 'resource'>
 {
   registry: RegistryKey;
 }
-const isIdentifier = (val: unknown) =>
-  typeof val === 'string' && isValidNamespacedKey(val);
 export const IdentifierNode = (key: RegistryKey): IdentifierNodeParams => {
   return {
     registry: key,
@@ -53,21 +56,24 @@ export const ResourceNode = (
   };
 };
 
-export const TagNode = (key: RegistryKey): IdentifierNodeParams => ({
-  registry: key,
+export interface TagNodeParams extends NodeBase<'tag'> {
+  registry: IdentifierNodeParams;
+}
+export const TagNode = (key: RegistryKey): TagNodeParams => ({
+  registry: MayInline.has(key) ? ResourceNode(key) : IdentifierNode(key),
   type: 'tag',
   validate: function (path: string, value: unknown, errors: ErrorCollector) {
     if (Array.isArray(value)) {
-      for (const i in value) {
-        if (!(typeof value === 'object') && !isIdentifier(value[i])) {
-          errors.add(
-            path + '[' + i + ']',
-            'Excepted a valid identifier for tag'
-          );
-        }
+      if (!value.every((val) => typeof val === typeof value[0])) {
+        errors.add(path, 'Excepted an array with objects of the same type');
       }
-    } else if (typeof value !== 'string') {
-      errors.add(path, 'Excepted a valid tag');
+      for (const i in value) {
+        this.registry.validate(path + '[' + i + ']', value[i], errors);
+      }
+    } else if (typeof value === 'string' && value.startsWith('#')) {
+      this.registry.validate(path, value.substring(1), errors);
+    } else {
+      this.registry.validate(path, value, errors);
     }
   }
 });

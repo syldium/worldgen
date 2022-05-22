@@ -2,7 +2,8 @@ export const PackFormatString = {
   '1.16': 6,
   '1.17': 7,
   '1.18': 8,
-  '1.18.2': 9
+  '1.18.2': 9,
+  '1.19': 10
 } as const;
 export type GameVersion = keyof typeof PackFormatString;
 export type PackFormat = typeof PackFormatString[keyof typeof PackFormatString];
@@ -18,5 +19,6 @@ export const RemovableModelsByVersion: Record<GameVersion, Set<string>> = {
     'worldgen/configured_decorator'
   ]),
   '1.18': new Set(),
-  '1.18.2': new Set()
+  '1.18.2': new Set(),
+  '1.19': new Set()
 };

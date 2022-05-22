@@ -25,6 +25,7 @@ const WorldgenRegistryKeys = [
   'worldgen/configured_feature',
   'worldgen/configured_structure_feature',
   'worldgen/configured_surface_builder',
+  'worldgen/flat_level_generator_preset',
   'worldgen/material_condition',
   'worldgen/material_rule',
   'worldgen/noise',
@@ -33,7 +34,8 @@ const WorldgenRegistryKeys = [
   'worldgen/placement_modifier',
   'worldgen/processor_list',
   'worldgen/structure_set',
-  'worldgen/template_pool'
+  'worldgen/template_pool',
+  'worldgen/world_preset'
 ] as const;
 export type WorldgenRegistryKey = typeof WorldgenRegistryKeys[number];
 
