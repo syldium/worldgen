@@ -8,13 +8,13 @@ import { SwitchNode } from '../../model/node/SwitchNode';
 import { HeightProvider, YOffset } from './HeightProvider';
 import { FloatProvider } from './NumberProvider';
 
-const CarverDebugConfig = Obj({
+const CarverDebugConfig = Opt(Obj({
   debug_mode: BoolNode(false),
   air_state: Opt(ResourceNode('block_state')),
   water_state: Opt(ResourceNode('block_state')),
   lava_state: Opt(ResourceNode('block_state')),
   barrier_state: Opt(ResourceNode('block_state'))
-});
+}));
 
 const CarverConfig = {
   ...Probability,

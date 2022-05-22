@@ -60,6 +60,9 @@ export const SwitchNode = <
     commonFields,
     type: 'switch',
     validate: function (path: string, value: unknown, errors: ErrorCollector) {
+      if (value == null && this.default) {
+        return;
+      }
       if (!isTyped(value)) {
         return errors.add(path, 'Expected an object');
       }

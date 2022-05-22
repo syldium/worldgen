@@ -17,7 +17,7 @@ const BlockIgnoreConfig = Obj({
   blocks: ListNode(ResourceNode('block_state'))
 });
 const BlockRotConfig = Obj({
-  integrity: IntNode({ default: 1 })
+  integrity: FloatNode({ default: 1 })
 });
 const GravityConfig = Obj({
   heightmap: {

@@ -4,7 +4,7 @@ import { EnumNode } from '../../model/node/EnumNode';
 import { Probability } from '../../model/node/FloatNode';
 import { IntNode } from '../../model/node/IntNode';
 import { MapNode } from '../../model/node/MapNode';
-import { Obj } from '../../model/node/ObjectNode';
+import { Empty, Obj } from '../../model/node/ObjectNode';
 import { IdentifierNode, TagNode } from '../../model/node/ResourceNode';
 import { SwitchNode } from '../../model/node/SwitchNode';
 import { Spawners } from '../1.17/Biome';
@@ -42,10 +42,17 @@ export const ConfiguredStructureFeature: Model = {
     {
       bastion_remnant: TemplatePool,
       buried_treasure: Obj(Probability),
+      desert_pyramid: Empty,
+      endcity: Empty,
+      fortress: Empty,
+      igloo: Empty,
+      jungle_pyramid: Empty,
+      mansion: Empty,
       mineshaft: Obj({
         type: EnumNode(['normal', 'mesa'] as const),
         ...Probability
       }),
+      monument: Empty,
       nether_fossil: Obj({
         height: HeightProvider
       }),
@@ -71,6 +78,8 @@ export const ConfiguredStructureFeature: Model = {
       shipwreck: Obj({
         is_beached: BoolNode(false)
       }),
+      stronghold: Empty,
+      swamp_hut: Empty,
       village: TemplatePool
     },
     {},
