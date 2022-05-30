@@ -32,6 +32,7 @@ export const Registries1_17: WorldgenRegistriesType = {
   'worldgen/configured_surface_builder': [ConfiguredSurfaceBuilder],
   'worldgen/noise_settings': [NoiseSettings, NoiseSettingsOptions],
   'worldgen/processor_list': [ProcessorList],
+  'worldgen/structure': [EmptyModel],
   'worldgen/structure_set': [EmptyModel],
   'worldgen/template_pool': [EmptyModel],
   'worldgen/world_preset': [EmptyModel]

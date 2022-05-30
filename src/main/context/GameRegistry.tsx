@@ -50,6 +50,8 @@ const text = (url: string, label?: boolean): RegistryData =>
   res(url, readText, label);
 const baseVersion = (version: GameVersion) =>
   version === '1.18.2' ? '1.18' : version;
+const baseTagVersion = (version: GameVersion) =>
+  version === '1.18.2' ? '1.18.2' : '1.19';
 const defaultVersion: GameVersion = '1.18.2';
 
 export function GameRegistryProvider({
@@ -98,18 +100,25 @@ export function GameRegistryProvider({
         valuesUrl('1.17', 'configured_surface_builders')
       ),
       'worldgen/processor_list': json(valuesUrl('1.17', 'processor_list')),
+      'worldgen/structure': json(valuesUrl('1.19', 'structures')),
       'worldgen/structure_set': json(
         valuesUrl('1.18.2', 'structure_sets'),
         false
       ),
-      'worldgen/template_pool': json(valuesUrl('1.18', 'template_pools'), false)
+      'worldgen/template_pool': json(
+        valuesUrl(version === '1.19' ? '1.19' : '1.18', 'template_pools'),
+        false
+      )
     },
     {
       block: text(
         `${github}data/minecraft/tags/blocks/data.values.txt`
       ),
       fluid: json(valuesUrl('1.18.2', 'tag_fluids'), false),
-      'worldgen/biome': json(valuesUrl('1.18.2', 'tag_biomes'), false)
+      'worldgen/biome': json(
+        valuesUrl(baseTagVersion(version), 'tag_biomes'),
+        false
+      )
     },
     version
   );

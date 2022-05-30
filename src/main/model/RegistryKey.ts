@@ -33,6 +33,7 @@ const WorldgenRegistryKeys = [
   'worldgen/placed_feature',
   'worldgen/placement_modifier',
   'worldgen/processor_list',
+  'worldgen/structure',
   'worldgen/structure_set',
   'worldgen/template_pool',
   'worldgen/world_preset'
