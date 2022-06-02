@@ -128,7 +128,7 @@ export function GameRegistryProvider({
     () => new Registry(Object.keys(blockStates).map(labelizeOption)),
     [blockStates]
   );
-  if (holder) {
+  if (holder && version === fetched.current) {
     holder.withVanilla(vanilla);
     holder.game.block = blockTypes;
     holder.game.block_state = blockTypes;
