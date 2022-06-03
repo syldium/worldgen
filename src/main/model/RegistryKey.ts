@@ -25,6 +25,7 @@ const WorldgenRegistryKeys = [
   'worldgen/configured_feature',
   'worldgen/configured_structure_feature',
   'worldgen/configured_surface_builder',
+  'worldgen/density_function',
   'worldgen/flat_level_generator_preset',
   'worldgen/material_condition',
   'worldgen/material_rule',

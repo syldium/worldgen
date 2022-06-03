@@ -99,6 +99,10 @@ export function GameRegistryProvider({
       'worldgen/configured_surface_builder': json(
         valuesUrl('1.17', 'configured_surface_builders')
       ),
+      'worldgen/density_function': json(
+        valuesUrl(baseTagVersion(version), 'density_functions'),
+        false
+      ),
       'worldgen/processor_list': json(valuesUrl('1.17', 'processor_list')),
       'worldgen/structure': json(valuesUrl('1.19', 'structures')),
       'worldgen/structure_set': json(

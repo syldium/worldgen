@@ -25,6 +25,7 @@ export const Registries1_17: WorldgenRegistriesType = {
   'worldgen/configured_carver': [ConfiguredCarver],
   'worldgen/configured_decorator': [ConfiguredDecorator],
   'worldgen/configured_feature': [ConfiguredFeature],
+  'worldgen/density_function': [EmptyModel],
   'worldgen/flat_level_generator_preset': [EmptyModel],
   'worldgen/material_rule': [EmptyModel],
   'worldgen/noise': [EmptyModel],

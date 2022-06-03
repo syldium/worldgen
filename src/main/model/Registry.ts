@@ -321,6 +321,7 @@ export const WorldgenNames: Record<WorldgenRegistryKey, string> = {
   'worldgen/configured_feature': 'configured feature',
   'worldgen/configured_structure_feature': 'configured structure feature',
   'worldgen/configured_surface_builder': 'configured surface builder',
+  'worldgen/density_function': 'density function',
   'worldgen/flat_level_generator_preset': 'flat level generator preset',
   'worldgen/material_condition': 'material condition',
   'worldgen/material_rule': 'material rule',

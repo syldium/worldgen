@@ -729,8 +729,8 @@ function ResourceInput(
   );
 
   if (
-    value !== null &&
-    typeof value === 'object' &&
+    value != null &&
+    typeof value !== 'string' &&
     worldgen.isWorldgen(node.registry)
   ) {
     const model = worldgen.worldgen[node.registry].model.node;

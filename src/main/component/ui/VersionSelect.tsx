@@ -17,7 +17,7 @@ export function VersionSelect(): JSX.Element {
       <option value="1.17">1.17.1</option>
       <option value="1.18">1.18</option>
       <option value="1.18.2">1.18.2</option>
-      <option value="1.19">1.19-rc1</option>
+      <option value="1.19">1.19</option>
     </select>
   );
 }

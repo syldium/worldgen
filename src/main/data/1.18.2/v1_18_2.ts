@@ -4,6 +4,7 @@ import { Registries1_18 } from '../1.18/v1_18';
 import { Biome } from './Biome';
 import { BlockPredicate } from './BlockPredicate';
 import { ConfiguredFeature } from './ConfiguredFeature';
+import { DensityFunction } from './DensityFunction';
 import { DimensionType } from './DimensionType';
 import { NoiseSettings, NoiseSettingsOptions } from './NoiseSettings';
 import { StructureSet } from './StructureSet';
@@ -15,6 +16,7 @@ export const Registries1_18_2: WorldgenRegistriesType = {
   dimension_type: [DimensionType, DimensionTypes],
   'worldgen/biome': [Biome],
   'worldgen/configured_feature': [ConfiguredFeature],
+  'worldgen/density_function': [DensityFunction],
   'worldgen/material_rule': [MaterialRule],
   'worldgen/noise_settings': [NoiseSettings, NoiseSettingsOptions],
   'worldgen/structure_set': [StructureSet]

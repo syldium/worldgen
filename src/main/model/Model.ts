@@ -12,7 +12,7 @@ export interface Configured extends Typed {
 
 export interface Model {
   node: ModelNode;
-  preset: (version: GameVersion) => Record<string, unknown>;
+  preset: (version: GameVersion) => unknown;
 }
 
 export const EmptyModel: Model = { node: Empty, preset: () => ({}) };

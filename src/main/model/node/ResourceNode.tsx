@@ -48,7 +48,7 @@ export const ResourceNode = (
         } else {
           return errors.add(path, 'Expected a valid identifier');
         }
-      } else if (typeof value === 'object') {
+      } else if (value != null) {
         return;
       }
       errors.add(path, 'Expected a resource');
