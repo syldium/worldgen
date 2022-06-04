@@ -16,7 +16,7 @@ const sitemap = [];
 
 console.log(chalk.green('Pre-rendering default models...'));
 for (
-  const url of [
+  const uri of [
     '',
     'dimension',
     'dimension_type',
@@ -28,22 +28,28 @@ for (
     'worldgen/structure_set'
   ]
 ) {
-  console.log('Redering:', chalk.white('/' + url));
-  const appHtml = render(url);
-  const name = WorldgenNames[url] || 'dimension';
+  console.log('Rendering:', chalk.white('/' + uri));
+  const appHtml = render(uri);
+  const name = WorldgenNames[uri] || 'dimension';
   const plural = name.endsWith('s') ? name : name + 's';
-  const capitalizedName = name.charAt(0).toUpperCase() + name.substr(1);
+  const capitalizedName = name.charAt(0).toUpperCase() + name.substring(1);
   const custom = name.includes('configured') ? '' : 'custom ';
+  let canonical = '';
+  if (baseurl) {
+    const url = new URL(uri, baseurl).toString();
+    sitemap.push(url);
+    canonical = `\n    <link rel="canonical" href="${url}" />`;
+  }
   const html = template
     .replace(
       '<!--meta-->',
       `<meta name="description" content="A ${custom}${name} datapack generator for Minecraft Java Edition 1.18.2" />
     <meta property="og:title" content="${capitalizedName} datapack generator for Minecraft" />
-    <meta property="og:description" content="A tool to generate datapacks with ${custom}${plural} for Minecraft 1.18.2" />`
+    <meta property="og:description" content="A tool to generate datapacks with ${custom}${plural} for Minecraft 1.18.2" />${canonical}`
     )
     .replace('<div id="root"></div>', '<div id="root">' + appHtml + '</div>');
 
-  const dirPath = `dist${url === '' ? url : '/' + url}`;
+  const dirPath = `dist${uri === '' ? uri : '/' + uri}`;
   const filePath = dirPath + '/index.html';
   const absolutePath = new URL(filePath, import.meta.url);
   fs.mkdir(dirPath, { recursive: true }, (err) => {
@@ -52,9 +58,6 @@ for (
     }
     fs.writeFileSync(absolutePath, html);
   });
-  if (baseurl) {
-    sitemap.push(new URL(url, baseurl).toString());
-  }
 }
 
 if (sitemap.length) {
