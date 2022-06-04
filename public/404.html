@@ -6,8 +6,25 @@
   </head>
   <body>
     <script>
+      const domain = 'syldium.github.io';
+      let href = window.location.href;
+      let sepIdx = href.lastIndexOf('/');
+      if (sepIdx !== -1 && !isNaN(parseInt(href.substring(sepIdx + 1)))) {
+        href = href.substring(0, href.lastIndexOf('/'));
+      }
+      if (href.includes(`${domain}/worldgen`)) {
+        let redirect;
+        if (href.endsWith('dimension') || href.endsWith('dimension/type')) {
+          redirect = href.replace(`${domain}/worldgen`, 'worldgen.syldium.dev');
+        } else {
+          redirect = href.replace(domain, 'worldgen.syldium.dev');
+        }
+        document.body.innerHTML = 'Redirecting to ' + redirect;
+        window.location.href = redirect;
+      }
+
         // https://github.com/rafgraph/spa-github-pages
-        var pathSegmentsToKeep = 1;
+        /*var pathSegmentsToKeep = 1;
 
         var l = window.location;
         l.replace(
@@ -16,7 +33,7 @@
             l.pathname.slice(1).split('/').slice(pathSegmentsToKeep).join('/').replace(/&/g, '~and~') +
             (l.search ? '&' + l.search.slice(1).replace(/&/g, '~and~') : '') +
             l.hash
-        );
+        );*/
     </script>
   </body>
 </html>

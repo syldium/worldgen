@@ -28,9 +28,17 @@
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <section id="root"></section>
     <script>
+      const domain = 'syldium.github.io/worldgen';
+      const href = window.location.href;
+      if (href.includes(domain) && !localStorage.getItem('namespace')) {
+        let redirect = href.replace(domain, 'worldgen.syldium.dev');
+        document.body.innerHTML = 'Redirecting to ' + redirect;
+        window.location.href = redirect;
+      }
+
         (function(l) {
             if (l.search[1] === '/' ) {
-                var decoded = l.search.slice(1).split('&').map(function(s) { 
+                var decoded = l.search.slice(1).split('&').map(function(s) {
                     return s.replace(/~and~/g, '&')
                 }).join('?');
                 window.history.replaceState(null, null,
@@ -48,7 +56,7 @@
             document.body.classList.add(darkMode ? classNameDark : classNameLight);
             document.body.classList.remove(darkMode ? classNameLight : classNameDark);
         }
-  
+
         const preferDarkQuery = '(prefers-color-scheme: dark)';
         const mql = window.matchMedia(preferDarkQuery);
         const supportsColorSchemeQuery = mql.media === preferDarkQuery;
