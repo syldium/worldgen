@@ -132,7 +132,7 @@ export function GameRegistryProvider({
     () => new Registry(Object.keys(blockStates).map(labelizeOption)),
     [blockStates]
   );
-  if (holder && version === fetched.current) {
+  if (holder && (version === fetched.current || import.meta.env.SSR)) {
     holder.withVanilla(vanilla);
     holder.game.block = blockTypes;
     holder.game.block_state = blockTypes;

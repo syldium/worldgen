@@ -2,7 +2,7 @@
 import chalk from 'chalk';
 import dotenv from 'dotenv';
 import fs from 'fs';
-import { render, WorldgenNames } from './dist/server/entry-server.js';
+import { render, WorldgenNames } from './dist/server/entry-server.mjs';
 
 dotenv.config();
 

@@ -1,4 +1,4 @@
-import { saveAs } from 'file-saver';
+import saveAs from 'file-saver';
 import { useCallback, useContext } from 'react';
 import { Download, PlusCircle } from 'react-feather';
 import { toast } from 'react-hot-toast';
