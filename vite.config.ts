@@ -1,6 +1,6 @@
 import react from '@vitejs/plugin-react';
 import visualizer from 'rollup-plugin-visualizer';
-import { defineConfig } from 'vite';
+import { defineConfig } from 'vitest/config';
 import createBiomeColors from './src/main/data/rollup-plugin-biome';
 
 // https://vitejs.dev/config/
@@ -25,9 +25,9 @@ export default defineConfig({
   ],
   ssr: {
     noExternal: [
-      'react-select/creatable',
+      'react-select',
       'use-local-storage-state',
-      /@babel\/runtime\/helpers\/esm\/\w+/
+      '@babel/runtime'
     ]
   }
 });
