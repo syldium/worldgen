@@ -32,7 +32,7 @@ export function NumberInput({
   const ref = useRef<HTMLInputElement>(null);
   const handleChange: ChangeEventHandler<HTMLInputElement> = function (event) {
     const input = event.target;
-    const number = parseFloat(input.value);
+    const number = input.valueAsNumber;
     if (isNaN(number)) {
       input.setCustomValidity('Not a number');
     } else {
