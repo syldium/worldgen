@@ -27,7 +27,8 @@ export default defineConfig({
     noExternal: [
       'react-select',
       'use-local-storage-state',
-      '@babel/runtime'
+      '@babel/runtime',
+      'json-view-for-react'
     ]
   }
 });

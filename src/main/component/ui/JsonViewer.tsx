@@ -1,4 +1,4 @@
-import JsonView from 'json-view-for-react';
+import { JsonView } from 'json-view-for-react';
 import { useCallback } from 'react';
 import { Code } from 'react-feather';
 import { useToggle } from '../../hook/useToggle';

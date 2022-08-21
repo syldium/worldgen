@@ -7,5 +7,4 @@ declare module 'json-view-for-react' {
   }
 
   const JsonView: React.FunctionComponent<JsonViewProps>;
-  export = JsonView;
 }
