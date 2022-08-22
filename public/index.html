@@ -30,7 +30,7 @@
     <script>
       const domain = 'syldium.github.io/worldgen';
       const href = window.location.href;
-      if (href.includes(domain) && !localStorage.getItem('namespace')) {
+      if (href.includes(domain) && !href.endsWith('no-redirect') && !localStorage.getItem('namespace')) {
         let redirect = href.replace(domain, 'worldgen.syldium.dev');
         document.body.innerHTML = 'Redirecting to ' + redirect;
         window.location.href = redirect;
