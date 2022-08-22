@@ -21,7 +21,6 @@ export const RuleCondition = SwitchNode(
     }),
     hole: Empty,
     noise_threshold: Obj({
-      name: StringNode(),
       noise: NoiseValues,
       min_threshold: DoubleNode(),
       max_threshold: DoubleNode()
@@ -44,12 +43,12 @@ export const RuleCondition = SwitchNode(
     }),
     water: Obj({
       offset: IntNode(),
-      run_depth_multiplier: IntNode({ min: -20, max: 20 }),
+      surface_depth_multiplier: IntNode({ min: -20, max: 20 }),
       add_stone_depth: BoolNode()
     }),
     y_above: Obj({
       anchor: YOffset,
-      run_depth_multiplier: IntNode({ min: -20, max: 20 }),
+      surface_depth_multiplier: IntNode({ min: -20, max: 20 }),
       add_stone_depth: BoolNode()
     })
   },

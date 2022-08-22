@@ -1,7 +1,9 @@
 import type { Model } from '../../model/Model';
+import { EitherNode } from '../../model/node/EitherNode';
+import { EnumNode } from '../../model/node/EnumNode';
 import { FloatNode } from '../../model/node/FloatNode';
 import { ListNode } from '../../model/node/ListNode';
-import { Obj } from '../../model/node/ObjectNode';
+import { Empty, Obj } from '../../model/node/ObjectNode';
 import { ResourceNode } from '../../model/node/ResourceNode';
 import { SwitchNode } from '../../model/node/SwitchNode';
 import {
@@ -14,26 +16,31 @@ import { RangeInterval } from './RangeInterval';
 const { vanilla_layered, ...sources } = BiomeSourceSwitch1_17.values;
 
 const range = RangeInterval(FloatNode({ min: -2, max: 2 }));
-const MultiNoise = Obj({
-  biomes: ListNode(
-    Obj({
-      biome: ResourceNode('worldgen/biome'),
-      parameters: Obj({
-        continentalness: range,
-        depth: range,
-        erosion: range,
-        humidity: range,
-        temperature: range,
-        weirdness: range,
-        offset: FloatNode({ min: 0, max: 1 })
+const MultiNoise = EitherNode(
+  Obj({
+    biomes: ListNode(
+      Obj({
+        biome: ResourceNode('worldgen/biome'),
+        parameters: Obj({
+          continentalness: range,
+          depth: range,
+          erosion: range,
+          humidity: range,
+          temperature: range,
+          weirdness: range,
+          offset: FloatNode({ min: 0, max: 1 })
+        })
       })
-    })
-  )
-});
+    )
+  }),
+  Obj({
+    preset: EnumNode(['overworld', 'nether'] as const, undefined, true)
+  })
+);
 
 export const BiomeSource: Model = {
   node: SwitchNode(
-    { ...sources, multi_noise: MultiNoise },
+    { ...sources, multi_noise: MultiNoise, the_end: Empty },
     {
       ...BiomeSourceSwitch1_17.preset,
       multi_noise: {
@@ -52,7 +59,8 @@ export const BiomeSource: Model = {
             biome: 'minecraft:warm_ocean'
           }
         ]
-      }
+      },
+      the_end: {}
     },
     BiomeSourceSwitch1_17.config,
     BiomeSourceSwitch1_17.typeField

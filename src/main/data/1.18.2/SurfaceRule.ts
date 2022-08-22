@@ -10,15 +10,19 @@ import {
   RuleSource as RuleSource1_18
 } from '../1.18/SurfaceRule';
 
-const RuleCondition = SwitchNode({
-  ...RuleCondition1_18.values,
-  stone_depth: Obj({
-    offset: IntNode(),
-    add_surface_depth: BoolNode(),
-    secondary_depth_range: IntNode(),
-    surface_type: VerticalSurface
-  })
-});
+const RuleCondition = SwitchNode(
+  {
+    ...RuleCondition1_18.values,
+    stone_depth: Obj({
+      offset: IntNode(),
+      add_surface_depth: BoolNode(),
+      secondary_depth_range: IntNode(),
+      surface_type: VerticalSurface
+    })
+  },
+  RuleCondition1_18.preset,
+  RuleCondition1_18.config
+);
 
 export const MaterialRule: Model = {
   node: SwitchNode(

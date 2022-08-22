@@ -1,10 +1,10 @@
-import { ObjectOrNodeModel } from '../Model';
-import { ErrorCollector, NodeBase } from './Node';
+import type { ModelNode, NodeBase } from './Node';
+import { ErrorCollector } from './Node';
 
 type Nodes = readonly [
-  ObjectOrNodeModel,
-  ObjectOrNodeModel,
-  ...ObjectOrNodeModel[]
+  ModelNode,
+  ModelNode,
+  ...ModelNode[]
 ];
 
 export interface EitherNodeParams extends NodeBase<'either'> {

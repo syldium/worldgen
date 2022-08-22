@@ -1,38 +1,46 @@
 import { Model } from '../../model/Model';
+import { EnumNode } from '../../model/node/EnumNode';
 import { IntNode } from '../../model/node/IntNode';
 import { ListNode } from '../../model/node/ListNode';
-import { Empty, Obj } from '../../model/node/ObjectNode';
+import { Empty, Obj, ObjectNodeParams } from '../../model/node/ObjectNode';
 import { IdentifierNode, ResourceNode } from '../../model/node/ResourceNode';
 import { StringNode } from '../../model/node/StringNode';
 import { SwitchNode } from '../../model/node/SwitchNode';
+
+const TemplateElement = SwitchNode(
+  {
+    single_pool_element: Obj({
+      location: IdentifierNode('structures'),
+      processors: ResourceNode('worldgen/processor_list')
+    }),
+    list_pool_element: Obj({
+      elements: Empty // changed after
+    }),
+    feature_pool_element: Obj({
+      feature: ResourceNode('worldgen/placed_feature')
+    }),
+    empty_pool_element: Empty,
+    legacy_single_pool_element: Obj({
+      location: IdentifierNode('structures'),
+      processors: ResourceNode('worldgen/processor_list')
+    })
+  },
+  {},
+  null,
+  'element_type',
+  Obj({
+    projection: EnumNode(['rigid', 'terrain_matching'] as const)
+  })
+);
+(TemplateElement.values.list_pool_element as ObjectNodeParams).records
+  .elements = ListNode(TemplateElement);
 
 export const TemplatePool: Model = {
   node: Obj({
     name: StringNode(),
     fallback: StringNode(),
     elements: ListNode(Obj({
-      element: SwitchNode(
-        {
-          single_pool_element: Obj({
-            location: IdentifierNode('structures'),
-            processors: ResourceNode('worldgen/processor_list')
-          }),
-          list_pool_element: Obj({
-            elements: ListNode(ResourceNode('worldgen/template_pool'))
-          }),
-          feature_pool_element: Obj({
-            feature: ResourceNode('worldgen/placed_feature')
-          }),
-          empty_pool_element: Empty,
-          legacy_single_pool_element: Obj({
-            location: IdentifierNode('structures'),
-            processors: ResourceNode('worldgen/processor_list')
-          })
-        },
-        {},
-        null,
-        'element_type'
-      ),
+      element: TemplateElement,
       weight: IntNode({ min: 1, max: 150 })
     }))
   }),
