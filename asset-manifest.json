@@ -1,23 +1,23 @@
 {
   "files": {
-    "main.css": "/worldgen/static/css/main.3eb5b0e8.css",
-    "main.js": "/worldgen/static/js/main.5356f158.js",
-    "static/js/292.69d02e29.chunk.js": "/worldgen/static/js/292.69d02e29.chunk.js",
-    "static/js/413.5c4d7abe.chunk.js": "/worldgen/static/js/413.5c4d7abe.chunk.js",
-    "static/js/775.0ab2c9f1.chunk.js": "/worldgen/static/js/775.0ab2c9f1.chunk.js",
+    "main.css": "/worldgen/static/css/main.3a271b0b.css",
+    "main.js": "/worldgen/static/js/main.78e44384.js",
+    "static/js/292.9605b82c.chunk.js": "/worldgen/static/js/292.9605b82c.chunk.js",
+    "static/js/413.cea7b3d0.chunk.js": "/worldgen/static/js/413.cea7b3d0.chunk.js",
+    "static/js/775.0a8a75f8.chunk.js": "/worldgen/static/js/775.0a8a75f8.chunk.js",
     "static/js/520.f136b6e3.chunk.js": "/worldgen/static/js/520.f136b6e3.chunk.js",
-    "static/js/921.d4afef5a.chunk.js": "/worldgen/static/js/921.d4afef5a.chunk.js",
+    "static/js/921.f46e96fe.chunk.js": "/worldgen/static/js/921.f46e96fe.chunk.js",
     "index.html": "/worldgen/index.html",
-    "main.3eb5b0e8.css.map": "/worldgen/static/css/main.3eb5b0e8.css.map",
-    "main.5356f158.js.map": "/worldgen/static/js/main.5356f158.js.map",
-    "292.69d02e29.chunk.js.map": "/worldgen/static/js/292.69d02e29.chunk.js.map",
-    "413.5c4d7abe.chunk.js.map": "/worldgen/static/js/413.5c4d7abe.chunk.js.map",
-    "775.0ab2c9f1.chunk.js.map": "/worldgen/static/js/775.0ab2c9f1.chunk.js.map",
+    "main.3a271b0b.css.map": "/worldgen/static/css/main.3a271b0b.css.map",
+    "main.78e44384.js.map": "/worldgen/static/js/main.78e44384.js.map",
+    "292.9605b82c.chunk.js.map": "/worldgen/static/js/292.9605b82c.chunk.js.map",
+    "413.cea7b3d0.chunk.js.map": "/worldgen/static/js/413.cea7b3d0.chunk.js.map",
+    "775.0a8a75f8.chunk.js.map": "/worldgen/static/js/775.0a8a75f8.chunk.js.map",
     "520.f136b6e3.chunk.js.map": "/worldgen/static/js/520.f136b6e3.chunk.js.map",
-    "921.d4afef5a.chunk.js.map": "/worldgen/static/js/921.d4afef5a.chunk.js.map"
+    "921.f46e96fe.chunk.js.map": "/worldgen/static/js/921.f46e96fe.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.3eb5b0e8.css",
-    "static/js/main.5356f158.js"
+    "static/css/main.3a271b0b.css",
+    "static/js/main.78e44384.js"
   ]
 }
