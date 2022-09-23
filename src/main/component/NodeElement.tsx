@@ -32,10 +32,9 @@ import type {
   IdentifierNodeParams,
   TagNodeParams
 } from '../model/node/ResourceNode';
-import { ResourceNode } from '../model/node/ResourceNode';
 import type { StringNodeParams } from '../model/node/StringNode';
 import type { SwitchNodeParams } from '../model/node/SwitchNode';
-import type { RegistryKey, WorldgenRegistryKey } from '../model/RegistryKey';
+import type { WorldgenRegistryKey } from '../model/RegistryKey';
 import { hexColorToInteger, intColorToHex } from '../util/ColorHelper';
 import type { Obj } from '../util/DomHelper';
 import {
