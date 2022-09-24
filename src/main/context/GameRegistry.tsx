@@ -52,7 +52,7 @@ const baseVersion = (version: GameVersion) =>
   version === '1.18.2' ? '1.18' : version;
 const baseTagVersion = (version: GameVersion) =>
   version === '1.18.2' ? '1.18.2' : '1.19';
-const defaultVersion: GameVersion = '1.18.2';
+const defaultVersion: GameVersion = '1.19';
 
 export function GameRegistryProvider({
   children,

@@ -5,7 +5,7 @@ import {
   PackFormatNumber,
   PackFormatString
 } from '../context/GameVersion';
-import { Registries1_18_2 } from '../data/1.18.2/v1_18_2';
+import { Registries1_19 } from '../data/1.19/v1_19';
 import { loadVanillaZip } from '../util/FetchHelper';
 import { customOption, stripDefaultNamespace } from '../util/LabelHelper';
 import { Model } from './Model';
@@ -140,7 +140,7 @@ export class RegistryHolder {
 
   constructor(
     version: GameVersion | keyof typeof PackFormatNumber,
-    provider: WorldgenRegistriesType = Registries1_18_2
+    provider: WorldgenRegistriesType = Registries1_19
   ) {
     this.packFormat = typeof version === 'number' ?
       version :
@@ -169,10 +169,10 @@ export class RegistryHolder {
 
   static async create(version: GameVersion): Promise<RegistryHolder> {
     switch (version) {
-      case '1.19':
+      case '1.18.2':
         return new RegistryHolder(
           version,
-          (await import('../data/1.19/v1_19')).Registries1_19
+          (await import('../data/1.18.2/v1_18_2')).Registries1_18_2
         );
       case '1.18':
         return new RegistryHolder(
@@ -190,7 +190,7 @@ export class RegistryHolder {
   }
 
   static def(): RegistryHolder {
-    return new RegistryHolder('1.18.2', Registries1_18_2);
+    return new RegistryHolder('1.19', Registries1_19);
   }
 
   async resource(
