@@ -9,7 +9,6 @@ import { Empty, Obj } from '../../model/node/ObjectNode';
 import { IdentifierNode, ResourceNode } from '../../model/node/ResourceNode';
 import { StringNode } from '../../model/node/StringNode';
 import { SwitchNode } from '../../model/node/SwitchNode';
-import { NoiseValues } from '../1.17/BiomeSource';
 import { YOffset } from '../1.17/HeightProvider';
 import { VerticalSurface } from '../1.17/WorldgenStep';
 
@@ -21,7 +20,7 @@ export const RuleCondition = SwitchNode(
     }),
     hole: Empty,
     noise_threshold: Obj({
-      noise: NoiseValues,
+      noise: ResourceNode('worldgen/noise'),
       min_threshold: DoubleNode(),
       max_threshold: DoubleNode()
     }),
