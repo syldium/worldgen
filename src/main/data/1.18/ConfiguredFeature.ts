@@ -37,6 +37,13 @@ const GlowLichenConfig = Obj({
   can_be_placed_on: ListNode(ResourceNode('block'))
 });
 
+const PointedDripstoneConfig = Obj({
+  chance_of_taller_dripstone: FloatNode({ min: 0, max: 1, default: 0.2 }),
+  chance_of_directional_spread: FloatNode({ min: 0, max: 1, default: 0.7 }),
+  chance_of_spread_radius2: FloatNode({ min: 0, max: 1, default: 0.5 }),
+  chance_of_spread_radius3: FloatNode({ min: 0, max: 1, default: 0.5 })
+});
+
 const SimpleRandomConfig = Obj({
   features: ListNode(ResourceNode('worldgen/placed_feature'))
 });
@@ -98,6 +105,7 @@ export const ConfiguredFeature: Model = {
       monster_room_deep: Empty,
       no_bonemeal_flower: RandomPatchConfig,
       ore_gold_lower: Empty,
+      pointed_dripstone: PointedDripstoneConfig,
       random_boolean_selector: RandomBooleanSelector,
       random_selector: RandomConfig,
       random_patch: RandomPatchConfig,

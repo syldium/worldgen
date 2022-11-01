@@ -6,6 +6,7 @@ import { ListNode } from '../../model/node/ListNode';
 import { Empty, Obj, Opt } from '../../model/node/ObjectNode';
 import { ResourceNode, TagNode } from '../../model/node/ResourceNode';
 import { SwitchNode, SwitchNodeParams } from '../../model/node/SwitchNode';
+import { Direction } from '../1.17/Direction';
 import { IntProvider } from '../1.17/NumberProvider';
 import { ConfiguredFeature as ConfiguredFeature1_18_2 } from '../1.18.2/ConfiguredFeature';
 
@@ -117,7 +118,15 @@ const TreeConfig = {
         beehive: Obj(Probability),
         cocoa: Obj(Probability),
         leave_vine: Empty,
-        trunk_vine: Empty
+        trunk_vine: Empty,
+        attached_to_leaves: Obj({
+          ...Probability,
+          exclusion_radius_xz: IntNode({ min: 0, max: 16 }),
+          exclusion_radius_y: IntNode({ min: 0, max: 16 }),
+          block_provider: ResourceNode('block_state_provider'),
+          required_empty_blocks: IntNode({ min: 1, max: 16 }),
+          directions: ListNode(Direction)
+        })
       },
       {
         alter_ground: {
@@ -136,6 +145,38 @@ const TreeConfig = {
         },
         cocoa: {
           probability: 0.2
+        },
+        attached_to_leaves: {
+          block_provider: {
+            type: 'minecraft:randomized_int_state_provider',
+            property: 'age',
+            source: {
+              type: 'minecraft:simple_state_provider',
+              state: {
+                Name: 'minecraft:mangrove_propagule',
+                Properties: {
+                  age: '0',
+                  hanging: 'true',
+                  stage: '0',
+                  waterlogged: 'false'
+                }
+              }
+            },
+            values: {
+              type: 'minecraft:uniform',
+              value: {
+                max_inclusive: 4,
+                min_inclusive: 0
+              }
+            }
+          },
+          directions: [
+            'down'
+          ],
+          exclusion_radius_xz: 1,
+          exclusion_radius_y: 0,
+          probability: 0.14,
+          required_empty_blocks: 2
         }
       },
       null
