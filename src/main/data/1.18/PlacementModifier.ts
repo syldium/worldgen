@@ -3,17 +3,17 @@ import { EnumNode } from '../../model/node/EnumNode';
 import { DoubleNode } from '../../model/node/FloatNode';
 import { IntNode } from '../../model/node/IntNode';
 import { Empty, Obj, Opt } from '../../model/node/ObjectNode';
+import { ResourceNode } from '../../model/node/ResourceNode';
 import { SwitchNode } from '../../model/node/SwitchNode';
 import { HeightProvider } from '../1.17/HeightProvider';
 import { IntProvider } from '../1.17/NumberProvider';
 import { Heightmap } from '../1.17/WorldgenStep';
-import { BlockPredicateSwitch } from './BlockPredicate';
 
 const PlacementModifierSwitch = SwitchNode(
   {
     biome: Empty,
     block_predicate_filter: Obj({
-      predicate: BlockPredicateSwitch
+      predicate: ResourceNode('block_predicate')
     }),
     carving_mask: Obj({
       step: EnumNode(['air', 'liquid'] as const)
@@ -26,8 +26,8 @@ const PlacementModifierSwitch = SwitchNode(
     }),
     environment_scan: Obj({
       direction_of_search: EnumNode(['up', 'down'] as const),
-      target_condition: BlockPredicateSwitch,
-      allowed_search_condition: Opt(BlockPredicateSwitch),
+      target_condition: ResourceNode('block_predicate'),
+      allowed_search_condition: Opt(ResourceNode('block_predicate')),
       max_steps: IntNode({ min: 1, max: 32 })
     }),
     heightmap: Obj({

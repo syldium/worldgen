@@ -13,12 +13,13 @@ const Offset = Opt(ListNode(IntNode({ min: -16, max: 16 }), 3));
 export const BlockPredicate: Model = {
   node: SwitchNode(
     {
+      ...predicates1_18.values,
       matching_blocks: Obj({
         blocks: TagNode('block'),
         offset: Offset
       }),
       matching_fluids: Obj({
-        blocks: TagNode('fluid'),
+        fluids: TagNode('fluid'),
         offset: Offset
       })
     },

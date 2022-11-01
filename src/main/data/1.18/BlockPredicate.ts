@@ -33,7 +33,7 @@ export const BlockPredicateSwitch = SwitchNode(
       tag: TagNode('block')
     }),
     matching_fluids: Obj({
-      blocks: ListNode(ResourceNode('block')), // TODO fluid type
+      fluids: ListNode(ResourceNode('block')), // TODO fluid type
       offset: Offset
     }),
     not: Obj({
