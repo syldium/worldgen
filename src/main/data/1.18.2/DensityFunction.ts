@@ -4,7 +4,7 @@ import { EnumNode } from '../../model/node/EnumNode';
 import { DoubleNode, FloatNode } from '../../model/node/FloatNode';
 import { IntNode } from '../../model/node/IntNode';
 import { ListNode } from '../../model/node/ListNode';
-import { Obj } from '../../model/node/ObjectNode';
+import { Empty, Obj } from '../../model/node/ObjectNode';
 import { ResourceNode } from '../../model/node/ResourceNode';
 import { SwitchNode } from '../../model/node/SwitchNode';
 
@@ -36,7 +36,9 @@ export const DynamicRangeDensityFunction = SwitchNode(
   {
     abs: UnaryFunction,
     add: BinaryFunction,
+    blend_alpha: Empty,
     blend_density: UnaryFunction,
+    blend_offset: Empty,
     cache_2d: UnaryFunction,
     cache_all_in_cell: UnaryFunction,
     cache_once: UnaryFunction,
@@ -47,6 +49,7 @@ export const DynamicRangeDensityFunction = SwitchNode(
     }),
     constant: ConstantRange,
     cube: UnaryFunction,
+    end_islands: Empty,
     flat_cache: UnaryFunction,
     half_negative: UnaryFunction,
     interpolated: UnaryFunction,
@@ -58,7 +61,7 @@ export const DynamicRangeDensityFunction = SwitchNode(
       xz_scale: FloatNode(),
       y_scale: FloatNode()
     }),
-    quarter_negative: BinaryFunction,
+    quarter_negative: UnaryFunction,
     range_choice: Obj({
       input: ResourceNode('worldgen/density_function'),
       min_inclusive: ConstantRange,
