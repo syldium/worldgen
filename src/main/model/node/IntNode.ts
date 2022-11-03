@@ -12,10 +12,10 @@ export interface NumberNodeParams extends NodeBase<'int' | 'float'> {
   preset: number;
 
   /** The minimum accepted value */
-  min: number;
+  min?: number;
 
   /** The maximum accepted value */
-  max: number;
+  max?: number;
 
   /** Number to divide the value by (0 = any) */
   step: number;
