@@ -158,7 +158,8 @@ export function ResourceView<T extends ModelNode>(
 function EitherInput(
   { name, node, value, onChange, children }: NodeProps<EitherNodeParams>
 ): JSX.Element {
-  const i = Math.max(node.findCurrentIndex(value), 0);
+  const holder = useContext(GameContext).registries!;
+  const i = Math.max(node.findCurrentIndex(value, holder), 0);
   return (
     <fieldset>
       <FieldsetLegend name={name}>{children}</FieldsetLegend>

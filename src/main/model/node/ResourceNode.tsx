@@ -1,5 +1,6 @@
 import { isValidNamespacedKey } from '../../util/LabelHelper';
-import type { RegistryKey } from '../RegistryKey';
+import type { RegistryHolder } from '../Registry';
+import type { RegistryKey, WorldgenRegistryKey } from '../RegistryKey';
 import type { NodeBase } from './Node';
 import type { ErrorCollector } from './Node';
 
@@ -39,7 +40,12 @@ export const ResourceNode = (
     default: def,
     registry: key,
     type: 'resource',
-    validate: function (path: string, value: unknown, errors: ErrorCollector) {
+    validate: function (
+      path: string,
+      value: unknown,
+      errors: ErrorCollector,
+      holder?: RegistryHolder
+    ) {
       if (value == null && typeof this.default !== 'undefined') {
         return;
       } else if (typeof value === 'string') {
@@ -49,7 +55,8 @@ export const ResourceNode = (
           return errors.add(path, 'Expected a valid identifier');
         }
       } else if (value != null) {
-        return;
+        return holder?.worldgen[this.registry as WorldgenRegistryKey]?.model
+          .node.validate(path, value, errors, holder);
       }
       errors.add(path, 'Expected a resource');
     }
@@ -62,18 +69,23 @@ export interface TagNodeParams extends NodeBase<'tag'> {
 export const TagNode = (key: RegistryKey): TagNodeParams => ({
   registry: MayInline.has(key) ? ResourceNode(key) : IdentifierNode(key),
   type: 'tag',
-  validate: function (path: string, value: unknown, errors: ErrorCollector) {
+  validate: function (
+    path: string,
+    value: unknown,
+    errors: ErrorCollector,
+    holder?: RegistryHolder
+  ) {
     if (Array.isArray(value)) {
       if (!value.every((val) => typeof val === typeof value[0])) {
         errors.add(path, 'Excepted an array with objects of the same type');
       }
       for (const i in value) {
-        this.registry.validate(path + '[' + i + ']', value[i], errors);
+        this.registry.validate(path + '[' + i + ']', value[i], errors, holder);
       }
     } else if (typeof value === 'string' && value.startsWith('#')) {
-      this.registry.validate(path, value.substring(1), errors);
+      this.registry.validate(path, value.substring(1), errors, holder);
     } else {
-      this.registry.validate(path, value, errors);
+      this.registry.validate(path, value, errors, holder);
     }
   }
 });

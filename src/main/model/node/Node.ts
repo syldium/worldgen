@@ -1,5 +1,6 @@
 import { DataType } from '../../hook/useCrud';
 import { ObjectOrNodeModel } from '../Model';
+import { RegistryHolder } from '../Registry';
 import { BoolNodeParams } from './BoolNode';
 import { EitherNodeParams } from './EitherNode';
 import { EnumNodeParams } from './EnumNode';
@@ -45,7 +46,12 @@ export class ErrorCollector {
   }
 }
 
-type Validate = (path: string, value: unknown, errors: ErrorCollector) => void;
+type Validate = (
+  path: string,
+  value: unknown,
+  errors: ErrorCollector,
+  holder?: RegistryHolder
+) => void;
 
 export interface NodeBase<T extends NodeType> {
   /** The node type */

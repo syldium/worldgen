@@ -1,3 +1,4 @@
+import type { RegistryHolder } from '../Registry';
 import type { ModelNode, NodeBase } from './Node';
 import type { ErrorCollector } from './Node';
 
@@ -22,10 +23,15 @@ export const ListNode = <T extends ModelNode = ModelNode>(
     weighted,
     one,
     type: 'list',
-    validate: function (path: string, value: unknown, errors: ErrorCollector) {
+    validate: function (
+      path: string,
+      value: unknown,
+      errors: ErrorCollector,
+      holder?: RegistryHolder
+    ) {
       if (!Array.isArray(value)) {
         if (this.one) {
-          return this.of.validate(path, value, errors);
+          return this.of.validate(path, value, errors, holder);
         }
         return errors.add(path, 'Expected an array');
       }
@@ -33,7 +39,16 @@ export const ListNode = <T extends ModelNode = ModelNode>(
         errors.add(path, 'Expected an array of length ' + fixedSize);
       }
       for (const i in value) {
-        this.of.validate(path + '[' + i + ']', value[i], errors);
+        if (this.weighted) {
+          this.of.validate(
+            path + '[' + i + '].data',
+            value[i].data,
+            errors,
+            holder
+          );
+        } else {
+          this.of.validate(path + '[' + i + ']', value[i], errors, holder);
+        }
       }
     }
   };

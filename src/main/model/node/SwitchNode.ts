@@ -2,7 +2,7 @@ import {
   defaultNamespace,
   stripDefaultNamespace
 } from '../../util/LabelHelper';
-import { ObjectOrNodeModel } from '../Model';
+import type { RegistryHolder } from '../Registry';
 import type { ErrorCollector, ModelNode, NodeBase } from './Node';
 import { Empty, ObjectNodeParams } from './ObjectNode';
 
@@ -17,7 +17,7 @@ export interface SwitchNodeParams extends NodeBase<'switch'> {
   values: Record<string, ModelNode>;
   config: string | null;
   typeField: string;
-  commonFields: ObjectOrNodeModel;
+  commonFields: ModelNode;
   preset: { [type in string]: string | Record<string, unknown> };
 }
 
@@ -59,7 +59,12 @@ export const SwitchNode = <
     typeField,
     commonFields,
     type: 'switch',
-    validate: function (path: string, value: unknown, errors: ErrorCollector) {
+    validate: function (
+      path: string,
+      value: unknown,
+      errors: ErrorCollector,
+      holder?: RegistryHolder
+    ) {
       if (value == null && this.default) {
         return;
       }
@@ -78,7 +83,8 @@ export const SwitchNode = <
         this.values[type].validate(
           this.config ? path + '.' + this.config : path,
           this.config ? value[this.config] : value,
-          errors
+          errors,
+          holder
         );
       } else {
         errors.add(path, 'Expected a ' + this.typeField + ' field');
