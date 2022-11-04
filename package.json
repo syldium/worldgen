@@ -10,7 +10,8 @@
     "format": "dprint fmt",
     "lint": "eslint src/main/** src/test/**",
     "serve": "vite preview",
-    "test": "vitest"
+    "test": "vitest",
+    "test:load": "vite build -l warn --ssr src/tryLoadVersion.ts --outDir dist/test && node dist/test/tryLoadVersion.mjs"
   },
   "dependencies": {
     "@delangle/use-modal": "^1.9.27",
