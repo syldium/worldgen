@@ -27,6 +27,31 @@ const TreeConfig = {
   trunk_provider: ResourceNode('block_state_provider'),
   foliage_provider: ResourceNode('block_state_provider'),
   dirt_provider: ResourceNode('block_state_provider'),
+  root_placer: Opt(SwitchNode(
+    {
+      mangrove_root_placer: Obj({
+        mangrove_root_placement: Obj({
+          can_grow_through: TagNode('block'),
+          muddy_roots_in: TagNode('block'),
+          muddy_roots_provider: ResourceNode('block_state_provider'),
+          max_root_width: IntNode({ min: 1, max: 12 }),
+          max_root_length: IntNode({ min: 1, max: 64 }),
+          random_skew_chance: Probability.probability
+        })
+      })
+    },
+    {},
+    null,
+    'type',
+    Obj({
+      trunk_offset_y: IntProvider(),
+      root_provider: ResourceNode('block_state_provider'),
+      above_root_placement: Opt(Obj({
+        above_root_provider: ResourceNode('block_state_provider'),
+        above_root_placement_chance: Probability.probability
+      }))
+    })
+  )),
   trunk_placer: SwitchNode(
     {
       straight_trunk_placer: TrunkPlacerBaseConfig,

@@ -7,30 +7,34 @@ import { IdentifierNode, ResourceNode } from '../../model/node/ResourceNode';
 import { StringNode } from '../../model/node/StringNode';
 import { SwitchNode } from '../../model/node/SwitchNode';
 
+const Projection = {
+  projection: EnumNode(['rigid', 'terrain_matching'] as const)
+};
 const TemplateElement = SwitchNode(
   {
     single_pool_element: Obj({
+      ...Projection,
       location: IdentifierNode('structures'),
       processors: ResourceNode('worldgen/processor_list')
     }),
     list_pool_element: Obj({
+      ...Projection,
       elements: Empty // changed after
     }),
     feature_pool_element: Obj({
+      ...Projection,
       feature: ResourceNode('worldgen/placed_feature')
     }),
     empty_pool_element: Empty,
     legacy_single_pool_element: Obj({
+      ...Projection,
       location: IdentifierNode('structures'),
       processors: ResourceNode('worldgen/processor_list')
     })
   },
   {},
   null,
-  'element_type',
-  Obj({
-    projection: EnumNode(['rigid', 'terrain_matching'] as const)
-  })
+  'element_type'
 );
 (TemplateElement.values.list_pool_element as ObjectNodeParams).records
   .elements = ListNode(TemplateElement);
