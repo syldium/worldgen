@@ -126,7 +126,10 @@ export function GameRegistryProvider({
     },
     version
   );
-  const [defNamespace, setDefNamespace] = useLocalStorageState<string>('demo');
+  const [defNamespace, setDefNamespace] = useLocalStorageState<string>(
+    'namespace',
+    { defaultValue: 'unset' }
+  );
 
   const blockTypes: Registry = useMemo(
     () => new Registry(Object.keys(blockStates).map(labelizeOption)),
@@ -190,7 +193,7 @@ export function GameRegistryProvider({
             });
         },
         get namespace(): string {
-          return defNamespace || 'unset';
+          return defNamespace;
         },
         set namespace(namespace: string) {
           setDefNamespace(namespace);
