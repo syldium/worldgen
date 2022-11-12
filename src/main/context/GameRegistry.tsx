@@ -59,10 +59,14 @@ export function GameRegistryProvider({
   states
 }: ProviderProps): JSX.Element {
   const forceUpdate = useForceUpdate();
-  const [version, setVersion] = useLocalStorageState<GameVersion>(
-    'game-version',
-    { defaultValue: defaultVersion }
-  );
+  /* eslint-disable react-hooks/rules-of-hooks */
+  const [version, setVersion] = import.meta.env.SSR ?
+    useState(defaultVersion) :
+    useLocalStorageState<GameVersion>(
+      'game-version',
+      { defaultValue: defaultVersion }
+    );
+  /* eslint-enable react-hooks/rules-of-hooks */
   const github = dataUrl(version);
   const registryUrl = (registry: string) =>
     `${github}reports/registries/${registry}/data.values.txt`;
@@ -126,10 +130,14 @@ export function GameRegistryProvider({
     },
     version
   );
-  const [defNamespace, setDefNamespace] = useLocalStorageState<string>(
-    'namespace',
-    { defaultValue: 'unset' }
-  );
+  /* eslint-disable react-hooks/rules-of-hooks */
+  const [defNamespace, setDefNamespace] = import.meta.env.SSR ?
+    useState('unset') :
+    useLocalStorageState<string>(
+      'namespace',
+      { defaultValue: 'unset' }
+    );
+  /* eslint-enable react-hooks/rules-of-hooks */
 
   const blockTypes: Registry = useMemo(
     () => new Registry(Object.keys(blockStates).map(labelizeOption)),
