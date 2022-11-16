@@ -12,7 +12,7 @@
   },
   "json": {
   },
-  "includes": ["**/*.{ts,tsx,js,jsx,cjs,mjs,json}"],
+  "includes": ["src/**/*.{ts,tsx,js,jsx,cjs,mjs,json}"],
   "excludes": [
     "**/node_modules",
     "**/*-lock.json",
@@ -20,7 +20,7 @@
     "**/dist"
   ],
   "plugins": [
-    "https://plugins.dprint.dev/typescript-0.73.2.wasm",
-    "https://plugins.dprint.dev/json-0.15.6.wasm"
+    "https://plugins.dprint.dev/typescript-0.78.0.wasm",
+    "https://plugins.dprint.dev/json-0.16.0.wasm"
   ]
 }
