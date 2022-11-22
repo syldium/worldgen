@@ -96,7 +96,9 @@ export function GameRegistryProvider({
       'worldgen/configured_feature': json(
         valuesUrl(baseVersion(version), 'configured_features')
       ),
-      'worldgen/placed_feature': json(valuesUrl('1.18', 'placed_features')),
+      'worldgen/placed_feature': json(
+        valuesUrl(version === '1.19' ? '1.19' : '1.18', 'placed_features')
+      ),
       'worldgen/configured_structure_feature': text(
         `${github}reports/worldgen/minecraft/worldgen/configured_structure_feature/data.values.txt`
       ),
