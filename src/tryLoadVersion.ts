@@ -10,20 +10,30 @@ import { get } from 'https';
 import { dirname, join as joinPath } from 'path';
 import { argv, exit } from 'process';
 import type { GameVersion } from './main/context/GameVersion';
-import { ErrorCollector } from './main/model/node/Node';
+import { ErrorCollector, ValidationContext } from './main/model/node/Node';
 import { RegistryHolder } from './main/model/Registry';
 import { getVanillaZipUrl } from './main/util/FetchHelper';
 import { findNamespacedKeyAndRegistry } from './main/util/PathHelper';
 
+interface TestConfig {
+  addContentContext?: boolean;
+  reportUnknownKeys?: boolean;
+}
+
 async function test(
   version: GameVersion,
   unzipped: Unzipped,
-  addContext: boolean
+  config: TestConfig
 ): Promise<number> {
   const holder = await RegistryHolder.create(version);
 
   let errorsCount = 0;
   let checkedFiles = 0;
+
+  const ctx: ValidationContext = {
+    holder,
+    ignoreKeys: config.reportUnknownKeys ? new Set<string>() : undefined
+  };
   for (const [path, content] of Object.entries(unzipped)) {
     const match = findNamespacedKeyAndRegistry(
       joinPath('data', 'minecraft', path)
@@ -41,7 +51,7 @@ async function test(
       '',
       model,
       errors,
-      holder
+      ctx
     );
     checkedFiles += 1;
     if (errors.size) {
@@ -67,10 +77,10 @@ async function test(
   return 0;
 }
 
-function tryLoad(version: GameVersion, addContext: boolean) {
+function tryLoad(version: GameVersion, config: TestConfig) {
   const zip = joinPath('work', version, 'vanilla_worldgen.zip');
   if (existsSync(zip)) {
-    test(version, unzipSync(readFileSync(zip)), addContext).then(exit);
+    test(version, unzipSync(readFileSync(zip)), config).then(exit);
     return;
   }
   mkdirSync(dirname(zip), { recursive: true });
@@ -79,7 +89,7 @@ function tryLoad(version: GameVersion, addContext: boolean) {
     response.pipe(file);
     file.on('finish', () => {
       file.close();
-      test(version, unzipSync(readFileSync(zip)), addContext).then(exit);
+      test(version, unzipSync(readFileSync(zip)), config).then(exit);
     });
   }).on('error', function (err) {
     console.error(err);
@@ -90,4 +100,4 @@ function tryLoad(version: GameVersion, addContext: boolean) {
 const addContext = argv.length > 0 && argv[0] === 'context';
 
 //tryLoad('1.18.2', addContext);
-tryLoad('1.19', addContext);
+tryLoad('1.19', { reportUnknownKeys: true });

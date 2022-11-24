@@ -46,11 +46,16 @@ export class ErrorCollector {
   }
 }
 
+export interface ValidationContext {
+  holder: RegistryHolder;
+  ignoreKeys?: Set<string>;
+}
+
 type Validate = (
   path: string,
   value: unknown,
   errors: ErrorCollector,
-  holder?: RegistryHolder
+  ctx?: ValidationContext
 ) => void;
 
 export interface NodeBase<T extends NodeType> {
@@ -85,6 +90,11 @@ function createPreset(node: Record<string, ModelNode>) {
       .filter((r) => r[1].type !== 'optional')
       .map(([name, p]) => [name, providePreset(p)])
   );
+}
+export function nestedValidationContext(
+  ctx?: ValidationContext
+): ValidationContext | undefined {
+  return ctx ? { ...ctx, ignoreKeys: new Set<string>() } : ctx;
 }
 export function providePreset(node: ObjectOrNodeModel): DataType {
   if (typeof node.default !== 'undefined') {

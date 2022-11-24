@@ -1,5 +1,5 @@
-import type { RegistryHolder } from '../Registry';
-import type { ModelNode, NodeBase } from './Node';
+import { omit } from '../../util/DataHelper';
+import type { ModelNode, NodeBase, ValidationContext } from './Node';
 import { ErrorCollector } from './Node';
 
 type Nodes = readonly [
@@ -10,7 +10,7 @@ type Nodes = readonly [
 
 export interface EitherNodeParams extends NodeBase<'either'> {
   nodes: Nodes;
-  findCurrentIndex: (value: unknown, holder?: RegistryHolder) => number;
+  findCurrentIndex: (value: unknown, ctx?: ValidationContext) => number;
 }
 
 export const EitherNode = (...nodes: Nodes): EitherNodeParams => ({
@@ -20,16 +20,17 @@ export const EitherNode = (...nodes: Nodes): EitherNodeParams => ({
     path: string,
     value: unknown,
     errors: ErrorCollector,
-    holder?: RegistryHolder
+    ctx?: ValidationContext
   ) {
-    if (this.findCurrentIndex(value, holder) === -1) {
+    ctx = ctx ? omit(ctx, 'ignoreKeys') : undefined;
+    if (this.findCurrentIndex(value, ctx) === -1) {
       errors.add(path, 'No model matches');
     }
   },
-  findCurrentIndex: function (value: unknown, holder?: RegistryHolder): number {
+  findCurrentIndex: function (value: unknown, ctx?: ValidationContext): number {
     for (let i = 0; i < this.nodes.length; i++) {
       const e = new ErrorCollector();
-      this.nodes[i].validate('', value, e, holder);
+      this.nodes[i].validate('', value, e, ctx);
       if (!e.size) {
         return i;
       }

@@ -1,7 +1,12 @@
 import type { Obj } from '../../util/DomHelper';
-import type { RegistryHolder } from '../Registry';
 import type { EnumNodeParams } from './EnumNode';
-import type { ErrorCollector, ModelNode, NodeBase } from './Node';
+import type {
+  ErrorCollector,
+  ModelNode,
+  NodeBase,
+  ValidationContext
+} from './Node';
+import { nestedValidationContext } from './Node';
 import type { IdentifierNodeParams } from './ResourceNode';
 import type { StringNodeParams } from './StringNode';
 
@@ -22,15 +27,20 @@ export const MapNode = (
     path: string,
     value: unknown,
     errors: ErrorCollector,
-    holder?: RegistryHolder
+    ctx?: ValidationContext
   ) {
     if (value === null || typeof value !== 'object') {
       return errors.add(path, 'Expected an object');
     }
     const map = value as Obj;
     for (const key in map) {
-      this.key.validate(path, key, errors, holder);
-      this.value.validate(path + '[' + key + ']', map[key], errors, holder);
+      this.key.validate(path, key, errors, ctx);
+      this.value.validate(
+        path + '[' + key + ']',
+        map[key],
+        errors,
+        nestedValidationContext(ctx)
+      );
     }
   }
 });

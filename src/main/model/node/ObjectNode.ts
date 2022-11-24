@@ -1,6 +1,6 @@
-import type { RegistryHolder } from '../Registry';
-import type { ModelNode, NodeBase } from './Node';
+import type { ModelNode, NodeBase, ValidationContext } from './Node';
 import type { ErrorCollector } from './Node';
+import { nestedValidationContext } from './Node';
 
 export interface ObjectNodeParams extends NodeBase<'object'> {
   records: Record<string, ModelNode>;
@@ -17,7 +17,7 @@ export const Obj = (
     path: string,
     value: unknown,
     errors: ErrorCollector,
-    holder?: RegistryHolder
+    ctx?: ValidationContext
   ) {
     if (value == null && typeof this.default !== 'undefined') {
       return;
@@ -26,7 +26,27 @@ export const Obj = (
     }
     const obj = value as Record<string, unknown>;
     for (const key in this.records) {
-      this.records[key].validate(path + '.' + key, obj[key], errors, holder);
+      ctx?.ignoreKeys?.add(key);
+      this.records[key].validate(
+        path + '.' + key,
+        obj[key],
+        errors,
+        nestedValidationContext(ctx)
+      );
+    }
+    if (ctx?.ignoreKeys) {
+      for (const key in obj) {
+        if (
+          !(key in this.records) && !ctx.ignoreKeys.has(key) && this !== Empty
+        ) {
+          errors.add(
+            path + '.' + key,
+            `Unknown ${key} key (available: ${
+              Object.keys(this.records).join(',')
+            })`
+          );
+        }
+      }
     }
   }
 });
@@ -43,8 +63,8 @@ export const Opt = (node: ModelNode): OptionalNodeParams => ({
     path: string,
     value: unknown,
     errors: ErrorCollector,
-    holder?: RegistryHolder
-  ) => value == null || node.validate(path, value, errors, holder)
+    ctx?: ValidationContext
+  ) => value == null || node.validate(path, value, errors, ctx)
 });
 
 export const OrElse = <T extends ModelNode>(node: T, defValue: unknown): T => {

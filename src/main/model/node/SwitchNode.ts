@@ -2,8 +2,13 @@ import {
   defaultNamespace,
   stripDefaultNamespace
 } from '../../util/LabelHelper';
-import type { RegistryHolder } from '../Registry';
-import type { ErrorCollector, ModelNode, NodeBase } from './Node';
+import type {
+  ErrorCollector,
+  ModelNode,
+  NodeBase,
+  ValidationContext
+} from './Node';
+import { nestedValidationContext } from './Node';
 import { Empty, ObjectNodeParams } from './ObjectNode';
 
 type AnyKeyExcept<S extends string> = {
@@ -63,7 +68,7 @@ export const SwitchNode = <
       path: string,
       value: unknown,
       errors: ErrorCollector,
-      holder?: RegistryHolder
+      ctx?: ValidationContext
     ) {
       if (value == null && this.default) {
         return;
@@ -80,12 +85,24 @@ export const SwitchNode = <
           return errors.add(path, 'Expected a config block');
         }
 
+        if (ctx?.ignoreKeys) {
+          ctx.ignoreKeys.add(this.typeField);
+          if (this.config) {
+            ctx.ignoreKeys.add(this.config);
+          }
+          if (this.commonFields.type === 'object') {
+            for (const key in this.commonFields.records) {
+              ctx.ignoreKeys.add(key);
+            }
+          }
+        }
         this.values[type].validate(
           this.config ? path + '.' + this.config : path,
           this.config ? value[this.config] : value,
           errors,
-          holder
+          this.config ? nestedValidationContext(ctx) : ctx
         );
+        this.commonFields.validate(path, value, errors, ctx);
       } else {
         errors.add(path, 'Expected a ' + this.typeField + ' field');
       }

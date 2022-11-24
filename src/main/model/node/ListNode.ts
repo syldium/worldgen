@@ -1,6 +1,6 @@
-import type { RegistryHolder } from '../Registry';
-import type { ModelNode, NodeBase } from './Node';
+import type { ModelNode, NodeBase, ValidationContext } from './Node';
 import type { ErrorCollector } from './Node';
+import { nestedValidationContext } from './Node';
 
 export interface ListNodeParams<T extends ModelNode = ModelNode>
   extends NodeBase<'list'>
@@ -27,11 +27,12 @@ export const ListNode = <T extends ModelNode = ModelNode>(
       path: string,
       value: unknown,
       errors: ErrorCollector,
-      holder?: RegistryHolder
+      ctx?: ValidationContext
     ) {
+      ctx = nestedValidationContext(ctx);
       if (!Array.isArray(value)) {
         if (this.one) {
-          return this.of.validate(path, value, errors, holder);
+          return this.of.validate(path, value, errors, ctx);
         }
         return errors.add(path, 'Expected an array');
       }
@@ -44,10 +45,10 @@ export const ListNode = <T extends ModelNode = ModelNode>(
             path + '[' + i + '].data',
             value[i].data,
             errors,
-            holder
+            ctx
           );
         } else {
-          this.of.validate(path + '[' + i + ']', value[i], errors, holder);
+          this.of.validate(path + '[' + i + ']', value[i], errors, ctx);
         }
       }
     }
