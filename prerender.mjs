@@ -24,6 +24,7 @@ for (
     'worldgen/configured_carver',
     'worldgen/configured_feature',
     'worldgen/noise_settings',
+    'worldgen/placed_feature',
     'worldgen/processor_list',
     'worldgen/structure_set'
   ]
@@ -43,9 +44,9 @@ for (
   const html = template
     .replace(
       '<!--meta-->',
-      `<meta name="description" content="A ${custom}${name} datapack generator for Minecraft Java Edition 1.18.2" />
+      `<meta name="description" content="A ${custom}${name} datapack generator for Minecraft Java Edition 1.17-1.19.2" />
     <meta property="og:title" content="${capitalizedName} datapack generator for Minecraft" />
-    <meta property="og:description" content="A tool to generate datapacks with ${custom}${plural} for Minecraft 1.18.2" />${canonical}`
+    <meta property="og:description" content="A tool to generate datapacks with ${custom}${plural} for Minecraft 1.17-1.19.2" />${canonical}`
     )
     .replace('<div id="root"></div>', '<div id="root">' + appHtml + '</div>');
 
