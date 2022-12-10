@@ -41,11 +41,11 @@
     "@types/react-window": "^1.8.5",
     "@typescript-eslint/eslint-plugin": "^5.1.0",
     "@typescript-eslint/parser": "^5.1.0",
-    "@vitejs/plugin-react": "^2.0.0",
+    "@vitejs/plugin-react": "^3.0.0",
     "chalk": "^5.0.0",
     "dotenv": "^16.0.0",
-    "dprint": "^0.32.1",
-    "esbuild": "^0.15.1",
+    "dprint": "^0.33.0",
+    "esbuild": "^0.16.4",
     "eslint": "^8.3.0",
     "eslint-plugin-react": "^7.24.0",
     "eslint-plugin-react-hooks": "^4.2.0",
@@ -55,7 +55,7 @@
     "rollup-plugin-visualizer": "^5.5.2",
     "sass": "^1.35.2",
     "typescript": "~4.9.3",
-    "vite": "^3.0.0",
+    "vite": "^4.0.0",
     "vitest": "^0.25.1"
   },
   "resolutions": {
