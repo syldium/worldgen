@@ -169,6 +169,11 @@ export class RegistryHolder {
 
   static async create(version: GameVersion): Promise<RegistryHolder> {
     switch (version) {
+      case '1.19.4':
+        return new RegistryHolder(
+          version,
+          (await import('../data/1.19.4/v1_19_4')).Registries1_19_4
+        );
       case '1.18.2':
         return new RegistryHolder(
           version,
