@@ -226,6 +226,13 @@ export class RegistryHolder {
       if (immediateSchema && immediate) {
         immediate(immediateSchema);
       }
+      if (this.packFormat >= 10) {
+        return await fetch(
+          `https://raw.githubusercontent.com/misode/mcmeta/${this.gameVersion}-data/data/minecraft/${registry}/${
+            stripDefaultNamespace(namespacedKey)
+          }.json`
+        ).then(res => res.json());
+      }
       this.vanillaZip = await loadVanillaZip(this.gameVersion);
     }
     const path = registry + '/' + stripDefaultNamespace(namespacedKey) +
