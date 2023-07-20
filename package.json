@@ -54,6 +54,7 @@
     "react-select-event": "^5.5.1",
     "rollup-plugin-visualizer": "^5.9.2",
     "sass": "^1.63.6",
+    "tslib": "^2.6.0",
     "typescript": "~5.1.6",
     "vite": "^4.4.4",
     "vitest": "^0.33.0"
