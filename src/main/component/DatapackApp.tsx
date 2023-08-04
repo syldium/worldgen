@@ -31,5 +31,8 @@ export const DatapackApp = ({ location }: DatapackAppProps): JSX.Element => (
         <Editor location={location} /> :
         <p>Loading models…</p>}
     </main>
+    <footer>
+      <p>NOT AN OFFICIAL MINECRAFT SERVICE. NOT APPROVED BY OR ASSOCIATED WITH MOJANG.</p>
+    </footer>
   </div>
 );
