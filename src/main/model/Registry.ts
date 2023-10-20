@@ -6,6 +6,7 @@ import {
   PackFormatString
 } from '../context/GameVersion';
 import { Registries1_19 } from '../data/1.19/v1_19';
+import { Registries1_20 } from '../data/1.20/v1_20';
 import { loadVanillaZip } from '../util/FetchHelper';
 import { customOption, stripDefaultNamespace } from '../util/LabelHelper';
 import { Model } from './Model';
@@ -174,6 +175,11 @@ export class RegistryHolder {
           version,
           (await import('../data/1.19.4/v1_19_4')).Registries1_19_4
         );
+      case '1.19':
+        return new RegistryHolder(
+          version,
+          (await import('../data/1.19/v1_19')).Registries1_19
+        );
       case '1.18.2':
         return new RegistryHolder(
           version,
@@ -195,7 +201,7 @@ export class RegistryHolder {
   }
 
   static def(): RegistryHolder {
-    return new RegistryHolder('1.19', Registries1_19);
+    return new RegistryHolder('1.20', Registries1_20);
   }
 
   async resource(

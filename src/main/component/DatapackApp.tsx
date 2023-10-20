@@ -32,7 +32,10 @@ export const DatapackApp = ({ location }: DatapackAppProps): JSX.Element => (
         <p>Loading models…</p>}
     </main>
     <footer>
-      <p>NOT AN OFFICIAL MINECRAFT SERVICE. NOT APPROVED BY OR ASSOCIATED WITH MOJANG.</p>
+      <p>
+        NOT AN OFFICIAL MINECRAFT SERVICE. NOT APPROVED BY OR ASSOCIATED WITH
+        MOJANG.
+      </p>
     </footer>
   </div>
 );

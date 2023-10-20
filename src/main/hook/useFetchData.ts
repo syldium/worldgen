@@ -1,7 +1,9 @@
 import { RefObject, useEffect, useRef, useState } from 'react';
 import type { Option } from '../component/ui/Select';
 import type { GameVersion } from '../context/GameVersion';
-import type { RegistryValueProvider, ValueProvider } from '../model/Registry';
+import type { ValuesByVersion } from '../context/RegistriesValues';
+import { Labelled, Values } from '../context/RegistriesValues';
+import type { RegistryValueProvider } from '../model/Registry';
 import type { RegistryKey } from '../model/RegistryKey';
 import { defaultNamespace, labelizeOption } from '../util/LabelHelper';
 
@@ -28,23 +30,11 @@ export function useFetchData<S>(
   return data;
 }
 
-type FetchInstructions = { [key in RegistryKey]?: RegistryData };
 export function useRegistryFetch(
-  registries: FetchInstructions,
-  tags: FetchInstructions,
+  instructions: ValuesByVersion,
   version: GameVersion
 ): [RegistryValueProvider, RefObject<GameVersion | undefined>] {
-  const [values, setValues] = useState<RegistryValueProvider>(() => {
-    const keys = new Set<RegistryKey>(
-      Object.keys(registries).concat(Object.keys(tags)) as RegistryKey[]
-    );
-    const empty: ValueProvider = [];
-    const initial = {} as RegistryValueProvider;
-    for (const registryKey of keys) {
-      initial[registryKey] = { registry: empty, tag: empty };
-    }
-    return initial;
-  });
+  const [values, setValues] = useState<RegistryValueProvider>({});
   const done = useRef<GameVersion | undefined>(undefined);
 
   useEffect(
@@ -55,14 +45,17 @@ export function useRegistryFetch(
 
       const registryKeys: [RegistryKey, boolean][] = [];
       const promises: Promise<Option[]>[] = [];
-      function request(instructions: FetchInstructions, tag: boolean) {
-        for (const [registryKey, data] of Object.entries(instructions)) {
+      function request(
+        instructions: { [key in RegistryKey]?: string },
+        tag: boolean
+      ) {
+        for (const [registryKey, url] of Object.entries(instructions)) {
           registryKeys.push([registryKey as RegistryKey, tag]);
           promises.push(
-            fetch(data.url)
-              .then(data.reader)
+            fetch(`registries/${url}`)
+              .then((res) => res.json() as Promise<string[]>)
               .then((values) =>
-                data.label ?
+                !tag && Labelled.has(registryKey as RegistryKey) ?
                   values.map(labelizeOption) :
                   values.map((val) => ({
                     label: val,
@@ -72,9 +65,13 @@ export function useRegistryFetch(
           );
         }
       }
-      request(registries, false);
-      request(tags, true);
+      const val: Values = instructions[version as keyof typeof Values];
+      request(val.registries, false);
+      if (val.tags) {
+        request(val.tags, true);
+      }
 
+      done.current = version;
       Promise.allSettled(promises)
         .then((results) =>
           setValues((values) => {
@@ -83,25 +80,21 @@ export function useRegistryFetch(
               const [key, isTag] = registryKeys[i];
               const result = results[i];
               const options = result.status === 'fulfilled' ? result.value : [];
+              if (!values[key]) {
+                values[key] = { tag: [], registry: [] };
+              }
               if (isTag) {
                 values[key]!.tag = options;
               } else {
                 values[key]!.registry = options;
               }
             }
-            done.current = version;
             return values;
           })
         );
     },
-    [registries, tags, version]
+    [instructions, version]
   );
 
   return [values, done];
-}
-
-export interface RegistryData {
-  url: string;
-  reader: (response: Response) => Promise<string[]>;
-  label: boolean;
 }

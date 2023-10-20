@@ -7,7 +7,7 @@ import createBiomeColors from './src/main/data/rollup-plugin-biome';
 export default defineConfig({
   build: {
     //sourcemap: true,
-    target: 'es2021'
+    target: 'es2022'
   },
   test: {
     globals: true,
@@ -26,8 +26,6 @@ export default defineConfig({
   ssr: {
     noExternal: [
       'react-select',
-      'use-local-storage-state',
-      '@babel/runtime',
       'json-view-for-react'
     ]
   }

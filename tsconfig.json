@@ -6,7 +6,7 @@
       "ESNext",
       "WebWorker"
     ],
-    "types": ["vite/client", "@testing-library/jest-dom"],
+    "types": ["vite/client", "vitest/globals", "@testing-library/jest-dom"],
     "allowJs": false,
     "skipLibCheck": true,
     "esModuleInterop": false,

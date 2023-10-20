@@ -2,13 +2,7 @@ import { clear, entries, setMany } from 'idb-keyval';
 import { ReactNode, useEffect, useMemo } from 'react';
 import { createContext, useState } from 'react';
 import useLocalStorageState from 'use-local-storage-state';
-import {
-  readJson,
-  readText,
-  RegistryData,
-  useFetchData,
-  useRegistryFetch
-} from '../hook/useFetchData';
+import { useFetchData, useRegistryFetch } from '../hook/useFetchData';
 import { useForceUpdate } from '../hook/useForceUpdate';
 import {
   BlockStateRegistry,
@@ -21,6 +15,7 @@ import { dataUrl } from '../util/FetchHelper';
 import { labelizeOption } from '../util/LabelHelper';
 import { findNamespacedKeyAndRegistry, resourcePath } from '../util/PathHelper';
 import { GameVersion } from './GameVersion';
+import { Values } from './RegistriesValues';
 
 interface GameRegistry {
   blockStates: BlockStateRegistry;
@@ -31,28 +26,11 @@ interface GameRegistry {
 
 export const GameContext = createContext<GameRegistry>({} as GameRegistry);
 
-const valuesUrl = (version: GameVersion, registry: string) =>
-  `/values/${version}/${registry}.json`;
-
 interface ProviderProps {
   children?: ReactNode;
   states?: BlockStateRegistry;
 }
-
-const res = (
-  url: string,
-  reader: (response: Response) => Promise<string[]>,
-  label = true
-): RegistryData => ({ url, reader, label });
-const json = (url: string, label?: boolean): RegistryData =>
-  res(url, readJson, label);
-const text = (url: string, label?: boolean): RegistryData =>
-  res(url, readText, label);
-const baseVersion = (version: GameVersion) =>
-  version === '1.18.2' ? '1.18' : version;
-const baseTagVersion = (version: GameVersion) =>
-  version === '1.18.2' ? '1.18.2' : '1.19';
-const defaultVersion: GameVersion = '1.19';
+const defaultVersion: GameVersion = '1.20';
 
 export function GameRegistryProvider({
   children,
@@ -68,8 +46,6 @@ export function GameRegistryProvider({
     );
   /* eslint-enable react-hooks/rules-of-hooks */
   const github = dataUrl(version);
-  const registryUrl = (registry: string) =>
-    `${github}reports/registries/${registry}/data.values.txt`;
   const [holder, setHolder] = useState<RegistryHolder | undefined>(
     version === defaultVersion ? () => RegistryHolder.def() : undefined
   );
@@ -83,55 +59,8 @@ export function GameRegistryProvider({
     {},
     states
   );
-  const [vanilla, fetched] = useRegistryFetch(
-    {
-      entity_type: text(registryUrl('entity_type')),
-      particle_type: text(registryUrl('particle_type')),
-      sound_event: text(registryUrl('sound_event'), false),
-      structures: json('/values/1.17/structures.json', false),
-      'worldgen/biome': json(valuesUrl(baseVersion(version), 'biomes')),
-      'worldgen/configured_carver': json(
-        valuesUrl(baseVersion(version), 'configured_carvers')
-      ),
-      'worldgen/configured_feature': json(
-        valuesUrl(baseVersion(version), 'configured_features')
-      ),
-      'worldgen/placed_feature': json(
-        valuesUrl(version === '1.19' ? '1.19' : '1.18', 'placed_features')
-      ),
-      'worldgen/configured_structure_feature': text(
-        `${github}reports/worldgen/minecraft/worldgen/configured_structure_feature/data.values.txt`
-      ),
-      'worldgen/configured_surface_builder': json(
-        valuesUrl('1.17', 'configured_surface_builders')
-      ),
-      'worldgen/density_function': json(
-        valuesUrl(baseTagVersion(version), 'density_functions'),
-        false
-      ),
-      'worldgen/processor_list': json(valuesUrl('1.17', 'processor_list')),
-      'worldgen/structure': json(valuesUrl('1.19', 'structures')),
-      'worldgen/structure_set': json(
-        valuesUrl('1.18.2', 'structure_sets'),
-        false
-      ),
-      'worldgen/template_pool': json(
-        valuesUrl(version === '1.19' ? '1.19' : '1.18', 'template_pools'),
-        false
-      )
-    },
-    {
-      block: text(
-        `${github}data/minecraft/tags/blocks/data.values.txt`
-      ),
-      fluid: json(valuesUrl('1.18.2', 'tag_fluids'), false),
-      'worldgen/biome': json(
-        valuesUrl(baseTagVersion(version), 'tag_biomes'),
-        false
-      )
-    },
-    version
-  );
+  const [vanilla, fetched] = useRegistryFetch(Values, version);
+
   /* eslint-disable react-hooks/rules-of-hooks */
   const [defNamespace, setDefNamespace] = import.meta.env.SSR ?
     useState('unset') :
