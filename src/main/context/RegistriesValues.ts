@@ -80,7 +80,7 @@ export const Values: ValuesByVersion = {
       'worldgen/world_preset': '1.19.3/worldgen/world_preset.json'
     }
   },
-  '1.20': {
+  '1.20.2': {
     tags: {
       'block': '1.20.2/tags/blocks.json',
       'worldgen/biome': '1.20.2/tags/worldgen/biome.json',
@@ -90,9 +90,9 @@ export const Values: ValuesByVersion = {
       'worldgen/world_preset': '1.19.4/tags/worldgen/world_preset.json'
     },
     registries: {
-      'entity_type': registryUrl('1.20', 'entity_type'),
-      'particle_type': registryUrl('1.20', 'particle_type'),
-      'sound_event': registryUrl('1.20', 'sound_event'),
+      'entity_type': registryUrl('1.20.2', 'entity_type'),
+      'particle_type': registryUrl('1.20.2', 'particle_type'),
+      'sound_event': registryUrl('1.20.2', 'sound_event'),
       'worldgen/biome': '1.20.2/worldgen/biome.json',
       'worldgen/configured_carver': '1.19.4/worldgen/configured_carver.json',
       'worldgen/configured_feature': '1.20.2/worldgen/configured_feature.json',

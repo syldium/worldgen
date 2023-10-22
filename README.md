@@ -1,6 +1,6 @@
 # worldgen
 
-An online datapack generator for Minecraft Java Edition 1.17.1/1.18/1.18.2/1.19/1.19.4 and custom biomes/dimensions. [Visit the latest version](https://worldgen.syldium.dev).
+An online datapack generator for Minecraft Java Edition 1.19/1.19.4/1.20.2 and custom biomes/dimensions. [Visit the latest version](https://worldgen.syldium.dev).
 
 The `v1` branch is now the default one and replace the old and [initial version](https://github.com/syldium/worldgen/tree/master) [available here](https://master.worldgen.pages.dev).
 

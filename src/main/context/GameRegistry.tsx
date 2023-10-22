@@ -1,6 +1,7 @@
 import { clear, entries, setMany } from 'idb-keyval';
 import { ReactNode, useEffect, useMemo } from 'react';
 import { createContext, useState } from 'react';
+import { toast } from 'react-hot-toast';
 import useLocalStorageState from 'use-local-storage-state';
 import { useFetchData, useRegistryFetch } from '../hook/useFetchData';
 import { useForceUpdate } from '../hook/useForceUpdate';
@@ -30,7 +31,12 @@ interface ProviderProps {
   children?: ReactNode;
   states?: BlockStateRegistry;
 }
-const defaultVersion: GameVersion = '1.20';
+const defaultVersion: GameVersion = '1.20.2';
+const allowedVersions: Set<GameVersion> = new Set([
+  '1.19',
+  '1.19.4',
+  '1.20.2'
+]);
 
 export function GameRegistryProvider({
   children,
@@ -44,6 +50,15 @@ export function GameRegistryProvider({
       'game-version',
       { defaultValue: defaultVersion }
     );
+  if (!import.meta.env.SSR) {
+    setVersion(version => {
+      if (!allowedVersions.has(version)) {
+        toast.error(`Unsupported version: ${version}`);
+        return defaultVersion;
+      }
+      return version;
+    });
+  }
   /* eslint-enable react-hooks/rules-of-hooks */
   const [holder, setHolder] = useState<RegistryHolder | undefined>(
     version === defaultVersion ? () => RegistryHolder.def() : undefined
