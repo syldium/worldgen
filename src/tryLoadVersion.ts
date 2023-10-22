@@ -1,4 +1,4 @@
-import { strFromU8, Unzipped, unzipSync } from 'fflate';
+import { strFromU8, unzipSync } from 'fflate';
 import {
   createWriteStream,
   existsSync,
@@ -6,6 +6,7 @@ import {
   readFileSync,
   unlinkSync
 } from 'fs';
+import { opendir, readFile } from 'fs/promises';
 import { get } from 'https';
 import { dirname, join as joinPath } from 'path';
 import { argv, exit } from 'process';
@@ -17,17 +18,15 @@ import { findNamespacedKeyAndRegistry } from './main/util/PathHelper';
 
 async function test(
   version: GameVersion,
-  unzipped: Unzipped,
+  items: AsyncIterable<[string, string]>,
   addContext: boolean
 ): Promise<number> {
   const holder = await RegistryHolder.create(version);
 
   let errorsCount = 0;
   let checkedFiles = 0;
-  for (const [path, content] of Object.entries(unzipped)) {
-    const match = findNamespacedKeyAndRegistry(
-      joinPath('data', 'minecraft', path)
-    );
+  for await (const [path, content] of items) {
+    const match = findNamespacedKeyAndRegistry(path);
     if (!match) {
       continue;
     }
@@ -35,7 +34,7 @@ async function test(
     if (!holder.isWorldgen(registryType)) {
       continue;
     }
-    const model = JSON.parse(strFromU8(content));
+    const model = JSON.parse(content);
     const errors = new ErrorCollector();
     holder.worldgen[registryType].model.node.validate(
       '',
@@ -67,10 +66,37 @@ async function test(
   return 0;
 }
 
+async function* iterateZip(zip: Buffer): AsyncIterable<[string, string]> {
+  for (const [path, content] of Object.entries(unzipSync(zip))) {
+    const dataPath = joinPath('data', 'minecraft', path);
+    yield [dataPath, strFromU8(content)];
+  }
+}
+
 function tryLoad(version: GameVersion, addContext: boolean) {
+  const generated = joinPath('scripts', 'generated', version);
+  if (existsSync(generated)) {
+    test(
+      version,
+      async function* () {
+        for await (
+          const dirent of await opendir(generated, { recursive: true })
+        ) {
+          if (!dirent.isFile()) {
+            continue;
+          }
+          const path = joinPath(dirent.path, dirent.name);
+          const content = await readFile(path, 'utf-8');
+          yield [path.substring(generated.length + 1), content];
+        }
+      }(),
+      addContext
+    ).then(exit);
+    return;
+  }
   const zip = joinPath('work', version, 'vanilla_worldgen.zip');
   if (existsSync(zip)) {
-    test(version, unzipSync(readFileSync(zip)), addContext).then(exit);
+    test(version, iterateZip(readFileSync(zip)), addContext).then(exit);
     return;
   }
   mkdirSync(dirname(zip), { recursive: true });
@@ -79,7 +105,7 @@ function tryLoad(version: GameVersion, addContext: boolean) {
     response.pipe(file);
     file.on('finish', () => {
       file.close();
-      test(version, unzipSync(readFileSync(zip)), addContext).then(exit);
+      test(version, iterateZip(readFileSync(zip)), addContext).then(exit);
     });
   }).on('error', function (err) {
     console.error(err);
@@ -90,4 +116,4 @@ function tryLoad(version: GameVersion, addContext: boolean) {
 const addContext = argv.length > 0 && argv[0] === 'context';
 
 //tryLoad('1.18.2', addContext);
-tryLoad('1.19', addContext);
+tryLoad('1.20.2', addContext);

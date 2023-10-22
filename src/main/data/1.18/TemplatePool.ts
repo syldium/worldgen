@@ -10,7 +10,7 @@ import { SwitchNode } from '../../model/node/SwitchNode';
 const Projection = {
   projection: EnumNode(['rigid', 'terrain_matching'] as const)
 };
-const TemplateElement = SwitchNode(
+export const TemplateElement = SwitchNode(
   {
     single_pool_element: Obj({
       ...Projection,
