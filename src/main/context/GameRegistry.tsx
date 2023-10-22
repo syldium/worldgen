@@ -11,8 +11,8 @@ import {
   Schema
 } from '../model/Registry';
 import type { WorldgenRegistryKey } from '../model/RegistryKey';
-import { dataUrl } from '../util/FetchHelper';
-import { labelizeOption } from '../util/LabelHelper';
+import { blockDataUrl } from '../util/FetchHelper';
+import { defaultNamespace, labelizeOption } from '../util/LabelHelper';
 import { findNamespacedKeyAndRegistry, resourcePath } from '../util/PathHelper';
 import { GameVersion } from './GameVersion';
 import { Values } from './RegistriesValues';
@@ -45,7 +45,6 @@ export function GameRegistryProvider({
       { defaultValue: defaultVersion }
     );
   /* eslint-enable react-hooks/rules-of-hooks */
-  const github = dataUrl(version);
   const [holder, setHolder] = useState<RegistryHolder | undefined>(
     version === defaultVersion ? () => RegistryHolder.def() : undefined
   );
@@ -55,9 +54,26 @@ export function GameRegistryProvider({
     }
   }, [version]);
   const blockStates = useFetchData<BlockStateRegistry>(
-    `${github}reports/blocks/simplified/data.min.json`,
+    blockDataUrl(version),
     {},
-    states
+    states,
+    async (res) => {
+      const blocks = await res.json() as Record<string, [
+        Record<string, string[]>,
+        Record<string, string>
+      ]>;
+      return Object.fromEntries(
+        Object.entries(blocks).map((
+          [blockType, [properties, defaultState]]
+        ) => [
+          defaultNamespace(blockType),
+          {
+            properties,
+            default: defaultState
+          }
+        ])
+      );
+    }
   );
   const [vanilla, fetched] = useRegistryFetch(Values, version);
 

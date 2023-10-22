@@ -28,15 +28,21 @@ export const loadVanillaZip = async function (
 };
 
 export const dataUrl = function (version: GameVersion) {
-  let ref = 'master';
-  if (version === '1.18.2') {
-    ref = '3a1dd3ae1be74e15bac62d940d89efb70a045877';
-  } else if (version === '1.18') {
-    ref = 'c303c6ccfe0c34b13ce39dcb18647e6093b40259';
-  } else if (version === '1.17') {
-    ref = '9c9aa93ca1e44a61cc60954b5580546490d936f6';
-  } else if (version === '1.16') {
-    ref = '2aa35bd15742950a3d63a2f62e091074d946cbe2';
+  let ref = '4fdeb79414f50493fe9b1a13c25dd331e33ffbad';
+  if (version === '1.19.4') {
+    ref = '38dd2592cf3ad33192d4c8ec02c6e3e231d263c8';
+  } else if (version === '1.19') {
+    ref = 'ea2a2c1e828a50f552ebd29d4207a13caaabc38f';
   }
-  return `https://raw.githubusercontent.com/Arcensoth/mcdata/${ref}/processed/`;
+  return `https://raw.githubusercontent.com/misode/mcmeta/${ref}`;
+};
+
+export const blockDataUrl = function (version: GameVersion) {
+  let ref = '4e9bec3ad44be22dd7c9f3d095b1240b2629a6ab';
+  if (version === '1.19.4') {
+    ref = 'ffd2eb6f5bcb59fb5fb54227d3b10901cd8ede71';
+  } else if (version === '1.19') {
+    ref = 'bec4783e8095f0523c60b8b722d8d86990b7a057';
+  }
+  return `https://raw.githubusercontent.com/misode/mcmeta/${ref}/blocks/data.min.json`;
 };

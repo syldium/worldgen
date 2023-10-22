@@ -8,20 +8,18 @@ import type { RegistryKey } from '../model/RegistryKey';
 import { defaultNamespace, labelizeOption } from '../util/LabelHelper';
 
 export const readJson = <S>(response: Response): Promise<S> => response.json();
-export const readText = (response: Response): Promise<string[]> =>
-  response.ok ?
-    response.text().then((string) => string.split('\n')) :
-    Promise.resolve([]);
 export function useFetchData<S>(
   url: RequestInfo,
   initial: S | (() => S),
   props?: S,
   reader: (response: Response) => Promise<S> = readJson
 ): S {
+  const fetched = useRef<RequestInfo | null>(null);
   const [data, setData] = useState<S>(props || initial);
   useEffect(
     function () {
-      if (!props && 'fetch' in window) {
+      if (!props && 'fetch' in window && url !== fetched.current) {
+        fetched.current = url;
         fetch(url).then(reader).then(setData);
       }
     },
@@ -49,10 +47,14 @@ export function useRegistryFetch(
         instructions: { [key in RegistryKey]?: string },
         tag: boolean
       ) {
-        for (const [registryKey, url] of Object.entries(instructions)) {
+        for (const [registryKey, uri] of Object.entries(instructions)) {
           registryKeys.push([registryKey as RegistryKey, tag]);
+          let url = uri;
+          if (!url.startsWith('http')) {
+            url = `${import.meta.env.BASE_URL}registries/${url}`;
+          }
           promises.push(
-            fetch(`registries/${url}`)
+            fetch(url)
               .then((res) => res.json() as Promise<string[]>)
               .then((values) =>
                 !tag && Labelled.has(registryKey as RegistryKey) ?
