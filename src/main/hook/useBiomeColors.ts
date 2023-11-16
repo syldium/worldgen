@@ -1,9 +1,10 @@
-import VanillaBiomeColors from 'biome-colors';
 import { useState } from 'react';
 import { hashCode } from '../util/hashCode';
 import { stripDefaultNamespace } from '../util/LabelHelper';
 import { BiomeColors } from '../viewer/biome/MultiNoiseMapWorker';
 import { ViewableBiomeSource } from '../viewer/biome/types';
+
+const VanillaBiomeColors: Record<string, number> = {};
 
 export function useBiomeColors(
   source: ViewableBiomeSource
