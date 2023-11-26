@@ -21,7 +21,7 @@ export function resourcePath(
  * Extract from a file path the type and name of the resource.
  *
  * @param path The path in the datapack of the file
- * @return A tuple with the namespace, the ressource key and the registry type
+ * @return A tuple with the namespace, the resource key and the registry type
  */
 export function findNamespacedKeyAndRegistry(
   path: string

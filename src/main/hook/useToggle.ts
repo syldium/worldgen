@@ -13,7 +13,7 @@ export function useToggle(
         value = e;
       } else if (
         e.target instanceof HTMLInputElement &&
-        e.target?.type === 'checkbox'
+        e.target.type === 'checkbox'
       ) {
         value = e.target.checked;
       } else if ('preventDefault' in e) {
