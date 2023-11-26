@@ -12,6 +12,7 @@
   --border-color: #cccccc;
   --fieldset-color: #d3d7db;
   --select-label: #e6e6e6;
+  color-scheme: light;
 }
 .dark-mode {
   --bg-color-section: #262c35;
@@ -26,4 +27,5 @@
   --border-color: transparent;
   --fieldset-color: #596169;
   --select-label: var(--bg-color-section);
+  color-scheme: dark;
 }

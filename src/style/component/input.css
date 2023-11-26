@@ -70,37 +70,6 @@ input:invalid {
 .namespaced-key {
   margin-bottom: 1.5rem;
 }
-
-.number-input {
-  display: flex;
-  align-items: center;
-}
-.number-input input {
-  -moz-appearance: textfield;
-}
-.number-wrapper {
-  border-radius: 2px;
-  border: 1px solid var(--border-color);
-  background-color: var(--bg-color-input);
-  display: flex;
-}
-.number-controls {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-evenly;
-  width: 16px;
-  border-top-right-radius: 2px;
-  border-bottom-right-radius: 2px;
-}
-.number-wrapper:focus-within {
-  border: 1px solid var(--focus-color);
-}
-.number-wrapper button {
-  padding: 0;
-  font-size: 10px;
-  background-color: inherit;
-  color: var(--secondary-color);
-}
 .btn-plus:before {
   content: '\25B2';
 }
