@@ -1,4 +1,4 @@
-import { ReactNode, useState } from 'react';
+import { ReactElement, ReactNode, useState } from 'react';
 import { useRegistry } from '../../hook/useRegistry';
 import { useResourceSubmit } from '../../hook/useResourceSubmit';
 import type { Schema } from '../../model/Registry';
@@ -18,7 +18,7 @@ export function Resource({
   registryKey,
   id,
   children
-}: ResourceFormProps): JSX.Element {
+}: ResourceFormProps): ReactElement {
   const [registry, previousKey, initial, postLoad] = useRegistry(
     registryKey,
     id

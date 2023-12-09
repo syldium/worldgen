@@ -1,4 +1,10 @@
-import { useCallback, useContext, useMemo, useState } from 'react';
+import {
+  ReactElement,
+  useCallback,
+  useContext,
+  useMemo,
+  useState
+} from 'react';
 import { GameContext } from '../../context/GameRegistry';
 import { CountDecoratorConfig } from '../../data/1.17/ConfiguredDecorator';
 import { useCrud } from '../../hook/useCrud';
@@ -19,7 +25,9 @@ interface ConfiguredFeatureProps {
   id: string | undefined;
 }
 
-export function ConfiguredFeature({ id }: ConfiguredFeatureProps): JSX.Element {
+export function ConfiguredFeature(
+  { id }: ConfiguredFeatureProps
+): ReactElement {
   const worldgen = useContext(GameContext).registries!;
   const registryKey: WorldgenRegistryKey = 'worldgen/configured_feature';
   const [registry, previousKey, initial, postLoad] = useRegistry<

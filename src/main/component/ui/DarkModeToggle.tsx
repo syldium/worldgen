@@ -1,8 +1,8 @@
-import { useEffect } from 'react';
+import { ReactElement, useEffect } from 'react';
 import { useDarkMode } from '../../hook/useDarkMode';
 import { animate } from '../../util/AnimationHelper';
 
-export function DarkModeToggle(): JSX.Element {
+export function DarkModeToggle(): ReactElement {
   const darkMode = useDarkMode();
 
   useEffect(() => {

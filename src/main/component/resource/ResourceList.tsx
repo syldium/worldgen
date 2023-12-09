@@ -1,5 +1,5 @@
 import { del } from 'idb-keyval';
-import { MouseEvent, useContext } from 'react';
+import { MouseEvent, ReactElement, useContext } from 'react';
 import { Trash } from 'react-feather';
 import { GameContext } from '../../context/GameRegistry';
 import { useForceUpdate } from '../../hook/useForceUpdate';
@@ -12,7 +12,7 @@ import { Link } from '../ui/Link';
 interface ResourceListProps {
   registryKey: WorldgenRegistryKey;
 }
-export function ResourceList({ registryKey }: ResourceListProps): JSX.Element {
+export function ResourceList({ registryKey }: ResourceListProps): ReactElement {
   const context = useContext(GameContext);
   const forceUpdate = useForceUpdate();
   const registry = context.registries!.worldgen[registryKey];

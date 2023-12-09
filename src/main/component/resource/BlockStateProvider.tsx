@@ -1,4 +1,4 @@
-import { useCallback, useContext, useMemo } from 'react';
+import { ReactElement, useCallback, useContext, useMemo } from 'react';
 import type { OnChangeValue } from 'react-select';
 import { GameContext } from '../../context/GameRegistry';
 import { IntProvider } from '../../data/1.17/NumberProvider';
@@ -67,7 +67,7 @@ export function BlockStateProvider({
     state: { Name: 'minecraft:stone' }
   },
   onChange
-}: BlockStateProviderProps): JSX.Element {
+}: BlockStateProviderProps): ReactElement {
   const context = useContext(GameContext);
   const format = context.registries!.packFormat;
   const options = useOptionsArray(

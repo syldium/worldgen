@@ -1,4 +1,4 @@
-import { useCallback, useContext } from 'react';
+import { ReactElement, useCallback, useContext } from 'react';
 import type { ChangeEvent, ReactNode } from 'react';
 import { GameContext } from '../../context/GameRegistry';
 import { DEFAULT_BLOCK_STATE } from '../../model/Registry';
@@ -39,7 +39,7 @@ export function BlockState({
   onChange,
   children,
   inputId
-}: BlockStateProps): JSX.Element {
+}: BlockStateProps): ReactElement {
   const context = useContext(GameContext);
   const states = context.blockStates;
 

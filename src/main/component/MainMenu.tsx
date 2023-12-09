@@ -1,5 +1,5 @@
 import saveAs from 'file-saver';
-import { useCallback, useContext } from 'react';
+import { ReactElement, useCallback, useContext } from 'react';
 import { Download, PlusCircle } from 'react-feather';
 import { toast } from 'react-hot-toast';
 import { GameContext } from '../context/GameRegistry';
@@ -16,7 +16,7 @@ import { ResourceList } from './resource/ResourceList';
 import { Button } from './ui/Button';
 import { Modal } from './ui/Modal';
 
-export function MainMenu(): JSX.Element {
+export function MainMenu(): ReactElement {
   const context = useContext(GameContext);
   const worldgen = context.registries!;
   const [open, toggleAction] = useToggle(false);

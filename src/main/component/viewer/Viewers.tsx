@@ -1,15 +1,16 @@
-import { createElement, lazy, Suspense } from 'react';
+import { createElement, lazy, ReactElement, Suspense } from 'react';
 import type { LazyExoticComponent, NamedExoticComponent } from 'react';
 import type { WorldgenRegistryKey } from '../../model/RegistryKey';
 import { stripDefaultNamespace } from '../../util/LabelHelper';
 
 export interface ViewerProps {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   value: any;
 }
 
 interface Viewer {
   key: string;
-  predicate: (value: Record<string, any>) => boolean;
+  predicate: (value: Record<string, unknown>) => boolean;
   component: LazyExoticComponent<NamedExoticComponent<ViewerProps>>;
 }
 
@@ -42,7 +43,7 @@ export default Viewers;
 export function ViewerElement(
   registry: WorldgenRegistryKey,
   resource: Record<string, unknown>
-): JSX.Element | null {
+): ReactElement | null {
   const viewers = Viewers[registry]?.filter((viewer) =>
     viewer.predicate(resource)
   );

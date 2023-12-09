@@ -2,6 +2,7 @@ import {
   ChangeEvent,
   KeyboardEvent,
   MouseEvent,
+  ReactElement,
   useCallback,
   useContext,
   useMemo,
@@ -37,7 +38,7 @@ export function NamespacedKey({
   value = '',
   onSelectLoad,
   mayReplaceVanilla = true
-}: NamespacedKeyProps): JSX.Element {
+}: NamespacedKeyProps): ReactElement {
   // To trigger form submit
   const hidden = useRef<HTMLInputElement>(null);
 
@@ -96,7 +97,7 @@ export function NamespacedKey({
   );
 
   // Allow form submit by pressing enter
-  const handleKeyDown = useCallback(function (
+  const handleKeyUp = useCallback(function (
     e: KeyboardEvent<HTMLInputElement>
   ) {
     if (e.key === 'Enter') {
@@ -173,14 +174,14 @@ export function NamespacedKey({
             type="text"
             id="key"
             required
-            pattern="^([a-z0-9_\-.]+:)?[a-z0-9_\-./]+$"
+            pattern="^([a-z0-9_\-.]+:)?[a-z0-9_\-.\/]+$"
             placeholder={example ? `Example: ${example}` : ''}
             autoCapitalize="none"
             spellCheck="false"
             autoComplete="off"
             value={inputValue}
             onChange={handleKeyChange}
-            onKeyPress={handleKeyDown}
+            onKeyDown={handleKeyUp}
           />
         )}
         <input

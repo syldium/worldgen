@@ -1,4 +1,4 @@
-import { memo } from 'react';
+import { memo, ReactElement } from 'react';
 import ReactSelect, { createFilter } from 'react-select';
 import type {
   GroupBase,
@@ -94,7 +94,7 @@ function MenuList<
   getValue
 }: MenuProps<OptionType, IsMulti, GroupType> & {
   maxHeight?: number;
-}): JSX.Element | null {
+}): ReactElement | null {
   if (!children || !Array.isArray(children)) return null;
 
   const height = 40;
@@ -130,7 +130,7 @@ const Select = <
   GroupType extends GroupBase<OptionType> = GroupBase<OptionType>
 >(
   props: Props<OptionType, IsMulti, GroupType> & { creatable?: true }
-): JSX.Element => {
+): ReactElement => {
   if (props.creatable) {
     return <CreatableSelect {...props} />;
   }
@@ -158,7 +158,7 @@ const CreatableSelect = <
   Group extends GroupBase<OptionType> = GroupBase<OptionType>
 >(
   props: CreatableProps<OptionType, IsMulti, Group>
-): JSX.Element => (
+): ReactElement => (
   <ReactSelectCreatable
     components={selectComponents as unknown as SelectComponentsConfig<
       OptionType,

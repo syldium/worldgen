@@ -1,5 +1,5 @@
 import { JsonView } from 'json-view-for-react';
-import { useCallback } from 'react';
+import { ReactElement, useCallback } from 'react';
 import { Code } from 'react-feather';
 import { useToggle } from '../../hook/useToggle';
 import type { Schema } from '../../model/Registry';
@@ -9,7 +9,7 @@ import { Modal } from './Modal';
 interface JsonViewerProps {
   data: Schema | (() => Schema);
 }
-export function JsonViewer({ data }: JsonViewerProps): JSX.Element {
+export function JsonViewer({ data }: JsonViewerProps): ReactElement {
   const [open, toggleModal] = useToggle(false);
   const closeModal = useCallback(() => toggleModal(false), [toggleModal]);
 

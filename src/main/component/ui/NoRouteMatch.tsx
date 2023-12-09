@@ -1,7 +1,7 @@
-import { useEffect } from 'react';
+import { ReactElement, useEffect } from 'react';
 import { voidReturn } from '../../util/DomHelper';
 
-export function NoRouteMatch(): JSX.Element {
+export function NoRouteMatch(): ReactElement {
   useEffect(() => {
     const robots = document.createElement('meta');
     robots.setAttribute('name', 'robots');

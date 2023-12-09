@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { ReactElement, useContext } from 'react';
 import { GameContext } from '../context/GameRegistry';
 import { Editor } from './Editor';
 import { NavLink } from './ui/Link';
@@ -8,7 +8,7 @@ interface DatapackAppProps {
   location: string;
 }
 
-export const DatapackApp = ({ location }: DatapackAppProps): JSX.Element => (
+export const DatapackApp = ({ location }: DatapackAppProps): ReactElement => (
   <div>
     <NavBar>
       <ul>

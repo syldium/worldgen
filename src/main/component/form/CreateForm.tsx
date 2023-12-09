@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react';
+import { ReactElement, useContext, useState } from 'react';
 import type { ChangeEvent, DragEvent, FormEvent, ReactNode } from 'react';
 import { toast } from 'react-hot-toast';
 import { GameContext } from '../../context/GameRegistry';
@@ -24,7 +24,7 @@ export function CreateForm({
   onCreate,
   onLoad,
   onResourceCreate
-}: CreateFormProps): JSX.Element {
+}: CreateFormProps): ReactElement {
   const [isMerge, toggleMerge] = useToggle();
   return (
     <div id="create-form" className={isMerge ? 'is-merge' : 'is-create'}>
@@ -50,7 +50,7 @@ function CreateDatapackForm({
   onCreate,
   onLoad,
   toggleMerge
-}: CreateDatapackFormProps): JSX.Element {
+}: CreateDatapackFormProps): ReactElement {
   const worldgen = useContext(GameContext).registries!;
   const [zip, setZip] = useState<ZipAction | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -117,7 +117,7 @@ function DefNamespaceForm({
   error,
   namespace,
   onDefine
-}: DefNamespaceFormProps): JSX.Element {
+}: DefNamespaceFormProps): ReactElement {
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     onDefine(
@@ -167,7 +167,7 @@ interface NewResourceProps {
   onClick: (registryKey: WorldgenRegistryKey) => void;
 }
 
-function NewResource({ onClick }: NewResourceProps): JSX.Element {
+function NewResource({ onClick }: NewResourceProps): ReactElement {
   const context = useContext(GameContext);
   return (
     <div>

@@ -13,7 +13,7 @@ export function Labelized({
   id,
   name,
   children
-}: LabelizedProps): JSX.Element {
+}: LabelizedProps): ReactElement {
   if (typeof name === 'string') {
     return (
       <div className={className}>

@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react';
+import { ReactElement, useContext, useEffect, useState } from 'react';
 import { GameContext } from '../context/GameRegistry';
 import type { WorldgenRegistryKey } from '../model/RegistryKey';
 import { isValidNamespacedKey } from '../util/LabelHelper';
@@ -11,7 +11,7 @@ interface EditorProps {
   location: string;
 }
 
-export function Editor({ location }: EditorProps): JSX.Element {
+export function Editor({ location }: EditorProps): ReactElement {
   const [currentPath, setCurrentPath] = useState(location);
   const registries = useContext(GameContext).registries!;
 

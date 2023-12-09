@@ -71,7 +71,7 @@ interface NodeProps<
   noFieldset?: boolean;
   children?: ReactNode;
 }
-export function NodeElement(props: NodeProps<ModelNode>): JSX.Element {
+export function NodeElement(props: NodeProps<ModelNode>): ReactElement {
   switch (props.node.type) {
     case 'bool':
       return createElement(CheckboxInput, props as NodeProps<BoolNodeParams>);
@@ -157,7 +157,7 @@ export function ResourceView<T extends ModelNode>(
 
 function EitherInput(
   { name, node, value, onChange, children }: NodeProps<EitherNodeParams>
-): JSX.Element {
+): ReactElement {
   const holder = useContext(GameContext).registries!;
   const i = Math.max(node.findCurrentIndex(value, holder), 0);
   return (
@@ -176,7 +176,7 @@ function EitherInput(
 
 function ListInput(
   { name, node, value, onChange }: NodeProps<ListNodeParams>
-): JSX.Element {
+): ReactElement {
   const absent = value == null;
   if (
     (node.of.type === 'resource' || node.of.type === 'identifier') &&
@@ -206,7 +206,7 @@ function ListInput(
 
 function CommonListInput(
   { name, node, value, onChange }: NodeProps<ListNodeParams>
-): JSX.Element {
+): ReactElement {
   const arrayValue = useValue(
     Array.isArray(value) ? value : (node.one ? [value] : [])
   );
@@ -418,7 +418,7 @@ function ObjectInput(
   { name, node, value, onChange, children, noFieldset = false }: NodeProps<
     ObjectNodeParams
   >
-): JSX.Element {
+): ReactElement {
   const objValue = useValue(Object(value));
   const handleChange = useCallback(
     (childName: ObjectKey, childValue: unknown) =>
@@ -499,7 +499,7 @@ interface SwitchInputProps extends NodeProps<SwitchNodeParams> {
 }
 export function SwitchInput(
   { name, node, value, onChange, onTypeChange }: SwitchInputProps
-): JSX.Element {
+): ReactElement {
   const objValue = useValue(
     Object(typeof value === 'object' ? value : node.default)
   );
@@ -591,7 +591,7 @@ export function SwitchInput(
 
 function CheckboxInput(
   { name, node, value, onChange }: NodeProps<BoolNodeParams>
-): JSX.Element {
+): ReactElement {
   const id = useId(name);
   const handleChange = (e: ChangeEvent<HTMLInputElement>) =>
     onChange(name, e.target.checked);
@@ -611,7 +611,7 @@ function CheckboxInput(
 
 function ColorInput(
   { name, node, value, onChange }: NodeProps<ColorNodeParams>
-): JSX.Element {
+): ReactElement {
   const id = useId(name);
   const handleChange = (e: ChangeEvent<HTMLInputElement>) =>
     onChange(name, hexColorToInteger(e.target.value));
@@ -633,7 +633,7 @@ interface IdentifierInputProps extends NodeProps<IdentifierNodeParams> {
 }
 function IdentifierInput(
   { name, node, value, onChange, children, tag = false }: IdentifierInputProps
-): JSX.Element {
+): ReactElement {
   const id = useId(name);
   const handleChange = useCallback(
     function (option: OnChangeValue<Option, false>): void {
@@ -697,7 +697,7 @@ function IdentifierMultipleInput({
 
 function NumberInput(
   { name, node, value, onChange }: NodeProps<NumberNodeParams>
-): JSX.Element {
+): ReactElement {
   const id = useId(name);
   const handleChange = (value: number) => onChange(name, value);
   const numberValue = typeof value === 'number' ?
@@ -720,7 +720,7 @@ function NumberInput(
 
 function ResourceInput(
   { name, node, value, onChange, children }: NodeProps<IdentifierNodeParams>
-): JSX.Element {
+): ReactElement {
   const worldgen = useContext(GameContext).registries!;
 
   const handleChange = useCallback(
@@ -776,7 +776,7 @@ function ResourceInput(
   } else if (node.registry === 'biome_particle') {
     return (
       <ParticuleEffect
-        particle={value as Record<string, any>}
+        particle={value as Record<string, unknown>}
         onChange={onChange}
         name={name}
       />
@@ -796,7 +796,7 @@ function ResourceInput(
 
 function SelectEnum(
   { name, node, value, onChange }: NodeProps<EnumNodeParams>
-): JSX.Element {
+): ReactElement {
   const id = useId(name);
   const handleChange = useCallback(
     (c: OnChangeValue<Option, false>) => onChange(name, c!.value),
@@ -823,7 +823,7 @@ function SelectEnum(
 
 function StringInput(
   { name, node, value, onChange }: NodeProps<StringNodeParams>
-): JSX.Element {
+): ReactElement {
   const id = useId(name);
   const handleChange = (e: ChangeEvent<HTMLInputElement>) =>
     onChange(name, e.target.value);
@@ -839,7 +839,7 @@ function StringInput(
   );
 }
 
-function TagInput(props: NodeProps<TagNodeParams>): JSX.Element {
+function TagInput(props: NodeProps<TagNodeParams>): ReactElement {
   const asArray = useContext(GameContext).registries!.packFormat >= 9;
   if (asArray && Array.isArray(props.value)) {
     return (

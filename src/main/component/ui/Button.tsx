@@ -1,4 +1,4 @@
-import type { ButtonHTMLAttributes } from 'react';
+import type { ButtonHTMLAttributes, ReactElement } from 'react';
 import '../../../style/component/button.scss';
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
@@ -8,7 +8,7 @@ export const Button = ({
   cat = 'primary',
   className,
   ...props
-}: ButtonProps): JSX.Element => (
+}: ButtonProps): ReactElement => (
   <button
     className={`btn btn--${cat}${className ? ' ' + className : ''}`}
     {...props}

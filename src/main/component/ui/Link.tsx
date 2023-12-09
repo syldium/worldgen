@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { ReactElement, useEffect } from 'react';
 import type { AnchorHTMLAttributes, MouseEvent, ReactNode } from 'react';
 import { useForceUpdate } from '../../hook/useForceUpdate';
 import {
@@ -25,7 +25,7 @@ function onClick(event: MouseEvent<HTMLAnchorElement>) {
   event.preventDefault();
   routeLink(event.target as HTMLAnchorElement);
 }
-export function Link(props: LinkProps): JSX.Element {
+export function Link(props: LinkProps): ReactElement {
   return <a {...props} onClick={onClick} href={relativePath(props.href!)} />;
 }
 

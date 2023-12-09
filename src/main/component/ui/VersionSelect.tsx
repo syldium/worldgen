@@ -1,8 +1,8 @@
-import { ChangeEvent, useContext } from 'react';
+import { ChangeEvent, ReactElement, useContext } from 'react';
 import { GameContext } from '../../context/GameRegistry';
 import { GameVersion } from '../../context/GameVersion';
 
-export function VersionSelect(): JSX.Element {
+export function VersionSelect(): ReactElement {
   const context = useContext(GameContext);
   const handleChange = (
     event: ChangeEvent<HTMLSelectElement>

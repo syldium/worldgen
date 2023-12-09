@@ -1,4 +1,4 @@
-import { ChangeEvent, lazy, Suspense } from 'react';
+import { ChangeEvent, lazy, ReactElement, Suspense } from 'react';
 import type { ActionMeta, GroupBase, OnChangeValue, Props } from 'react-select';
 import type ReactSelect from 'react-select';
 import type { CreatableProps } from 'react-select/creatable';
@@ -27,7 +27,7 @@ export function Select<
     creatable?: true;
     testId?: string;
   }
-): JSX.Element {
+): ReactElement {
   if (!import.meta.env || import.meta.env.SSR) {
     return HtmlSelect(props);
   }
@@ -52,7 +52,7 @@ function HtmlSelect<
   testId
 }: SelectProps<OptionType, IsMulti, GroupType> & {
   testId?: string;
-}): JSX.Element {
+}): ReactElement {
   const handleChange = (e: ChangeEvent<HTMLSelectElement>) => {
     const actionPlaceholder = {} as ActionMeta<OptionType>;
     if (isMulti) {
@@ -104,6 +104,6 @@ export const CreatableSelect = <
   props:
     & CreatableProps<OptionType, IsMulti, Group>
     & SelectProps<OptionType, IsMulti>
-): JSX.Element => <Select creatable={true} {...props} />;
+): ReactElement => <Select creatable={true} {...props} />;
 
 export default Select as unknown as typeof ReactSelect;

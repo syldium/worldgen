@@ -1,4 +1,4 @@
-import { ChangeEvent, useCallback, useContext } from 'react';
+import { ChangeEvent, ReactElement, useCallback, useContext } from 'react';
 import type { OnChangeValue } from 'react-select';
 import { GameContext } from '../../context/GameRegistry';
 import { useId } from '../../hook/useId';
@@ -27,7 +27,7 @@ export function ParticuleEffect({
   name,
   particle,
   onChange
-}: ParticuleEffectProps): JSX.Element {
+}: ParticuleEffectProps): ReactElement {
   const context = useContext(GameContext);
   const options = context.registries!.game.particle_type.options;
 

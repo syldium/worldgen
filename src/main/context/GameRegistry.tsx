@@ -1,5 +1,5 @@
 import { clear, entries, setMany } from 'idb-keyval';
-import { ReactNode, useEffect, useMemo } from 'react';
+import { ReactElement, ReactNode, useEffect, useMemo } from 'react';
 import { createContext, useState } from 'react';
 import { toast } from 'react-hot-toast';
 import useLocalStorageState from 'use-local-storage-state';
@@ -41,7 +41,7 @@ const allowedVersions: Set<GameVersion> = new Set([
 export function GameRegistryProvider({
   children,
   states
-}: ProviderProps): JSX.Element {
+}: ProviderProps): ReactElement {
   const forceUpdate = useForceUpdate();
   /* eslint-disable react-hooks/rules-of-hooks */
   const [version, setVersion] = import.meta.env.SSR ?

@@ -1,5 +1,5 @@
 import useModal from '@delangle/use-modal';
-import { useEffect, useMemo } from 'react';
+import { ReactElement, useEffect, useMemo } from 'react';
 import type { MouseEvent, ReactNode } from 'react';
 import { createPortal } from 'react-dom';
 import { voidReturn } from '../../util/DomHelper';
@@ -9,7 +9,7 @@ interface ModalProps {
   isOpen: boolean;
   onClose: (opened: MouseEvent<HTMLButtonElement> | boolean) => void;
 }
-export function Modal({ children, isOpen, onClose }: ModalProps): JSX.Element {
+export function Modal({ children, isOpen, onClose }: ModalProps): ReactElement {
   const modal = useModal<HTMLDialogElement>({
     open: isOpen,
     onClose: useMemo(() => () => onClose(false), [onClose])

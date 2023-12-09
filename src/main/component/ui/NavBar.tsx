@@ -1,11 +1,11 @@
-import type { ReactNode } from 'react';
+import type { ReactElement, ReactNode } from 'react';
 import { DarkModeToggle } from './DarkModeToggle';
 import { VersionSelect } from './VersionSelect';
 
 interface NavBarProps {
   children?: ReactNode;
 }
-export const NavBar = ({ children }: NavBarProps): JSX.Element => (
+export const NavBar = ({ children }: NavBarProps): ReactElement => (
   <div className="navbar">
     <nav className="tabs">{children}</nav>
     <VersionSelect />

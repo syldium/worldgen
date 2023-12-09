@@ -1,4 +1,4 @@
-import { MouseEvent, useContext } from 'react';
+import { MouseEvent, ReactElement, useContext } from 'react';
 import { AlertTriangle, FolderMinus, GitMerge } from 'react-feather';
 import { GameContext } from '../../context/GameRegistry';
 import { ZipAction } from '../../context/ZipAction';
@@ -13,7 +13,7 @@ export function MergeForm({
   onCancel,
   onLoad,
   zip
-}: MergeFormProps): JSX.Element {
+}: MergeFormProps): ReactElement {
   const worldgen = useContext(GameContext).registries!;
   const conflicts = worldgen.doesConflict(zip.registries);
   const load = function (event: MouseEvent<HTMLButtonElement>, merge: boolean) {
