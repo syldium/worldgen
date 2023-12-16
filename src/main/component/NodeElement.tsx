@@ -30,6 +30,7 @@ import type {
 import { Empty } from '../model/node/ObjectNode';
 import type {
   IdentifierNodeParams,
+  ResourceNodeParams,
   TagNodeParams
 } from '../model/node/ResourceNode';
 import type { StringNodeParams } from '../model/node/StringNode';
@@ -84,7 +85,7 @@ export function NodeElement(props: NodeProps<ModelNode>): ReactElement {
     case 'identifier':
       return createElement(
         IdentifierInput,
-        props as NodeProps<IdentifierNodeParams>
+        props as NodeProps<IdentifierNodeParams<'identifier'>>
       );
     case 'float':
     case 'int':
@@ -103,7 +104,7 @@ export function NodeElement(props: NodeProps<ModelNode>): ReactElement {
     case 'resource':
       return createElement(
         ResourceInput,
-        props as NodeProps<IdentifierNodeParams>
+        props as NodeProps<ResourceNodeParams>
       );
     case 'string':
       return createElement(StringInput, props as NodeProps<StringNodeParams>);
@@ -179,7 +180,8 @@ function ListInput(
 ): ReactElement {
   const absent = value == null;
   if (
-    (node.of.type === 'resource' || node.of.type === 'identifier') &&
+    ((node.of.type === 'resource' && !node.of.mustInline) ||
+      node.of.type === 'identifier') &&
     (absent || Array.isArray(value)) &&
     (absent || isStringArray(value as unknown[])) &&
     node.of.registry !== 'block_state' &&
@@ -628,7 +630,9 @@ function ColorInput(
   );
 }
 
-interface IdentifierInputProps extends NodeProps<IdentifierNodeParams> {
+interface IdentifierInputProps
+  extends NodeProps<IdentifierNodeParams<'identifier'> | ResourceNodeParams>
+{
   tag?: boolean;
 }
 function IdentifierInput(
@@ -669,7 +673,7 @@ function IdentifierMultipleInput({
   node,
   value,
   onChange
-}: NodeProps<IdentifierNodeParams>) {
+}: NodeProps<IdentifierNodeParams<'identifier'> | ResourceNodeParams>) {
   const id = useId(name);
   const options = useOptions(node.registry);
   const handleChange = useCallback(
@@ -719,7 +723,7 @@ function NumberInput(
 }
 
 function ResourceInput(
-  { name, node, value, onChange, children }: NodeProps<IdentifierNodeParams>
+  { name, node, value, onChange, children }: NodeProps<ResourceNodeParams>
 ): ReactElement {
   const worldgen = useContext(GameContext).registries!;
 
@@ -729,7 +733,7 @@ function ResourceInput(
   );
 
   if (
-    value != null &&
+    (value != null || node.mustInline) &&
     typeof value !== 'string' &&
     worldgen.isWorldgen(node.registry)
   ) {

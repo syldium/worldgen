@@ -107,7 +107,7 @@ export const RuleSource = SwitchNode(
       then_run: ResourceNode('worldgen/material_rule')
     }),
     sequence: Obj({
-      sequence: ListNode(ResourceNode('worldgen/material_rule'))
+      sequence: ListNode(ResourceNode('worldgen/material_rule', {}, true))
     })
   },
   {

@@ -9,12 +9,17 @@ const MayInline = new Set<RegistryKey>([
   'worldgen/placed_feature'
 ]);
 
-export interface IdentifierNodeParams
-  extends NodeBase<'identifier' | 'resource'>
+export interface IdentifierNodeParams<T extends 'identifier' | 'resource'>
+  extends NodeBase<T>
 {
   registry: RegistryKey;
 }
-export const IdentifierNode = (key: RegistryKey): IdentifierNodeParams => {
+export interface ResourceNodeParams extends IdentifierNodeParams<'resource'> {
+  mustInline: boolean;
+}
+export const IdentifierNode = (
+  key: RegistryKey
+): IdentifierNodeParams<'identifier'> => {
   return {
     registry: key,
     type: 'identifier',
@@ -34,11 +39,13 @@ export const IdentifierNode = (key: RegistryKey): IdentifierNodeParams => {
 
 export const ResourceNode = (
   key: RegistryKey,
-  def?: string | Record<string, unknown>
-): IdentifierNodeParams => {
+  def?: string | Record<string, unknown>,
+  mustInline = false
+): ResourceNodeParams => {
   return {
     default: def,
     registry: key,
+    mustInline,
     type: 'resource',
     validate: function (
       path: string,
@@ -64,7 +71,7 @@ export const ResourceNode = (
 };
 
 export interface TagNodeParams extends NodeBase<'tag'> {
-  registry: IdentifierNodeParams;
+  registry: IdentifierNodeParams<'identifier'> | ResourceNodeParams;
 }
 export const TagNode = (key: RegistryKey): TagNodeParams => ({
   registry: MayInline.has(key) ? ResourceNode(key) : IdentifierNode(key),

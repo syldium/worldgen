@@ -5,7 +5,10 @@ import type { ErrorCollector, ModelNode, NodeBase } from './Node';
 import type { IdentifierNodeParams } from './ResourceNode';
 import type { StringNodeParams } from './StringNode';
 
-type KeyNode = IdentifierNodeParams | EnumNodeParams | StringNodeParams;
+type KeyNode =
+  | IdentifierNodeParams<'identifier'>
+  | EnumNodeParams
+  | StringNodeParams;
 export interface MapNodeParams extends NodeBase<'map'> {
   key: KeyNode;
   value: ModelNode;

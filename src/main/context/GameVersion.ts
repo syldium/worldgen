@@ -15,14 +15,15 @@ export const PackFormatNumber: Record<PackFormat, GameVersion> = Object
     Object.entries(PackFormatString).map((versions) => versions.reverse())
   );
 
+const removed = new Set(['worldgen/material_rule']);
 export const RemovableModelsByVersion: Record<GameVersion, Set<string>> = {
   '1.16': new Set(),
   '1.17': new Set([
     'worldgen/configured_decorator'
   ]),
   '1.18': new Set(),
-  '1.18.2': new Set(),
-  '1.19': new Set(),
-  '1.19.4': new Set(),
-  '1.20.2': new Set()
+  '1.18.2': removed,
+  '1.19': removed,
+  '1.19.4': removed,
+  '1.20.2': removed
 };

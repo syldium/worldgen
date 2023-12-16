@@ -8,7 +8,11 @@ import { ColorNodeParams, NumberNodeParams } from './IntNode';
 import { ListNodeParams } from './ListNode';
 import { MapNodeParams } from './MapNode';
 import { ObjectNodeParams, OptionalNodeParams } from './ObjectNode';
-import { IdentifierNodeParams, TagNodeParams } from './ResourceNode';
+import {
+  IdentifierNodeParams,
+  ResourceNodeParams,
+  TagNodeParams
+} from './ResourceNode';
 import { StringNodeParams } from './StringNode';
 import { SwitchNodeParams } from './SwitchNode';
 
@@ -69,12 +73,13 @@ export type ModelNode =
   | ColorNodeParams
   | EitherNodeParams
   | EnumNodeParams
-  | IdentifierNodeParams
+  | IdentifierNodeParams<'identifier'>
   | ListNodeParams
   | MapNodeParams
   | NumberNodeParams
   | ObjectNodeParams
   | OptionalNodeParams
+  | ResourceNodeParams
   | StringNodeParams
   | SwitchNodeParams
   | TagNodeParams;
