@@ -1,5 +1,5 @@
 import { clear, entries, setMany } from 'idb-keyval';
-import { ReactElement, ReactNode, useEffect, useMemo } from 'react';
+import { ReactElement, ReactNode, useEffect } from 'react';
 import { createContext, useState } from 'react';
 import { toast } from 'react-hot-toast';
 import useLocalStorageState from 'use-local-storage-state';
@@ -7,6 +7,7 @@ import { useFetchData, useRegistryFetch } from '../hook/useFetchData';
 import { useForceUpdate } from '../hook/useForceUpdate';
 import {
   BlockStateRegistry,
+  DEFAULT_BLOCK_STATE,
   Registry,
   RegistryHolder,
   Schema
@@ -77,7 +78,7 @@ export function GameRegistryProvider({
         Record<string, string[]>,
         Record<string, string>
       ]>;
-      return Object.fromEntries(
+      const states = Object.fromEntries(
         Object.entries(blocks).map((
           [blockType, [properties, defaultState]]
         ) => [
@@ -88,6 +89,20 @@ export function GameRegistryProvider({
           }
         ])
       );
+
+      const keys: string[] = await fetch(
+        `${import.meta.env.BASE_URL}registries/1.20.2/blocks.json`
+      ).then((res) => res.json());
+      const registry = new Registry(keys.map(labelizeOption));
+      holder!.game.block = registry;
+      holder!.game.block_state = registry;
+      keys.forEach((block) => {
+        block = defaultNamespace(block);
+        if (!states[block]) {
+          states[block] = DEFAULT_BLOCK_STATE;
+        }
+      });
+      return states;
     }
   );
   const [vanilla, fetched] = useRegistryFetch(Values, version);
@@ -100,15 +115,8 @@ export function GameRegistryProvider({
       { defaultValue: 'unset' }
     );
   /* eslint-enable react-hooks/rules-of-hooks */
-
-  const blockTypes: Registry = useMemo(
-    () => new Registry(Object.keys(blockStates).map(labelizeOption)),
-    [blockStates]
-  );
   if (holder && (version === fetched.current || import.meta.env.SSR)) {
     holder.withVanilla(vanilla);
-    holder.game.block = blockTypes;
-    holder.game.block_state = blockTypes;
   }
 
   useEffect(() => {
