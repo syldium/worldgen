@@ -66,7 +66,7 @@ export function GameRegistryProvider({
   );
   useEffect(() => {
     if (version !== defaultVersion) {
-      RegistryHolder.create(version).then(setHolder);
+      RegistryHolder.create(version).then(setHolder).catch(console.error);
     }
   }, [version]);
   const blockStates = useFetchData<BlockStateRegistry>(
@@ -138,7 +138,7 @@ export function GameRegistryProvider({
       if (edited.size && fetched.current) {
         forceUpdate();
       }
-    });
+    }).catch(console.error);
   }, [fetched, forceUpdate, holder]);
 
   return (

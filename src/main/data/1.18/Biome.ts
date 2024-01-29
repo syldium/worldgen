@@ -42,7 +42,7 @@ export const BiomeSettings = {
   ),
   features: ListNode(ListNode(ResourceNode('worldgen/placed_feature'))),
   spawners: Obj({
-    ...(v1_17.spawners as ObjectNodeParams).records,
+    ...v1_17.spawners.records,
     axolotls: Spawners
   })
 };

@@ -23,7 +23,7 @@ const BLOCKS_STATES: BlockStateRegistry = {
 };
 
 describe('block state form', function () {
-  it('should have a block type list', async () => {
+  it('should have a block type list', () => {
     const changeCallback = vitest.fn();
     const { container, getByTestId } = render(
       <form data-testid="form">

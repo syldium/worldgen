@@ -111,7 +111,7 @@ export function providePreset(node: ObjectOrNodeModel): DataType {
     case 'list':
       return node.fixed === -1 ?
         [] :
-        new Array(node.fixed).fill(providePreset(node.of));
+        Array.from({ length: node.fixed }, () => providePreset(node.of));
     case 'map':
       return {};
     case 'object':

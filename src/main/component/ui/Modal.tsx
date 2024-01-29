@@ -1,6 +1,6 @@
-import useModal from '@delangle/use-modal';
-import { ReactElement, useEffect, useMemo } from 'react';
+import useModal, { ModalState } from '@delangle/use-modal';
 import type { MouseEvent, ReactNode } from 'react';
+import { ReactElement, useEffect, useMemo } from 'react';
 import { createPortal } from 'react-dom';
 import { voidReturn } from '../../util/DomHelper';
 
@@ -24,7 +24,7 @@ export function Modal({ children, isOpen, onClose }: ModalProps): ReactElement {
   }, [el]);
 
   return createPortal(
-    <dialog open={modal.state === 'opened'}>
+    <dialog open={modal.state === ModalState.opened}>
       <button className="btn--close" onClick={onClose} />
       {children}
     </dialog>,

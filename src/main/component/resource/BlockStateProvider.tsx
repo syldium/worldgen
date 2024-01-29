@@ -113,7 +113,7 @@ export function BlockStateProvider({
   const node = SeededBlockStateProviders[providerType];
 
   const defaultBlocks = context.blockStates;
-  blocks = (blocks || defaultBlocks) as BlockStateRegistry;
+  blocks ||= defaultBlocks;
   const filteredBlocks = useMemo(
     function () {
       let filtered = blocks as BlockStateRegistry;

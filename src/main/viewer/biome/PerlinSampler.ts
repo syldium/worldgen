@@ -50,7 +50,7 @@ class OctavePerlinNoise {
     const sampler = new PerlinNoiseSampler(random);
     const length = amplitudes.length;
     const oppFirstOctave = -firstOctave;
-    this.octaveSamplers = new Array(length);
+    this.octaveSamplers = new Array<PerlinNoiseSampler>(length);
 
     if (oppFirstOctave >= 0 && oppFirstOctave < length) {
       const d = amplitudes[oppFirstOctave];

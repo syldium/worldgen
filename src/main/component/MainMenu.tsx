@@ -29,7 +29,8 @@ export function MainMenu(): ReactElement {
         .catch(catchToast(id))
         .then((blob) => saveAs(blob, 'generated_datapack.zip'))
         .catch(catchToast(id))
-        .then(() => toast.success('Download ready!', { id }));
+        .then(() => toast.success('Download ready!', { id }))
+        .catch(catchToast(id));
     },
     [worldgen]
   );
