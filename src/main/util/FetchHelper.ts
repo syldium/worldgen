@@ -28,7 +28,7 @@ export const loadVanillaZip = async function (
 };
 
 export const dataUrl = function (version: GameVersion) {
-  let ref = '4fdeb79414f50493fe9b1a13c25dd331e33ffbad';
+  let ref = '87d27e74f45fa333fefd4f0675ba94f6478908db';
   if (version === '1.19.4') {
     ref = '38dd2592cf3ad33192d4c8ec02c6e3e231d263c8';
   } else if (version === '1.19') {

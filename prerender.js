@@ -44,9 +44,9 @@ for (
   const html = template
     .replace(
       '<!--meta-->',
-      `<meta name="description" content="A ${custom}${name} datapack generator for Minecraft Java Edition 1.19-1.20.2" />
+      `<meta name="description" content="A ${custom}${name} datapack generator for Minecraft Java Edition 1.19-1.20.4" />
     <meta property="og:title" content="${capitalizedName} datapack generator for Minecraft" />
-    <meta property="og:description" content="A tool to generate datapacks with ${custom}${plural} for Minecraft 1.19-1.20.2" />${canonical}`
+    <meta property="og:description" content="A tool to generate datapacks with ${custom}${plural} for Minecraft 1.19-1.20.4" />${canonical}`
     )
     .replace('<div id="root"></div>', '<div id="root">' + appHtml + '</div>');
 

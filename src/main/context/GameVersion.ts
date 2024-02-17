@@ -5,7 +5,7 @@ export const PackFormatString = {
   '1.18.2': 9,
   '1.19': 10,
   '1.19.4': 13,
-  '1.20.2': 18
+  '1.20.4': 26
 } as const;
 export type GameVersion = keyof typeof PackFormatString;
 export type PackFormat = typeof PackFormatString[keyof typeof PackFormatString];
@@ -25,5 +25,5 @@ export const RemovableModelsByVersion: Record<GameVersion, Set<string>> = {
   '1.18.2': removed,
   '1.19': removed,
   '1.19.4': removed,
-  '1.20.2': removed
+  '1.20.4': removed
 };

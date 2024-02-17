@@ -201,7 +201,7 @@ export class RegistryHolder {
   }
 
   static def(): RegistryHolder {
-    return new RegistryHolder('1.20.2', Registries1_20);
+    return new RegistryHolder('1.20.4', Registries1_20);
   }
 
   async resource(

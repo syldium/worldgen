@@ -116,4 +116,4 @@ function tryLoad(version: GameVersion, addContext: boolean) {
 const addContext = argv.length > 0 && argv[0] === 'context';
 
 //tryLoad('1.18.2', addContext);
-tryLoad('1.20.2', addContext);
+tryLoad('1.20.4', addContext);

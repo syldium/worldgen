@@ -32,11 +32,11 @@ interface ProviderProps {
   children?: ReactNode;
   states?: BlockStateRegistry;
 }
-const defaultVersion: GameVersion = '1.20.2';
+const defaultVersion: GameVersion = '1.20.4';
 const allowedVersions: Set<GameVersion> = new Set([
   '1.19',
   '1.19.4',
-  '1.20.2'
+  '1.20.4'
 ]);
 
 export function GameRegistryProvider({
@@ -91,7 +91,7 @@ export function GameRegistryProvider({
       );
 
       const keys: string[] = await fetch(
-        `${import.meta.env.BASE_URL}registries/1.20.2/blocks.json`
+        `${import.meta.env.BASE_URL}registries/1.20.4/blocks.json`
       ).then((res) => res.json());
       const registry = new Registry(keys.map(labelizeOption));
       holder!.game.block = registry;
