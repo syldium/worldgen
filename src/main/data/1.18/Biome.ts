@@ -1,7 +1,7 @@
 import type { Model } from '../../model/Model';
 import { EnumNode } from '../../model/node/EnumNode';
 import { ListNode } from '../../model/node/ListNode';
-import { Obj, ObjectNodeParams } from '../../model/node/ObjectNode';
+import { Obj } from '../../model/node/ObjectNode';
 import { ResourceNode } from '../../model/node/ResourceNode';
 import { omit } from '../../util/DataHelper';
 import { BiomeSettings as Biome1_17, Spawners } from '../1.17/Biome';

@@ -173,8 +173,7 @@ export function BlockStateProvider({
           name={name}
           node={node}
           value={value}
-          // @ts-ignore
-          onChange={onChange}
+          onChange={onChange as (name: ObjectKey, value: unknown) => void}
         />
       )}
     </fieldset>
