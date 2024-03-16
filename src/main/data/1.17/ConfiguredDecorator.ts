@@ -10,7 +10,7 @@ import { IntProvider } from './NumberProvider';
 import { Heightmap, VerticalSurface } from './WorldgenStep';
 
 const CarvingMaskConfig = Obj({
-  step: EnumNode(['air', 'liquid'] as const)
+  step: EnumNode(['air', 'liquid'])
 });
 
 const CaveSurfaceConfig = Obj({

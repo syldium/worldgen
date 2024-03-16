@@ -15,7 +15,7 @@ import { Heightmap } from '../1.17/WorldgenStep';
 import { DecorationStep, TerrainAdaptation } from './DecorationStep';
 
 const StructureSpawn = Obj({
-  bounding_box: EnumNode(['piece', 'full'] as const),
+  bounding_box: EnumNode(['piece', 'full']),
   spawns: Spawners
 });
 
@@ -50,14 +50,14 @@ export const Structure: Model = {
       }),
       jungle_temple: Empty,
       mineshaft: Obj({
-        mineshaft_type: EnumNode(['normal', 'mesa'] as const)
+        mineshaft_type: EnumNode(['normal', 'mesa'])
       }),
       nether_fossil: Obj({
         height: HeightProvider
       }),
       ocean_monument: Empty,
       ocean_ruin: Obj({
-        biome_temp: EnumNode(['warm', 'cold'] as const),
+        biome_temp: EnumNode(['warm', 'cold']),
         large_probability: Probability.probability,
         cluster_probability: Probability.probability
       }),
@@ -71,7 +71,7 @@ export const Structure: Model = {
               'in_mountain',
               'underground',
               'in_nether'
-            ] as const
+            ]
           ),
           air_pocket_probability: Probability.probability,
           mossiness: Probability.probability,

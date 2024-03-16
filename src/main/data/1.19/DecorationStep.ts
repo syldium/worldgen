@@ -13,7 +13,7 @@ export const DecorationStep = EnumNode(
     'fluid_springs',
     'vegetal_decoration',
     'top_layer_modification'
-  ] as const
+  ]
 );
 
 export const TerrainAdaptation = EnumNode(
@@ -22,6 +22,6 @@ export const TerrainAdaptation = EnumNode(
     'bury',
     'beard_thin',
     'beard_box'
-  ] as const,
+  ],
   'none'
 );

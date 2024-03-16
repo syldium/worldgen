@@ -129,7 +129,7 @@ export type BlockStateRegistry = {
 };
 export const DEFAULT_BLOCK_STATE = { default: {}, properties: {} };
 
-export type RegistryInfo = [Model, Option[]] | [Model];
+export type RegistryInfo = [Model, Option[]?];
 export type WorldgenRegistriesType = Record<WorldgenRegistryKey, RegistryInfo>;
 export class RegistryHolder {
   readonly game: Record<RegistryKey, Registry>;
@@ -152,7 +152,6 @@ export class RegistryHolder {
     this.worldgen = Object.fromEntries(
       Object.entries(provider).map(([key, registry]) => [
         key,
-        // @ts-ignore
         new WorldgenRegistry(...registry)
       ])
     ) as Record<WorldgenRegistryKey, WorldgenRegistry>;

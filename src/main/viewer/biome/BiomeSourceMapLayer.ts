@@ -1,4 +1,3 @@
-// @ts-ignore
 import { Coords, DoneCallback, GridLayer } from 'leaflet';
 import { stripDefaultNamespace } from '../../util/LabelHelper';
 import {

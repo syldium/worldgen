@@ -16,7 +16,7 @@ const BiomeEffects = Obj({
   foliage_color: Opt(ColorNode()),
   grass_color: Opt(ColorNode()),
   grass_color_modifier: EnumNode(
-    ['none', 'dark_forest', 'swamp'] as const,
+    ['none', 'dark_forest', 'swamp'],
     'none'
   ),
   particle: Opt(
@@ -113,14 +113,14 @@ export const BiomeSettings = {
       'mushroom',
       'nether',
       'underground'
-    ] as const
+    ]
   ),
-  precipitation: EnumNode(['none', 'rain', 'snow'] as const),
+  precipitation: EnumNode(['none', 'rain', 'snow']),
   temperature: FloatNode(),
-  temperature_modifier: EnumNode(['none', 'frozen'] as const, 'none'),
+  temperature_modifier: EnumNode(['none', 'frozen'], 'none'),
   surface_builder: IdentifierNode('worldgen/configured_surface_builder'),
   carvers: MapNode(
-    EnumNode(['air', 'liquid'] as const),
+    EnumNode(['air', 'liquid']),
     ListNode(ResourceNode('worldgen/configured_carver'))
   ),
   features: ListNode(ListNode(ResourceNode('worldgen/configured_feature'))),

@@ -8,5 +8,5 @@ export const Direction = EnumNode(
     'south',
     'west',
     'east'
-  ] as const
+  ]
 );

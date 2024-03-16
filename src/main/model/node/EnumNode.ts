@@ -12,7 +12,7 @@ export interface EnumNodeParams extends NodeBase<'enum'> {
 }
 
 export const EnumNode = <
-  T extends ReadonlyArray<string> | Record<string, string>
+  const T extends ReadonlyArray<string> | Record<string, string>
 >(
   values: T,
   def?: T extends ReadonlyArray<string> ? typeof values[number] : keyof T,

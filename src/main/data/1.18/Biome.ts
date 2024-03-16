@@ -38,7 +38,7 @@ export const BiomeSettings = {
       'taiga',
       'the_end',
       'underground'
-    ] as const
+    ]
   ),
   features: ListNode(ListNode(ResourceNode('worldgen/placed_feature'))),
   spawners: Obj({

@@ -89,7 +89,7 @@ export const DynamicRangeDensityFunction = SwitchNode(
     square: UnaryFunction,
     squeeze: UnaryFunction,
     terrain_shaper_spline: Obj({
-      spline: EnumNode(['offset', 'factor', 'jaggedness'] as const),
+      spline: EnumNode(['offset', 'factor', 'jaggedness']),
       min_value: ConstantRange,
       max_value: ConstantRange,
       continentalness: ResourceNode('worldgen/density_function'),
@@ -97,7 +97,7 @@ export const DynamicRangeDensityFunction = SwitchNode(
       weirdness: ResourceNode('worldgen/density_function')
     }),
     weird_scaled_sampler: Obj({
-      rarity_value_mapper: EnumNode(['type_1', 'type_2'] as const),
+      rarity_value_mapper: EnumNode(['type_1', 'type_2']),
       noise: ResourceNode('worldgen/noise'),
       input: ResourceNode('worldgen/density_function')
     }),

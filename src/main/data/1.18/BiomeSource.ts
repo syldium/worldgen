@@ -34,7 +34,7 @@ const MultiNoise = EitherNode(
     )
   }),
   Obj({
-    preset: EnumNode(['overworld', 'nether'] as const, undefined, true)
+    preset: EnumNode(['overworld', 'nether'], undefined, true)
   })
 );
 

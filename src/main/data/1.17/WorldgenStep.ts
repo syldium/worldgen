@@ -10,4 +10,4 @@ export const Heightmap = EnumNode({
     "Motion blocking no leaves (that blocks motion or contains a fluid and isn't leaves)"
 });
 
-export const VerticalSurface = EnumNode(['ceiling', 'floor'] as const);
+export const VerticalSurface = EnumNode(['ceiling', 'floor']);

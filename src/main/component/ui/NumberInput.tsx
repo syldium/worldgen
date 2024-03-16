@@ -1,8 +1,9 @@
 import { ChangeEventHandler, InputHTMLAttributes, ReactElement } from 'react';
 import { INT_MAX_VALUE, INT_MIN_VALUE } from '../../util/MathHelper';
 
-// @ts-ignore
-interface NumberInputProps extends InputHTMLAttributes<HTMLInputElement> {
+interface NumberInputProps
+  extends Omit<InputHTMLAttributes<HTMLInputElement>, 'onChange'>
+{
   onChange: (value: number) => void;
   value: number;
   step?: number;

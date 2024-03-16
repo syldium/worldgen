@@ -23,7 +23,7 @@ export const StructureSet: Model = {
           preferred_biomes: TagNode('worldgen/biome')
         }),
         random_spread: Obj({
-          spread_type: EnumNode(['linear', 'triangular'] as const, 'linear'),
+          spread_type: EnumNode(['linear', 'triangular'], 'linear'),
           spacing: IntNode({ min: 0, max: 4096 }),
           separation: IntNode({ min: 0, max: 4096 })
         })
@@ -54,7 +54,7 @@ export const StructureSet: Model = {
             'legacy_type_1',
             'legacy_type_2',
             'legacy_type_3'
-          ] as const,
+          ],
           'default'
         ),
         frequency: FloatNode({ min: 0, max: 1, default: 1 }),

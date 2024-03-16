@@ -19,7 +19,7 @@ export const StructureSet: Model = {
         count: IntNode({ min: 1, max: 4095 })
       }),
       random_spread: Obj({
-        spread_type: EnumNode(['linear', 'triangular'] as const, 'linear'),
+        spread_type: EnumNode(['linear', 'triangular'], 'linear'),
         spacing: IntNode({ min: 0, max: 4096 }),
         separation: IntNode({ min: 0, max: 4096 }),
         salt: IntNode({ min: 0 }),

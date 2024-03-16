@@ -16,7 +16,7 @@ const PlacementModifierSwitch = SwitchNode(
       predicate: ResourceNode('block_predicate')
     }),
     carving_mask: Obj({
-      step: EnumNode(['air', 'liquid'] as const)
+      step: EnumNode(['air', 'liquid'])
     }),
     count: Obj({
       count: IntProvider(0, 256)
@@ -25,7 +25,7 @@ const PlacementModifierSwitch = SwitchNode(
       count: IntProvider(0, 256)
     }),
     environment_scan: Obj({
-      direction_of_search: EnumNode(['up', 'down'] as const),
+      direction_of_search: EnumNode(['up', 'down']),
       target_condition: ResourceNode('block_predicate'),
       allowed_search_condition: Opt(ResourceNode('block_predicate')),
       max_steps: IntNode({ min: 1, max: 32 })

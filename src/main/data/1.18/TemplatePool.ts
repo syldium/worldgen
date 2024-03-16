@@ -8,7 +8,7 @@ import { StringNode } from '../../model/node/StringNode';
 import { SwitchNode } from '../../model/node/SwitchNode';
 
 const Projection = {
-  projection: EnumNode(['rigid', 'terrain_matching'] as const)
+  projection: EnumNode(['rigid', 'terrain_matching'])
 };
 export const TemplateElement = SwitchNode(
   {

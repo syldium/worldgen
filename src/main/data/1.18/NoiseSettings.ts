@@ -23,7 +23,7 @@ const Spline = Obj({
       'erosion',
       'weirdness',
       'ridges'
-    ] as const
+    ]
   ),
   points: ListNode(SplinePoint)
 });

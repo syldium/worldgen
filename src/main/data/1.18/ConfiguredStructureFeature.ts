@@ -11,7 +11,7 @@ import { Spawners } from '../1.17/Biome';
 import { HeightProvider } from '../1.17/HeightProvider';
 
 const StructureSpawn = Obj({
-  bounding_box: EnumNode(['piece', 'full'] as const),
+  bounding_box: EnumNode(['piece', 'full']),
   spawns: Spawners
 });
 
@@ -49,7 +49,7 @@ export const ConfiguredStructureFeature: Model = {
       jungle_pyramid: Empty,
       mansion: Empty,
       mineshaft: Obj({
-        type: EnumNode(['normal', 'mesa'] as const),
+        type: EnumNode(['normal', 'mesa']),
         ...Probability
       }),
       monument: Empty,
@@ -57,7 +57,7 @@ export const ConfiguredStructureFeature: Model = {
         height: HeightProvider
       }),
       ocean_ruin: Obj({
-        biome_temp: EnumNode(['cold', 'warm'] as const),
+        biome_temp: EnumNode(['cold', 'warm']),
         large_probability: Probability.probability,
         cluster_probability: Probability.probability
       }),
@@ -72,7 +72,7 @@ export const ConfiguredStructureFeature: Model = {
             'ocean',
             'swamp',
             'nether'
-          ] as const
+          ]
         )
       }),
       shipwreck: Obj({

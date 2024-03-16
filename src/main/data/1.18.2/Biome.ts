@@ -12,7 +12,7 @@ import {
 export const BiomeSettings = {
   ...BiomeSettings1_18,
   carvers: MapNode(
-    EnumNode(['air', 'liquid'] as const),
+    EnumNode(['air', 'liquid']),
     ListNode(ResourceNode('worldgen/configured_carver'), -1, false, true)
   )
 };

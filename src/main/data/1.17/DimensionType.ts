@@ -16,7 +16,7 @@ export const DimensionType: Model = DefaultedModel(
     height: IntNode({ min: 16, max: 4064, step: 16 }),
     logical_height: IntNode({ min: 0, max: 4064 }),
     effects: EnumNode(
-      ['overworld', 'the_nether', 'the_end'] as const,
+      ['overworld', 'the_nether', 'the_end'],
       'overworld',
       true
     ),
