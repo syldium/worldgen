@@ -12,7 +12,7 @@
   },
   "json": {
   },
-  "includes": ["src/**/*.{ts,tsx,js,jsx,cjs,mjs,json}"],
+  "includes": ["src/**/*.{ts,tsx,js,jsx,cjs,mjs,json}", "*.js", "*.ts"],
   "excludes": [
     "**/node_modules",
     "**/*-lock.json",

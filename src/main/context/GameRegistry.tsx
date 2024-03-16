@@ -118,6 +118,11 @@ export function GameRegistryProvider({
   if (holder && (version === fetched.current || import.meta.env.SSR)) {
     holder.withVanilla(vanilla);
   }
+  if (states) {
+    const registry = new Registry(Object.keys(states).map(labelizeOption));
+    holder!.game.block = registry;
+    holder!.game.block_state = registry;
+  }
 
   useEffect(() => {
     if (!window.indexedDB || !holder) {
@@ -154,11 +159,12 @@ export function GameRegistryProvider({
               const entries: [string, Schema][] = [];
               for (const [registryKey, registry] of holder.entries) {
                 entries.push(
-                  // @ts-ignore
-                  ...Object.entries(registry.entries).map(([key, schema]) => [
-                    resourcePath(registryKey, key),
-                    schema
-                  ])
+                  ...Object.entries(registry.entries).map(([key, schema]) =>
+                    [
+                      resourcePath(registryKey, key),
+                      schema
+                    ] as [string, Schema]
+                  )
                 );
               }
               setMany(entries).then(() =>
