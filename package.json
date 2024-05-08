@@ -2,6 +2,7 @@
   "name": "worldgen",
   "version": "1.0.0",
   "type": "module",
+  "packageManager": "pnpm@9.1.0",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
