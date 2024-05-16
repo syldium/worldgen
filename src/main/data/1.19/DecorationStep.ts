@@ -21,7 +21,8 @@ export const TerrainAdaptation = EnumNode(
     'none',
     'bury',
     'beard_thin',
-    'beard_box'
+    'beard_box',
+    'encapsulate'
   ],
   'none'
 );
