@@ -5,7 +5,7 @@ export const PackFormatString = {
   '1.18.2': 9,
   '1.19': 10,
   '1.19.4': 13,
-  '1.20.4': 26
+  '1.20.4': 41
 } as const;
 export type GameVersion = keyof typeof PackFormatString;
 export type PackFormat = typeof PackFormatString[keyof typeof PackFormatString];
