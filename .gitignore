@@ -110,6 +110,7 @@ build/
 .vscode/
 .idea/
 
+target/
 work/
 *.txt
 vanilla_worldgen*
