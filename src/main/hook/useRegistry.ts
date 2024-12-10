@@ -27,7 +27,7 @@ export function useRegistry<S extends Schema>(
     [entry, registry.model, worldgen.gameVersion]
   );
 
-  const postLoad = useRef<PostLoadCallback<S>>();
+  const postLoad = useRef<PostLoadCallback<S>>(undefined);
   const customLoaded = useRef<boolean>(false);
   useEffect(() => {
     if (!entry && id) {

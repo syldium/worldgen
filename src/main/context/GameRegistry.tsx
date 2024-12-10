@@ -49,17 +49,23 @@ export function GameRegistryProvider({
     useState(defaultVersion) :
     useLocalStorageState<GameVersion>(
       'game-version',
-      { defaultValue: defaultVersion }
-    );
-  if (!import.meta.env.SSR) {
-    setVersion(version => {
-      if (!allowedVersions.has(version)) {
-        toast.error(`Unsupported version: ${version}`);
-        return defaultVersion;
+      {
+        defaultValue: defaultVersion,
+        serializer: {
+          stringify: (version) => version as string,
+          parse: (version) => {
+            if (!allowedVersions.has(version as GameVersion)) {
+              setTimeout(
+                () => toast.error(`Unsupported version: ${version}`),
+                0
+              );
+              return defaultVersion;
+            }
+            return version;
+          }
+        }
       }
-      return version;
-    });
-  }
+    );
   /* eslint-enable react-hooks/rules-of-hooks */
   const [holder, setHolder] = useState<RegistryHolder | undefined>(
     version === defaultVersion ? () => RegistryHolder.def() : undefined

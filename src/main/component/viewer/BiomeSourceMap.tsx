@@ -84,7 +84,7 @@ const BiomeSourceMap = memo(function BiomeSourceMap ({
   value
 }: BiomeSourceMapProps) {
   const divRef = useRef<HTMLDivElement>(null);
-  const layerRef = useRef<BiomeSourceMapLayer>();
+  const layerRef = useRef<BiomeSourceMapLayer>(undefined);
   const [colors, setColor] = useBiomeColors(value);
 
   useEffect(() => {
