@@ -46,6 +46,7 @@ fn main() {
                     .join(file);
                 if file.exists() && are_identical(&oldest, &file).unwrap() {
                     oldest = file;
+                    break;
                 }
             }
             let mut registry = entry

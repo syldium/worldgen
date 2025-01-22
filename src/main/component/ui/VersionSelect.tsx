@@ -17,6 +17,7 @@ export function VersionSelect(): ReactElement {
       <option value="1.19">1.19</option>
       <option value="1.19.4">1.19.4</option>
       <option value="1.20.4">1.20.6</option>
+      <option value="1.21.4">1.21.4</option>
     </select>
   );
 }

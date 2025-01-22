@@ -28,8 +28,10 @@ export const loadVanillaZip = async function (
 };
 
 export const dataUrl = function (version: GameVersion) {
-  let ref = '87d27e74f45fa333fefd4f0675ba94f6478908db';
-  if (version === '1.19.4') {
+  let ref = 'a77feff04fff793823540bd1903a2d05f9b6492a';
+  if (version === '1.20.4') {
+    ref = '87d27e74f45fa333fefd4f0675ba94f6478908db';
+  } else if (version === '1.19.4') {
     ref = '38dd2592cf3ad33192d4c8ec02c6e3e231d263c8';
   } else if (version === '1.19') {
     ref = 'ea2a2c1e828a50f552ebd29d4207a13caaabc38f';
@@ -38,8 +40,10 @@ export const dataUrl = function (version: GameVersion) {
 };
 
 export const blockDataUrl = function (version: GameVersion) {
-  let ref = '4e9bec3ad44be22dd7c9f3d095b1240b2629a6ab';
-  if (version === '1.19.4') {
+  let ref = '6bee76b08c728a62b13eb6bff957b2e7b87ea99f';
+  if (version === '1.20.4') {
+    ref = '4e9bec3ad44be22dd7c9f3d095b1240b2629a6ab';
+  } else if (version === '1.19.4') {
     ref = 'ffd2eb6f5bcb59fb5fb54227d3b10901cd8ede71';
   } else if (version === '1.19') {
     ref = 'bec4783e8095f0523c60b8b722d8d86990b7a057';

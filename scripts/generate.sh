@@ -10,7 +10,7 @@ if ! [ -r "$MANIFEST_LOCATION" ]; then
   wget https://piston-meta.mojang.com/mc/game/version_manifest.json -O "$MANIFEST_LOCATION"
 fi
 
-GAME_VERSIONS=('1.19.3' '1.19.4' '1.20.2' '1.20.4')
+GAME_VERSIONS=('1.19.3' '1.19.4' '1.20.2' '1.20.4' '1.21.4')
 REGISTRIES=(
   'worldgen/biome'
   'worldgen/configured_carver'
