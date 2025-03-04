@@ -1,28 +1,30 @@
 .jsonview-code {
-  display: block;
   background-color: var(--shadow-color, inherit);
-  color: #88c6be;
-  white-space: nowrap;
+  line-height: 1.2;
+  white-space: pre-wrap;
+  word-wrap: break-word;
   width: 600px;
   max-width: 100%;
-  padding: 2.5rem 2rem;
+  font-family: monospace;
+  padding: 1.5rem 1rem;
 }
-.jsonview-str {
-  color: #79b6f2;
-}
-.jsonview-num {
-  color: #ffffc8;
-}
-.jsonview-bool {
-  color: #c5a5c5;
-}
-.jsonview-null {
-  color: #c5a5c5;
-}
-.jsonview-prop {
+
+.label-dark {
+  margin-right: 5px;
   color: #fac863;
 }
-.jsonview-line {
-  padding-right: 1rem;
+.punctuation-dark {
   color: #b2b2b2;
+}
+.value-null-dark, .value-undefined-dark, .value-other-dark {
+  color: #c5a5c5;
+}
+.value-string-dark {
+  color: #79b6f2;
+}
+.value-number-dark {
+  color: #ffffc8;
+}
+.value-boolean-dark {
+  color: #c5a5c5;
 }
