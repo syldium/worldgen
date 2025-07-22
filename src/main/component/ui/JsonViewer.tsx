@@ -33,7 +33,7 @@ export function JsonViewer({ data }: JsonViewerProps): ReactElement {
   );
 }
 
-const darkStyles: StyleProps = {
+const darkStyles: Partial<StyleProps> = {
   container: 'jsonview-code',
   basicChildStyle: 'basic-element-style',
   childFieldsContainer: 'child-fields-container',

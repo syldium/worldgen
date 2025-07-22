@@ -85,7 +85,7 @@ function tryLoad(version: GameVersion, addContext: boolean) {
           if (!dirent.isFile()) {
             continue;
           }
-          const path = joinPath(dirent.path, dirent.name);
+          const path = joinPath(dirent.parentPath, dirent.name);
           const content = await readFile(path, 'utf-8');
           yield [path.substring(generated.length + 1), content];
         }
